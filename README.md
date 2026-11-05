@@ -17,10 +17,8 @@ The site also keeps a record of every source that, at any point during the night
 
 - 2022 local elections (mayors)
 - 2024 presidential election
-- 2025 recall votes (counted as 同意 / 不同意 rather than candidates)
 
 ## Status
 
 - Certified final results for 2022 and 2024 are in [`data/finals/`](data/finals/) (from the CEC database, checksum-verified). See [`data/README.md`](data/README.md).
-- 2025 recall finals: not yet sourced. The CEC database has no vote counts for them.
 - Research notes: [`docs/research.md`](docs/research.md).

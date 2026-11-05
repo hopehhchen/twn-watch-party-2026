@@ -9,7 +9,6 @@ The yardstick for the "reported more than the final" callout. One file per elect
 | `2022-local-mayors.json` | 2022-11-26 mayors and county magistrates | 21 (6 municipalities + 15 counties/cities) |
 | `2022-chiayi-city-mayor-rerun.json` | 2022-12-18 Chiayi City mayor (postponed vote) | 1 |
 | `2024-president.json` | 2024-01-13 presidential election | 1 national + 22 counties |
-| — | 2025 recall votes | **missing**, see below |
 
 Each race has:
 
@@ -43,6 +42,28 @@ Notes:
 
 Also confirmed by hand: the 22 county rows of 2024 sum exactly to the national totals, and the 2022 Taipei/Pingtung/Hsinchu City and 2024 national figures match what 中央社, 自由時報 and 公視 display as CEC numbers.
 
+## `nights/` — the CEC's count over election night
+
+`<election>.cec.json` rebuilds how the CEC's official count grew during the night, from two CEC attachments in `raw/cec-stations/`:
+votes per candidate at every polling station, and the time each station's report was logged (全國投開票所完成時間).
+
+| File | Races | Stations | First → last report (Taipei time) |
+|---|---|---|---|
+| `2022-local-mayors.cec.json` | 21 | 17,649 | Taipei 17:14 → 21:41 (varies by city) |
+| `2024-president.cec.json` | national + 22 counties | 17,795 | 16:31 → 21:57 |
+
+Each race has `series`: one row per minute in which any station reported,
+`[HH:MM, stations_reported, votes for each option in "options" order…]`, cumulative. Times are rounded **up** to the minute.
+
+Checks:
+- Every race's last row equals the certified final in `finals/` exactly, and every station in the results has a report time (the build fails otherwise).
+- 2024 at 18:00: rebuilt 2,110 stations / 賴 417,780 / 侯 327,970 / 柯 221,906. 中央社 published the CEC's 18:00 count as 2,112 stations / 417,866 / 328,262 / 222,006. ([CNA](https://www.cna.com.tw/news/aipl/202401130135.aspx))
+- 2022 against 自由時報's CEC column in Wayback captures: Pingtung and Hsinchu City match the rebuild **exactly**, 3–4 minutes before the capture time (feed + page delay). Tainan's archived CEC figure appears ~6 minutes *earlier* than the rebuild; Taipei's lies between two rebuilt minutes.
+
+**What the timestamps mean.** The time is when a polling station's report was logged by the CEC. In 2022 the log covers all nine local contests at a station, so a mayoral count may have been entered somewhat earlier. Read the curve as accurate to within a few minutes, not as an exact replay of what the CEC website showed.
+
+Rebuild: `python3 scripts/build_cec_night.py` (needs `xlrd`, `openpyxl`). Raw files and their SHA-256 values (matching what the CEC lists for each attachment) are in `raw/cec-stations/`.
+
 ## `raw/cec-finals.tsv` — the snapshot
 
 A compact TSV taken from `db.cec.gov.tw/static/elections/data/{tickets,profiles}/…`, with its SHA-256 in `cec-finals.tsv.sha256`. Regenerate with:
@@ -54,7 +75,3 @@ node scripts/build-finals.mjs
 
 The snapshot was first taken through a browser (this workspace can't reach db.cec.gov.tw directly); running `snapshotTsv` from `scripts/cec-snapshot.mjs` in the browser reproduced the same SHA-256.
 
-## Known gaps
-
-- **2025 recalls.** The CEC database lists all 35 recall cases from 2025 but marks every one `has_data: false` — no vote counts are published there. The CEC recall pages (web.cec.gov.tw → 公職人員罷免案專區) carry petition paperwork, not results. Still to find: an official machine-readable source (the CEC live-results host used on 2025-07-26 / 08-23, or the formal result announcements). Until then we should not fill this from news reports without labeling it as such.
-- **Polling-station completion times.** Each election in the CEC database has an attachment `全國投開票所完成時間.xls` (time each polling station's result was entered). Combined with per-station results (`直轄市長.zip` etc.), this could reconstruct the CEC's own count curve for past elections — useful for replaying an election night. Not fetched yet.
