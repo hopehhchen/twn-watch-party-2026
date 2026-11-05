@@ -1,0 +1,68 @@
+{
+  "election": "2022-chiayi-city-mayor-rerun",
+  "label": "2022 Chiayi City mayor (postponed vote)",
+  "vote_date": "2022-12-18",
+  "notes": [],
+  "status": "final",
+  "source": {
+    "publisher": "Central Election Commission (中央選舉委員會)",
+    "database": "https://db.cec.gov.tw/",
+    "snapshot": "data/raw/cec-finals.tsv"
+  },
+  "races": [
+    {
+      "race_id": "2022-chiayi-city-mayor-rerun/county-mayor/10_020",
+      "office": "county-mayor",
+      "level": "county",
+      "area_code": "10_020",
+      "area_name": "嘉義市",
+      "valid_votes": 93813,
+      "invalid_votes": 375,
+      "ballots_cast": 94188,
+      "electors": 214130,
+      "turnout_pct": 43.99,
+      "options": [
+        {
+          "no": 1,
+          "name": "黃敏惠",
+          "party": "中國國民黨",
+          "votes": 59874,
+          "pct": 63.82,
+          "elected": true
+        },
+        {
+          "no": 2,
+          "name": "李俊俋",
+          "party": "民主進步黨",
+          "votes": 32790,
+          "pct": 34.95,
+          "elected": false
+        },
+        {
+          "no": 3,
+          "name": "陳泰山",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 246,
+          "pct": 0.26,
+          "elected": false
+        },
+        {
+          "no": 4,
+          "name": "黃宏成台灣阿成世界偉人財神總統",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 535,
+          "pct": 0.57,
+          "elected": false
+        },
+        {
+          "no": 5,
+          "name": "鄭凱升",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 368,
+          "pct": 0.39,
+          "elected": false
+        }
+      ]
+    }
+  ]
+}

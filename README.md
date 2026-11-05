@@ -21,4 +21,6 @@ The site also keeps a record of every source that, at any point during the night
 
 ## Status
 
-Early setup. See `docs/` for research notes as they're added.
+- Certified final results for 2022 and 2024 are in [`data/finals/`](data/finals/) (from the CEC database, checksum-verified). See [`data/README.md`](data/README.md).
+- 2025 recall finals: not yet sourced. The CEC database has no vote counts for them.
+- Research notes: [`docs/research.md`](docs/research.md).

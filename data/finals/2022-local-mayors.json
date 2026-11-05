@@ -1,0 +1,1023 @@
+{
+  "election": "2022-local-mayors",
+  "label": "2022 local elections: mayors and county magistrates",
+  "vote_date": "2022-11-26",
+  "notes": [
+    "Chiayi City did not vote for mayor on 2022-11-26: the vote was postponed after a candidate died and held on 2022-12-18 (see 2022-chiayi-city-mayor-rerun)."
+  ],
+  "status": "final",
+  "source": {
+    "publisher": "Central Election Commission (中央選舉委員會)",
+    "database": "https://db.cec.gov.tw/",
+    "snapshot": "data/raw/cec-finals.tsv"
+  },
+  "races": [
+    {
+      "race_id": "2022-local-mayors/municipal-mayor/63_000",
+      "office": "municipal-mayor",
+      "level": "county",
+      "area_code": "63_000",
+      "area_name": "臺北市",
+      "valid_votes": 1360951,
+      "invalid_votes": 11228,
+      "ballots_cast": 1372179,
+      "electors": 2026769,
+      "turnout_pct": 67.7,
+      "options": [
+        {
+          "no": 1,
+          "name": "張家豪",
+          "party": "台灣動物保護黨",
+          "votes": 2367,
+          "pct": 0.17,
+          "elected": false
+        },
+        {
+          "no": 2,
+          "name": "王文娟",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 451,
+          "pct": 0.03,
+          "elected": false
+        },
+        {
+          "no": 3,
+          "name": "鄭匡宇",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 386,
+          "pct": 0.03,
+          "elected": false
+        },
+        {
+          "no": 4,
+          "name": "黃聖峰",
+          "party": "台澎黨",
+          "votes": 256,
+          "pct": 0.02,
+          "elected": false
+        },
+        {
+          "no": 5,
+          "name": "童文薰",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 2425,
+          "pct": 0.18,
+          "elected": false
+        },
+        {
+          "no": 6,
+          "name": "蔣萬安",
+          "party": "中國國民黨",
+          "votes": 575590,
+          "pct": 42.29,
+          "elected": true
+        },
+        {
+          "no": 7,
+          "name": "蘇煥智",
+          "party": "台灣維新",
+          "votes": 1851,
+          "pct": 0.14,
+          "elected": false
+        },
+        {
+          "no": 8,
+          "name": "黃珊珊",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 342141,
+          "pct": 25.14,
+          "elected": false
+        },
+        {
+          "no": 9,
+          "name": "施奉先",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 383,
+          "pct": 0.03,
+          "elected": false
+        },
+        {
+          "no": 10,
+          "name": "唐新民",
+          "party": "共和黨",
+          "votes": 316,
+          "pct": 0.02,
+          "elected": false
+        },
+        {
+          "no": 11,
+          "name": "謝立康",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 227,
+          "pct": 0.02,
+          "elected": false
+        },
+        {
+          "no": 12,
+          "name": "陳時中",
+          "party": "民主進步黨",
+          "votes": 434558,
+          "pct": 31.93,
+          "elected": false
+        }
+      ]
+    },
+    {
+      "race_id": "2022-local-mayors/municipal-mayor/65_000",
+      "office": "municipal-mayor",
+      "level": "county",
+      "area_code": "65_000",
+      "area_name": "新北市",
+      "valid_votes": 1846531,
+      "invalid_votes": 30655,
+      "ballots_cast": 1877186,
+      "electors": 3316517,
+      "turnout_pct": 56.6,
+      "options": [
+        {
+          "no": 1,
+          "name": "林佳龍",
+          "party": "民主進步黨",
+          "votes": 693976,
+          "pct": 37.58,
+          "elected": false
+        },
+        {
+          "no": 2,
+          "name": "侯友宜",
+          "party": "中國國民黨",
+          "votes": 1152555,
+          "pct": 62.42,
+          "elected": true
+        }
+      ]
+    },
+    {
+      "race_id": "2022-local-mayors/municipal-mayor/68_000",
+      "office": "municipal-mayor",
+      "level": "county",
+      "area_code": "68_000",
+      "area_name": "桃園市",
+      "valid_votes": 1071763,
+      "invalid_votes": 13462,
+      "ballots_cast": 1085225,
+      "electors": 1825127,
+      "turnout_pct": 59.46,
+      "options": [
+        {
+          "no": 1,
+          "name": "張善政",
+          "party": "中國國民黨",
+          "votes": 557572,
+          "pct": 52.02,
+          "elected": true
+        },
+        {
+          "no": 2,
+          "name": "賴香伶",
+          "party": "台灣民眾黨",
+          "votes": 54926,
+          "pct": 5.12,
+          "elected": false
+        },
+        {
+          "no": 3,
+          "name": "鄭運鵬",
+          "party": "民主進步黨",
+          "votes": 428983,
+          "pct": 40.03,
+          "elected": false
+        },
+        {
+          "no": 4,
+          "name": "鄭寶清",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 30282,
+          "pct": 2.83,
+          "elected": false
+        }
+      ]
+    },
+    {
+      "race_id": "2022-local-mayors/municipal-mayor/66_000",
+      "office": "municipal-mayor",
+      "level": "county",
+      "area_code": "66_000",
+      "area_name": "臺中市",
+      "valid_votes": 1346471,
+      "invalid_votes": 18158,
+      "ballots_cast": 1364629,
+      "electors": 2274107,
+      "turnout_pct": 60.01,
+      "options": [
+        {
+          "no": 1,
+          "name": "陳美妃",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 23140,
+          "pct": 1.72,
+          "elected": false
+        },
+        {
+          "no": 2,
+          "name": "蔡其昌",
+          "party": "民主進步黨",
+          "votes": 524224,
+          "pct": 38.93,
+          "elected": false
+        },
+        {
+          "no": 3,
+          "name": "盧秀燕",
+          "party": "中國國民黨",
+          "votes": 799107,
+          "pct": 59.35,
+          "elected": true
+        }
+      ]
+    },
+    {
+      "race_id": "2022-local-mayors/municipal-mayor/67_000",
+      "office": "municipal-mayor",
+      "level": "county",
+      "area_code": "67_000",
+      "area_name": "臺南市",
+      "valid_votes": 888674,
+      "invalid_votes": 19859,
+      "ballots_cast": 908533,
+      "electors": 1548203,
+      "turnout_pct": 58.68,
+      "options": [
+        {
+          "no": 1,
+          "name": "許忠信",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 38697,
+          "pct": 4.35,
+          "elected": false
+        },
+        {
+          "no": 2,
+          "name": "林義豐",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 24606,
+          "pct": 2.77,
+          "elected": false
+        },
+        {
+          "no": 3,
+          "name": "謝龍介",
+          "party": "中國國民黨",
+          "votes": 387731,
+          "pct": 43.63,
+          "elected": false
+        },
+        {
+          "no": 4,
+          "name": "吳炳輝",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 3956,
+          "pct": 0.45,
+          "elected": false
+        },
+        {
+          "no": 5,
+          "name": "黃偉哲",
+          "party": "民主進步黨",
+          "votes": 433684,
+          "pct": 48.8,
+          "elected": true
+        }
+      ]
+    },
+    {
+      "race_id": "2022-local-mayors/municipal-mayor/64_000",
+      "office": "municipal-mayor",
+      "level": "county",
+      "area_code": "64_000",
+      "area_name": "高雄市",
+      "valid_votes": 1318733,
+      "invalid_votes": 19086,
+      "ballots_cast": 1337819,
+      "electors": 2282623,
+      "turnout_pct": 58.61,
+      "options": [
+        {
+          "no": 1,
+          "name": "鄭宇翔",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 8394,
+          "pct": 0.64,
+          "elected": false
+        },
+        {
+          "no": 2,
+          "name": "曾尹儷",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 14585,
+          "pct": 1.11,
+          "elected": false
+        },
+        {
+          "no": 3,
+          "name": "柯志恩",
+          "party": "中國國民黨",
+          "votes": 529607,
+          "pct": 40.16,
+          "elected": false
+        },
+        {
+          "no": 4,
+          "name": "陳其邁",
+          "party": "民主進步黨",
+          "votes": 766147,
+          "pct": 58.1,
+          "elected": true
+        }
+      ]
+    },
+    {
+      "race_id": "2022-local-mayors/county-mayor/10_002",
+      "office": "county-mayor",
+      "level": "county",
+      "area_code": "10_002",
+      "area_name": "宜蘭縣",
+      "valid_votes": 235281,
+      "invalid_votes": 5635,
+      "ballots_cast": 240916,
+      "electors": 374779,
+      "turnout_pct": 64.28,
+      "options": [
+        {
+          "no": 1,
+          "name": "林姿妙",
+          "party": "中國國民黨",
+          "votes": 119421,
+          "pct": 50.76,
+          "elected": true
+        },
+        {
+          "no": 2,
+          "name": "朱振東",
+          "party": "天一黨",
+          "votes": 919,
+          "pct": 0.39,
+          "elected": false
+        },
+        {
+          "no": 3,
+          "name": "許鋐哲",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 1036,
+          "pct": 0.44,
+          "elected": false
+        },
+        {
+          "no": 4,
+          "name": "陳秋境",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 714,
+          "pct": 0.3,
+          "elected": false
+        },
+        {
+          "no": 5,
+          "name": "江聰淵",
+          "name_cec_raw": "江@2F97F@淵",
+          "party": "民主進步黨",
+          "votes": 96779,
+          "pct": 41.13,
+          "elected": false
+        },
+        {
+          "no": 6,
+          "name": "陳琬惠",
+          "party": "台灣民眾黨",
+          "votes": 16412,
+          "pct": 6.98,
+          "elected": false
+        }
+      ]
+    },
+    {
+      "race_id": "2022-local-mayors/county-mayor/10_004",
+      "office": "county-mayor",
+      "level": "county",
+      "area_code": "10_004",
+      "area_name": "新竹縣",
+      "valid_votes": 258305,
+      "invalid_votes": 8708,
+      "ballots_cast": 267013,
+      "electors": 452720,
+      "turnout_pct": 58.98,
+      "options": [
+        {
+          "no": 1,
+          "name": "黃秀龍",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 3403,
+          "pct": 1.32,
+          "elected": false
+        },
+        {
+          "no": 2,
+          "name": "范振揆",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 4874,
+          "pct": 1.89,
+          "elected": false
+        },
+        {
+          "no": 3,
+          "name": "周江杰",
+          "party": "民主進步黨",
+          "votes": 83683,
+          "pct": 32.4,
+          "elected": false
+        },
+        {
+          "no": 4,
+          "name": "楊文科",
+          "party": "中國國民黨",
+          "votes": 163662,
+          "pct": 63.36,
+          "elected": true
+        },
+        {
+          "no": 5,
+          "name": "劉復嵐",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 2683,
+          "pct": 1.04,
+          "elected": false
+        }
+      ]
+    },
+    {
+      "race_id": "2022-local-mayors/county-mayor/10_005",
+      "office": "county-mayor",
+      "level": "county",
+      "area_code": "10_005",
+      "area_name": "苗栗縣",
+      "valid_votes": 292100,
+      "invalid_votes": 6219,
+      "ballots_cast": 298319,
+      "electors": 443908,
+      "turnout_pct": 67.2,
+      "options": [
+        {
+          "no": 1,
+          "name": "鍾東錦",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 124603,
+          "pct": 42.66,
+          "elected": true
+        },
+        {
+          "no": 2,
+          "name": "謝福弘",
+          "party": "中國國民黨",
+          "votes": 32026,
+          "pct": 10.96,
+          "elected": false
+        },
+        {
+          "no": 3,
+          "name": "吳盛聖",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 4864,
+          "pct": 1.67,
+          "elected": false
+        },
+        {
+          "no": 4,
+          "name": "徐定禎",
+          "party": "民主進步黨",
+          "votes": 91260,
+          "pct": 31.24,
+          "elected": false
+        },
+        {
+          "no": 5,
+          "name": "宋國鼎",
+          "party": "時代力量",
+          "votes": 39347,
+          "pct": 13.47,
+          "elected": false
+        }
+      ]
+    },
+    {
+      "race_id": "2022-local-mayors/county-mayor/10_007",
+      "office": "county-mayor",
+      "level": "county",
+      "area_code": "10_007",
+      "area_name": "彰化縣",
+      "valid_votes": 650424,
+      "invalid_votes": 17095,
+      "ballots_cast": 667519,
+      "electors": 1028606,
+      "turnout_pct": 64.9,
+      "options": [
+        {
+          "no": 1,
+          "name": "王惠美",
+          "party": "中國國民黨",
+          "votes": 369133,
+          "pct": 56.75,
+          "elected": true
+        },
+        {
+          "no": 2,
+          "name": "黃秀芳",
+          "party": "民主進步黨",
+          "votes": 272817,
+          "pct": 41.94,
+          "elected": false
+        },
+        {
+          "no": 3,
+          "name": "蕭仁正",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 8474,
+          "pct": 1.3,
+          "elected": false
+        }
+      ]
+    },
+    {
+      "race_id": "2022-local-mayors/county-mayor/10_008",
+      "office": "county-mayor",
+      "level": "county",
+      "area_code": "10_008",
+      "area_name": "南投縣",
+      "valid_votes": 275499,
+      "invalid_votes": 5097,
+      "ballots_cast": 280596,
+      "electors": 406195,
+      "turnout_pct": 69.08,
+      "options": [
+        {
+          "no": 1,
+          "name": "蔡培慧",
+          "party": "民主進步黨",
+          "votes": 117993,
+          "pct": 42.83,
+          "elected": false
+        },
+        {
+          "no": 2,
+          "name": "許淑華",
+          "party": "中國國民黨",
+          "votes": 154256,
+          "pct": 55.99,
+          "elected": true
+        },
+        {
+          "no": 3,
+          "name": "王永慶",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 3250,
+          "pct": 1.18,
+          "elected": false
+        }
+      ]
+    },
+    {
+      "race_id": "2022-local-mayors/county-mayor/10_009",
+      "office": "county-mayor",
+      "level": "county",
+      "area_code": "10_009",
+      "area_name": "雲林縣",
+      "valid_votes": 366833,
+      "invalid_votes": 9816,
+      "ballots_cast": 376649,
+      "electors": 559273,
+      "turnout_pct": 67.35,
+      "options": [
+        {
+          "no": 1,
+          "name": "張麗善",
+          "party": "中國國民黨",
+          "votes": 207519,
+          "pct": 56.57,
+          "elected": true
+        },
+        {
+          "no": 2,
+          "name": "劉建國",
+          "party": "民主進步黨",
+          "votes": 152620,
+          "pct": 41.6,
+          "elected": false
+        },
+        {
+          "no": 3,
+          "name": "林佳瑜",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 6694,
+          "pct": 1.82,
+          "elected": false
+        }
+      ]
+    },
+    {
+      "race_id": "2022-local-mayors/county-mayor/10_010",
+      "office": "county-mayor",
+      "level": "county",
+      "area_code": "10_010",
+      "area_name": "嘉義縣",
+      "valid_votes": 273294,
+      "invalid_votes": 11196,
+      "ballots_cast": 284490,
+      "electors": 422568,
+      "turnout_pct": 67.32,
+      "options": [
+        {
+          "no": 1,
+          "name": "王育敏",
+          "party": "中國國民黨",
+          "votes": 101517,
+          "pct": 37.15,
+          "elected": false
+        },
+        {
+          "no": 2,
+          "name": "翁章梁",
+          "party": "民主進步黨",
+          "votes": 171777,
+          "pct": 62.85,
+          "elected": true
+        }
+      ]
+    },
+    {
+      "race_id": "2022-local-mayors/county-mayor/10_013",
+      "office": "county-mayor",
+      "level": "county",
+      "area_code": "10_013",
+      "area_name": "屏東縣",
+      "valid_votes": 443153,
+      "invalid_votes": 13229,
+      "ballots_cast": 456382,
+      "electors": 679330,
+      "turnout_pct": 67.18,
+      "options": [
+        {
+          "no": 1,
+          "name": "詹智鈞",
+          "party": "時代力量",
+          "votes": 19156,
+          "pct": 4.32,
+          "elected": false
+        },
+        {
+          "no": 2,
+          "name": "蘇清泉",
+          "party": "中國國民黨",
+          "votes": 206460,
+          "pct": 46.59,
+          "elected": false
+        },
+        {
+          "no": 3,
+          "name": "周春米",
+          "party": "民主進步黨",
+          "votes": 217537,
+          "pct": 49.09,
+          "elected": true
+        }
+      ]
+    },
+    {
+      "race_id": "2022-local-mayors/county-mayor/10_014",
+      "office": "county-mayor",
+      "level": "county",
+      "area_code": "10_014",
+      "area_name": "臺東縣",
+      "valid_votes": 112148,
+      "invalid_votes": 3078,
+      "ballots_cast": 115226,
+      "electors": 177853,
+      "turnout_pct": 64.79,
+      "options": [
+        {
+          "no": 1,
+          "name": "陳長宏",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 2383,
+          "pct": 2.12,
+          "elected": false
+        },
+        {
+          "no": 2,
+          "name": "饒慶鈴",
+          "party": "中國國民黨",
+          "votes": 68661,
+          "pct": 61.22,
+          "elected": true
+        },
+        {
+          "no": 3,
+          "name": "劉櫂豪",
+          "party": "民主進步黨",
+          "votes": 41104,
+          "pct": 36.65,
+          "elected": false
+        }
+      ]
+    },
+    {
+      "race_id": "2022-local-mayors/county-mayor/10_015",
+      "office": "county-mayor",
+      "level": "county",
+      "area_code": "10_015",
+      "area_name": "花蓮縣",
+      "valid_votes": 149307,
+      "invalid_votes": 3831,
+      "ballots_cast": 153138,
+      "electors": 266058,
+      "turnout_pct": 57.56,
+      "options": [
+        {
+          "no": 1,
+          "name": "徐榛蔚",
+          "party": "中國國民黨",
+          "votes": 96645,
+          "pct": 64.73,
+          "elected": true
+        },
+        {
+          "no": 2,
+          "name": "黄師鵬",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 4817,
+          "pct": 3.23,
+          "elected": false
+        },
+        {
+          "no": 3,
+          "name": "谷辣斯．尤達卡 Kolas Yotaka",
+          "party": "民主進步黨",
+          "votes": 47845,
+          "pct": 32.04,
+          "elected": false
+        }
+      ]
+    },
+    {
+      "race_id": "2022-local-mayors/county-mayor/10_016",
+      "office": "county-mayor",
+      "level": "county",
+      "area_code": "10_016",
+      "area_name": "澎湖縣",
+      "valid_votes": 51242,
+      "invalid_votes": 1628,
+      "ballots_cast": 52870,
+      "electors": 90360,
+      "turnout_pct": 58.51,
+      "options": [
+        {
+          "no": 1,
+          "name": "陳光復",
+          "party": "民主進步黨",
+          "votes": 18777,
+          "pct": 36.64,
+          "elected": true
+        },
+        {
+          "no": 2,
+          "name": "賴峰偉",
+          "party": "中國國民黨",
+          "votes": 17081,
+          "pct": 33.33,
+          "elected": false
+        },
+        {
+          "no": 3,
+          "name": "葉竹林",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 15384,
+          "pct": 30.02,
+          "elected": false
+        }
+      ]
+    },
+    {
+      "race_id": "2022-local-mayors/county-mayor/09_007",
+      "office": "county-mayor",
+      "level": "county",
+      "area_code": "09_007",
+      "area_name": "連江縣",
+      "valid_votes": 8505,
+      "invalid_votes": 115,
+      "ballots_cast": 8620,
+      "electors": 11810,
+      "turnout_pct": 72.99,
+      "options": [
+        {
+          "no": 1,
+          "name": "李問",
+          "party": "民主進步黨",
+          "votes": 586,
+          "pct": 6.89,
+          "elected": false
+        },
+        {
+          "no": 2,
+          "name": "曹爾元",
+          "party": "中國國民黨",
+          "votes": 3582,
+          "pct": 42.12,
+          "elected": false
+        },
+        {
+          "no": 3,
+          "name": "王忠銘",
+          "party": "中國國民黨",
+          "votes": 4337,
+          "pct": 50.99,
+          "elected": true
+        }
+      ]
+    },
+    {
+      "race_id": "2022-local-mayors/county-mayor/09_020",
+      "office": "county-mayor",
+      "level": "county",
+      "area_code": "09_020",
+      "area_name": "金門縣",
+      "valid_votes": 47114,
+      "invalid_votes": 975,
+      "ballots_cast": 48089,
+      "electors": 122294,
+      "turnout_pct": 39.32,
+      "options": [
+        {
+          "no": 1,
+          "name": "李應文",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 3459,
+          "pct": 7.34,
+          "elected": false
+        },
+        {
+          "no": 2,
+          "name": "朱紀瑋",
+          "party": "龍黨",
+          "votes": 174,
+          "pct": 0.37,
+          "elected": false
+        },
+        {
+          "no": 3,
+          "name": "林志錦",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 141,
+          "pct": 0.3,
+          "elected": false
+        },
+        {
+          "no": 4,
+          "name": "楊鎮浯",
+          "party": "中國國民黨",
+          "votes": 19340,
+          "pct": 41.05,
+          "elected": false
+        },
+        {
+          "no": 5,
+          "name": "陳福海",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 23248,
+          "pct": 49.34,
+          "elected": true
+        },
+        {
+          "no": 6,
+          "name": "洪志恒",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 752,
+          "pct": 1.6,
+          "elected": false
+        }
+      ]
+    },
+    {
+      "race_id": "2022-local-mayors/county-mayor/10_017",
+      "office": "county-mayor",
+      "level": "county",
+      "area_code": "10_017",
+      "area_name": "基隆市",
+      "valid_votes": 182893,
+      "invalid_votes": 2348,
+      "ballots_cast": 185241,
+      "electors": 307913,
+      "turnout_pct": 60.16,
+      "options": [
+        {
+          "no": 1,
+          "name": "謝國樑",
+          "party": "中國國民黨",
+          "votes": 96784,
+          "pct": 52.92,
+          "elected": true
+        },
+        {
+          "no": 2,
+          "name": "陳薇仲",
+          "party": "時代力量",
+          "votes": 12000,
+          "pct": 6.56,
+          "elected": false
+        },
+        {
+          "no": 3,
+          "name": "蔡適應",
+          "party": "民主進步黨",
+          "votes": 71354,
+          "pct": 39.01,
+          "elected": false
+        },
+        {
+          "no": 4,
+          "name": "曾國民",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 619,
+          "pct": 0.34,
+          "elected": false
+        },
+        {
+          "no": 5,
+          "name": "黃希賢",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 2136,
+          "pct": 1.17,
+          "elected": false
+        }
+      ]
+    },
+    {
+      "race_id": "2022-local-mayors/county-mayor/10_018",
+      "office": "county-mayor",
+      "level": "county",
+      "area_code": "10_018",
+      "area_name": "新竹市",
+      "valid_votes": 217941,
+      "invalid_votes": 2842,
+      "ballots_cast": 220783,
+      "electors": 350758,
+      "turnout_pct": 62.94,
+      "options": [
+        {
+          "no": 1,
+          "name": "黃源甫",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 1049,
+          "pct": 0.48,
+          "elected": false
+        },
+        {
+          "no": 2,
+          "name": "龔偉綸",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 508,
+          "pct": 0.23,
+          "elected": false
+        },
+        {
+          "no": 3,
+          "name": "林耕仁",
+          "party": "中國國民黨",
+          "votes": 39391,
+          "pct": 18.07,
+          "elected": false
+        },
+        {
+          "no": 4,
+          "name": "李驥羣",
+          "party": "無黨籍及未經政黨推薦",
+          "votes": 1108,
+          "pct": 0.51,
+          "elected": false
+        },
+        {
+          "no": 5,
+          "name": "沈慧虹",
+          "party": "民主進步黨",
+          "votes": 77764,
+          "pct": 35.68,
+          "elected": false
+        },
+        {
+          "no": 6,
+          "name": "高虹安",
+          "party": "台灣民眾黨",
+          "votes": 98121,
+          "pct": 45.02,
+          "elected": true
+        }
+      ]
+    }
+  ]
+}

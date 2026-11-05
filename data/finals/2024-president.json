@@ -1,0 +1,959 @@
+{
+  "election": "2024-president",
+  "label": "2024 presidential election",
+  "vote_date": "2024-01-13",
+  "notes": [
+    "County-level rows carry no `elected` flag: the CEC marks the national winner as victor in every county, including counties where that ticket placed second or third."
+  ],
+  "status": "final",
+  "source": {
+    "publisher": "Central Election Commission (中央選舉委員會)",
+    "database": "https://db.cec.gov.tw/",
+    "snapshot": "data/raw/cec-finals.tsv"
+  },
+  "races": [
+    {
+      "race_id": "2024-president/president/national",
+      "office": "president",
+      "level": "national",
+      "area_code": "00_000",
+      "area_name": "全國",
+      "valid_votes": 13947506,
+      "invalid_votes": 100805,
+      "ballots_cast": 14048311,
+      "electors": 19548531,
+      "turnout_pct": 71.86,
+      "options": [
+        {
+          "no": 1,
+          "name": "柯文哲",
+          "running_mate": "吳欣盈",
+          "party": "台灣民眾黨",
+          "votes": 3690466,
+          "pct": 26.46,
+          "elected": false
+        },
+        {
+          "no": 2,
+          "name": "賴清德",
+          "running_mate": "蕭美琴",
+          "party": "民主進步黨",
+          "votes": 5586019,
+          "pct": 40.05,
+          "elected": true
+        },
+        {
+          "no": 3,
+          "name": "侯友宜",
+          "running_mate": "趙少康",
+          "party": "中國國民黨",
+          "votes": 4671021,
+          "pct": 33.49,
+          "elected": false
+        }
+      ]
+    },
+    {
+      "race_id": "2024-president/president/63_000",
+      "office": "president",
+      "level": "county",
+      "area_code": "63_000",
+      "area_name": "臺北市",
+      "valid_votes": 1542011,
+      "invalid_votes": 10581,
+      "ballots_cast": 1552592,
+      "electors": 2090062,
+      "turnout_pct": 74.28,
+      "options": [
+        {
+          "no": 1,
+          "name": "柯文哲",
+          "running_mate": "吳欣盈",
+          "party": "台灣民眾黨",
+          "votes": 366854,
+          "pct": 23.79,
+          "elected": null
+        },
+        {
+          "no": 2,
+          "name": "賴清德",
+          "running_mate": "蕭美琴",
+          "party": "民主進步黨",
+          "votes": 587899,
+          "pct": 38.13,
+          "elected": null
+        },
+        {
+          "no": 3,
+          "name": "侯友宜",
+          "running_mate": "趙少康",
+          "party": "中國國民黨",
+          "votes": 587258,
+          "pct": 38.08,
+          "elected": null
+        }
+      ]
+    },
+    {
+      "race_id": "2024-president/president/65_000",
+      "office": "president",
+      "level": "county",
+      "area_code": "65_000",
+      "area_name": "新北市",
+      "valid_votes": 2458480,
+      "invalid_votes": 17597,
+      "ballots_cast": 2476077,
+      "electors": 3402064,
+      "turnout_pct": 72.78,
+      "options": [
+        {
+          "no": 1,
+          "name": "柯文哲",
+          "running_mate": "吳欣盈",
+          "party": "台灣民眾黨",
+          "votes": 645105,
+          "pct": 26.24,
+          "elected": null
+        },
+        {
+          "no": 2,
+          "name": "賴清德",
+          "running_mate": "蕭美琴",
+          "party": "民主進步黨",
+          "votes": 948818,
+          "pct": 38.59,
+          "elected": null
+        },
+        {
+          "no": 3,
+          "name": "侯友宜",
+          "running_mate": "趙少康",
+          "party": "中國國民黨",
+          "votes": 864557,
+          "pct": 35.17,
+          "elected": null
+        }
+      ]
+    },
+    {
+      "race_id": "2024-president/president/68_000",
+      "office": "president",
+      "level": "county",
+      "area_code": "68_000",
+      "area_name": "桃園市",
+      "valid_votes": 1350792,
+      "invalid_votes": 8897,
+      "ballots_cast": 1359689,
+      "electors": 1882592,
+      "turnout_pct": 72.22,
+      "options": [
+        {
+          "no": 1,
+          "name": "柯文哲",
+          "running_mate": "吳欣盈",
+          "party": "台灣民眾黨",
+          "votes": 413528,
+          "pct": 30.61,
+          "elected": null
+        },
+        {
+          "no": 2,
+          "name": "賴清德",
+          "running_mate": "蕭美琴",
+          "party": "民主進步黨",
+          "votes": 476441,
+          "pct": 35.27,
+          "elected": null
+        },
+        {
+          "no": 3,
+          "name": "侯友宜",
+          "running_mate": "趙少康",
+          "party": "中國國民黨",
+          "votes": 460823,
+          "pct": 34.12,
+          "elected": null
+        }
+      ]
+    },
+    {
+      "race_id": "2024-president/president/66_000",
+      "office": "president",
+      "level": "county",
+      "area_code": "66_000",
+      "area_name": "臺中市",
+      "valid_votes": 1707203,
+      "invalid_votes": 12714,
+      "ballots_cast": 1719917,
+      "electors": 2328896,
+      "turnout_pct": 73.85,
+      "options": [
+        {
+          "no": 1,
+          "name": "柯文哲",
+          "running_mate": "吳欣盈",
+          "party": "台灣民眾黨",
+          "votes": 513025,
+          "pct": 30.05,
+          "elected": null
+        },
+        {
+          "no": 2,
+          "name": "賴清德",
+          "running_mate": "蕭美琴",
+          "party": "民主進步黨",
+          "votes": 641622,
+          "pct": 37.58,
+          "elected": null
+        },
+        {
+          "no": 3,
+          "name": "侯友宜",
+          "running_mate": "趙少康",
+          "party": "中國國民黨",
+          "votes": 552556,
+          "pct": 32.37,
+          "elected": null
+        }
+      ]
+    },
+    {
+      "race_id": "2024-president/president/67_000",
+      "office": "president",
+      "level": "county",
+      "area_code": "67_000",
+      "area_name": "臺南市",
+      "valid_votes": 1120238,
+      "invalid_votes": 7977,
+      "ballots_cast": 1128215,
+      "electors": 1567432,
+      "turnout_pct": 71.98,
+      "options": [
+        {
+          "no": 1,
+          "name": "柯文哲",
+          "running_mate": "吳欣盈",
+          "party": "台灣民眾黨",
+          "votes": 262560,
+          "pct": 23.44,
+          "elected": null
+        },
+        {
+          "no": 2,
+          "name": "賴清德",
+          "running_mate": "蕭美琴",
+          "party": "民主進步黨",
+          "votes": 570811,
+          "pct": 50.95,
+          "elected": null
+        },
+        {
+          "no": 3,
+          "name": "侯友宜",
+          "running_mate": "趙少康",
+          "party": "中國國民黨",
+          "votes": 286867,
+          "pct": 25.61,
+          "elected": null
+        }
+      ]
+    },
+    {
+      "race_id": "2024-president/president/64_000",
+      "office": "president",
+      "level": "county",
+      "area_code": "64_000",
+      "area_name": "高雄市",
+      "valid_votes": 1636962,
+      "invalid_votes": 10504,
+      "ballots_cast": 1647466,
+      "electors": 2312303,
+      "turnout_pct": 71.25,
+      "options": [
+        {
+          "no": 1,
+          "name": "柯文哲",
+          "running_mate": "吳欣盈",
+          "party": "台灣民眾黨",
+          "votes": 358096,
+          "pct": 21.88,
+          "elected": null
+        },
+        {
+          "no": 2,
+          "name": "賴清德",
+          "running_mate": "蕭美琴",
+          "party": "民主進步黨",
+          "votes": 800390,
+          "pct": 48.89,
+          "elected": null
+        },
+        {
+          "no": 3,
+          "name": "侯友宜",
+          "running_mate": "趙少康",
+          "party": "中國國民黨",
+          "votes": 478476,
+          "pct": 29.23,
+          "elected": null
+        }
+      ]
+    },
+    {
+      "race_id": "2024-president/president/10_002",
+      "office": "president",
+      "level": "county",
+      "area_code": "10_002",
+      "area_name": "宜蘭縣",
+      "valid_votes": 267129,
+      "invalid_votes": 1925,
+      "ballots_cast": 269054,
+      "electors": 379026,
+      "turnout_pct": 70.99,
+      "options": [
+        {
+          "no": 1,
+          "name": "柯文哲",
+          "running_mate": "吳欣盈",
+          "party": "台灣民眾黨",
+          "votes": 70171,
+          "pct": 26.27,
+          "elected": null
+        },
+        {
+          "no": 2,
+          "name": "賴清德",
+          "running_mate": "蕭美琴",
+          "party": "民主進步黨",
+          "votes": 119517,
+          "pct": 44.74,
+          "elected": null
+        },
+        {
+          "no": 3,
+          "name": "侯友宜",
+          "running_mate": "趙少康",
+          "party": "中國國民黨",
+          "votes": 77441,
+          "pct": 28.99,
+          "elected": null
+        }
+      ]
+    },
+    {
+      "race_id": "2024-president/president/10_004",
+      "office": "president",
+      "level": "county",
+      "area_code": "10_004",
+      "area_name": "新竹縣",
+      "valid_votes": 340310,
+      "invalid_votes": 2442,
+      "ballots_cast": 342752,
+      "electors": 466558,
+      "turnout_pct": 73.46,
+      "options": [
+        {
+          "no": 1,
+          "name": "柯文哲",
+          "running_mate": "吳欣盈",
+          "party": "台灣民眾黨",
+          "votes": 120985,
+          "pct": 35.55,
+          "elected": null
+        },
+        {
+          "no": 2,
+          "name": "賴清德",
+          "running_mate": "蕭美琴",
+          "party": "民主進步黨",
+          "votes": 93309,
+          "pct": 27.42,
+          "elected": null
+        },
+        {
+          "no": 3,
+          "name": "侯友宜",
+          "running_mate": "趙少康",
+          "party": "中國國民黨",
+          "votes": 126016,
+          "pct": 37.03,
+          "elected": null
+        }
+      ]
+    },
+    {
+      "race_id": "2024-president/president/10_005",
+      "office": "president",
+      "level": "county",
+      "area_code": "10_005",
+      "area_name": "苗栗縣",
+      "valid_votes": 318665,
+      "invalid_votes": 2326,
+      "ballots_cast": 320991,
+      "electors": 447767,
+      "turnout_pct": 71.69,
+      "options": [
+        {
+          "no": 1,
+          "name": "柯文哲",
+          "running_mate": "吳欣盈",
+          "party": "台灣民眾黨",
+          "votes": 95637,
+          "pct": 30.01,
+          "elected": null
+        },
+        {
+          "no": 2,
+          "name": "賴清德",
+          "running_mate": "蕭美琴",
+          "party": "民主進步黨",
+          "votes": 91798,
+          "pct": 28.81,
+          "elected": null
+        },
+        {
+          "no": 3,
+          "name": "侯友宜",
+          "running_mate": "趙少康",
+          "party": "中國國民黨",
+          "votes": 131230,
+          "pct": 41.18,
+          "elected": null
+        }
+      ]
+    },
+    {
+      "race_id": "2024-president/president/10_007",
+      "office": "president",
+      "level": "county",
+      "area_code": "10_007",
+      "area_name": "彰化縣",
+      "valid_votes": 741368,
+      "invalid_votes": 6389,
+      "ballots_cast": 747757,
+      "electors": 1032636,
+      "turnout_pct": 72.41,
+      "options": [
+        {
+          "no": 1,
+          "name": "柯文哲",
+          "running_mate": "吳欣盈",
+          "party": "台灣民眾黨",
+          "votes": 214714,
+          "pct": 28.96,
+          "elected": null
+        },
+        {
+          "no": 2,
+          "name": "賴清德",
+          "running_mate": "蕭美琴",
+          "party": "民主進步黨",
+          "votes": 282514,
+          "pct": 38.11,
+          "elected": null
+        },
+        {
+          "no": 3,
+          "name": "侯友宜",
+          "running_mate": "趙少康",
+          "party": "中國國民黨",
+          "votes": 244140,
+          "pct": 32.93,
+          "elected": null
+        }
+      ]
+    },
+    {
+      "race_id": "2024-president/president/10_008",
+      "office": "president",
+      "level": "county",
+      "area_code": "10_008",
+      "area_name": "南投縣",
+      "valid_votes": 287296,
+      "invalid_votes": 2218,
+      "ballots_cast": 289514,
+      "electors": 407149,
+      "turnout_pct": 71.11,
+      "options": [
+        {
+          "no": 1,
+          "name": "柯文哲",
+          "running_mate": "吳欣盈",
+          "party": "台灣民眾黨",
+          "votes": 74854,
+          "pct": 26.05,
+          "elected": null
+        },
+        {
+          "no": 2,
+          "name": "賴清德",
+          "running_mate": "蕭美琴",
+          "party": "民主進步黨",
+          "votes": 103279,
+          "pct": 35.95,
+          "elected": null
+        },
+        {
+          "no": 3,
+          "name": "侯友宜",
+          "running_mate": "趙少康",
+          "party": "中國國民黨",
+          "votes": 109163,
+          "pct": 38,
+          "elected": null
+        }
+      ]
+    },
+    {
+      "race_id": "2024-president/president/10_009",
+      "office": "president",
+      "level": "county",
+      "area_code": "10_009",
+      "area_name": "雲林縣",
+      "valid_votes": 380619,
+      "invalid_votes": 3418,
+      "ballots_cast": 384037,
+      "electors": 560296,
+      "turnout_pct": 68.54,
+      "options": [
+        {
+          "no": 1,
+          "name": "柯文哲",
+          "running_mate": "吳欣盈",
+          "party": "台灣民眾黨",
+          "votes": 99470,
+          "pct": 26.13,
+          "elected": null
+        },
+        {
+          "no": 2,
+          "name": "賴清德",
+          "running_mate": "蕭美琴",
+          "party": "民主進步黨",
+          "votes": 169516,
+          "pct": 44.54,
+          "elected": null
+        },
+        {
+          "no": 3,
+          "name": "侯友宜",
+          "running_mate": "趙少康",
+          "party": "中國國民黨",
+          "votes": 111633,
+          "pct": 29.33,
+          "elected": null
+        }
+      ]
+    },
+    {
+      "race_id": "2024-president/president/10_010",
+      "office": "president",
+      "level": "county",
+      "area_code": "10_010",
+      "area_name": "嘉義縣",
+      "valid_votes": 292534,
+      "invalid_votes": 2464,
+      "ballots_cast": 294998,
+      "electors": 423199,
+      "turnout_pct": 69.71,
+      "options": [
+        {
+          "no": 1,
+          "name": "柯文哲",
+          "running_mate": "吳欣盈",
+          "party": "台灣民眾黨",
+          "votes": 67382,
+          "pct": 23.03,
+          "elected": null
+        },
+        {
+          "no": 2,
+          "name": "賴清德",
+          "running_mate": "蕭美琴",
+          "party": "民主進步黨",
+          "votes": 139510,
+          "pct": 47.69,
+          "elected": null
+        },
+        {
+          "no": 3,
+          "name": "侯友宜",
+          "running_mate": "趙少康",
+          "party": "中國國民黨",
+          "votes": 85642,
+          "pct": 29.28,
+          "elected": null
+        }
+      ]
+    },
+    {
+      "race_id": "2024-president/president/10_013",
+      "office": "president",
+      "level": "county",
+      "area_code": "10_013",
+      "area_name": "屏東縣",
+      "valid_votes": 475927,
+      "invalid_votes": 3452,
+      "ballots_cast": 479379,
+      "electors": 681631,
+      "turnout_pct": 70.33,
+      "options": [
+        {
+          "no": 1,
+          "name": "柯文哲",
+          "running_mate": "吳欣盈",
+          "party": "台灣民眾黨",
+          "votes": 103028,
+          "pct": 21.65,
+          "elected": null
+        },
+        {
+          "no": 2,
+          "name": "賴清德",
+          "running_mate": "蕭美琴",
+          "party": "民主進步黨",
+          "votes": 226110,
+          "pct": 47.51,
+          "elected": null
+        },
+        {
+          "no": 3,
+          "name": "侯友宜",
+          "running_mate": "趙少康",
+          "party": "中國國民黨",
+          "votes": 146789,
+          "pct": 30.84,
+          "elected": null
+        }
+      ]
+    },
+    {
+      "race_id": "2024-president/president/10_014",
+      "office": "president",
+      "level": "county",
+      "area_code": "10_014",
+      "area_name": "臺東縣",
+      "valid_votes": 109941,
+      "invalid_votes": 895,
+      "ballots_cast": 110836,
+      "electors": 178728,
+      "turnout_pct": 62.01,
+      "options": [
+        {
+          "no": 1,
+          "name": "柯文哲",
+          "running_mate": "吳欣盈",
+          "party": "台灣民眾黨",
+          "votes": 25590,
+          "pct": 23.28,
+          "elected": null
+        },
+        {
+          "no": 2,
+          "name": "賴清德",
+          "running_mate": "蕭美琴",
+          "party": "民主進步黨",
+          "votes": 30131,
+          "pct": 27.41,
+          "elected": null
+        },
+        {
+          "no": 3,
+          "name": "侯友宜",
+          "running_mate": "趙少康",
+          "party": "中國國民黨",
+          "votes": 54220,
+          "pct": 49.32,
+          "elected": null
+        }
+      ]
+    },
+    {
+      "race_id": "2024-president/president/10_015",
+      "office": "president",
+      "level": "county",
+      "area_code": "10_015",
+      "area_name": "花蓮縣",
+      "valid_votes": 174157,
+      "invalid_votes": 1861,
+      "ballots_cast": 176018,
+      "electors": 267824,
+      "turnout_pct": 65.72,
+      "options": [
+        {
+          "no": 1,
+          "name": "柯文哲",
+          "running_mate": "吳欣盈",
+          "party": "台灣民眾黨",
+          "votes": 43047,
+          "pct": 24.72,
+          "elected": null
+        },
+        {
+          "no": 2,
+          "name": "賴清德",
+          "running_mate": "蕭美琴",
+          "party": "民主進步黨",
+          "votes": 43157,
+          "pct": 24.78,
+          "elected": null
+        },
+        {
+          "no": 3,
+          "name": "侯友宜",
+          "running_mate": "趙少康",
+          "party": "中國國民黨",
+          "votes": 87953,
+          "pct": 50.5,
+          "elected": null
+        }
+      ]
+    },
+    {
+      "race_id": "2024-president/president/10_016",
+      "office": "president",
+      "level": "county",
+      "area_code": "10_016",
+      "area_name": "澎湖縣",
+      "valid_votes": 49277,
+      "invalid_votes": 473,
+      "ballots_cast": 49750,
+      "electors": 92642,
+      "turnout_pct": 53.7,
+      "options": [
+        {
+          "no": 1,
+          "name": "柯文哲",
+          "running_mate": "吳欣盈",
+          "party": "台灣民眾黨",
+          "votes": 12202,
+          "pct": 24.76,
+          "elected": null
+        },
+        {
+          "no": 2,
+          "name": "賴清德",
+          "running_mate": "蕭美琴",
+          "party": "民主進步黨",
+          "votes": 19023,
+          "pct": 38.6,
+          "elected": null
+        },
+        {
+          "no": 3,
+          "name": "侯友宜",
+          "running_mate": "趙少康",
+          "party": "中國國民黨",
+          "votes": 18052,
+          "pct": 36.63,
+          "elected": null
+        }
+      ]
+    },
+    {
+      "race_id": "2024-president/president/09_007",
+      "office": "president",
+      "level": "county",
+      "area_code": "09_007",
+      "area_name": "連江縣",
+      "valid_votes": 6159,
+      "invalid_votes": 42,
+      "ballots_cast": 6201,
+      "electors": 12083,
+      "turnout_pct": 51.32,
+      "options": [
+        {
+          "no": 1,
+          "name": "柯文哲",
+          "running_mate": "吳欣盈",
+          "party": "台灣民眾黨",
+          "votes": 1651,
+          "pct": 26.81,
+          "elected": null
+        },
+        {
+          "no": 2,
+          "name": "賴清德",
+          "running_mate": "蕭美琴",
+          "party": "民主進步黨",
+          "votes": 648,
+          "pct": 10.52,
+          "elected": null
+        },
+        {
+          "no": 3,
+          "name": "侯友宜",
+          "running_mate": "趙少康",
+          "party": "中國國民黨",
+          "votes": 3860,
+          "pct": 62.67,
+          "elected": null
+        }
+      ]
+    },
+    {
+      "race_id": "2024-president/president/09_020",
+      "office": "president",
+      "level": "county",
+      "area_code": "09_020",
+      "area_name": "金門縣",
+      "valid_votes": 45612,
+      "invalid_votes": 369,
+      "ballots_cast": 45981,
+      "electors": 126422,
+      "turnout_pct": 36.37,
+      "options": [
+        {
+          "no": 1,
+          "name": "柯文哲",
+          "running_mate": "吳欣盈",
+          "party": "台灣民眾黨",
+          "votes": 13038,
+          "pct": 28.58,
+          "elected": null
+        },
+        {
+          "no": 2,
+          "name": "賴清德",
+          "running_mate": "蕭美琴",
+          "party": "民主進步黨",
+          "votes": 4569,
+          "pct": 10.02,
+          "elected": null
+        },
+        {
+          "no": 3,
+          "name": "侯友宜",
+          "running_mate": "趙少康",
+          "party": "中國國民黨",
+          "votes": 28005,
+          "pct": 61.4,
+          "elected": null
+        }
+      ]
+    },
+    {
+      "race_id": "2024-president/president/10_017",
+      "office": "president",
+      "level": "county",
+      "area_code": "10_017",
+      "area_name": "基隆市",
+      "valid_votes": 218781,
+      "invalid_votes": 1584,
+      "ballots_cast": 220365,
+      "electors": 312207,
+      "turnout_pct": 70.58,
+      "options": [
+        {
+          "no": 1,
+          "name": "柯文哲",
+          "running_mate": "吳欣盈",
+          "party": "台灣民眾黨",
+          "votes": 58195,
+          "pct": 26.6,
+          "elected": null
+        },
+        {
+          "no": 2,
+          "name": "賴清德",
+          "running_mate": "蕭美琴",
+          "party": "民主進步黨",
+          "votes": 76079,
+          "pct": 34.77,
+          "elected": null
+        },
+        {
+          "no": 3,
+          "name": "侯友宜",
+          "running_mate": "趙少康",
+          "party": "中國國民黨",
+          "votes": 84507,
+          "pct": 38.63,
+          "elected": null
+        }
+      ]
+    },
+    {
+      "race_id": "2024-president/president/10_018",
+      "office": "president",
+      "level": "county",
+      "area_code": "10_018",
+      "area_name": "新竹市",
+      "valid_votes": 266389,
+      "invalid_votes": 1738,
+      "ballots_cast": 268127,
+      "electors": 359465,
+      "turnout_pct": 74.59,
+      "options": [
+        {
+          "no": 1,
+          "name": "柯文哲",
+          "running_mate": "吳欣盈",
+          "party": "台灣民眾黨",
+          "votes": 91384,
+          "pct": 34.3,
+          "elected": null
+        },
+        {
+          "no": 2,
+          "name": "賴清德",
+          "running_mate": "蕭美琴",
+          "party": "民主進步黨",
+          "votes": 92679,
+          "pct": 34.79,
+          "elected": null
+        },
+        {
+          "no": 3,
+          "name": "侯友宜",
+          "running_mate": "趙少康",
+          "party": "中國國民黨",
+          "votes": 82326,
+          "pct": 30.9,
+          "elected": null
+        }
+      ]
+    },
+    {
+      "race_id": "2024-president/president/10_020",
+      "office": "president",
+      "level": "county",
+      "area_code": "10_020",
+      "area_name": "嘉義市",
+      "valid_votes": 157656,
+      "invalid_votes": 939,
+      "ballots_cast": 158595,
+      "electors": 217549,
+      "turnout_pct": 72.9,
+      "options": [
+        {
+          "no": 1,
+          "name": "柯文哲",
+          "running_mate": "吳欣盈",
+          "party": "台灣民眾黨",
+          "votes": 39950,
+          "pct": 25.34,
+          "elected": null
+        },
+        {
+          "no": 2,
+          "name": "賴清德",
+          "running_mate": "蕭美琴",
+          "party": "民主進步黨",
+          "votes": 68199,
+          "pct": 43.26,
+          "elected": null
+        },
+        {
+          "no": 3,
+          "name": "侯友宜",
+          "running_mate": "趙少康",
+          "party": "中國國民黨",
+          "votes": 49507,
+          "pct": 31.4,
+          "elected": null
+        }
+      ]
+    }
+  ]
+}
