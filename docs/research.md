@@ -21,6 +21,31 @@ Hence: MAX over the reliable cohort (CEC, CNA, PTS, CTS) as a floor; MEAN with s
 | 中央社 `cna.com.tw/project/20221126-election-live/` | `api/city.json` (relays CEC) | Good schema reference (`candNo`, `tickets`, `process`, `time`). |
 | Wayback Machine | ~7 mid-count captures of 自由時報 2022 (18:32–20:28 Taipei) | Only real mid-count multi-source evidence found so far. |
 
+## Rebuilding other outlets' counts over the night (2026-11-05)
+
+Goal: for 2022 and 2024, each outlet's reported count over time, to set against the CEC's own rebuilt count (`data/nights/`) and the finals.
+
+### Web pages and APIs: sparse at best
+- Outlet APIs that are still online (公視 `getVoteTv`, 中央社 `city.json`, 自由時報 pages) now return only end-of-night values.
+- Wayback Machine: 自由時報 2022 has ~7 mid-count captures. 聯合報 `udn.com/vote2022/` has **549 captures across 91 distinct minutes (16:02–22:57 Taipei)**. Not yet examined: Wayback throttled our queries (HTTP 429/503) before we could list them. Worth a slow, careful follow-up.
+- Other outlets' 2022/2024 pages: CDX queries didn't complete under the throttling, so coverage is unknown, not zero.
+
+### YouTube recordings: the most promising source
+Full-length recordings of election-night coverage are still up, each with an exact stream start time (`liveBroadcastDetails.startTimestamp`). Most channels also show a clock on screen.
+
+| Election | Recordings found (hours) |
+|---|---|
+| 2024 | CEC 6.7, 華視 6.2, 公視 7.9, TVBS 7.6, 三立 11.9, 民視 8.1, 聯合 5.7, 寰宇 6.1 (東森's link is dead) |
+| 2022 | CEC 8, 華視 4, 公視 6.5, 東森 8, 聯合 5.9, 台視 7.1, 三立 11.9, TVBS 7, 年代 3, 壹電視 3.9, 民視 1.6 |
+
+Neither the workspace nor the Mac's shell can reach YouTube, and video won't play in the automated Chrome tab (tab reported as hidden). What *does* work is YouTube's **storyboard**, the preview-frame sprite sheets, fetched in the browser:
+
+- **2024 recordings: 320×180 frames every 10 s.** Main tallies are readable. Example, 三立 at on-screen clock 17:59:44: 賴清德 3,015,260 / 侯友宜 2,654,454 / 柯文哲 2,210,099, with on-screen percentages 38.3 / 33.7 / 28.0 matching those numbers. (The CEC's own count at 18:00 had 賴 at ~418k.)
+- **2022 recordings: only 160×90 frames.** Only full-screen race cards are readable (e.g. TVBS around 19:00: 桃園 張善政 425,357 / 鄭運鵬 318,115). Sidebar tallies are not.
+- One 三立 2024 sprite sheet mixed in frames from unrelated programming, so each frame's time should come from the **on-screen clock**, not from the frame's position in the video.
+
+Implication: 2024 can probably get a dense per-station series for the presidential race. 2022 would get scattered points, mostly for whichever races got full-screen cards.
+
 ## Election day 2026
 
 Saturday 2026-11-28, voting 08:00–16:00. TV stations report from ~16:00; CEC data typically starts reaching media ~17:00–17:30.
