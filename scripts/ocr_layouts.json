@@ -408,6 +408,46 @@
         "no_2_lai": 699237,
         "no_3_hou": 588734,
         "no_1_ko": 474191
+      },
+      "20240113T083503": {
+        "no_3_hou": 55151,
+        "no_1_ko": 51508,
+        "no_2_lai": 71064
+      },
+      "20240113T084203": {
+        "no_2_lai": 116388,
+        "no_3_hou": 101337,
+        "no_1_ko": 85265
+      },
+      "20240113T084503": {
+        "no_2_lai": 175934,
+        "no_3_hou": 155192,
+        "no_1_ko": 138260
+      },
+      "20240113T090903": {
+        "no_2_lai": 373429,
+        "no_3_hou": 324219,
+        "no_1_ko": 277017
+      },
+      "20240113T094503": {
+        "no_2_lai": 628953,
+        "no_3_hou": 528221,
+        "no_1_ko": 426691
+      },
+      "20240113T094603": {
+        "no_2_lai": 636180,
+        "no_3_hou": 534731,
+        "no_1_ko": 431362
+      },
+      "20240113T095403": {
+        "no_2_lai": 656505,
+        "no_3_hou": 552075,
+        "no_1_ko": 446457
+      },
+      "20240113T095503": {
+        "no_2_lai": 657082,
+        "no_3_hou": 552520,
+        "no_1_ko": 446877
       }
     },
     "allow_no_head": true,
@@ -428,7 +468,9 @@
     "color_probe": [
       -8,
       -2
-    ]
+    ],
+    "head_ink_min": 0.18,
+    "min_margin": 0.1
   },
   "2024-PTS-cec": {
     "note": "公視 2024 until ~18:15: right column \"中選會\" = CEC count as relayed by PTS.",
@@ -501,6 +543,46 @@
         "no_2_lai": 825881,
         "no_3_hou": 640998,
         "no_1_ko": 454044
+      },
+      "20240113T083503": {
+        "no_2_lai": 12,
+        "no_3_hou": 12,
+        "no_1_ko": 7
+      },
+      "20240113T084203": {
+        "no_2_lai": 93,
+        "no_3_hou": 46,
+        "no_1_ko": 29
+      },
+      "20240113T084503": {
+        "no_2_lai": 257,
+        "no_3_hou": 225,
+        "no_1_ko": 109
+      },
+      "20240113T090903": {
+        "no_2_lai": 5116,
+        "no_3_hou": 4856,
+        "no_1_ko": 2672
+      },
+      "20240113T094503": {
+        "no_2_lai": 158677,
+        "no_3_hou": 128528,
+        "no_1_ko": 81382
+      },
+      "20240113T094603": {
+        "no_2_lai": 169397,
+        "no_3_hou": 137728,
+        "no_1_ko": 87309
+      },
+      "20240113T095403": {
+        "no_2_lai": 267243,
+        "no_3_hou": 211618,
+        "no_1_ko": 138475
+      },
+      "20240113T095503": {
+        "no_2_lai": 296077,
+        "no_3_hou": 235287,
+        "no_1_ko": 155352
       }
     },
     "allow_no_head": true,
@@ -522,7 +604,8 @@
       -8,
       -2
     ],
-    "strip_borders": true
+    "strip_borders": true,
+    "head_ink_min": 0.18
   },
   "2024-SET-lead-left": {
     "note": "三立 2024 from ~18:10: leader panel (left, green) and two boxes on the right; candidate by box colour. Leader box only.",
@@ -591,9 +674,31 @@
       },
       "20240113T115503": {
         "no_2_lai": 5104640
+      },
+      "20240113T113703": {
+        "no_2_lai": 4660312
+      },
+      "20240113T113803": {
+        "no_2_lai": 4690300
+      },
+      "20240113T113903": {
+        "no_2_lai": 4724219
+      },
+      "20240113T105603": {
+        "no_2_lai": 3713877
+      },
+      "20240113T105703": {
+        "no_2_lai": 3713897
+      },
+      "20240113T105803": {
+        "no_2_lai": 3713897
+      },
+      "20240113T105903": {
+        "no_2_lai": 3713917
       }
     },
-    "strip_borders": true
+    "strip_borders": true,
+    "min_margin": 0.1
   },
   "2024-SET-lead-right": {
     "note": "三立 2024 from ~18:10: leader panel (left, green) and two boxes on the right; candidate by box colour. Right-hand boxes only.",
@@ -688,9 +793,38 @@
       },
       "20240113T103503": {
         "no_1_ko": 2239126
+      },
+      "20240113T113703": {
+        "no_3_hou": 3799258,
+        "no_1_ko": 2968918
+      },
+      "20240113T113803": {
+        "no_3_hou": 3827550,
+        "no_1_ko": 2991238
+      },
+      "20240113T113903": {
+        "no_3_hou": 3858475,
+        "no_1_ko": 3016366
+      },
+      "20240113T105603": {
+        "no_3_hou": 3008137,
+        "no_1_ko": 2388695
+      },
+      "20240113T105703": {
+        "no_3_hou": 3008197,
+        "no_1_ko": 2388755
+      },
+      "20240113T105803": {
+        "no_3_hou": 3008197,
+        "no_1_ko": 2388755
+      },
+      "20240113T105903": {
+        "no_3_hou": 3008217,
+        "no_1_ko": 2404122
       }
     },
-    "strip_borders": true
+    "strip_borders": true,
+    "min_margin": 0.1
   },
   "2024-PTS-lead-left": {
     "note": "公視 2024 from ~18:30: 賴 large panel left, 侯 top right, 柯 bottom right; dark digits on white. Leader box only.",
@@ -698,14 +832,14 @@
       "no_2_lai"
     ],
     "light_text": false,
-    "head_pitch": 7.5,
-    "tail_pitch": 6.75,
-    "wan_gap": 6.0,
+    "head_pitch": 7.2,
+    "tail_pitch": 7.5,
+    "wan_gap": 4.0,
     "boxes": {
       "no_2_lai": [
-        15,
+        12,
         73,
-        71,
+        72,
         89
       ]
     },
@@ -779,15 +913,15 @@
     "wan_gap": 3.0,
     "boxes": {
       "no_3_hou": [
-        81,
+        78,
         32,
-        130,
+        131,
         45
       ],
       "no_1_ko": [
-        81,
+        78,
         73,
-        130,
+        131,
         86
       ]
     },

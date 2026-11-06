@@ -91,7 +91,7 @@ def segment(b, lay):
         if x0 < -0.3 * hp:
             break
         slot = band[:, max(0, x0):x1]
-        if slot.size == 0 or (slot > 0).mean() < 0.08:
+        if slot.size == 0 or (slot > 0).mean() < lay.get("head_ink_min", 0.08):
             break
         head.insert(0, slot)
     if not head:
