@@ -124,7 +124,19 @@ def night_2022():
     }
 
 
+STANDALONE_HEAD = """<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
+"""
+
+
 def main():
+    """site/index.html is the page body (the artifact viewer adds its own <head>).
+    With --standalone OUT, also write a complete HTML document (for GitHub Pages)."""
+    import sys
     data = {"nights": [night_2024(), night_2022()]}
     tpl = (ROOT / "site" / "template.html").read_text()
     marker = "/*__DATA__*/null"
@@ -132,6 +144,13 @@ def main():
     out = tpl.replace(marker, json.dumps(data, ensure_ascii=False, separators=(",", ":")))
     (ROOT / "site" / "index.html").write_text(out)
     print(f"site/index.html: {len(out) / 1024:.0f} KB")
+    if "--standalone" in sys.argv:
+        dest = Path(sys.argv[sys.argv.index("--standalone") + 1])
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        # the template starts with <title>, <meta> and <link>/<style> tags: they belong in <head>
+        split = out.index('<div class="wrap">')
+        dest.write_text(STANDALONE_HEAD + out[:split] + "</head>\n<body>\n" + out[split:] + "\n</body>\n</html>\n")
+        print(f"{dest}: standalone document")
 
 
 if __name__ == "__main__":
