@@ -532,7 +532,7 @@
     "light_text": true,
     "head_pitch": 11.5,
     "tail_pitch": 6.0,
-    "wan_gap": 4.0,
+    "wan_gap": 5.0,
     "boxes": {
       "left": [
         24,
