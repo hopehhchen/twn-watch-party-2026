@@ -1,0 +1,51 @@
+{
+  "election": "2022-local-mayors",
+  "source": {
+    "kind": "Wayback Machine captures of Liberty Times (自由時報) live comparison pages, election.ltn.com.tw/2022/realtime/<City>",
+    "note": "Each capture shows one race with columns 東森 / 民視 / 台視 / 中選會 as the page displayed them at capture time. A 0 in a TV column for a minor candidate means that channel did not report the candidate; it is stored as null. Rows are matched by ballot number (號次).",
+    "columns": ["ebc", "ftv", "ttv", "cec_as_relayed"],
+    "column_labels": {"ebc": "東森", "ftv": "民視", "ttv": "台視", "cec_as_relayed": "中選會 (as shown by 自由時報)"}
+  },
+  "captures": [
+    {
+      "area_code": "10_013",
+      "area_name": "屏東縣",
+      "captured_utc": "2022-11-26T12:25:22Z",
+      "taipei": "20:25:22",
+      "url": "https://web.archive.org/web/20221126122522/https://election.ltn.com.tw/2022/realtime/Pingtung",
+      "rows": {
+        "3": {"name": "周春米", "ebc": 164394, "ftv": 200157, "ttv": 173189, "cec_as_relayed": 169933},
+        "2": {"name": "蘇清泉", "ebc": 157009, "ftv": 191002, "ttv": 164902, "cec_as_relayed": 162553},
+        "1": {"name": "詹智鈞", "ebc": null, "ftv": 1089, "ttv": null, "cec_as_relayed": 14944}
+      }
+    },
+    {
+      "area_code": "10_018",
+      "area_name": "新竹市",
+      "captured_utc": "2022-11-26T12:18:26Z",
+      "taipei": "20:18:26",
+      "url": "https://web.archive.org/web/20221126121826/https://election.ltn.com.tw/2022/realtime/HsinchuCity",
+      "rows": {
+        "6": {"name": "高虹安", "ebc": 74797, "ftv": 57374, "ttv": 74797, "cec_as_relayed": 76514},
+        "5": {"name": "沈慧虹", "ebc": 60813, "ftv": 43954, "ttv": 60813, "cec_as_relayed": 62374},
+        "3": {"name": "林耕仁", "ebc": 31133, "ftv": null, "ttv": 11170, "cec_as_relayed": 31855},
+        "1": {"name": "黃源甫", "ebc": null, "ftv": null, "ttv": null, "cec_as_relayed": 883}
+      },
+      "note": "Candidates 2 (龔偉綸) and 4 (李驥羣) were not captured in the extracted rows."
+    },
+    {
+      "area_code": "67_000",
+      "area_name": "臺南市",
+      "captured_utc": "2022-11-26T12:26:22Z",
+      "taipei": "20:26:22",
+      "url": "https://web.archive.org/web/20221126122622/https://election.ltn.com.tw/2022/realtime/Tainan",
+      "rows": {
+        "5": {"name": "黃偉哲", "ebc": 433112, "ftv": 425179, "ttv": 433112, "cec_as_relayed": 433112},
+        "3": {"name": "謝龍介", "ebc": 387197, "ftv": 379209, "ttv": 387197, "cec_as_relayed": 387197},
+        "1": {"name": "許忠信", "ebc": null, "ftv": null, "ttv": null, "cec_as_relayed": 38627},
+        "2": {"name": "林義豐", "ebc": null, "ftv": null, "ttv": null, "cec_as_relayed": 24577},
+        "4": {"name": "吳炳輝", "ebc": null, "ftv": null, "ttv": null, "cec_as_relayed": 3951}
+      }
+    }
+  ]
+}
