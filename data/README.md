@@ -64,6 +64,17 @@ Checks:
 
 Rebuild: `python3 scripts/build_cec_night.py` (needs `xlrd`, `openpyxl`). Raw files and their SHA-256 values (matching what the CEC lists for each attachment) are in `raw/cec-stations/`.
 
+### Broadcast counts: `<election>.<outlet>.json`
+
+What each TV channel showed on screen during the night, read from YouTube's storyboard frames of its election-night stream (320×180, one frame per minute, 16:00–20:00 Taipei time):
+
+- `series`: `[HH:MM:SS, votes for each option in "options" order…]`, with `null` where that minute's frame didn't show the tally (cutaways, animations).
+- `checks.removed_outliers`: isolated readings that broke the trend on both sides, treated as misreads and removed.
+- `checks.decreases`: any drop that survived cleaning (a reported count going down).
+- `checks.above_final`: any reading above the certified final.
+
+How the numbers are read: `scripts/ocr_storyboard.py` matches digits against templates built for each channel's font from hand-read frames. The layouts, crop boxes and hand-read labels are in `scripts/ocr_layouts.json`. Accuracy is measured with leave-one-out over those labels (train without a frame, then read it). A reading is used only when every digit clears a confidence margin, so unclear frames are skipped rather than guessed. The frames themselves are not in the repo.
+
 ## `raw/cec-finals.tsv` — the snapshot
 
 A compact TSV taken from `db.cec.gov.tw/static/elections/data/{tickets,profiles}/…`, with its SHA-256 in `cec-finals.tsv.sha256`. Regenerate with:
