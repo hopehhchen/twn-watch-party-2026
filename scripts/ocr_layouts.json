@@ -602,9 +602,9 @@
       "no_1_ko"
     ],
     "light_text": true,
-    "head_pitch": 7.0,
-    "tail_pitch": 6.25,
-    "wan_gap": 9.0,
+    "head_pitch": 8.5,
+    "tail_pitch": 6.0,
+    "wan_gap": 6.0,
     "boxes": {
       "right_top": [
         96,
