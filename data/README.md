@@ -73,6 +73,20 @@ What each TV channel showed on screen during the night, read from YouTube's stor
 - `checks.decreases`: any drop that survived cleaning (a reported count going down).
 - `checks.above_final`: any reading above the certified final.
 
+| File | Channel | Coverage (Taipei time) | Notes |
+|---|---|---|---|
+| `2024-president.cts.json` | 華視 | 16:00–20:00 | one layout all night |
+| `2024-president.tvbs.json` | TVBS | 16:00–20:00 | boxes reorder by rank; matched to candidates by colour |
+| `2024-president.set.json` | 三立 | 16:00–20:00 | two layouts (bars until ~17:50, leader panel after) |
+| `2024-president.pts-own.json` | 公視 own count (公廣布點) | 16:30–18:20 | shown beside a CEC column until ~18:20 |
+
+**公視 after ~18:20 is not published.** Its later panel relays the CEC count: every readable 侯 value matched the CEC rebuild in the same minute. That makes it redundant with `*.cec.json`. Its large 賴 box also reads poorly (leave-one-out 6 of 18).
+
+**Verification.**
+- Leave-one-out on the hand-read labels gives 0 wrong readings for every published layout.
+- A random sample of 20 published minutes (52 numbers, five per channel) was checked by eye: **0 errors**. With 0 of 52 wrong, the error rate is plausibly under ~6%, not proven zero.
+- Every reading flagged as a drop or as above the final was checked by eye. In this data each one was a misread (6↔8, 9↔0/8, 2↔7), so none remains. **A broadcast count is only called out as above the final after a person has looked at the frame.**
+
 How the numbers are read: `scripts/ocr_storyboard.py` matches digits against templates built for each channel's font from hand-read frames. The layouts, crop boxes and hand-read labels are in `scripts/ocr_layouts.json`. Accuracy is measured with leave-one-out over those labels (train without a frame, then read it). A reading is used only when every digit clears a confidence margin, so unclear frames are skipped rather than guessed. The frames themselves are not in the repo.
 
 ## `raw/cec-finals.tsv` — the snapshot

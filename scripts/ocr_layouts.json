@@ -833,7 +833,7 @@
     ],
     "light_text": false,
     "head_pitch": 7.2,
-    "tail_pitch": 7.5,
+    "tail_pitch": 7.25,
     "wan_gap": 4.0,
     "boxes": {
       "no_2_lai": [
@@ -899,7 +899,8 @@
         "no_2_lai": 5104640
       }
     },
-    "strip_borders": true
+    "strip_borders": true,
+    "min_margin": 0.1
   },
   "2024-PTS-lead-right": {
     "note": "公視 2024 from ~18:30: 賴 large panel left, 侯 top right, 柯 bottom right; dark digits on white. Right-hand boxes only.",
@@ -908,9 +909,9 @@
       "no_1_ko"
     ],
     "light_text": false,
-    "head_pitch": 7.0,
-    "tail_pitch": 6.25,
-    "wan_gap": 3.0,
+    "head_pitch": 6.5,
+    "tail_pitch": 6.5,
+    "wan_gap": 4.0,
     "boxes": {
       "no_3_hou": [
         78,

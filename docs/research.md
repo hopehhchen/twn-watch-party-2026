@@ -46,6 +46,27 @@ Neither the workspace nor the Mac's shell can reach YouTube, and video won't pla
 
 Implication: 2024 can probably get a dense per-station series for the presidential race. 2022 would get scattered points, mostly for whichever races got full-screen cards.
 
+### What the 2024 broadcasts show (from `data/nights/`)
+
+賴清德 (final 5,586,019), as shown on screen versus the CEC's own count:
+
+| Taipei | CEC | 公視 own | 華視 | 三立 | TVBS |
+|---|---|---|---|---|---|
+| 17:00 | 1,681 | 181,911 | 316,144 | 2,153,603 | 2,138,552 |
+| 17:30 | 52,630 | 535,582 | 1,424,191 | 2,847,673 | 2,848,972 |
+| 18:00 | 417,780 | 664,870 | 2,417,079 | 3,004,720 | 3,014,518 |
+| 18:30 | 1,492,076 | (CEC relay) | 3,164,015 | 3,183,475 | 3,070,948 |
+| 19:00 | 3,094,968 | | 3,688,341 | 3,713,897 | 3,676,973 |
+| 19:30 | 4,463,222 | | 4,427,956 | 4,427,956 | 4,427,956 |
+
+- Commercial channels were far ahead of the CEC early: at 17:00 三立 and TVBS each showed ~2.1M for 賴, when the CEC had counted 38 polling stations.
+- Their own counts then flattened around 3.0–3.7M (18:00–19:00) while the CEC caught up. 三立 added only tens of votes per minute from about 18:30 to 19:00.
+- From about **19:25–19:30, 華視, 三立 and TVBS show identical numbers**, about a minute behind the CEC rebuild: they had switched to relaying the CEC feed.
+- 公視's own count was the slowest. The CEC overtook it around 18:10, and 公視 then switched its panel to the CEC relay.
+- **No channel showed any candidate above the final at any point in 16:00–20:00.** 2024 had no over-reporting to call out.
+
+Implication for the site: the "reliable MAX" floor is mainly useful from 16:00 to ~18:00. After that the CEC is ahead of the honest counters, and by ~19:30 everyone relays the CEC anyway. The early field numbers are where the spread, and the risk, is.
+
 ## Election day 2026
 
 Saturday 2026-11-28, voting 08:00–16:00. TV stations report from ~16:00; CEC data typically starts reaching media ~17:00–17:30.
