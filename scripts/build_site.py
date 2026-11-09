@@ -141,6 +141,12 @@ def needle_data():
     return {"nights": out, "map": json.loads((ROOT / "data" / "map" / "taiwan-counties.json").read_text())}
 
 
+def council_meta():
+    """The council page loads data/council/<year>.json at runtime (too big to embed); --standalone copies them."""
+    return {"nights": [{"year": y, "src": f"council/{y}.json"} for y in (2018, 2022)],
+            "map": json.loads((ROOT / "data" / "map" / "taiwan-counties.json").read_text())}
+
+
 def render(template, data, name, standalone_dir):
     tpl = (ROOT / "site" / template).read_text()
     marker = "/*__DATA__*/null"
@@ -158,12 +164,19 @@ def render(template, data, name, standalone_dir):
 
 
 def main():
-    """site/index.html and site/needle.html are page bodies (the artifact viewer adds its own <head>).
+    """site/index.html, needle.html and council.html are page bodies (the artifact viewer adds its own <head>).
     With --standalone OUT, also write complete HTML documents next to OUT (for GitHub Pages)."""
     import sys
     sdir = Path(sys.argv[sys.argv.index("--standalone") + 1]).parent if "--standalone" in sys.argv else None
     render("template.html", {"nights": [night_2024(), night_2022()]}, "index.html", sdir)
     render("needle-template.html", needle_data(), "needle.html", sdir)
+    render("council-template.html", council_meta(), "council.html", sdir)
+    if sdir:
+        import shutil
+        (sdir / "council").mkdir(parents=True, exist_ok=True)
+        for f in (ROOT / "data" / "council").glob("*.json"):
+            shutil.copy(f, sdir / "council" / f.name)
+        print(f"{sdir / 'council'}: council data")
 
 
 if __name__ == "__main__":

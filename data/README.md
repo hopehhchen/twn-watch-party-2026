@@ -139,4 +139,16 @@ Mayoral (2014, 2018, 2022) and presidential (2016, 2020, 2024) per-station sheet
 - `raw/cec-stations/<year>-<municipal|county>-council-stations.zip`: per-polling-station votes for every council candidate, one sheet per electoral district (選舉區), including the indigenous districts. Same layout as the mayoral sheets; report times are the same station-time files as the mayoral races.
 - `raw/cec-council-tickets.tsv` (+ `.sha256`): every candidate's final votes with the CEC's elected flag, from the database's district-level JSON. Columns: election, subject (T1 直轄市議員 / T2 縣市議員), seat_type (T1 區域, T2 平地原住民, T3 山地原住民), county_code, district_code, district, cand_no, name, party, sex (1 male, 2 female), votes, victor. victor: `*` elected, `!` elected through the women's quota, `-` displaced by the quota, blank not elected. 912 seats in 2018 (908 `*` + 4 `!`), 910 in 2022 (906 + 4).
 
-Not yet used by the site.
+### `council/<year>.json` — the council count over the night
+
+Built by `scripts/build_council_data.py` from the two files above and the station report times. Seat counts and allocation come from `scripts/council.py`. Each electoral district has:
+- its candidates and seats, plus the seats reserved for women;
+- `pts`: `[t_min_after_16, stations_in, electors_left, votes per candidate…]`, cumulative, one row per minute in which one of its stations reported.
+
+Checks (run on every build):
+- Each candidate's station votes add up to the CEC's final.
+- The seat allocation on the finals, including the women's quota (地方制度法 §33: one reserved seat per 4 seats), reproduces the CEC's elected list in every district: 214 districts and 912 seats in 2018, 215 and 910 in 2022.
+
+Five ballot numbers (2018 屏東縣 ×3, 2022 新北市 ×2) appear on the station sheets with 0 votes but not in the CEC's results list. They are left out.
+
+The council page (`site/council-template.html`) loads these files at runtime, so `build_site.py --standalone` copies them next to the page.

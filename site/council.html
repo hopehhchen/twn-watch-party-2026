@@ -1,0 +1,461 @@
+<title>TWN Watch Party · Council</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&display=swap">
+<style>
+/* Council replay: who would hold each council seat if counting stopped at the time on the clock.
+   Seats by party nationwide, a map and cards by county, and one county opened up district by district. */
+:root {
+  --bg: #F2F4F7; --surface: #FFFFFF; --ink: #131B2A; --muted: #5B6578; --rule: #D8DDE5;
+  --accent: #C96A12; --stamp: #C42B2B;
+  --dpp: #1E8A3E; --kmt: #2646A0; --tpp: #158F8C; --npp: #B38900; --oth: #8E5BA8; --ind: #747D8F;
+  --font-display: "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+  --font-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --font-num: "IBM Plex Sans Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0D121A; --surface: #151C27; --ink: #E7ECF3; --muted: #9AA5B7; --rule: #283242;
+    --accent: #F09A44; --stamp: #FF6B5F;
+    --dpp: #4FC06C; --kmt: #87A2F0; --tpp: #45CBC6; --npp: #E6C13D; --oth: #C49AE0; --ind: #A3ABBA;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0D121A; --surface: #151C27; --ink: #E7ECF3; --muted: #9AA5B7; --rule: #283242;
+  --accent: #F09A44; --stamp: #FF6B5F;
+  --dpp: #4FC06C; --kmt: #87A2F0; --tpp: #45CBC6; --npp: #E6C13D; --oth: #C49AE0; --ind: #A3ABBA;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55; margin: 0;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 48px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 18px; }
+a { color: inherit; text-underline-offset: 3px; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.num { font-family: var(--font-num); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.muted { color: var(--muted); }
+.mast { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; padding-block: 22px 0; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.stamp { width: 40px; height: 40px; border-radius: 50%; border: 2.5px solid var(--stamp); color: var(--stamp); display: grid; place-items: center; font-family: var(--font-display); font-weight: 900; font-size: 22px; transform: rotate(-8deg); flex: none; }
+.brand h1 { margin: 0; font-family: var(--font-display); font-weight: 900; font-size: 26px; letter-spacing: 0.02em; line-height: 1.1; }
+.brand h1 small { display: block; font-family: var(--font-body); font-weight: 500; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.mast-right { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+.tabs { display: flex; gap: 4px; padding: 4px; background: var(--surface); border: 1px solid var(--rule); border-radius: 999px; }
+.tabs a { text-decoration: none; padding: 6px 14px; border-radius: 999px; font-weight: 500; font-size: 14px; color: var(--muted); }
+.tabs a[aria-current="page"] { background: var(--ink); color: var(--bg); }
+.themes { display: inline-flex; gap: 2px; padding: 3px; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); }
+.themes button { border: 0; background: transparent; border-radius: 999px; padding: 4px 10px; font-size: 12px; cursor: pointer; color: var(--muted); }
+.themes button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.proto { font-size: 13px; color: var(--muted); max-width: 78ch; margin: 0; }
+
+.desk { position: sticky; top: 0; z-index: 5; background: var(--surface); border: 1px solid var(--rule); border-radius: 0 0 var(--radius) var(--radius); padding: 12px 16px; display: grid; gap: 10px; box-shadow: 0 6px 18px -14px rgba(0,0,0,0.5); }
+.desk-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; }
+.clock { font-family: var(--font-num); font-weight: 700; font-size: 38px; line-height: 1; font-variant-numeric: tabular-nums; min-width: 4.4ch; }
+.clock sup { font-size: 13px; color: var(--muted); font-weight: 500; margin-left: 2px; }
+.summary { font-size: 13px; color: var(--muted); line-height: 1.35; }
+.summary b { color: var(--ink); font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+.play { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--rule); background: var(--bg); cursor: pointer; display: grid; place-items: center; flex: none; }
+.play:hover { border-color: var(--ink); }
+.play svg { width: 15px; height: 15px; fill: var(--ink); }
+.scrub { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center; }
+input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
+.ctl { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.ctl > span { letter-spacing: 0.06em; text-transform: uppercase; }
+.seg { display: inline-flex; gap: 2px; padding: 2px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); }
+.seg button { border: 0; background: transparent; border-radius: 6px; padding: 3px 9px; font-size: 13px; cursor: pointer; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; display: grid; gap: 12px; min-width: 0; align-content: start; }
+.panel h2 { margin: 0; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+
+/* seat bars */
+.sbar { display: flex; height: 26px; border-radius: 4px; overflow: hidden; background: var(--bg); border: 1px solid var(--rule); }
+.sbar i { display: block; height: 100%; flex: none; }
+.sbar i.lead { opacity: 0.42; }
+.sbar i.wait { background: repeating-linear-gradient(45deg, var(--rule) 0 3px, transparent 3px 7px); }
+.sbar.mini { height: 10px; border-radius: 3px; }
+.half { position: relative; }
+.half::after { content: ""; position: absolute; left: 50%; top: -5px; bottom: -5px; border-left: 2px solid var(--ink); }
+.tally { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; }
+.tally .p { display: grid; gap: 0; min-width: 6.5em; }
+.tally .p .k { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+.tally .p .k i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.tally .p .v { font-family: var(--font-num); font-weight: 700; font-size: 24px; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.tally .p .s { font-size: 12px; color: var(--muted); }
+.key { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--muted); align-items: center; }
+.key i { display: inline-block; width: 18px; height: 10px; border-radius: 2px; vertical-align: middle; margin-right: 5px; background: var(--ink); }
+
+.close { display: grid; gap: 6px; }
+.close button { text-align: left; border: 1px solid var(--rule); background: var(--bg); border-radius: 8px; padding: 6px 10px; cursor: pointer; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; font-size: 13px; }
+.close button:hover { border-color: var(--muted); }
+.close .w { font-weight: 700; }
+.close .g { font-family: var(--font-num); font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; }
+.close .d { grid-column: 1 / -1; color: var(--muted); font-size: 12px; }
+
+.overview { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) { .overview { grid-template-columns: minmax(260px, 340px) minmax(0, 1fr); gap: 20px; } }
+.mapcol, .cardcol { display: grid; gap: 10px; align-content: start; min-width: 0; }
+#map svg { width: 100%; max-width: 360px; height: auto; display: block; margin: 0 auto; }
+#map path.c { stroke: var(--surface); stroke-width: 0.7; cursor: pointer; }
+#map path.c:hover { stroke: var(--ink); stroke-width: 1.2; }
+#map path.c.sel { stroke: var(--ink); stroke-width: 2; }
+#map path.inset { fill: none; stroke: var(--rule); stroke-width: 0.8; }
+.cards { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(158px, 1fr)); }
+.card { text-align: left; border: 1px solid var(--rule); border-radius: 9px; background: var(--bg); padding: 8px 10px 9px; cursor: pointer; display: grid; gap: 4px; min-width: 0; }
+.card:hover { border-color: var(--muted); }
+.card[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); background: var(--surface); }
+.card .top { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
+.card .area { font-family: var(--font-display); font-weight: 900; font-size: 16px; }
+.card .pct { font-family: var(--font-num); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.card .lead { font-size: 12.5px; display: flex; flex-wrap: wrap; gap: 0 8px; min-height: 1.4em; }
+.card .lead b { font-family: var(--font-num); }
+
+.dhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 14px; }
+.dhead h3 { margin: 0; font-family: var(--font-display); font-weight: 900; font-size: 28px; }
+.dhead .sub { font-size: 13px; color: var(--muted); }
+.dists { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) { .dists { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.dist { border: 1px solid var(--rule); border-radius: 9px; padding: 10px 12px; display: grid; gap: 6px; align-content: start; min-width: 0; background: var(--bg); }
+.dist.flash { box-shadow: 0 0 0 2px var(--accent); }
+.dist .dh { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px 10px; }
+.dist .dh b { font-size: 15px; }
+.dist .dh span { font-size: 12px; color: var(--muted); }
+.dist table { border-collapse: collapse; width: 100%; font-size: 13px; }
+.dist td { padding: 3px 4px; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+.dist td.nm { width: 100%; max-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.dist td.nm i { display: inline-block; width: 4px; height: 14px; border-radius: 2px; vertical-align: -2px; margin-right: 6px; }
+.dist td.pt { color: var(--muted); font-size: 12px; }
+.dist td.v { text-align: right; font-family: var(--font-num); font-weight: 600; font-variant-numeric: tabular-nums; }
+.dist tr.out td { color: var(--muted); }
+.dist tr.out td.v { font-weight: 400; }
+.dist tr.line td { border-bottom: 2px dashed var(--ink); padding: 0; height: 0; }
+.dist .more { font-size: 12px; color: var(--muted); }
+.st { font-size: 11px; padding: 0 6px; border-radius: 999px; border: 1px solid currentColor; line-height: 1.6; }
+.st.won { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.st.in { color: var(--ink); }
+.st.q { color: var(--accent); }
+.gapline { font-size: 12px; color: var(--muted); }
+.gapline b { color: var(--ink); font-family: var(--font-num); }
+.sortsw { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.notes { font-size: 14px; color: var(--muted); display: grid; gap: 10px; max-width: 80ch; }
+.notes h2 { margin: 0; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
+.notes p { margin: 0; }
+.notes b { color: var(--ink); }
+.loading { padding: 40px; text-align: center; color: var(--muted); }
+@media (max-width: 520px) {
+  .clock { font-size: 32px; } .dhead h3 { font-size: 24px; }
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .panel { padding: 12px; }
+  .tally .p .v { font-size: 20px; }
+}
+@media (max-width: 699px) { .desk { position: static; border-radius: var(--radius); } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+<script>
+(() => { let t = 'auto'; try { t = localStorage.getItem('twn-theme') || 'auto'; } catch (e) {}
+  if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); })();
+</script>
+
+
+<div class="wrap">
+  <header class="mast">
+    <div class="brand">
+      <div class="stamp" aria-hidden="true">卜</div>
+      <h1>開票觀察 Watch Party<small>Council seats · replay prototype</small></h1>
+    </div>
+    <div class="mast-right">
+      <nav class="tabs" aria-label="Pages">
+        <a href="index.html">Sources replay</a>
+        <a href="needle.html">Needle</a>
+        <a href="council.html" aria-current="page">Council</a>
+      </nav>
+      <div class="themes" role="group" aria-label="Color theme"><button data-theme-set="auto">Auto</button><button data-theme-set="light">Light</button><button data-theme-set="dark">Dark</button></div>
+    </div>
+  </header>
+  <p class="proto">Council (議員) elections replayed from the CEC's per-station results and report times: who would hold each seat if counting stopped at the time on the clock, with the women's quota applied. A seat is <b>decided</b> once no combination of the votes still out could change who holds it. Nothing is projected and nothing from later in the night leaks in.</p>
+  <section class="desk" id="desk" aria-label="Replay controls"></section>
+  <section class="panel" id="nation" aria-live="polite"><div class="loading">Loading…</div></section>
+  <section class="panel overview" aria-labelledby="h-cards">
+    <div class="mapcol"><h2 id="h-map">Map</h2><div id="map"></div><div class="key" id="mapkey"></div></div>
+    <div class="cardcol"><h2 id="h-cards">Every council</h2><div class="cards" id="cards"></div></div>
+  </section>
+  <section class="panel" id="detail" aria-live="polite"></section>
+  <section class="notes" aria-labelledby="h-notes">
+    <h2 id="h-notes">How to read this</h2>
+    <p><b>Seats.</b> Each electoral district (選舉區) elects several members; the candidates with the most votes win. Each voter has one vote. At every moment, the page gives each seat to whoever would win it on the votes counted so far.</p>
+    <p><b>Women's quota.</b> A district electing 4 members reserves one seat for a woman, and one more for every further 4 seats (地方制度法 §33). If too few women are among the top vote-getters, the leading women outside replace the lowest-placed men. "Women's seat" marks a woman elected this way; "displaced" marks the man who loses his place.</p>
+    <p><b>Decided.</b> A seat holder is marked elected when even the most damaging split of the votes still out — every remaining elector voting, all for the closest challengers — couldn't push them out. This uses electors at stations not yet counted, so it assumes nothing about turnout. With the women's quota, a man's seat counts as decided only once the quota can no longer displace him.</p>
+    <p><b>Map.</b> Each county takes the color of the party holding the most seats at that moment, from light (few seats decided) to solid (all decided). Before a county's first station reports it is hatched.</p>
+    <p><b>Caveats.</b> Times are when the CEC logged each station's report, for all contests at a station at once, so a council count may have been entered earlier. In 2018, ten referendums were counted the same night and counting ran past 2 a.m. in places. The replay's final state matches the CEC's elected list in every district (912 seats in 2018, 910 in 2022).</p>
+  </section>
+</div>
+
+<script>
+const META = {"nights":[{"year":2018,"src":"council/2018.json"},{"year":2022,"src":"council/2022.json"}],"map":{"viewBox":[16,-1,427,603],"counties":{"連江縣":"M39.9,117.2L39.9,117.2L39.9,117.2ZM43.1,113L39.5,116.6L42.2,115.5ZM40.3,112.3L40.3,112.3L40.3,112.3ZM41.7,112.1L41.7,112.1L41.7,112.1ZM36.8,111L33.6,111.5L35.3,113.5ZM41.3,78.5L41.3,78.5L41.3,78.5ZM32.5,77.3L31.3,82.5L33.7,83.8L38.5,81.6L40.1,78.8L36.1,78.9L35.5,80.9ZM47.6,71.3L47.6,71.3L47.6,71.3ZM45,66.3L40.5,69.3L41.2,70.9L47.2,69.3ZM47.6,65.9L47.6,65.9L47.6,65.9ZM46.3,64.1L46.3,64.1L46.3,64.1ZM47.1,63.4L47.1,63.4L47.1,63.4ZM43.9,58.7L43.9,58.7L43.9,58.7ZM81.4,47.7L81.4,47.7L81.4,47.7ZM120.6,41L121,45.4L122.8,45.6L124.9,42.8L120.9,43.1Z","宜蘭縣":"M431.8,82.2L427.8,82.1L429.9,83.8ZM432.6,58L432.1,57.2L422.6,59.6L420.4,61.6L413.8,62.1L412.7,65.3L414.7,68.5L411.5,71.8L408.3,71.6L403.5,74.6L404.1,77.2L400.3,80.3L395.8,80.5L388.7,86L388.8,87.4L378.9,88.8L378.8,91.2L373.6,92.5L374.5,95.1L373.3,98.7L374.5,103L365.9,106.8L364.9,109.8L355.9,112.4L352.6,112.6L347.7,124.3L343.7,126.8L345.2,130L342.4,133.1L343.5,137.7L338.6,143.2L334.3,145.9L330.2,153.1L331.9,154.4L331.7,160.3L333.6,162L337.8,162.2L339.2,165.8L341.8,164.6L349.4,163.2L351.6,166.4L358.3,170.5L362.8,170.1L368.2,172.2L368.9,173.7L376.3,175.4L374.5,172.1L377.7,171.8L378.1,169.8L380.4,171.5L378.6,166L380.1,165.3L383,168.9L385.3,169L393.4,172.9L402.9,174.8L402.4,171.8L404.9,164.8L405.5,158.6L407.2,154L410.1,149.2L415.1,145.3L413.2,142.8L413.5,139L418.5,136.4L417.8,129.2L419.4,128.5L418.4,125.6L420.2,124.4L417.2,123.3L415,120.1L412.9,113.6L412.4,105.7L409.9,99.3L409.7,88.9L411.3,81.3L414.6,74.4L419.9,69.3L420.3,66.5L423,65.7L426.2,60.6Z","彰化縣":"M193.3,193.9L191.2,197.1L188.2,198L183.7,209.5L181,213.4L174.9,219.5L173.6,227.5L170.8,230.1L169.2,234.8L165.6,237.6L164.9,241.3L163.2,242L161.3,247.5L157.8,249.9L155.3,253.2L160.9,258.8L169.3,261.3L177.6,260.8L179.3,259.9L185.6,260.3L189.3,259.7L192.3,261.9L201.7,265L208.2,264.8L214.7,266.6L222.4,267.5L225.9,266.5L228.5,264L227.8,261.5L224,262.8L220.1,257.7L219.8,253L221.5,247.3L221.9,241.1L220.4,238.5L223.5,236.5L224,232.8L222,231.2L222.6,228.7L227.6,229.1L228.5,227.7L223.4,224.2L220,224.9L220.1,218.1L218,212.2L208,210.2L203.9,205.7L204,203.5L200.9,196.7Z","南投縣":"M228.5,227.7L227.6,229.1L222.6,228.7L222,231.2L224,232.8L223.5,236.5L220.4,238.5L221.9,241.1L221.5,247.3L219.8,253L220.1,257.7L224,262.8L227.8,261.5L228.5,264L225.9,266.5L222.4,267.5L224.8,273.1L224.8,276.4L223,276.1L222.1,280.6L223.6,285.5L220.5,293.8L221.5,296.5L223.1,294.5L225.6,298.1L232.6,296.9L234.8,294.8L236.8,298.1L242.1,297.8L244.2,299.5L250,299.8L251.9,302.3L249.2,311.1L251.5,315.5L252.1,320.3L254,322.5L266.6,321.7L273,322.8L281.2,324.1L282.2,328.7L288.1,326L289.3,324.1L286,321.9L289.7,317.6L290.8,314.2L294.5,314.9L299.1,313.8L301.5,314.8L303.9,312.4L303.2,308L305.5,305.3L304.3,302.3L308.4,302.9L310.9,299.9L314,299.9L315.7,293.1L317.4,289.2L318.3,280.9L316.3,274.8L312.8,271.6L312.9,269.4L316.6,267.1L318.1,257.9L320.2,253.2L322.1,252.3L322.3,247.9L323.7,246.3L323.2,240.9L324.1,236.1L321.3,231.5L325.3,223.2L324.9,220.7L327.4,219.4L331.3,215.3L332.1,210.1L324.6,206.4L325.3,199.2L328.4,198.7L331.6,195.9L335.4,195.2L334.4,191.1L331.4,189.4L327.3,189L324.4,190L322,187.3L320.4,187.7L317.6,191.8L314.7,190.1L308.5,193.1L306.5,190.8L301.3,195.9L296.6,195.8L293.3,199.5L288.2,203.2L282.9,202.5L278.5,209.1L275.8,209.8L271.8,207.9L267,211.4L262.4,210L262.5,213L259.4,209.8L255.1,208.4L252.5,213.7L252.6,217.7L249,219L246.8,224.5L243.2,228.6L239.3,230.4L237,228.6L233,229.2Z","雲林縣":"M132.7,312.8L122.3,319.7L119.2,322.9L122.7,328.1L120.9,323.7L123.6,323.9L124.5,320.5L127.6,321L128.4,318.4L131.2,318ZM135.7,309.8L135.7,309.8L135.7,309.8ZM141,308.9L141,308.9L141,308.9ZM141,306L137.8,307.3L138.3,309ZM140.7,305L140.7,305L140.7,305ZM222.4,267.5L214.7,266.6L208.2,264.8L201.7,265L192.3,261.9L189.3,259.7L185.6,260.3L179.3,259.9L177.6,260.8L169.3,261.3L160.9,258.8L155.3,253.2L153.3,258.3L145.1,267.4L147.1,271.9L146.5,274.9L143.5,281L143.2,283.6L139.7,292.1L138.2,293.9L139.6,295.8L142,294.1L142.8,304.5L142.1,308.4L143.8,311.5L143.1,313.4L148.7,315.4L151.2,314.8L155.5,316.4L159.3,314.3L158.5,309.9L160.8,309.1L163.3,311.8L166.3,308.3L166.1,306.5L173.1,303.4L173.2,301.2L176.9,300.8L178.5,298.4L184.3,295.1L188.6,296.6L190.9,294.5L200.8,294L202.7,298L205.7,300.8L212.1,302.8L217.4,303L223.1,301.1L223.9,304.8L227.1,303.7L234.7,305.4L237.6,305.1L236.8,298.1L234.8,294.8L232.6,296.9L225.6,298.1L223.1,294.5L221.5,296.5L220.5,293.8L223.6,285.5L222.1,280.6L223,276.1L224.8,276.4L224.8,273.1Z","基隆市":"M406.7,31.5L400.6,26.7L398,28L391.5,26.3L391.9,24.5L386.8,28.2L378.8,31L381.4,33.1L383.4,39.1L390.3,43.6L392.4,43.5L395.5,46.1L400.3,45.3L402.4,43L399.8,40.5L399.3,36.4L401.9,34.3L404.7,35.7ZM404.2,21.1L404.2,21.1L404.2,21.1Z","臺北市":"M369.9,21L367.4,19L365.5,22.5L359.2,25.2L352.3,34L352,36.8L356.6,38.2L359.9,43.3L359,47.5L356.2,49.3L357.7,53.8L360.6,51.7L364.2,54.8L363.9,57.1L367.4,58.2L368.6,61.6L374.3,62.3L377.7,60.5L374.7,59.4L374.3,52.8L379.8,50.9L384.8,51.3L378.6,48.8L377.2,44.2L378.8,38.6L373.9,35.6L375.2,31.6L371.2,26.5L372,21.4Z","新北市":"M355.9,112.4L364.9,109.8L365.9,106.8L374.5,103L373.3,98.7L374.5,95.1L373.6,92.5L378.8,91.2L378.9,88.8L388.8,87.4L388.7,86L395.8,80.5L400.3,80.3L404.1,77.2L403.5,74.6L408.3,71.6L411.5,71.8L414.7,68.5L412.7,65.3L413.8,62.1L420.4,61.6L422.6,59.6L432.1,57.2L432.6,58L438.8,54.8L437.6,51.6L433.8,50.4L429.6,51.4L426.8,48.2L427.1,44.1L424.5,41.5L426.2,36.2L424.7,34.8L426.2,32.6L420.8,34.3L406.7,31.5L404.7,35.7L401.9,34.3L399.3,36.4L399.8,40.5L402.4,43L400.3,45.3L395.5,46.1L392.4,43.5L390.3,43.6L383.4,39.1L381.4,33.1L378.8,31L386.8,28.2L391.9,24.5L388.1,22.3L389.7,19.8L385.7,20L379.8,13.4L379.9,10L378.1,7.6L370.9,3.2L365.2,4L355.7,8.2L354.2,10.8L351.2,11.4L348.8,17.2L343.6,23.6L345.9,24.5L343.3,27.8L341.6,26.2L341.3,29.7L335.6,32.6L324.5,35L327.6,38.7L331.1,39.4L335.9,44.2L341.6,44.8L342.7,50.3L344.9,52.2L341.9,52.8L343.6,55.6L340.5,56.3L338.1,59.6L334,58.6L331.5,59.3L331.7,64.5L329.7,66.3L330.7,68.1L333.5,68L330,70.2L330.5,73L333.9,74.3L335.7,77.1L334.4,78.8L336.4,81.2L333.1,82.1L339.6,84.4L343.5,82.8L348.9,88.3L349.2,91.2L351.1,92L346.9,96.9L351.2,106.9L355,108.5ZM369.9,21L372,21.4L371.2,26.5L375.2,31.6L373.9,35.6L378.8,38.6L377.2,44.2L378.6,48.8L384.8,51.3L379.8,50.9L374.3,52.8L374.7,59.4L377.7,60.5L374.3,62.3L368.6,61.6L367.4,58.2L363.9,57.1L364.2,54.8L360.6,51.7L357.7,53.8L356.2,49.3L359,47.5L359.9,43.3L356.6,38.2L352,36.8L352.3,34L359.2,25.2L365.5,22.5L367.4,19Z","臺中市":"M351.6,166.4L349.4,163.2L341.8,164.6L339.2,165.8L337.8,162.2L333.6,162L331.7,160.3L331.9,154.4L330.2,153.1L328.3,154.6L321.2,155.3L320.9,153.7L318.5,156.8L316.5,163.2L314.1,163.9L312.7,160.7L307.3,165L306.5,167.2L302.2,167.4L299.1,172.5L293.5,174.7L292.7,173.6L285.4,178.3L280.5,172.2L273.4,171.7L269.5,170.3L266.5,171.9L267.4,177.2L264.6,179.2L259.9,178.7L253.3,179.5L248.8,175L242.1,173.3L236.9,168.8L230.8,165.9L226.3,159.9L223.9,158.6L222.5,155.5L219.7,153.3L210.2,167L209.7,169L204,175L196.4,190.9L193.3,193.9L200.9,196.7L204,203.5L203.9,205.7L208,210.2L218,212.2L220.1,218.1L220,224.9L223.4,224.2L228.5,227.7L233,229.2L237,228.6L239.3,230.4L243.2,228.6L246.8,224.5L249,219L252.6,217.7L252.5,213.7L255.1,208.4L259.4,209.8L262.5,213L262.4,210L267,211.4L271.8,207.9L275.8,209.8L278.5,209.1L282.9,202.5L288.2,203.2L293.3,199.5L296.6,195.8L301.3,195.9L306.5,190.8L308.5,193.1L314.7,190.1L317.6,191.8L320.4,187.7L322,187.3L324.4,190L327.3,189L331.4,189.4L334.4,191.1L335.9,187.5L341.1,185.6L340.3,181.3L343.8,178.4L344.3,176.3L347.1,176.3L349,173.8L349,169.5Z","臺南市":"M224.2,365.5L220.2,364.6L217.2,365.8L214.4,362.8L212.1,367.1L208.4,366.6L202.7,362.8L204.8,360.1L203.2,356.8L203.3,350.2L206.1,347.4L200.3,343.3L200.5,340.2L197.1,338.6L199.6,336.9L196.4,336.9L195.4,335.1L189.9,332.4L186.8,334.1L185.9,332.8L175.6,334.5L173,337.2L169.4,337.2L166.5,338.9L165.4,343.3L162.1,343L162.4,345L157.7,347.3L154.9,352.7L152.2,353.4L149.7,351.8L148.1,353.5L146.4,350.7L138.5,344.9L137.3,350.1L134.9,352.1L133.8,360.7L132.4,362.8L131.8,369.3L129.5,374.4L127.7,382.3L124.9,386.3L123.8,392.6L125.5,392.4L128.5,396.7L133.2,398.6L140.8,404.4L144.6,408.7L146.7,413.1L147.1,419.8L149.9,418.1L160.3,422.9L163.7,421.1L171.1,421.9L172.5,423.8L175.6,423.9L180.5,418.3L186,419.1L190.7,408.1L191.9,408.5L193.2,403.9L196.3,404.1L196.7,401.9L200.1,399.6L205.6,394L208.3,392.6L211.5,388.7L215.8,379.5L222.2,372.7L221.5,371.5L224.7,366.7Z","桃園市":"M343.7,126.8L347.7,124.3L352.6,112.6L355.9,112.4L355,108.5L351.2,106.9L346.9,96.9L351.1,92L349.2,91.2L348.9,88.3L343.5,82.8L339.6,84.4L333.1,82.1L336.4,81.2L334.4,78.8L335.7,77.1L333.9,74.3L330.5,73L330,70.2L333.5,68L330.7,68.1L329.7,66.3L331.7,64.5L331.5,59.3L334,58.6L338.1,59.6L340.5,56.3L343.6,55.6L341.9,52.8L344.9,52.2L342.7,50.3L341.6,44.8L335.9,44.2L331.1,39.4L327.6,38.7L324.5,35L320.8,34L313.3,36.4L304.6,40.9L294,44.6L288,48L284.3,52L281.3,60L276.9,66.1L278.6,67L280.9,65L285.8,65L289,66.6L288.9,72.1L294.2,74.2L297,73.5L297,75.5L301.2,76.9L304.4,76.4L305.3,80.1L303.5,82.8L307.7,84.9L314.7,90L320.9,91.6L321,93.7L327.4,96.8L328.5,98.3L327.1,102.6L328.5,104.5L327.3,108.6L330.2,108.3L335.8,113.5L335.7,117.8L337.9,119.8L337.4,124.8L341.3,127.7Z","苗栗縣":"M219.7,153.3L222.5,155.5L223.9,158.6L226.3,159.9L230.8,165.9L236.9,168.8L242.1,173.3L248.8,175L253.3,179.5L259.9,178.7L264.6,179.2L267.4,177.2L266.5,171.9L269.5,170.3L273.4,171.7L280.5,172.2L285.4,178.3L292.7,173.6L293.5,174.7L299.1,172.5L302.2,167.4L306.5,167.2L307.3,165L312.7,160.7L314.1,163.9L316.5,163.2L318.5,156.8L320.9,153.7L321.5,150.7L317,145L314.5,143.2L313.8,140.3L306.7,142.4L302.8,140.8L299.4,141.1L295.3,143.5L291.2,143.2L290.4,138.9L292.5,135.7L289,132.8L291,131.8L292.9,127.2L291.6,123.3L288.2,122.8L283.8,118.3L281.1,117.7L274.1,110.9L276.1,106.9L272.6,107.2L269.5,105.8L266.1,104.9L264.8,100.9L263.5,102.2L259.9,101.3L256.9,107.6L251.7,112.8L244.3,114.8L239.4,121.6L234.7,125.3L229.7,139.1L227.1,142.9L226.6,145.7Z","嘉義市":"M191.4,314.1L189.1,315.7L182.1,317.5L183.6,321L182.8,323.8L188.4,324.1L190.1,327.8L194.7,324L198.9,325.6L201.2,321.7L200,319.1L195.5,316.1L194.3,317.5Z","嘉義縣":"M144,335.8L144,335.8L144,335.8ZM273,322.8L266.6,321.7L254,322.5L252.1,320.3L251.5,315.5L249.2,311.1L251.9,302.3L250,299.8L244.2,299.5L242.1,297.8L236.8,298.1L237.6,305.1L234.7,305.4L227.1,303.7L223.9,304.8L223.1,301.1L217.4,303L212.1,302.8L205.7,300.8L202.7,298L200.8,294L190.9,294.5L188.6,296.6L184.3,295.1L178.5,298.4L176.9,300.8L173.2,301.2L173.1,303.4L166.1,306.5L166.3,308.3L163.3,311.8L160.8,309.1L158.5,309.9L159.3,314.3L155.5,316.4L151.2,314.8L148.7,315.4L143.1,313.4L138.8,314.4L138.9,317.8L141.1,319.1L145,317.9L143.2,323.1L141,325.5L144.6,326.1L143,329.5L144.8,337.2L140.7,337.2L138.5,344.9L146.4,350.7L148.1,353.5L149.7,351.8L152.2,353.4L154.9,352.7L157.7,347.3L162.4,345L162.1,343L165.4,343.3L166.5,338.9L169.4,337.2L173,337.2L175.6,334.5L185.9,332.8L186.8,334.1L189.9,332.4L195.4,335.1L196.4,336.9L199.6,336.9L197.1,338.6L200.5,340.2L200.3,343.3L206.1,347.4L203.3,350.2L203.2,356.8L204.8,360.1L202.7,362.8L208.4,366.6L212.1,367.1L214.4,362.8L217.2,365.8L220.2,364.6L224.2,365.5L221.9,357.7L222.4,353.5L224.9,353.1L231.6,355L233.7,350.8L236.6,351.3L239.4,348.5L241,344.6L245.1,345L248.5,340.6L251.8,339.9L255.6,331.5L261.6,328.8L262.5,326.8L265.8,324.7L268.3,325ZM191.4,314.1L194.3,317.5L195.5,316.1L200,319.1L201.2,321.7L198.9,325.6L194.7,324L190.1,327.8L188.4,324.1L182.8,323.8L183.6,321L182.1,317.5L189.1,315.7Z","金門縣":"M45.1,200.7L45.1,200.7L45.1,200.7ZM45.4,197.8L45.4,197.8L45.4,197.8ZM59.2,187.1L56.3,187.9L53.5,195.3L55.5,196.1L61.7,192.5L62.4,188.9ZM63.7,187.6L63.7,187.6L63.7,187.6ZM89.4,175.2L89.4,175.2L89.4,175.2ZM85,173.9L80.6,178.1L80.9,180.6L77.3,184.5L72.8,183.5L70.2,180.7L66.1,181.3L65.1,183.9L67.6,188.9L65.8,193.7L63.8,194.7L66.6,197.7L70.5,199.5L72.7,198.5L75.9,193L79.2,191.3L83.6,190.9L87.5,192.8L87.3,195.8L92.1,193.9L95.3,187.7L93.7,186.3L91.1,177.6L88.5,175.2ZM128.8,174L128.8,174L128.8,174ZM126.3,173.4L126.3,173.4L126.3,173.4Z","高雄市":"M282.2,328.7L281.2,324.1L273,322.8L268.3,325L265.8,324.7L262.5,326.8L261.6,328.8L255.6,331.5L251.8,339.9L248.5,340.6L245.1,345L241,344.6L239.4,348.5L236.6,351.3L233.7,350.8L231.6,355L224.9,353.1L222.4,353.5L221.9,357.7L224.2,365.5L224.7,366.7L221.5,371.5L222.2,372.7L215.8,379.5L211.5,388.7L208.3,392.6L205.6,394L200.1,399.6L196.7,401.9L196.3,404.1L193.2,403.9L191.9,408.5L190.7,408.1L186,419.1L180.5,418.3L175.6,423.9L172.5,423.8L171.1,421.9L163.7,421.1L160.3,422.9L149.9,418.1L147.1,419.8L150,428L152.1,435.8L149.6,436.6L153.1,438L160.1,453.6L161.4,461.1L159,465.4L161.1,470.1L161.2,473.9L167.4,481.7L170.5,486.9L165.9,485L169,489.2L172.4,488L182.4,495.8L187,497.3L186.8,488.6L190,481L190.5,474.6L188.6,471.3L189.1,463L192.2,452.9L191.9,446.2L194.4,434.1L195.6,432.8L201,434.5L204.3,433.8L208.1,434.5L216.4,426.8L222.7,424.7L224.8,425.7L225.3,429.2L227.8,429.6L232.5,425.4L238.4,426.8L244.2,433.5L251.4,428.1L256.2,429.6L258,432.1L258.1,427L253.9,424.8L253,420L251.2,416.1L251,411.5L252.9,408.2L257.4,403.3L257.6,399.3L260.5,398.7L258.8,394.3L262,387.2L261.8,380.9L260,378.3L263,376.7L265.8,372.1L264.8,370.4L266.2,363.3L269.9,362L275.4,355.5L277.6,355.8L284.3,352.9L287.3,350.8L287.5,347.8L283,343.6L277.7,342.1L277.9,340L281,337.6L280,336.3L283.4,334.9L284.5,330.9Z","臺東縣":"M378.9,589L378.9,589L378.9,589ZM361.5,564.3L362.5,570.5L367,574.8L370.9,576.1L372.2,578.7L375.9,578.8L376.4,574.7L371.8,572L371.1,569.7L373,568.6L371.5,564.4L362.9,565.1ZM359,460.9L354.6,461.6L356.1,466.3L359.6,468.7L362,460.9ZM284.3,352.9L277.6,355.8L275.4,355.5L269.9,362L266.2,363.3L264.8,370.4L265.8,372.1L263,376.7L260,378.3L261.8,380.9L262,387.2L258.8,394.3L260.5,398.7L257.6,399.3L257.4,403.3L252.9,408.2L251,411.5L251.2,416.1L253,420L253.9,424.8L258.1,427L258,432.1L258.7,436.7L262.3,437.6L264.3,439.7L264.3,443.8L262.7,445.4L262.8,450.6L261,454.2L255.5,454.1L253.5,457.6L250.7,458.7L245.5,458.3L245.4,463.5L241.4,469.3L238.9,476.5L239.2,479.6L237.8,483L239.5,486L241.7,493.5L239.6,495.6L239.8,499.2L243.8,500.9L245.9,506.4L243.3,508.2L240,508.5L238.4,515.1L241.6,516.6L242.4,518.6L245.1,518.9L247,523.9L244,525.4L243.9,527.2L247.2,531L247.2,534.2L250,533.3L254,536.7L257,537.2L258.3,539.2L263.1,536.3L262.3,529.9L262.9,520.9L265.1,516.6L266.1,512.1L270.9,500.4L273.3,491.2L277.5,479.9L281.3,476.5L281.9,471.1L283.4,465.9L286.2,462.3L288.7,461.3L292.9,457.4L300.5,453.7L305.1,448.8L308.3,446.6L309,442.6L312.2,439.8L309.8,433.9L310.6,430.9L313.4,428.6L317.2,428.4L323,420.2L325.5,413.5L327.3,412.6L331.8,405.7L334,401.1L335.9,393L338.6,387.8L341.3,388L343.3,384.8L346.1,383L344,381L345.2,376.3L343.7,372.2L343.7,368.3L347.2,365.1L346.4,363.6L348.7,355.5L351.5,350.7L353.9,350L355.5,343.1L356.4,335.5L359.2,328.7L357.1,329.5L355.6,327.7L351.2,327.2L347,331.4L343.9,337.4L344.6,340.5L347.5,342.7L345.5,344.2L343.6,348.5L340.1,353L340.4,357.6L337.5,360.5L333.6,373.6L330.8,376L332.3,378.1L330.5,385.4L325.5,386.1L323.5,387.6L322.7,384.7L319.8,381.7L313.8,379.5L310.2,369.1L308,368L304.6,369.9L302.2,369.5L300.6,365.7L292.5,364.1L288.8,354.1Z","花蓮縣":"M402.9,174.8L393.4,172.9L385.3,169L383,168.9L380.1,165.3L378.6,166L380.4,171.5L378.1,169.8L377.7,171.8L374.5,172.1L376.3,175.4L368.9,173.7L368.2,172.2L362.8,170.1L358.3,170.5L351.6,166.4L349,169.5L349,173.8L347.1,176.3L344.3,176.3L343.8,178.4L340.3,181.3L341.1,185.6L335.9,187.5L334.4,191.1L335.4,195.2L331.6,195.9L328.4,198.7L325.3,199.2L324.6,206.4L332.1,210.1L331.3,215.3L327.4,219.4L324.9,220.7L325.3,223.2L321.3,231.5L324.1,236.1L323.2,240.9L323.7,246.3L322.3,247.9L322.1,252.3L320.2,253.2L318.1,257.9L316.6,267.1L312.9,269.4L312.8,271.6L316.3,274.8L318.3,280.9L317.4,289.2L315.7,293.1L314,299.9L310.9,299.9L308.4,302.9L304.3,302.3L305.5,305.3L303.2,308L303.9,312.4L301.5,314.8L299.1,313.8L294.5,314.9L290.8,314.2L289.7,317.6L286,321.9L289.3,324.1L288.1,326L282.2,328.7L284.5,330.9L283.4,334.9L280,336.3L281,337.6L277.9,340L277.7,342.1L283,343.6L287.5,347.8L287.3,350.8L284.3,352.9L288.8,354.1L292.5,364.1L300.6,365.7L302.2,369.5L304.6,369.9L308,368L310.2,369.1L313.8,379.5L319.8,381.7L322.7,384.7L323.5,387.6L325.5,386.1L330.5,385.4L332.3,378.1L330.8,376L333.6,373.6L337.5,360.5L340.4,357.6L340.1,353L343.6,348.5L345.5,344.2L347.5,342.7L344.6,340.5L343.9,337.4L347,331.4L351.2,327.2L355.6,327.7L357.1,329.5L359.2,328.7L359.8,325L362.1,319.5L360.4,314L361.6,308.3L363.3,305.6L364.6,300.3L364.7,295.2L366.7,290L368.2,282.6L368,278.4L371.2,272.5L371,268L371.9,263L375.3,254.9L377.4,241.6L376.6,238.2L378,234.6L380,235.3L383.1,228.4L380,224.1L378,219.2L378.4,214.3L385.5,206.4L384.7,200.3L385.4,196L387.1,193.7L392.2,190.5L393.9,187.5L398.2,184.2L399.2,180.1Z","澎湖縣":"M50.6,543.4L46.5,544.1L47.1,547.9L51,547ZM78.8,537.7L78.8,537.7L78.8,537.7ZM88.6,535.9L86.9,536.4L87.6,539.4ZM86,535.9L86,535.9L86,535.9ZM63.4,535.8L63.4,535.8L63.4,535.8ZM61.3,534.5L61.3,534.5L61.3,534.5ZM34,525.7L34,525.7L34,525.7ZM66.1,516.5L63.3,518L67.2,518.3ZM62.5,515L62.5,515L62.5,515ZM59.2,512.7L59.3,518.3L58,519.9L62.4,520.3L61.5,513.8ZM31.3,510.2L31.3,510.2L31.3,510.2ZM66.8,495.5L66.8,495.5L66.8,495.5ZM63.5,492.1L63.5,492.1L63.5,492.1ZM91.9,487.7L91.9,487.7L91.9,487.7ZM65.5,487.5L65.5,487.5L65.5,487.5ZM71.5,474.2L71.5,474.2L71.5,474.2ZM90,472.4L90,472.4L90,472.4ZM81.7,468.3L81.7,468.3L81.7,468.3ZM86.5,465.2L86.5,465.2L86.5,465.2ZM69.2,463.9L69.2,463.9L69.2,463.9ZM73.7,463.9L69,465.3L66.6,470.3L63.3,469.5L62.5,467.6L60.1,473.8L61.6,475L60.9,479.5L58.9,482.6L57.5,481.6L55.1,483.7L59.9,482.9L62.6,483.6L62.2,478.7L63.9,477L63.1,472.3L66.6,471.4L68.9,467.3L71.6,466.4L75.2,470.1L75.8,474.6L77.7,475.5L75.8,482.7L73.5,478.9L70.1,479.9L69.8,483.9L72.1,482.9L71.9,486.7L74.9,485.6L76.2,489.3L69,489.7L67.8,485.8L66.8,488L69.3,490.7L71,490.3L72.3,493.5L77.2,493.4L77.1,489.7L83.7,484.2L91.3,485.2L89.1,482L87.3,477L86.2,478.9L84.4,475.6L80.1,480.7L80.1,475.9L78.3,477L75.8,470.1L78.2,468.1L76.2,464.4ZM86.9,462.8L86.9,462.8L86.9,462.8ZM84.5,460.9L84.5,460.9L84.5,460.9ZM68.5,456.2L68.5,456.2L68.5,456.2ZM78.2,450.1L75.5,453.3L76.7,454.3L79.9,452.4ZM77.2,446.6L77.2,446.6L77.2,446.6Z","新竹市":"M259.9,101.3L263.5,102.2L264.8,100.9L266.1,104.9L269.5,105.8L271.2,100.1L272.5,100.4L275,96.6L277.9,96.1L278.6,93.9L281.9,95.6L283.1,98.1L284.9,97.2L282.6,89.3L279.8,86.7L272.9,84.7L267.9,81L264.4,86.3L262.7,91.9L263.6,96.7Z","新竹縣":"M330.2,153.1L334.3,145.9L338.6,143.2L343.5,137.7L342.4,133.1L345.2,130L343.7,126.8L341.3,127.7L337.4,124.8L337.9,119.8L335.7,117.8L335.8,113.5L330.2,108.3L327.3,108.6L328.5,104.5L327.1,102.6L328.5,98.3L327.4,96.8L321,93.7L320.9,91.6L314.7,90L307.7,84.9L303.5,82.8L305.3,80.1L304.4,76.4L301.2,76.9L297,75.5L297,73.5L294.2,74.2L288.9,72.1L289,66.6L285.8,65L280.9,65L278.6,67L276.9,66.1L274.9,68.1L270.1,78.8L267.9,81L272.9,84.7L279.8,86.7L282.6,89.3L284.9,97.2L283.1,98.1L281.9,95.6L278.6,93.9L277.9,96.1L275,96.6L272.5,100.4L271.2,100.1L269.5,105.8L272.6,107.2L276.1,106.9L274.1,110.9L281.1,117.7L283.8,118.3L288.2,122.8L291.6,123.3L292.9,127.2L291,131.8L289,132.8L292.5,135.7L290.4,138.9L291.2,143.2L295.3,143.5L299.4,141.1L302.8,140.8L306.7,142.4L313.8,140.3L314.5,143.2L317,145L321.5,150.7L320.9,153.7L321.2,155.3L328.3,154.6Z","屏東縣":"M179.7,516.9L176.7,518.7L175.6,522.6L180.9,519.4ZM258,432.1L256.2,429.6L251.4,428.1L244.2,433.5L238.4,426.8L232.5,425.4L227.8,429.6L225.3,429.2L224.8,425.7L222.7,424.7L216.4,426.8L208.1,434.5L204.3,433.8L201,434.5L195.6,432.8L194.4,434.1L191.9,446.2L192.2,452.9L189.1,463L188.6,471.3L190.5,474.6L190,481L186.8,488.6L187,497.3L192.5,502.4L207.1,510.7L212.9,514.7L216.1,519.4L221.1,524.6L223.6,532.4L223.2,534.6L226.8,538.5L234,563L231.2,564.8L232.2,566.9L228.9,575.1L230.3,578.8L233.5,582.6L233,590.8L235.9,593.5L237.7,593.3L239.9,587.1L241.8,586.4L244.7,589.1L251.1,590.7L254.9,594.3L255.7,597.4L258.3,596.3L254.3,588L254.9,581.7L259.7,579.5L261.9,574.8L263.8,573.5L262.6,570.6L262.7,563.8L264,560.8L261.5,556.6L262.5,553L262.2,545.2L263.1,543.8L263.1,536.3L258.3,539.2L257,537.2L254,536.7L250,533.3L247.2,534.2L247.2,531L243.9,527.2L244,525.4L247,523.9L245.1,518.9L242.4,518.6L241.6,516.6L238.4,515.1L240,508.5L243.3,508.2L245.9,506.4L243.8,500.9L239.8,499.2L239.6,495.6L241.7,493.5L239.5,486L237.8,483L239.2,479.6L238.9,476.5L241.4,469.3L245.4,463.5L245.5,458.3L250.7,458.7L253.5,457.6L255.5,454.1L261,454.2L262.8,450.6L262.7,445.4L264.3,443.8L264.3,439.7L262.3,437.6L258.7,436.7Z"},"insets":"M20,435L20,565L110,565L110,435L20,435M20,20L20,140L140,140L140,20L20,20M140,190L140,160L110,160L20,160L20,220L140,220L140,190L110,190L110,160","source":"taiwan-atlas 2021.9.20 (MIT), counties-mercator-10t.json, derived from the Ministry of the Interior 直轄市、縣市界線 (data.gov.tw/dataset/7442, Open Government Data License)"}};
+</script>
+<script>
+(() => {
+  const NIGHT = {};  // year -> loaded data
+  const st = { year: META.nights[META.nights.length - 1].year, area: '臺北市', t: 150, playing: false, speed: 5, sort: 'no', flash: null };
+  const desk = document.getElementById('desk'), nation = document.getElementById('nation'), cards = document.getElementById('cards'),
+    detail = document.getElementById('detail'), mapEl = document.getElementById('map'), mapKey = document.getElementById('mapkey');
+  const GROUPS = [['kmt', '國民黨'], ['dpp', '民進黨'], ['tpp', '民眾黨'], ['npp', '時代力量'], ['oth', '其他政黨'], ['ind', '無黨籍']];
+  const SHORT = { '中國國民黨': '國民黨', '民主進步黨': '民進黨', '台灣民眾黨': '民眾黨' };
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const comma = n => Math.round(n).toLocaleString('en-US');
+  const clock = t => { const m = Math.round(t) + 16 * 60, d = Math.floor(m / 1440), mm = m % 1440;
+    return String(Math.floor(mm / 60)).padStart(2, '0') + ':' + String(mm % 60).padStart(2, '0') + (d ? '<sup>+1</sup>' : ''); };
+  const clockTxt = t => clock(t).replace(/<sup>\+1<\/sup>/, ' (+1)');
+
+  // ---- seats
+  function allocate(v, sex, S, W) { // top S; women's quota replaces the lowest men with the top women outside
+    const order = v.map((x, k) => k).sort((a, b) => v[b] - v[a] || a - b);
+    let won = order.slice(0, S);
+    const short = W - won.filter(k => sex[k] === 2).length;
+    const displaced = [], quota = [];
+    if (short > 0) {
+      const add = order.slice(S).filter(k => sex[k] === 2).slice(0, short);
+      const men = won.filter(k => sex[k] !== 2).reverse().slice(0, add.length);
+      displaced.push(...men); quota.push(...add);
+      won = won.filter(k => !men.includes(k)).concat(add);
+    }
+    return { order, won, displaced, quota };
+  }
+  function safeUnder(v, i, pool, S, R) { // can't be pushed out of the top S of `pool` by R more votes
+    let ahead = 0; const need = [];
+    for (const j of pool) { if (j === i) continue; if (v[j] > v[i]) ahead++; else need.push(v[i] - v[j]); }
+    if (ahead >= S) return false;
+    need.sort((a, b) => a - b); let k = 0, s = 0;
+    for (const x of need) { if (s + x > R) break; s += x; k++; }
+    return ahead + k < S;
+  }
+  function rowAt(d, t) { const P = d.pts; let lo = 0, hi = P.length - 1, k = -1;
+    while (lo <= hi) { const m = (lo + hi) >> 1; if (P[m][0] <= t) { k = m; lo = m + 1; } else hi = m - 1; }
+    return k < 0 ? null : P[k]; }
+  function dstate(d, t) {
+    const p = rowAt(d, t), S = d.seats, W = d.women, sex = d.cands.map(c => c.sex);
+    if (!p) return { pre: true, n: 0, frac: 0, R: d.electors, S };
+    const v = p.slice(3), R = p[2], all = v.map((x, k) => k), women = all.filter(k => sex[k] === 2);
+    const a = allocate(v, sex, S, W);
+    const wSafe = women.filter(k => safeUnder(v, k, all, S, R)).length;
+    const safe = new Set();
+    for (const k of a.won) {
+      const ok = sex[k] === 2 ? (safeUnder(v, k, all, S, R) || (W > 0 && safeUnder(v, k, women, W, R)))
+        : safeUnder(v, k, all, S - W + Math.min(W, wSafe), R);
+      if (ok) safe.add(k);
+    }
+    const o = a.order, gap = o.length > S ? v[o[S - 1]] - v[o[S]] : null, tot = v.reduce((x, y) => x + y, 0);
+    return { pre: false, n: p[1], frac: p[1] / d.stations, R, v, tot, won: a.won, wonSet: new Set(a.won), safe, order: o, quota: new Set(a.quota),
+      displaced: new Set(a.displaced), gap, lastIn: o[S - 1], firstOut: o[S], S, decided: safe.size === S };
+  }
+  function countyState(c, t) {
+    const seats = Object.fromEntries(GROUPS.map(g => [g[0], { lead: 0, won: 0 }]));
+    let total = 0, wait = 0, n = 0, N = 0, decided = 0, counting = 0;
+    const ds = c.districts.map(d => {
+      const s = dstate(d, t); total += d.seats; N += d.stations; n += s.n;
+      if (s.pre) wait += d.seats;
+      else { counting++; for (const k of s.won) { const g = seats[d.cands[k].tone]; if (s.safe.has(k)) { g.won++; decided++; } else g.lead++; } }
+      return s;
+    });
+    const rank = GROUPS.map(g => g[0]).filter(g => seats[g].won + seats[g].lead > 0)
+      .sort((a, b) => (seats[b].won + seats[b].lead) - (seats[a].won + seats[a].lead) || seats[b].won - seats[a].won);
+    return { ds, seats, total, wait, frac: n / N, decided, counting, rank };
+  }
+
+  // ---- pieces
+  function seatBar(cs, mini, half) {
+    const W = cs.total; let s = '';
+    for (const [g] of GROUPS) {
+      const x = cs.seats[g]; if (!x) continue;
+      if (x.won) s += `<i style="width:${100 * x.won / W}%;background:var(--${g})" title="${x.won} decided"></i>`;
+      if (x.lead) s += `<i class="lead" style="width:${100 * x.lead / W}%;background:var(--${g})" title="${x.lead} leading"></i>`;
+    }
+    if (cs.wait) s += `<i class="wait" style="width:${100 * cs.wait / W}%"></i>`;
+    return `<div class="sbar${mini ? ' mini' : ''}${half ? ' half' : ''}">${s}</div>`;
+  }
+  function gname(g) { return GROUPS.find(x => x[0] === g)[1]; }
+  function tally(cs) {
+    return `<div class="tally">${GROUPS.filter(([g]) => cs.seats[g].won + cs.seats[g].lead > 0).sort((a, b) => (cs.seats[b[0]].won + cs.seats[b[0]].lead) - (cs.seats[a[0]].won + cs.seats[a[0]].lead)).map(([g, nm]) => {
+      const x = cs.seats[g]; return `<div class="p"><span class="k"><i style="background:var(--${g})"></i>${nm}</span><span class="v">${x.won + x.lead}</span><span class="s">${x.won} decided</span></div>`; }).join('')}
+      ${cs.wait ? `<div class="p"><span class="k"><i class="wait" style="background:repeating-linear-gradient(45deg,var(--rule) 0 3px,transparent 3px 7px)"></i>not counting yet</span><span class="v">${cs.wait}</span><span class="s">seats</span></div>` : ''}</div>`;
+  }
+  const keyHtml = `<div class="key"><span><i></i>decided</span><span><i style="opacity:.42"></i>leading, not decided</span><span><i style="background:repeating-linear-gradient(45deg,var(--rule) 0 3px,transparent 3px 7px)"></i>no stations counted yet</span></div>`;
+  function closest(night, t, area) { // seat lines closest relative to the votes counted, districts at least half counted
+    const out = [];
+    for (const c of night.counties) { if (area && c.area !== area) continue;
+      c.districts.forEach((d, i) => { const s = dstate(d, t);
+        if (s.pre || s.decided || s.gap == null || s.frac < 0.5) return;
+        out.push({ c, d, i, s, rel: s.gap / Math.max(1, s.tot / d.seats) }); }); }
+    return out.sort((a, b) => a.rel - b.rel).slice(0, area ? 3 : 6);
+  }
+  function closeList(list) {
+    if (!list.length) return '<p class="muted" style="margin:0;font-size:13px">None right now (only districts at least half counted and not yet decided are listed).</p>';
+    return `<div class="close">${list.map(({ c, d, i, s }) => { const a = d.cands[s.lastIn], b = d.cands[s.firstOut];
+      return `<button data-go="${esc(c.area)}|${i}"><span class="w">${esc(c.area)} ${esc(d.name)}${d.seat_type !== '區域' ? ' · ' + esc(d.seat_type) : ''}</span><span class="g">${comma(s.gap)} votes</span>
+        <span class="d">seat ${d.seats}: ${esc(a.name)} (${esc(SHORT[a.party] || a.party)}) over ${esc(b.name)} (${esc(SHORT[b.party] || b.party)}) · ${(100 * s.frac).toFixed(0)}% of stations</span></button>`; }).join('')}</div>`;
+  }
+
+  // ---- render
+  function renderDesk() {
+    const night = NIGHT[st.year];
+    desk.innerHTML = `
+      <div class="desk-row">
+        <div class="clock" id="clk">${clock(st.t)}</div>
+        <div class="summary" id="dsum"></div>
+        <span style="flex:1"></span>
+        <div class="ctl"><span>Night</span><div class="seg" role="group" aria-label="Night">
+          ${META.nights.map(n => `<button data-year="${n.year}" aria-pressed="${n.year === st.year}">${n.year}</button>`).join('')}</div></div>
+      </div>
+      <div class="scrub">
+        <button class="play" id="play" aria-label="${st.playing ? 'Pause' : 'Play'}">${st.playing ? '<svg viewBox="0 0 16 16"><rect x="3" y="2" width="3.5" height="12"/><rect x="9.5" y="2" width="3.5" height="12"/></svg>' : '<svg viewBox="0 0 16 16"><path d="M4 2l10 6-10 6z"/></svg>'}</button>
+        <input type="range" id="t" min="${night ? night.start : 0}" max="${night ? night.end : 600}" step="1" value="${st.t}" aria-label="Time">
+      </div>
+      <div class="desk-row">
+        <div class="ctl"><span>Speed</span><div class="seg" role="group" aria-label="Speed">
+          ${[2, 5, 15].map(s => `<button data-speed="${s}" aria-pressed="${s === st.speed}">${s} min/s</button>`).join('')}</div></div>
+      </div>`;
+  }
+  let NS = null; // states at st.t
+  function compute() { const night = NIGHT[st.year]; NS = Object.fromEntries(night.counties.map(c => [c.area, countyState(c, st.t)])); }
+  function renderNation() {
+    const night = NIGHT[st.year], all = { seats: Object.fromEntries(GROUPS.map(g => [g[0], { lead: 0, won: 0 }])), total: 0, wait: 0, decided: 0, counting: 0, dists: 0 };
+    for (const c of night.counties) { const cs = NS[c.area]; all.total += cs.total; all.wait += cs.wait; all.decided += cs.decided; all.counting += cs.counting; all.dists += c.districts.length;
+      for (const [g] of GROUPS) { all.seats[g].lead += cs.seats[g].lead; all.seats[g].won += cs.seats[g].won; } }
+    document.getElementById('dsum').innerHTML = `${esc(night.title)} · ${esc(night.date)}<br><b>${all.counting}</b> of ${all.dists} districts counting · <b>${all.decided}</b> of ${all.total} seats decided`;
+    nation.innerHTML = `<h2>Seats if counting stopped at ${clockTxt(st.t)} · all ${all.total} seats in 22 councils</h2>
+      ${seatBar(all, false, false)}${keyHtml}${tally(all)}
+      <h2 style="margin-top:6px">Closest seat lines right now</h2>
+      ${closeList(closest(night, st.t))}
+      <p class="muted" style="margin:0;font-size:12px">Gap between the last candidate in and the first one out, smallest relative to votes per seat counted so far, among districts at least half counted. Click one to open it.</p>`;
+  }
+  function renderCards() {
+    const night = NIGHT[st.year];
+    cards.innerHTML = night.counties.map(c => { const cs = NS[c.area];
+      const lead = cs.rank.slice(0, 2).map(g => `<span>${gname(g)} <b>${cs.seats[g].won + cs.seats[g].lead}</b></span>`).join('');
+      return `<button class="card" data-area="${esc(c.area)}" aria-pressed="${c.area === st.area}">
+        <span class="top"><span class="area">${esc(c.area)}</span><span class="pct">${cs.frac > 0 ? (100 * cs.frac).toFixed(0) + '%' : '—'}</span></span>
+        ${seatBar(cs, true, false)}
+        <span class="lead">${cs.counting ? lead : `<span class="muted">${cs.total} seats · not counting yet</span>`}</span></button>`; }).join('');
+  }
+  function renderMap() {
+    const M = META.map; let paths = '';
+    const hatch = `<pattern id="h-wait" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="var(--ind)" fill-opacity="0.12"/><line x1="0" y1="0" x2="0" y2="5" stroke="var(--ind)" stroke-width="2" stroke-opacity="0.6"/></pattern>`;
+    for (const [area, d] of Object.entries(M.counties)) {
+      const cs = NS[area]; let fill = 'var(--rule)', op = 1, label = area;
+      if (cs && !cs.counting) { fill = 'url(#h-wait)'; label = `${area}: not counting yet`; }
+      else if (cs) { const g = cs.rank[0], n = cs.seats[g].won + cs.seats[g].lead; fill = `var(--${g})`; op = 0.22 + 0.78 * cs.decided / cs.total;
+        label = `${area}: ${gname(g)} ${n} of ${cs.total} seats · ${cs.decided} decided`; }
+      paths += `<path class="c${area === st.area ? ' sel' : ''}" data-area="${esc(area)}" d="${d}" fill="${fill}" fill-opacity="${op}"><title>${esc(label)}</title></path>`;
+    }
+    mapEl.innerHTML = `<svg viewBox="${M.viewBox.join(' ')}" role="img" aria-label="Map of council seats at ${clockTxt(st.t)}"><defs>${hatch}</defs><path class="inset" d="${M.insets}"/>${paths}</svg>`;
+    const sel = mapEl.querySelector('path.sel'); if (sel) sel.parentNode.appendChild(sel);
+    mapKey.innerHTML = `<span>Party with the most seats in the council at this moment; solid = all seats decided.</span>`;
+  }
+  function distBlock(d, s, i) {
+    const towns = d.towns.length > 4 ? d.towns.slice(0, 3).join('、') + ` +${d.towns.length - 3}` : d.towns.join('、');
+    const head = `<div class="dh"><b>${esc(d.name)}${d.seat_type !== '區域' ? ' · ' + esc(d.seat_type) : ''}</b><span>${esc(towns)}</span>
+      <span>${d.seats} seat${d.seats > 1 ? 's' : ''}${d.women ? ` · ${d.women} for women` : ''} · ${s.pre ? 'no stations yet' : `${(100 * s.frac).toFixed(0)}% of ${comma(d.stations)} stations`}${!s.pre ? ` · ${s.decided ? 'all decided' : `${s.safe.size} of ${d.seats} decided`}` : ''}</span></div>`;
+    if (s.pre) return `<div class="dist" id="d-${i}">${head}<div class="more">${d.cands.length} candidates · ${comma(d.electors)} electors</div></div>`;
+    const lastShown = Math.max(d.seats + 2, ...s.won.map(k => s.order.indexOf(k) + 1));
+    const show = s.order.slice(0, lastShown), rest = s.order.slice(lastShown);
+    let rows = '';
+    show.forEach((k, r) => {
+      const c = d.cands[k], w = s.wonSet.has(k);
+      const tag = w ? (s.safe.has(k) ? '<span class="st won">elected</span>' : '<span class="st in">in</span>') + (s.quota.has(k) ? ' <span class="st q">women\'s seat</span>' : '')
+        : s.displaced.has(k) ? '<span class="st q">displaced</span>' : '';
+      rows += `<tr class="${w ? '' : 'out'}"><td class="nm"><i style="background:var(--${c.tone})"></i>${esc(c.name)}</td><td class="pt">${esc(SHORT[c.party] || c.party)}</td>
+        <td class="v">${comma(s.v[k])}</td><td class="v">${s.tot ? (100 * s.v[k] / s.tot).toFixed(1) + '%' : '—'}</td><td>${tag}</td></tr>`;
+      if (r === d.seats - 1 && r < show.length - 1) rows += '<tr class="line"><td colspan="5"></td></tr>';
+    });
+    const restV = rest.reduce((a, k) => a + s.v[k], 0);
+    return `<div class="dist${st.flash === i ? ' flash' : ''}" id="d-${i}">${head}
+      <table>${rows}</table>
+      ${rest.length ? `<div class="more">+ ${rest.length} more candidate${rest.length > 1 ? 's' : ''}, ${comma(restV)} votes together</div>` : ''}
+      ${s.gap != null && !s.decided ? `<div class="gapline">Seat line: <b>${comma(s.gap)}</b> votes between ${esc(d.cands[s.lastIn].name)} and ${esc(d.cands[s.firstOut].name)}; up to ${comma(s.R)} electors still out.</div>` : ''}</div>`;
+  }
+  function renderDetail() {
+    const night = NIGHT[st.year], c = night.counties.find(x => x.area === st.area) || night.counties[0];
+    st.area = c.area; const cs = NS[c.area];
+    const idx = c.districts.map((d, i) => i);
+    if (st.sort === 'close') idx.sort((a, b) => { const sa = cs.ds[a], sb = cs.ds[b];
+      const ka = sa.pre || sa.decided || sa.gap == null ? Infinity : sa.gap / Math.max(1, sa.tot / c.districts[a].seats);
+      const kb = sb.pre || sb.decided || sb.gap == null ? Infinity : sb.gap / Math.max(1, sb.tot / c.districts[b].seats);
+      return ka - kb || a - b; });
+    detail.innerHTML = `
+      <div class="dhead"><h3>${esc(c.area)}議會</h3><span class="sub">${cs.total} seats in ${c.districts.length} districts · ${cs.decided} decided · ${cs.frac > 0 ? (100 * cs.frac).toFixed(0) + '% of stations counted' : 'not counting yet'}</span></div>
+      ${seatBar(cs, false, true)}
+      <div class="key"><span>Line: half the seats (${Math.floor(cs.total / 2) + 1} for a majority)</span></div>
+      ${tally(cs)}
+      <div class="sortsw"><h2>Districts</h2><div class="ctl"><span>Order</span><div class="seg" role="group" aria-label="District order">
+        <button data-sort="no" aria-pressed="${st.sort === 'no'}">By number</button><button data-sort="close" aria-pressed="${st.sort === 'close'}">Closest seat line</button></div></div></div>
+      <div class="dists">${idx.map(i => distBlock(c.districts[i], cs.ds[i], i)).join('')}</div>`;
+  }
+  function render() { if (!NIGHT[st.year]) return; compute(); renderDesk(); renderNation(); renderMap(); renderCards(); renderDetail(); writeHash(); }
+  function light() { compute(); document.getElementById('clk').innerHTML = clock(st.t); const r = document.getElementById('t'); if (r) r.value = st.t;
+    renderNation(); renderMap(); renderCards(); renderDetail(); }
+  function writeHash() { history.replaceState(null, '', `#${st.year}/${encodeURIComponent(st.area)}`); }
+
+  async function load(year) {
+    if (NIGHT[year]) return NIGHT[year];
+    const n = META.nights.find(x => x.year === year);
+    nation.innerHTML = `<div class="loading">Loading ${year}…</div>`;
+    try { const r = await fetch(n.src); if (!r.ok) throw new Error(r.status); NIGHT[year] = await r.json(); }
+    catch (e) { nation.innerHTML = `<div class="loading">Couldn't load ${esc(n.src)} (${esc(e.message)}). This page reads its data from files published next to it, so it needs to be opened from the site, not as a single file.</div>`; throw e; }
+    return NIGHT[year];
+  }
+  async function setYear(y, t) { st.playing = false; await load(y); st.year = y; const night = NIGHT[y];
+    st.t = t != null ? t : Math.max(night.start, Math.min(...night.counties.flatMap(c => c.districts.map(d => d.pts[0][0]))) + 60); render(); }
+
+  let lastTick = 0;
+  function tick(ts) {
+    if (!st.playing) return;
+    if (ts - lastTick >= 250) { const night = NIGHT[st.year];
+      st.t = Math.min(night.end, st.t + st.speed / 4); lastTick = ts;
+      if (st.t >= night.end) { st.playing = false; render(); return; }
+      light(); }
+    requestAnimationFrame(tick);
+  }
+  desk.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.id === 'play') { st.playing = !st.playing; if (st.playing) { const n = NIGHT[st.year]; if (st.t >= n.end) st.t = n.start; lastTick = 0; requestAnimationFrame(tick); } renderDesk(); renderNation(); }
+    else if (b.dataset.year) setYear(+b.dataset.year);
+    else if (b.dataset.speed) { st.speed = +b.dataset.speed; renderDesk(); renderNation(); }
+  });
+  desk.addEventListener('input', e => { if (e.target.id === 't') { st.t = +e.target.value; light(); } });
+  const pick = (area, scroll) => { st.area = area; st.flash = null; renderMap(); renderCards(); renderDetail(); writeHash();
+    if (scroll || matchMedia('(max-width: 899px)').matches) detail.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  cards.addEventListener('click', e => { const c = e.target.closest('.card[data-area]'); if (c) pick(c.dataset.area); });
+  mapEl.addEventListener('click', e => { const c = e.target.closest('path[data-area]'); if (c) pick(c.dataset.area); });
+  detail.addEventListener('click', e => { const b = e.target.closest('[data-sort]'); if (b) { st.sort = b.dataset.sort; renderDetail(); } });
+  nation.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (!b) return;
+    const [area, i] = b.dataset.go.split('|'); st.area = area; st.flash = +i; st.sort = 'no'; renderMap(); renderCards(); renderDetail(); writeHash();
+    const el = document.getElementById('d-' + i); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); });
+
+  const m = decodeURIComponent(location.hash.slice(1)).split('/');
+  const y0 = META.nights.some(n => String(n.year) === m[0]) ? +m[0] : st.year;
+  if (m[1]) st.area = m[1];
+  setYear(y0, y0 === 2022 ? 150 : 180);
+})();
+</script>
+<script>
+(() => {
+  const root = document.documentElement;
+  const get = () => { try { return localStorage.getItem('twn-theme') || 'auto'; } catch (e) { return 'auto'; } };
+  const mark = t => document.querySelectorAll('[data-theme-set]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themeSet === t)));
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-theme-set]'); if (!b) return;
+    const t = b.dataset.themeSet;
+    if (t === 'auto') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', t);
+    try { localStorage.setItem('twn-theme', t); } catch (err) {}
+    mark(t);
+  });
+  mark(get());
+})();
+</script>

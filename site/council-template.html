@@ -1,0 +1,461 @@
+<title>TWN Watch Party · Council</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&display=swap">
+<style>
+/* Council replay: who would hold each council seat if counting stopped at the time on the clock.
+   Seats by party nationwide, a map and cards by county, and one county opened up district by district. */
+:root {
+  --bg: #F2F4F7; --surface: #FFFFFF; --ink: #131B2A; --muted: #5B6578; --rule: #D8DDE5;
+  --accent: #C96A12; --stamp: #C42B2B;
+  --dpp: #1E8A3E; --kmt: #2646A0; --tpp: #158F8C; --npp: #B38900; --oth: #8E5BA8; --ind: #747D8F;
+  --font-display: "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+  --font-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --font-num: "IBM Plex Sans Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0D121A; --surface: #151C27; --ink: #E7ECF3; --muted: #9AA5B7; --rule: #283242;
+    --accent: #F09A44; --stamp: #FF6B5F;
+    --dpp: #4FC06C; --kmt: #87A2F0; --tpp: #45CBC6; --npp: #E6C13D; --oth: #C49AE0; --ind: #A3ABBA;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0D121A; --surface: #151C27; --ink: #E7ECF3; --muted: #9AA5B7; --rule: #283242;
+  --accent: #F09A44; --stamp: #FF6B5F;
+  --dpp: #4FC06C; --kmt: #87A2F0; --tpp: #45CBC6; --npp: #E6C13D; --oth: #C49AE0; --ind: #A3ABBA;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55; margin: 0;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 48px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 18px; }
+a { color: inherit; text-underline-offset: 3px; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.num { font-family: var(--font-num); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.muted { color: var(--muted); }
+.mast { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; padding-block: 22px 0; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.stamp { width: 40px; height: 40px; border-radius: 50%; border: 2.5px solid var(--stamp); color: var(--stamp); display: grid; place-items: center; font-family: var(--font-display); font-weight: 900; font-size: 22px; transform: rotate(-8deg); flex: none; }
+.brand h1 { margin: 0; font-family: var(--font-display); font-weight: 900; font-size: 26px; letter-spacing: 0.02em; line-height: 1.1; }
+.brand h1 small { display: block; font-family: var(--font-body); font-weight: 500; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.mast-right { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+.tabs { display: flex; gap: 4px; padding: 4px; background: var(--surface); border: 1px solid var(--rule); border-radius: 999px; }
+.tabs a { text-decoration: none; padding: 6px 14px; border-radius: 999px; font-weight: 500; font-size: 14px; color: var(--muted); }
+.tabs a[aria-current="page"] { background: var(--ink); color: var(--bg); }
+.themes { display: inline-flex; gap: 2px; padding: 3px; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); }
+.themes button { border: 0; background: transparent; border-radius: 999px; padding: 4px 10px; font-size: 12px; cursor: pointer; color: var(--muted); }
+.themes button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.proto { font-size: 13px; color: var(--muted); max-width: 78ch; margin: 0; }
+
+.desk { position: sticky; top: 0; z-index: 5; background: var(--surface); border: 1px solid var(--rule); border-radius: 0 0 var(--radius) var(--radius); padding: 12px 16px; display: grid; gap: 10px; box-shadow: 0 6px 18px -14px rgba(0,0,0,0.5); }
+.desk-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; }
+.clock { font-family: var(--font-num); font-weight: 700; font-size: 38px; line-height: 1; font-variant-numeric: tabular-nums; min-width: 4.4ch; }
+.clock sup { font-size: 13px; color: var(--muted); font-weight: 500; margin-left: 2px; }
+.summary { font-size: 13px; color: var(--muted); line-height: 1.35; }
+.summary b { color: var(--ink); font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+.play { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--rule); background: var(--bg); cursor: pointer; display: grid; place-items: center; flex: none; }
+.play:hover { border-color: var(--ink); }
+.play svg { width: 15px; height: 15px; fill: var(--ink); }
+.scrub { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center; }
+input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
+.ctl { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.ctl > span { letter-spacing: 0.06em; text-transform: uppercase; }
+.seg { display: inline-flex; gap: 2px; padding: 2px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); }
+.seg button { border: 0; background: transparent; border-radius: 6px; padding: 3px 9px; font-size: 13px; cursor: pointer; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; display: grid; gap: 12px; min-width: 0; align-content: start; }
+.panel h2 { margin: 0; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+
+/* seat bars */
+.sbar { display: flex; height: 26px; border-radius: 4px; overflow: hidden; background: var(--bg); border: 1px solid var(--rule); }
+.sbar i { display: block; height: 100%; flex: none; }
+.sbar i.lead { opacity: 0.42; }
+.sbar i.wait { background: repeating-linear-gradient(45deg, var(--rule) 0 3px, transparent 3px 7px); }
+.sbar.mini { height: 10px; border-radius: 3px; }
+.half { position: relative; }
+.half::after { content: ""; position: absolute; left: 50%; top: -5px; bottom: -5px; border-left: 2px solid var(--ink); }
+.tally { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; }
+.tally .p { display: grid; gap: 0; min-width: 6.5em; }
+.tally .p .k { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+.tally .p .k i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.tally .p .v { font-family: var(--font-num); font-weight: 700; font-size: 24px; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.tally .p .s { font-size: 12px; color: var(--muted); }
+.key { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--muted); align-items: center; }
+.key i { display: inline-block; width: 18px; height: 10px; border-radius: 2px; vertical-align: middle; margin-right: 5px; background: var(--ink); }
+
+.close { display: grid; gap: 6px; }
+.close button { text-align: left; border: 1px solid var(--rule); background: var(--bg); border-radius: 8px; padding: 6px 10px; cursor: pointer; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; font-size: 13px; }
+.close button:hover { border-color: var(--muted); }
+.close .w { font-weight: 700; }
+.close .g { font-family: var(--font-num); font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; }
+.close .d { grid-column: 1 / -1; color: var(--muted); font-size: 12px; }
+
+.overview { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) { .overview { grid-template-columns: minmax(260px, 340px) minmax(0, 1fr); gap: 20px; } }
+.mapcol, .cardcol { display: grid; gap: 10px; align-content: start; min-width: 0; }
+#map svg { width: 100%; max-width: 360px; height: auto; display: block; margin: 0 auto; }
+#map path.c { stroke: var(--surface); stroke-width: 0.7; cursor: pointer; }
+#map path.c:hover { stroke: var(--ink); stroke-width: 1.2; }
+#map path.c.sel { stroke: var(--ink); stroke-width: 2; }
+#map path.inset { fill: none; stroke: var(--rule); stroke-width: 0.8; }
+.cards { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(158px, 1fr)); }
+.card { text-align: left; border: 1px solid var(--rule); border-radius: 9px; background: var(--bg); padding: 8px 10px 9px; cursor: pointer; display: grid; gap: 4px; min-width: 0; }
+.card:hover { border-color: var(--muted); }
+.card[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); background: var(--surface); }
+.card .top { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
+.card .area { font-family: var(--font-display); font-weight: 900; font-size: 16px; }
+.card .pct { font-family: var(--font-num); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.card .lead { font-size: 12.5px; display: flex; flex-wrap: wrap; gap: 0 8px; min-height: 1.4em; }
+.card .lead b { font-family: var(--font-num); }
+
+.dhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 14px; }
+.dhead h3 { margin: 0; font-family: var(--font-display); font-weight: 900; font-size: 28px; }
+.dhead .sub { font-size: 13px; color: var(--muted); }
+.dists { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) { .dists { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.dist { border: 1px solid var(--rule); border-radius: 9px; padding: 10px 12px; display: grid; gap: 6px; align-content: start; min-width: 0; background: var(--bg); }
+.dist.flash { box-shadow: 0 0 0 2px var(--accent); }
+.dist .dh { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px 10px; }
+.dist .dh b { font-size: 15px; }
+.dist .dh span { font-size: 12px; color: var(--muted); }
+.dist table { border-collapse: collapse; width: 100%; font-size: 13px; }
+.dist td { padding: 3px 4px; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+.dist td.nm { width: 100%; max-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.dist td.nm i { display: inline-block; width: 4px; height: 14px; border-radius: 2px; vertical-align: -2px; margin-right: 6px; }
+.dist td.pt { color: var(--muted); font-size: 12px; }
+.dist td.v { text-align: right; font-family: var(--font-num); font-weight: 600; font-variant-numeric: tabular-nums; }
+.dist tr.out td { color: var(--muted); }
+.dist tr.out td.v { font-weight: 400; }
+.dist tr.line td { border-bottom: 2px dashed var(--ink); padding: 0; height: 0; }
+.dist .more { font-size: 12px; color: var(--muted); }
+.st { font-size: 11px; padding: 0 6px; border-radius: 999px; border: 1px solid currentColor; line-height: 1.6; }
+.st.won { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.st.in { color: var(--ink); }
+.st.q { color: var(--accent); }
+.gapline { font-size: 12px; color: var(--muted); }
+.gapline b { color: var(--ink); font-family: var(--font-num); }
+.sortsw { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.notes { font-size: 14px; color: var(--muted); display: grid; gap: 10px; max-width: 80ch; }
+.notes h2 { margin: 0; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
+.notes p { margin: 0; }
+.notes b { color: var(--ink); }
+.loading { padding: 40px; text-align: center; color: var(--muted); }
+@media (max-width: 520px) {
+  .clock { font-size: 32px; } .dhead h3 { font-size: 24px; }
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .panel { padding: 12px; }
+  .tally .p .v { font-size: 20px; }
+}
+@media (max-width: 699px) { .desk { position: static; border-radius: var(--radius); } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+<script>
+(() => { let t = 'auto'; try { t = localStorage.getItem('twn-theme') || 'auto'; } catch (e) {}
+  if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); })();
+</script>
+
+
+<div class="wrap">
+  <header class="mast">
+    <div class="brand">
+      <div class="stamp" aria-hidden="true">卜</div>
+      <h1>開票觀察 Watch Party<small>Council seats · replay prototype</small></h1>
+    </div>
+    <div class="mast-right">
+      <nav class="tabs" aria-label="Pages">
+        <a href="index.html">Sources replay</a>
+        <a href="needle.html">Needle</a>
+        <a href="council.html" aria-current="page">Council</a>
+      </nav>
+      <div class="themes" role="group" aria-label="Color theme"><button data-theme-set="auto">Auto</button><button data-theme-set="light">Light</button><button data-theme-set="dark">Dark</button></div>
+    </div>
+  </header>
+  <p class="proto">Council (議員) elections replayed from the CEC's per-station results and report times: who would hold each seat if counting stopped at the time on the clock, with the women's quota applied. A seat is <b>decided</b> once no combination of the votes still out could change who holds it. Nothing is projected and nothing from later in the night leaks in.</p>
+  <section class="desk" id="desk" aria-label="Replay controls"></section>
+  <section class="panel" id="nation" aria-live="polite"><div class="loading">Loading…</div></section>
+  <section class="panel overview" aria-labelledby="h-cards">
+    <div class="mapcol"><h2 id="h-map">Map</h2><div id="map"></div><div class="key" id="mapkey"></div></div>
+    <div class="cardcol"><h2 id="h-cards">Every council</h2><div class="cards" id="cards"></div></div>
+  </section>
+  <section class="panel" id="detail" aria-live="polite"></section>
+  <section class="notes" aria-labelledby="h-notes">
+    <h2 id="h-notes">How to read this</h2>
+    <p><b>Seats.</b> Each electoral district (選舉區) elects several members; the candidates with the most votes win. Each voter has one vote. At every moment, the page gives each seat to whoever would win it on the votes counted so far.</p>
+    <p><b>Women's quota.</b> A district electing 4 members reserves one seat for a woman, and one more for every further 4 seats (地方制度法 §33). If too few women are among the top vote-getters, the leading women outside replace the lowest-placed men. "Women's seat" marks a woman elected this way; "displaced" marks the man who loses his place.</p>
+    <p><b>Decided.</b> A seat holder is marked elected when even the most damaging split of the votes still out — every remaining elector voting, all for the closest challengers — couldn't push them out. This uses electors at stations not yet counted, so it assumes nothing about turnout. With the women's quota, a man's seat counts as decided only once the quota can no longer displace him.</p>
+    <p><b>Map.</b> Each county takes the color of the party holding the most seats at that moment, from light (few seats decided) to solid (all decided). Before a county's first station reports it is hatched.</p>
+    <p><b>Caveats.</b> Times are when the CEC logged each station's report, for all contests at a station at once, so a council count may have been entered earlier. In 2018, ten referendums were counted the same night and counting ran past 2 a.m. in places. The replay's final state matches the CEC's elected list in every district (912 seats in 2018, 910 in 2022).</p>
+  </section>
+</div>
+
+<script>
+const META = /*__DATA__*/null;
+</script>
+<script>
+(() => {
+  const NIGHT = {};  // year -> loaded data
+  const st = { year: META.nights[META.nights.length - 1].year, area: '臺北市', t: 150, playing: false, speed: 5, sort: 'no', flash: null };
+  const desk = document.getElementById('desk'), nation = document.getElementById('nation'), cards = document.getElementById('cards'),
+    detail = document.getElementById('detail'), mapEl = document.getElementById('map'), mapKey = document.getElementById('mapkey');
+  const GROUPS = [['kmt', '國民黨'], ['dpp', '民進黨'], ['tpp', '民眾黨'], ['npp', '時代力量'], ['oth', '其他政黨'], ['ind', '無黨籍']];
+  const SHORT = { '中國國民黨': '國民黨', '民主進步黨': '民進黨', '台灣民眾黨': '民眾黨' };
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const comma = n => Math.round(n).toLocaleString('en-US');
+  const clock = t => { const m = Math.round(t) + 16 * 60, d = Math.floor(m / 1440), mm = m % 1440;
+    return String(Math.floor(mm / 60)).padStart(2, '0') + ':' + String(mm % 60).padStart(2, '0') + (d ? '<sup>+1</sup>' : ''); };
+  const clockTxt = t => clock(t).replace(/<sup>\+1<\/sup>/, ' (+1)');
+
+  // ---- seats
+  function allocate(v, sex, S, W) { // top S; women's quota replaces the lowest men with the top women outside
+    const order = v.map((x, k) => k).sort((a, b) => v[b] - v[a] || a - b);
+    let won = order.slice(0, S);
+    const short = W - won.filter(k => sex[k] === 2).length;
+    const displaced = [], quota = [];
+    if (short > 0) {
+      const add = order.slice(S).filter(k => sex[k] === 2).slice(0, short);
+      const men = won.filter(k => sex[k] !== 2).reverse().slice(0, add.length);
+      displaced.push(...men); quota.push(...add);
+      won = won.filter(k => !men.includes(k)).concat(add);
+    }
+    return { order, won, displaced, quota };
+  }
+  function safeUnder(v, i, pool, S, R) { // can't be pushed out of the top S of `pool` by R more votes
+    let ahead = 0; const need = [];
+    for (const j of pool) { if (j === i) continue; if (v[j] > v[i]) ahead++; else need.push(v[i] - v[j]); }
+    if (ahead >= S) return false;
+    need.sort((a, b) => a - b); let k = 0, s = 0;
+    for (const x of need) { if (s + x > R) break; s += x; k++; }
+    return ahead + k < S;
+  }
+  function rowAt(d, t) { const P = d.pts; let lo = 0, hi = P.length - 1, k = -1;
+    while (lo <= hi) { const m = (lo + hi) >> 1; if (P[m][0] <= t) { k = m; lo = m + 1; } else hi = m - 1; }
+    return k < 0 ? null : P[k]; }
+  function dstate(d, t) {
+    const p = rowAt(d, t), S = d.seats, W = d.women, sex = d.cands.map(c => c.sex);
+    if (!p) return { pre: true, n: 0, frac: 0, R: d.electors, S };
+    const v = p.slice(3), R = p[2], all = v.map((x, k) => k), women = all.filter(k => sex[k] === 2);
+    const a = allocate(v, sex, S, W);
+    const wSafe = women.filter(k => safeUnder(v, k, all, S, R)).length;
+    const safe = new Set();
+    for (const k of a.won) {
+      const ok = sex[k] === 2 ? (safeUnder(v, k, all, S, R) || (W > 0 && safeUnder(v, k, women, W, R)))
+        : safeUnder(v, k, all, S - W + Math.min(W, wSafe), R);
+      if (ok) safe.add(k);
+    }
+    const o = a.order, gap = o.length > S ? v[o[S - 1]] - v[o[S]] : null, tot = v.reduce((x, y) => x + y, 0);
+    return { pre: false, n: p[1], frac: p[1] / d.stations, R, v, tot, won: a.won, wonSet: new Set(a.won), safe, order: o, quota: new Set(a.quota),
+      displaced: new Set(a.displaced), gap, lastIn: o[S - 1], firstOut: o[S], S, decided: safe.size === S };
+  }
+  function countyState(c, t) {
+    const seats = Object.fromEntries(GROUPS.map(g => [g[0], { lead: 0, won: 0 }]));
+    let total = 0, wait = 0, n = 0, N = 0, decided = 0, counting = 0;
+    const ds = c.districts.map(d => {
+      const s = dstate(d, t); total += d.seats; N += d.stations; n += s.n;
+      if (s.pre) wait += d.seats;
+      else { counting++; for (const k of s.won) { const g = seats[d.cands[k].tone]; if (s.safe.has(k)) { g.won++; decided++; } else g.lead++; } }
+      return s;
+    });
+    const rank = GROUPS.map(g => g[0]).filter(g => seats[g].won + seats[g].lead > 0)
+      .sort((a, b) => (seats[b].won + seats[b].lead) - (seats[a].won + seats[a].lead) || seats[b].won - seats[a].won);
+    return { ds, seats, total, wait, frac: n / N, decided, counting, rank };
+  }
+
+  // ---- pieces
+  function seatBar(cs, mini, half) {
+    const W = cs.total; let s = '';
+    for (const [g] of GROUPS) {
+      const x = cs.seats[g]; if (!x) continue;
+      if (x.won) s += `<i style="width:${100 * x.won / W}%;background:var(--${g})" title="${x.won} decided"></i>`;
+      if (x.lead) s += `<i class="lead" style="width:${100 * x.lead / W}%;background:var(--${g})" title="${x.lead} leading"></i>`;
+    }
+    if (cs.wait) s += `<i class="wait" style="width:${100 * cs.wait / W}%"></i>`;
+    return `<div class="sbar${mini ? ' mini' : ''}${half ? ' half' : ''}">${s}</div>`;
+  }
+  function gname(g) { return GROUPS.find(x => x[0] === g)[1]; }
+  function tally(cs) {
+    return `<div class="tally">${GROUPS.filter(([g]) => cs.seats[g].won + cs.seats[g].lead > 0).sort((a, b) => (cs.seats[b[0]].won + cs.seats[b[0]].lead) - (cs.seats[a[0]].won + cs.seats[a[0]].lead)).map(([g, nm]) => {
+      const x = cs.seats[g]; return `<div class="p"><span class="k"><i style="background:var(--${g})"></i>${nm}</span><span class="v">${x.won + x.lead}</span><span class="s">${x.won} decided</span></div>`; }).join('')}
+      ${cs.wait ? `<div class="p"><span class="k"><i class="wait" style="background:repeating-linear-gradient(45deg,var(--rule) 0 3px,transparent 3px 7px)"></i>not counting yet</span><span class="v">${cs.wait}</span><span class="s">seats</span></div>` : ''}</div>`;
+  }
+  const keyHtml = `<div class="key"><span><i></i>decided</span><span><i style="opacity:.42"></i>leading, not decided</span><span><i style="background:repeating-linear-gradient(45deg,var(--rule) 0 3px,transparent 3px 7px)"></i>no stations counted yet</span></div>`;
+  function closest(night, t, area) { // seat lines closest relative to the votes counted, districts at least half counted
+    const out = [];
+    for (const c of night.counties) { if (area && c.area !== area) continue;
+      c.districts.forEach((d, i) => { const s = dstate(d, t);
+        if (s.pre || s.decided || s.gap == null || s.frac < 0.5) return;
+        out.push({ c, d, i, s, rel: s.gap / Math.max(1, s.tot / d.seats) }); }); }
+    return out.sort((a, b) => a.rel - b.rel).slice(0, area ? 3 : 6);
+  }
+  function closeList(list) {
+    if (!list.length) return '<p class="muted" style="margin:0;font-size:13px">None right now (only districts at least half counted and not yet decided are listed).</p>';
+    return `<div class="close">${list.map(({ c, d, i, s }) => { const a = d.cands[s.lastIn], b = d.cands[s.firstOut];
+      return `<button data-go="${esc(c.area)}|${i}"><span class="w">${esc(c.area)} ${esc(d.name)}${d.seat_type !== '區域' ? ' · ' + esc(d.seat_type) : ''}</span><span class="g">${comma(s.gap)} votes</span>
+        <span class="d">seat ${d.seats}: ${esc(a.name)} (${esc(SHORT[a.party] || a.party)}) over ${esc(b.name)} (${esc(SHORT[b.party] || b.party)}) · ${(100 * s.frac).toFixed(0)}% of stations</span></button>`; }).join('')}</div>`;
+  }
+
+  // ---- render
+  function renderDesk() {
+    const night = NIGHT[st.year];
+    desk.innerHTML = `
+      <div class="desk-row">
+        <div class="clock" id="clk">${clock(st.t)}</div>
+        <div class="summary" id="dsum"></div>
+        <span style="flex:1"></span>
+        <div class="ctl"><span>Night</span><div class="seg" role="group" aria-label="Night">
+          ${META.nights.map(n => `<button data-year="${n.year}" aria-pressed="${n.year === st.year}">${n.year}</button>`).join('')}</div></div>
+      </div>
+      <div class="scrub">
+        <button class="play" id="play" aria-label="${st.playing ? 'Pause' : 'Play'}">${st.playing ? '<svg viewBox="0 0 16 16"><rect x="3" y="2" width="3.5" height="12"/><rect x="9.5" y="2" width="3.5" height="12"/></svg>' : '<svg viewBox="0 0 16 16"><path d="M4 2l10 6-10 6z"/></svg>'}</button>
+        <input type="range" id="t" min="${night ? night.start : 0}" max="${night ? night.end : 600}" step="1" value="${st.t}" aria-label="Time">
+      </div>
+      <div class="desk-row">
+        <div class="ctl"><span>Speed</span><div class="seg" role="group" aria-label="Speed">
+          ${[2, 5, 15].map(s => `<button data-speed="${s}" aria-pressed="${s === st.speed}">${s} min/s</button>`).join('')}</div></div>
+      </div>`;
+  }
+  let NS = null; // states at st.t
+  function compute() { const night = NIGHT[st.year]; NS = Object.fromEntries(night.counties.map(c => [c.area, countyState(c, st.t)])); }
+  function renderNation() {
+    const night = NIGHT[st.year], all = { seats: Object.fromEntries(GROUPS.map(g => [g[0], { lead: 0, won: 0 }])), total: 0, wait: 0, decided: 0, counting: 0, dists: 0 };
+    for (const c of night.counties) { const cs = NS[c.area]; all.total += cs.total; all.wait += cs.wait; all.decided += cs.decided; all.counting += cs.counting; all.dists += c.districts.length;
+      for (const [g] of GROUPS) { all.seats[g].lead += cs.seats[g].lead; all.seats[g].won += cs.seats[g].won; } }
+    document.getElementById('dsum').innerHTML = `${esc(night.title)} · ${esc(night.date)}<br><b>${all.counting}</b> of ${all.dists} districts counting · <b>${all.decided}</b> of ${all.total} seats decided`;
+    nation.innerHTML = `<h2>Seats if counting stopped at ${clockTxt(st.t)} · all ${all.total} seats in 22 councils</h2>
+      ${seatBar(all, false, false)}${keyHtml}${tally(all)}
+      <h2 style="margin-top:6px">Closest seat lines right now</h2>
+      ${closeList(closest(night, st.t))}
+      <p class="muted" style="margin:0;font-size:12px">Gap between the last candidate in and the first one out, smallest relative to votes per seat counted so far, among districts at least half counted. Click one to open it.</p>`;
+  }
+  function renderCards() {
+    const night = NIGHT[st.year];
+    cards.innerHTML = night.counties.map(c => { const cs = NS[c.area];
+      const lead = cs.rank.slice(0, 2).map(g => `<span>${gname(g)} <b>${cs.seats[g].won + cs.seats[g].lead}</b></span>`).join('');
+      return `<button class="card" data-area="${esc(c.area)}" aria-pressed="${c.area === st.area}">
+        <span class="top"><span class="area">${esc(c.area)}</span><span class="pct">${cs.frac > 0 ? (100 * cs.frac).toFixed(0) + '%' : '—'}</span></span>
+        ${seatBar(cs, true, false)}
+        <span class="lead">${cs.counting ? lead : `<span class="muted">${cs.total} seats · not counting yet</span>`}</span></button>`; }).join('');
+  }
+  function renderMap() {
+    const M = META.map; let paths = '';
+    const hatch = `<pattern id="h-wait" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="var(--ind)" fill-opacity="0.12"/><line x1="0" y1="0" x2="0" y2="5" stroke="var(--ind)" stroke-width="2" stroke-opacity="0.6"/></pattern>`;
+    for (const [area, d] of Object.entries(M.counties)) {
+      const cs = NS[area]; let fill = 'var(--rule)', op = 1, label = area;
+      if (cs && !cs.counting) { fill = 'url(#h-wait)'; label = `${area}: not counting yet`; }
+      else if (cs) { const g = cs.rank[0], n = cs.seats[g].won + cs.seats[g].lead; fill = `var(--${g})`; op = 0.22 + 0.78 * cs.decided / cs.total;
+        label = `${area}: ${gname(g)} ${n} of ${cs.total} seats · ${cs.decided} decided`; }
+      paths += `<path class="c${area === st.area ? ' sel' : ''}" data-area="${esc(area)}" d="${d}" fill="${fill}" fill-opacity="${op}"><title>${esc(label)}</title></path>`;
+    }
+    mapEl.innerHTML = `<svg viewBox="${M.viewBox.join(' ')}" role="img" aria-label="Map of council seats at ${clockTxt(st.t)}"><defs>${hatch}</defs><path class="inset" d="${M.insets}"/>${paths}</svg>`;
+    const sel = mapEl.querySelector('path.sel'); if (sel) sel.parentNode.appendChild(sel);
+    mapKey.innerHTML = `<span>Party with the most seats in the council at this moment; solid = all seats decided.</span>`;
+  }
+  function distBlock(d, s, i) {
+    const towns = d.towns.length > 4 ? d.towns.slice(0, 3).join('、') + ` +${d.towns.length - 3}` : d.towns.join('、');
+    const head = `<div class="dh"><b>${esc(d.name)}${d.seat_type !== '區域' ? ' · ' + esc(d.seat_type) : ''}</b><span>${esc(towns)}</span>
+      <span>${d.seats} seat${d.seats > 1 ? 's' : ''}${d.women ? ` · ${d.women} for women` : ''} · ${s.pre ? 'no stations yet' : `${(100 * s.frac).toFixed(0)}% of ${comma(d.stations)} stations`}${!s.pre ? ` · ${s.decided ? 'all decided' : `${s.safe.size} of ${d.seats} decided`}` : ''}</span></div>`;
+    if (s.pre) return `<div class="dist" id="d-${i}">${head}<div class="more">${d.cands.length} candidates · ${comma(d.electors)} electors</div></div>`;
+    const lastShown = Math.max(d.seats + 2, ...s.won.map(k => s.order.indexOf(k) + 1));
+    const show = s.order.slice(0, lastShown), rest = s.order.slice(lastShown);
+    let rows = '';
+    show.forEach((k, r) => {
+      const c = d.cands[k], w = s.wonSet.has(k);
+      const tag = w ? (s.safe.has(k) ? '<span class="st won">elected</span>' : '<span class="st in">in</span>') + (s.quota.has(k) ? ' <span class="st q">women\'s seat</span>' : '')
+        : s.displaced.has(k) ? '<span class="st q">displaced</span>' : '';
+      rows += `<tr class="${w ? '' : 'out'}"><td class="nm"><i style="background:var(--${c.tone})"></i>${esc(c.name)}</td><td class="pt">${esc(SHORT[c.party] || c.party)}</td>
+        <td class="v">${comma(s.v[k])}</td><td class="v">${s.tot ? (100 * s.v[k] / s.tot).toFixed(1) + '%' : '—'}</td><td>${tag}</td></tr>`;
+      if (r === d.seats - 1 && r < show.length - 1) rows += '<tr class="line"><td colspan="5"></td></tr>';
+    });
+    const restV = rest.reduce((a, k) => a + s.v[k], 0);
+    return `<div class="dist${st.flash === i ? ' flash' : ''}" id="d-${i}">${head}
+      <table>${rows}</table>
+      ${rest.length ? `<div class="more">+ ${rest.length} more candidate${rest.length > 1 ? 's' : ''}, ${comma(restV)} votes together</div>` : ''}
+      ${s.gap != null && !s.decided ? `<div class="gapline">Seat line: <b>${comma(s.gap)}</b> votes between ${esc(d.cands[s.lastIn].name)} and ${esc(d.cands[s.firstOut].name)}; up to ${comma(s.R)} electors still out.</div>` : ''}</div>`;
+  }
+  function renderDetail() {
+    const night = NIGHT[st.year], c = night.counties.find(x => x.area === st.area) || night.counties[0];
+    st.area = c.area; const cs = NS[c.area];
+    const idx = c.districts.map((d, i) => i);
+    if (st.sort === 'close') idx.sort((a, b) => { const sa = cs.ds[a], sb = cs.ds[b];
+      const ka = sa.pre || sa.decided || sa.gap == null ? Infinity : sa.gap / Math.max(1, sa.tot / c.districts[a].seats);
+      const kb = sb.pre || sb.decided || sb.gap == null ? Infinity : sb.gap / Math.max(1, sb.tot / c.districts[b].seats);
+      return ka - kb || a - b; });
+    detail.innerHTML = `
+      <div class="dhead"><h3>${esc(c.area)}議會</h3><span class="sub">${cs.total} seats in ${c.districts.length} districts · ${cs.decided} decided · ${cs.frac > 0 ? (100 * cs.frac).toFixed(0) + '% of stations counted' : 'not counting yet'}</span></div>
+      ${seatBar(cs, false, true)}
+      <div class="key"><span>Line: half the seats (${Math.floor(cs.total / 2) + 1} for a majority)</span></div>
+      ${tally(cs)}
+      <div class="sortsw"><h2>Districts</h2><div class="ctl"><span>Order</span><div class="seg" role="group" aria-label="District order">
+        <button data-sort="no" aria-pressed="${st.sort === 'no'}">By number</button><button data-sort="close" aria-pressed="${st.sort === 'close'}">Closest seat line</button></div></div></div>
+      <div class="dists">${idx.map(i => distBlock(c.districts[i], cs.ds[i], i)).join('')}</div>`;
+  }
+  function render() { if (!NIGHT[st.year]) return; compute(); renderDesk(); renderNation(); renderMap(); renderCards(); renderDetail(); writeHash(); }
+  function light() { compute(); document.getElementById('clk').innerHTML = clock(st.t); const r = document.getElementById('t'); if (r) r.value = st.t;
+    renderNation(); renderMap(); renderCards(); renderDetail(); }
+  function writeHash() { history.replaceState(null, '', `#${st.year}/${encodeURIComponent(st.area)}`); }
+
+  async function load(year) {
+    if (NIGHT[year]) return NIGHT[year];
+    const n = META.nights.find(x => x.year === year);
+    nation.innerHTML = `<div class="loading">Loading ${year}…</div>`;
+    try { const r = await fetch(n.src); if (!r.ok) throw new Error(r.status); NIGHT[year] = await r.json(); }
+    catch (e) { nation.innerHTML = `<div class="loading">Couldn't load ${esc(n.src)} (${esc(e.message)}). This page reads its data from files published next to it, so it needs to be opened from the site, not as a single file.</div>`; throw e; }
+    return NIGHT[year];
+  }
+  async function setYear(y, t) { st.playing = false; await load(y); st.year = y; const night = NIGHT[y];
+    st.t = t != null ? t : Math.max(night.start, Math.min(...night.counties.flatMap(c => c.districts.map(d => d.pts[0][0]))) + 60); render(); }
+
+  let lastTick = 0;
+  function tick(ts) {
+    if (!st.playing) return;
+    if (ts - lastTick >= 250) { const night = NIGHT[st.year];
+      st.t = Math.min(night.end, st.t + st.speed / 4); lastTick = ts;
+      if (st.t >= night.end) { st.playing = false; render(); return; }
+      light(); }
+    requestAnimationFrame(tick);
+  }
+  desk.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.id === 'play') { st.playing = !st.playing; if (st.playing) { const n = NIGHT[st.year]; if (st.t >= n.end) st.t = n.start; lastTick = 0; requestAnimationFrame(tick); } renderDesk(); renderNation(); }
+    else if (b.dataset.year) setYear(+b.dataset.year);
+    else if (b.dataset.speed) { st.speed = +b.dataset.speed; renderDesk(); renderNation(); }
+  });
+  desk.addEventListener('input', e => { if (e.target.id === 't') { st.t = +e.target.value; light(); } });
+  const pick = (area, scroll) => { st.area = area; st.flash = null; renderMap(); renderCards(); renderDetail(); writeHash();
+    if (scroll || matchMedia('(max-width: 899px)').matches) detail.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  cards.addEventListener('click', e => { const c = e.target.closest('.card[data-area]'); if (c) pick(c.dataset.area); });
+  mapEl.addEventListener('click', e => { const c = e.target.closest('path[data-area]'); if (c) pick(c.dataset.area); });
+  detail.addEventListener('click', e => { const b = e.target.closest('[data-sort]'); if (b) { st.sort = b.dataset.sort; renderDetail(); } });
+  nation.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (!b) return;
+    const [area, i] = b.dataset.go.split('|'); st.area = area; st.flash = +i; st.sort = 'no'; renderMap(); renderCards(); renderDetail(); writeHash();
+    const el = document.getElementById('d-' + i); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); });
+
+  const m = decodeURIComponent(location.hash.slice(1)).split('/');
+  const y0 = META.nights.some(n => String(n.year) === m[0]) ? +m[0] : st.year;
+  if (m[1]) st.area = m[1];
+  setYear(y0, y0 === 2022 ? 150 : 180);
+})();
+</script>
+<script>
+(() => {
+  const root = document.documentElement;
+  const get = () => { try { return localStorage.getItem('twn-theme') || 'auto'; } catch (e) { return 'auto'; } };
+  const mark = t => document.querySelectorAll('[data-theme-set]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themeSet === t)));
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-theme-set]'); if (!b) return;
+    const t = b.dataset.themeSet;
+    if (t === 'auto') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', t);
+    try { localStorage.setItem('twn-theme', t); } catch (err) {}
+    mark(t);
+  });
+  mark(get());
+})();
+</script>
