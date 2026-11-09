@@ -27,8 +27,10 @@ ORDER = ["臺北市", "新北市", "基隆市", "桃園市", "新竹市", "新�
          "金門縣", "連江縣"]
 TONE = {"中國國民黨": "kmt", "民主進步黨": "dpp", "台灣民眾黨": "tpp", "時代力量": "npp"}
 NIGHTS = {
-    "2022-mayors": dict(baseline="2018-mayors+2020-president", title="2022 縣市長選舉", date="2022-11-26"),
-    "2018-mayors": dict(baseline="2014-mayors+2016-president", title="2018 縣市長選舉", date="2018-11-24"),
+    "2022-mayors": dict(baseline="2018-mayors+2020-president", title="2022 縣市長選舉", date="2022-11-26",
+                        previous="2018-mayors"),
+    "2018-mayors": dict(baseline="2014-mayors+2016-president", title="2018 縣市長選舉", date="2018-11-24",
+                        previous="2014-mayors"),
 }
 # turnout spread for the scenario slider: county turnout change between elections, 2014->18 and 2018->22
 TURNOUT_SIGMA = 3.75
@@ -40,8 +42,19 @@ def cand(race, k, total):
             "final": total[k]}
 
 
+def incumbents(prev):
+    """Winner of the previous mayoral race in each county (party at that election)."""
+    out = {}
+    for county, race in ST.load(prev).items():
+        total = [sum(s["v"][k] for s in race["stations"]) for k in range(len(race["cands"]))]
+        k = max(range(len(total)), key=lambda i: total[i])
+        out[county] = {k2: v for k2, v in cand(race, k, total).items() if k2 != "final"}
+    return out
+
+
 def build(night):
     cfg = NIGHTS[night]
+    inc = incumbents(cfg["previous"])
     t0 = datetime.fromisoformat(cfg["date"] + "T16:00:00")
     races, skipped = [], []
     loaded = ST.load(night)
@@ -50,7 +63,8 @@ def build(night):
         if race is None:
             continue
         if race.get("no_times"):
-            skipped.append({"area": county, "why": "voted on 2022-12-18 (rerun); not part of this night"})
+            skipped.append({"area": county, "why": "voted on 2022-12-18 (rerun); not part of this night",
+                            "incumbent": inc.get(county)})
             continue
         ns = N.Night(night, county, cfg["baseline"])
         nd = N.Night(night, county, cfg["baseline"], granularity="district")
@@ -72,13 +86,13 @@ def build(night):
             "area": county,
             "blue": cand(race, ns.ia, total), "other": cand(race, ns.ib, total), "others_final": others,
             "stations": M, "electors": sum(s["E"] for s in race["stations"]),
-            "pair_how": ns.target_how, "baseline_how": ns.how,
+            "pair_how": ns.target_how, "baseline_how": ns.how, "incumbent": inc.get(county),
             "pts": pts,
         })
         print(f"  {night} {county}: {len(pts)} points")
     end = max(r["pts"][-1][0] for r in races)
     return {"id": night, "title": cfg["title"], "date": cfg["date"], "baseline": cfg["baseline"],
-            "start": 0, "end": end, "turnout_sigma": TURNOUT_SIGMA,
+            "start": 0, "end": end, "turnout_sigma": TURNOUT_SIGMA, "previous": cfg["previous"],
             "point_columns": ["t_min_after_16", "stations_in", "blue_votes", "other_votes",
                               "p_blue", "margin_mean", "margin_sd", "certain", "electors_left",
                               "ballots_left_at_baseline_turnout", "two_way_votes_left",

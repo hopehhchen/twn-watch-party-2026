@@ -1,0 +1,11 @@
+{
+  "name": "twn-watch-party-map",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "d3-geo": "^3.1.1",
+    "taiwan-atlas": "^2021.9.20",
+    "topojson-client": "^3.1.0",
+    "topojson-simplify": "^3.0.3"
+  }
+}

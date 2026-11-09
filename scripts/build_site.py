@@ -138,7 +138,7 @@ def needle_data():
     out = []
     for night in ("2022-mayors", "2018-mayors"):
         out.append(json.loads((ROOT / "data" / "needle" / f"{night}.json").read_text()))
-    return {"nights": out}
+    return {"nights": out, "map": json.loads((ROOT / "data" / "map" / "taiwan-counties.json").read_text())}
 
 
 def render(template, data, name, standalone_dir):

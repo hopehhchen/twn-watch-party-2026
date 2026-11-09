@@ -90,6 +90,21 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
 .chip.decided { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .card.skip { cursor: default; opacity: 0.6; }
 
+/* map */
+.overview { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) { .overview { grid-template-columns: minmax(260px, 340px) minmax(0, 1fr); gap: 20px; } }
+.mapcol, .cardcol { display: grid; gap: 10px; align-content: start; min-width: 0; }
+#map svg { width: 100%; max-width: 360px; height: auto; display: block; margin: 0 auto; }
+#map path.c { stroke: var(--surface); stroke-width: 0.7; cursor: pointer; }
+#map path.c:hover { stroke: var(--ink); stroke-width: 1.2; }
+#map path.c.sel { stroke: var(--ink); stroke-width: 2; }
+#map path.inset { fill: none; stroke: var(--rule); stroke-width: 0.8; }
+.maplegend { display: grid; gap: 6px; font-size: 12px; color: var(--muted); }
+.maplegend .row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.maplegend svg { width: 16px; height: 12px; vertical-align: middle; margin-right: 4px; }
+.ramp { display: inline-flex; gap: 2px; vertical-align: middle; margin-right: 4px; }
+.ramp i { width: 14px; height: 12px; border-radius: 2px; display: inline-block; }
+
 /* detail */
 .detail { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
 @media (min-width: 900px) { .detail { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); } }
@@ -135,6 +150,8 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
 @media (max-width: 520px) {
   .clock { font-size: 32px; } .dhead h3 { font-size: 24px; }
   .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .card { overflow: hidden; padding: 7px 8px 8px; }
+  .card .lead { flex-wrap: wrap; font-size: 12px; row-gap: 2px; }
   .panel { padding: 12px; }
   .turnout { min-width: 0; flex-basis: 100%; max-width: none; }
 }
@@ -155,12 +172,16 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
   </header>
   <p class="proto">A replay of real election nights from the CEC's own records, with the projection model run as if live. Pick a night, press play, open any race. Nothing here is simulated; the final result is shown only because these nights are over.</p>
   <section class="desk" id="desk" aria-label="Replay controls"></section>
-  <section class="panel" aria-labelledby="h-cards"><h2 id="h-cards">Every race</h2><div class="cards" id="cards"></div></section>
+  <section class="panel overview" aria-labelledby="h-cards">
+    <div class="mapcol"><h2 id="h-map">Map</h2><div id="map"></div><div class="maplegend" id="maplegend"></div></div>
+    <div class="cardcol"><h2 id="h-cards">Every race</h2><div class="cards" id="cards"></div></div>
+  </section>
   <section class="panel" id="detail" aria-live="polite"></section>
   <section class="notes" aria-labelledby="h-notes">
     <h2 id="h-notes">How to read this</h2>
     <p><b>The dial</b> is the chance each of a race's two main contenders wins, from the votes counted so far. Everyone else's votes are set aside. It starts wide and narrows as stations report. <b>Decided</b> means the lead is larger than every remaining elector could overturn, with no assumption about turnout.</p>
     <p><b>How it is worked out.</b> The stations already counted are compared with how the same villages voted before (the previous mayoral and presidential races, averaged). That swing is applied to the stations still out, with room for districts to move differently. Tested on the 2018 and 2022 nights; see <code>docs/needle.md</code> in the repository.</p>
+    <p><b>Map.</b> Before a race has any counted stations, its county is hatched in the party color of the incumbent mayor. Once counting starts, it takes the color of the projected leader's own party (gray for independents, teal for 台灣民眾黨), shaded from light (toss-up) to solid (decided). 金門, 連江 and 澎湖 are drawn in insets.</p>
     <p><b>Feed.</b> "Per station" is what the model can do with polling-station results. "District totals" shows what happens if the CEC's live feed only gives district (行政區) totals: the same model, noticeably less certain early on. Which one the 2026 feed provides is not yet known.</p>
     <p><b>Turnout.</b> The live estimate compares turnout at the stations already in with their own past turnout. The slider replaces it with a scenario (in standard deviations of past turnout changes) for the votes-left figures only; it barely moves the win probability, because turnout scales both sides.</p>
     <p><b>Caveats.</b> The two contenders are taken from the final result here; for 2026 they are set in advance. Times are when the CEC logged each station's report, which can trail what TV showed. 2018 counting ran past midnight in many places because referendums were counted the same night.</p>
@@ -176,6 +197,9 @@ const DATA = /*__DATA__*/null;
   const C = { t: 0, n: 1, b: 2, o: 3, p: 4, m: 5, sd: 6, cert: 7, remE: 8, eb: 9, vrem: 10, pd: 11, md: 12, sdd: 13, certd: 14, vremd: 15, rho: 16 };
   const st = { night: '2022-mayors', area: '臺北市', t: 0, playing: false, speed: 5, feed: 'station', k: null, jitter: false };
   const desk = document.getElementById('desk'), cards = document.getElementById('cards'), detail = document.getElementById('detail');
+  const mapEl = document.getElementById('map'), mapLegend = document.getElementById('maplegend');
+  const SHADE = { 'Toss-up': 0.18, 'Leaning': 0.38, 'Likely': 0.62, 'Very likely': 0.85, 'Decided': 1 };
+  const TONES = ['kmt', 'dpp', 'tpp', 'npp', 'ind'];
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const comma = n => Math.round(n).toLocaleString('en-US');
   const signed = n => (n > 0 ? '+' : n < 0 ? '−' : '') + comma(Math.abs(n));
@@ -216,8 +240,10 @@ const DATA = /*__DATA__*/null;
   }
 
   // dial: left end = other 100%, right end = blue 100%
+  const BIG = { W: 520, H: 262, cx: 260, cy: 230, R: 186, sw: 30 }, SMALL = { W: 160, H: 92, cx: 80, cy: 84, R: 72, sw: 12 };
+  const needleXY = p => { const a = Math.PI * (1 - p), r = BIG.R + 6; return [BIG.cx + r * Math.cos(a), BIG.cy - r * Math.sin(a)]; };
   function dial(race, v, big, jitterP) {
-    const W = big ? 520 : 160, H = big ? 262 : 92, cx = W / 2, cy = big ? 230 : 84, R = big ? 186 : 72, sw = big ? 30 : 12;
+    const g = big ? BIG : SMALL, W = g.W, H = g.H, cx = g.cx, cy = g.cy, R = g.R, sw = g.sw;
     const ang = p => Math.PI * (1 - p); // p=0 -> left (pi), p=1 -> right (0)
     const pt = (p, r) => [cx + r * Math.cos(ang(p)), cy - r * Math.sin(ang(p))];
     const arc = (p0, p1, r) => { const [x0, y0] = pt(p0, r), [x1, y1] = pt(p1, r); return `M${x0.toFixed(1)},${y0.toFixed(1)} A${r},${r} 0 0 1 ${x1.toFixed(1)},${y1.toFixed(1)}`; };
@@ -294,6 +320,38 @@ const DATA = /*__DATA__*/null;
     }).join('');
     s += (night.skipped || []).map(k => `<div class="card skip" title="${esc(k.why)}"><div class="top"><span class="area">${esc(k.area)}</span></div><div class="lead"><span class="muted">${esc(k.why)}</span></div></div>`).join('');
     cards.innerHTML = s;
+  }
+
+  function renderMap() {
+    const night = NIGHTS[st.night], M = DATA.map;
+    const defs = TONES.map(t => `<pattern id="h-${t}" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="5" height="5" fill="var(--${t})" fill-opacity="0.18"/><line x1="0" y1="0" x2="0" y2="5" stroke="var(--${t})" stroke-width="2" stroke-opacity="0.9"/></pattern>`).join('');
+    const byArea = Object.fromEntries(night.races.map(r => [r.area, r]));
+    const skip = Object.fromEntries((night.skipped || []).map(k => [k.area, k]));
+    let paths = '';
+    for (const [area, d] of Object.entries(M.counties)) {
+      const r = byArea[area], k = skip[area];
+      let fill, op = 1, label;
+      if (r) {
+        const v = view(r, st.t), stt = status(v);
+        if (v.pre) { fill = `url(#h-${r.incumbent ? r.incumbent.tone : 'ind'})`; label = `${area}: no count yet · incumbent ${r.incumbent ? r.incumbent.name : ''}`; }
+        else { const lead = v.pb >= 0.5 ? r.blue : r.other; fill = tone(lead); op = SHADE[stt.label]; label = `${area}: ${lead.name} ${pctTxt(Math.max(v.pb, 1 - v.pb))} · ${stt.label}`; }
+      } else if (k) { fill = `url(#h-${k.incumbent ? k.incumbent.tone : 'ind'})`; op = 0.5; label = `${area}: ${k.why}`; }
+      else { fill = 'var(--rule)'; label = area; }
+      paths += `<path class="c${area === st.area ? ' sel' : ''}" data-area="${esc(area)}" d="${d}" fill="${fill}" fill-opacity="${op}"><title>${esc(label)}</title></path>`;
+    }
+    // draw the selected county last so its outline sits on top
+    mapEl.innerHTML = `<svg viewBox="${M.viewBox.join(' ')}" role="img" aria-label="Map of races at ${clockTxt(st.t)}"><defs>${defs}</defs>
+      <path class="inset" d="${M.insets}"/>${paths}</svg>`;
+    const sel = mapEl.querySelector('path.sel'); if (sel) sel.parentNode.appendChild(sel);
+  }
+  function renderMapLegend() {
+    const sw = t => `<svg viewBox="0 0 16 12"><rect width="16" height="12" fill="url(#h-${t})"/></svg>`;
+    const ramp = t => `<span class="ramp">${Object.values(SHADE).map(o => `<i style="background:var(--${t});opacity:${o}"></i>`).join('')}</span>`;
+    mapLegend.innerHTML = `
+      <div class="row"><span>${sw('kmt')}${sw('dpp')}${sw('ind')}</span>no count yet: party of the incumbent (hatched)</div>
+      <div class="row">${ramp('kmt')}${ramp('dpp')}</div>
+      <div class="row">projected leader's party, from toss-up (light) to decided (solid). Gray = independent; teal = TPP.</div>`;
   }
 
   function series(race, col, colD) { return race.pts.map(p => [p[C.t], st.feed === 'district' ? p[colD] : p[col], p]); }
@@ -385,7 +443,7 @@ const DATA = /*__DATA__*/null;
       <div class="dhead"><h3>${esc(race.area)}長</h3><span class="sub">${esc(race.blue.name)} vs ${esc(race.other.name)}${race.others_final ? ` · others: ${comma(race.others_final)} votes, set aside` : ''}</span></div>
       <div class="detail">
         <div class="panel" style="padding:12px">
-          <div class="bigdial" id="bigdial">${dial(race, v, true)}</div>
+          <div class="bigdial" id="bigdial">${dial(race, v, true, jstate.cur != null && jstate.raceId === race.area + st.night ? jstate.cur : null)}</div>
           <div class="verdict"><span class="big">${v.pre ? 'Waiting for the first station' : v.cert ? `${esc(v.lead.name)} — decided` : `${esc((v.pb >= 0.5 ? race.blue : race.other).name)} ${stt.label.toLowerCase()}`}</span>
             <span class="small">${v.pre ? '' : `${clockTxt(st.t)} · ${st.feed === 'district' ? 'district totals only' : 'per-station feed'}`}</span></div>
           <div class="duo">${sideHtml(race.other, false)}${sideHtml(race.blue, true)}</div>
@@ -399,27 +457,38 @@ const DATA = /*__DATA__*/null;
       </div>`;
     startJitter(race, v);
   }
+  // Jitter: one loop for the page's life. renderDetail() only updates what the loop reads, so
+  // playback (which re-renders several times a second) no longer resets the needle.
+  const jstate = { race: null, v: null, cur: null, target: null, last: 0 };
   function startJitter(race, v) {
-    if (jit) { cancelAnimationFrame(jit); jit = null; }
-    if (!st.jitter || v.pre || v.cert || !v.sd) return;
-    const z = v.mean / v.sd, pLo = phi(z - 0.674), pHi = phi(z + 0.674);
-    const toP = q => v.pb + (q - (pLo + pHi) / 2); // keep centred on the model's P
-    let cur = v.pb, target = v.pb, last = 0;
-    const el = document.getElementById('bigdial');
-    const step = ts => {
-      if (ts - last > 260) { target = Math.min(1, Math.max(0, toP(pLo + Math.random() * (pHi - pLo)))); last = ts; }
-      cur += (target - cur) * 0.12;
-      el.innerHTML = dial(race, v, true, cur);
-      jit = requestAnimationFrame(step);
-    };
-    jit = requestAnimationFrame(step);
+    jstate.race = race; jstate.v = v;
+    if (jstate.cur == null || jstate.raceId !== race.area + st.night) { jstate.cur = v.pb; jstate.target = v.pb; jstate.raceId = race.area + st.night; }
+    if (!jit) jit = requestAnimationFrame(jitterStep);
+  }
+  function jitterStep(ts) {
+    jit = requestAnimationFrame(jitterStep);
+    const { race, v } = jstate;
+    const line = document.querySelector('#bigdial .ndl');
+    if (!race || !v || !line) return;
+    let goal = v.pb;
+    if (st.jitter && !v.pre && !v.cert && v.sd > 0) {
+      if (ts - jstate.last > 220) {
+        // the chance of winning if the final margin sat anywhere in the middle half of its range
+        const z = v.mean / v.sd, pLo = phi(z - 0.674), pHi = phi(z + 0.674);
+        jstate.target = pLo + Math.random() * (pHi - pLo); jstate.last = ts;
+      }
+      goal = jstate.target;
+    }
+    jstate.cur += (goal - jstate.cur) * (st.jitter ? 0.14 : 0.35);
+    const [x, y] = needleXY(jstate.cur);
+    line.setAttribute('x2', x.toFixed(1)); line.setAttribute('y2', y.toFixed(1));
   }
 
-  function render() { renderDesk(); renderCards(); renderDetail(); writeHash(); }
+  function render() { renderDesk(); renderMap(); renderCards(); renderDetail(); writeHash(); }
   function light() { // during playback: avoid re-rendering the desk controls
     document.getElementById('clk').innerHTML = clock(st.t);
     const r = document.getElementById('t'); if (r) r.value = st.t;
-    renderCards(); renderDetail();
+    renderMap(); renderCards(); renderDetail();
   }
   function writeHash() { history.replaceState(null, '', `#${st.night.slice(0, 4)}/${encodeURIComponent(st.area)}`); }
   function readHash() {
@@ -454,14 +523,16 @@ const DATA = /*__DATA__*/null;
     else if (b.dataset.k) { st.k = null; render(); }
   });
   desk.addEventListener('input', e => {
-    if (e.target.id === 't') { st.t = +e.target.value; document.getElementById('clk').innerHTML = clock(st.t); renderCards(); renderDetail(); }
+    if (e.target.id === 't') { st.t = +e.target.value; document.getElementById('clk').innerHTML = clock(st.t); renderMap(); renderCards(); renderDetail(); }
     if (e.target.id === 'k') { st.k = +e.target.value; render(); document.getElementById('k').focus(); }
   });
   desk.addEventListener('change', e => { if (e.target.id === 'jit') { st.jitter = e.target.checked; renderDetail(); } });
-  cards.addEventListener('click', e => { const c = e.target.closest('.card[data-area]'); if (!c) return; st.area = c.dataset.area; renderCards(); renderDetail(); writeHash();
-    if (matchMedia('(max-width: 899px)').matches) detail.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+  const pick = area => { if (!NIGHTS[st.night].races.some(r => r.area === area)) return; st.area = area; renderMap(); renderCards(); renderDetail(); writeHash();
+    if (matchMedia('(max-width: 899px)').matches) detail.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  cards.addEventListener('click', e => { const c = e.target.closest('.card[data-area]'); if (c) pick(c.dataset.area); });
+  mapEl.addEventListener('click', e => { const c = e.target.closest('path[data-area]'); if (c) pick(c.dataset.area); });
 
-  readHash(); setNight(st.night);
+  readHash(); setNight(st.night); renderMapLegend();
   // open at a moment where things are happening
   st.t = st.night === '2022-mayors' ? 150 : 180;
   render();
