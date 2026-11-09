@@ -89,6 +89,25 @@ What each TV channel showed on screen during the night, read from YouTube's stor
 
 How the numbers are read: `scripts/ocr_storyboard.py` matches digits against templates built for each channel's font from hand-read frames. The layouts, crop boxes and hand-read labels are in `scripts/ocr_layouts.json`. Accuracy is measured with leave-one-out over those labels (train without a frame, then read it). A reading is used only when every digit clears a confidence margin, so unclear frames are skipped rather than guessed. The frames themselves are not in the repo.
 
+### 華視 county panel: `2024-president.cts-county.json`
+
+華視 rotated county counts through a side panel. These are read from storyboard frames (~one per 10 s) by `scripts/ocr_cts_county/` and cleaned by `scripts/clean_cts_county.py`; the raw reads (499 county blocks) are in `raw/cts-county/ocr-reads.csv`.
+
+- `counties`: `{county: [[HH:MM:SS, 賴, 侯, 柯], …]}` for 12 counties (8–105 readings each). 基隆市 is left out: its 3 blocks were misread.
+- `checks.dropped`: blocks removed and why. A block is removed when a share jumps by more than 2 points from the same county's blocks within 15 minutes. After that, any value breaking a non-decreasing run is removed too.
+- `checks.above_final`: none.
+
+**Less reliable than the national tallies.** The digits are ~5 px tall and the reader is weaker: about 86–93% of rows read correctly in leave-one-out, against 100% for the national layouts. Hence the filtering.
+
+An eye check of 16 random blocks found:
+- 基隆 wrong.
+- 1 of the other 39 values wrong (in the 萬 digit, removed by the filter).
+- 2 uncertain in the last digits (≤ 20 votes).
+
+A thousands-digit misread that keeps the series rising can survive.
+
+**Timing.** Up to ~18:15, 華視's county counts ran well ahead of the CEC's station log times. Afterwards they equal the CEC's numbers.
+
 ## `raw/cec-finals.tsv` — the snapshot
 
 A compact TSV taken from `db.cec.gov.tw/static/elections/data/{tickets,profiles}/…`, with its SHA-256 in `cec-finals.tsv.sha256`. Regenerate with:

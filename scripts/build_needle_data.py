@@ -138,6 +138,23 @@ def channel_sources(night):
     return out
 
 
+def county_sources(night, county):
+    """華視's rotating county panel (data/nights/2024-president.cts-county.json), where it was read."""
+    if night != "2024-president":
+        return None
+    d = json.loads((NIGHTS_DIR / "2024-president.cts-county.json").read_text())
+    rows = d["counties"].get(county)
+    if not rows:
+        return None
+
+    def tmin(hhmm):
+        h, m, sec = (int(x) for x in hhmm.split(":"))
+        return round((h - 16) * 60 + m + sec / 60, 2)
+    # file columns: 賴, 侯, 柯 -> blue (侯), other (賴), third (柯)
+    return [{"id": "cts", "label": "華視", "en": "CTS (county panel)", "cohort": "reliable",
+             "series": [[tmin(r[0]), r[2], r[1], r[3]] for r in rows], "ends": None, "stale": 15}]
+
+
 def build(night):
     cfg = NIGHTS[night]
     inc = incumbents(cfg["previous"])
@@ -155,7 +172,11 @@ def build(night):
         for county in ORDER:
             ns = N.Night(night, county, cfg["baseline"])
             nd = N.Night(night, county, cfg["baseline"], granularity="district")
-            races.append(race_entry(ns, nd, loaded[county], county, f"{county} · 總統", t0, inc.get(county), third))
+            e = race_entry(ns, nd, loaded[county], county, f"{county} · 總統", t0, inc.get(county), third)
+            src = county_sources(night, county)
+            if src:
+                e["sources"] = src
+            races.append(e)
     for county in ([] if cfg.get("national") else ORDER):
         race = loaded.get(county)
         if race is None:

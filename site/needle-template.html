@@ -671,11 +671,11 @@ const DATA = /*__DATA__*/null;
           <h2>Projected shares over the night</h2>${chart3(race)}
           <p class="note muted" style="margin:0;font-size:12px">Three-way race: the page shows projected shares and who is ahead, not a win chance. ${esc(race.third.name)} has no earlier election to compare with, so their share is projected from the counted stations in each district, adjusted for station size (larger stations leaned more to them in 2024). The other two are projected from the swing since 2020.</p>
         </div>
-      </div>`;
+      </div>${race.sources ? sourcesPanel(race) : ''}`;
     jstate.v = null;
   }
 
-  // ---- channel watch, inside the race view (2024 national)
+  // ---- channel watch, inside the race view (2024: national, and 華視 county panel)
   function srcAt(src, t) { // latest reading at or before t, and its age in minutes
     const S = src.series; let k = -1;
     for (let i = 0; i < S.length && S[i][0] <= t; i++) k = i;
@@ -694,7 +694,7 @@ const DATA = /*__DATA__*/null;
     if (cec) { rows.push({ label: '中選會', en: 'CEC count', cohort: 'reliable', v: cec, age: 0 }); reliable.push(cec); }
     for (const src of race.sources) {
       const r = srcAt(src, st.t);
-      if (!r || r.age > 10) { rows.push({ label: src.label, en: src.en, cohort: src.cohort, v: null, why: r ? `last reading ${Math.round(r.age)} min ago` : (src.ends != null && st.t > src.ends ? 'switched to the CEC feed' : 'no reading yet') }); continue; }
+      if (!r || r.age > (src.stale || 10)) { rows.push({ label: src.label, en: src.en, cohort: src.cohort, v: null, why: r ? `last reading ${Math.round(r.age)} min ago` : (src.ends != null && st.t > src.ends ? 'switched to the CEC feed' : 'no reading yet') }); continue; }
       rows.push({ label: src.label, en: src.en, cohort: src.cohort, v: r.v, age: r.age });
       (src.cohort === 'reliable' ? reliable : field).push(r.v);
     }
@@ -712,7 +712,7 @@ const DATA = /*__DATA__*/null;
         <tr class="agg"><td>Field <span class="cohort">mean · range</span></td>${fmean ? idx.map(i => fmean[i] == null ? '<td>—</td>' : `<td><span class="num">${comma(fmean[i])}</span><br><span class="stale" style="font-size:11px">${comma(frange[i][0])}–${comma(frange[i][1])}</span></td>`).join('') : '<td>—</td><td>—</td><td>—</td>'}<td></td></tr>
         <tr class="agg"><td>Projected final <span class="cohort">model, from CEC</span></td>${proj ? idx.map(i => `<td><span class="num">${comma(proj[i].m)}</span></td>`).join('') : '<td>—</td><td>—</td><td>—</td>'}<td></td></tr>
       </tbody></table></div>
-      <p class="note muted" style="margin:0;font-size:12px">Each channel's latest on-screen count (readings older than 10 minutes are dropped). <span style="color:var(--stamp);font-weight:700">Red</span>: above the top of the model's 80% range for the final, i.e. more than the count can plausibly reach — on the night, the live counterpart of "above the final". Channel counts were read from their YouTube recordings; the floor and field are as on the sources page.</p>
+      <p class="note muted" style="margin:0;font-size:12px">${race.area === '全國' ? '' : `County counts: 華視's side panel, which rotated through the counties, so a reading can be up to 15 minutes old; read off the recording by OCR, with misreads dropped (so some readings are missing). From about 18:15 華視 showed the CEC's own county numbers. Only 華視's county numbers have been read so far. `}Each channel's latest on-screen count (readings older than ${race.area === '全國' ? 10 : 15} minutes are dropped). <span style="color:var(--stamp);font-weight:700">Red</span>: above the top of the model's 80% range for the final, i.e. more than the count can plausibly reach — on the night, the live counterpart of "above the final". Channel counts were read from their YouTube recordings; the floor and field are as on the sources page.</p>
     </div>`;
   }
 
