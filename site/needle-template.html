@@ -8,7 +8,7 @@
    and one race opened up with a big dial, the numbers behind it, and its night on two charts. */
 :root {
   --bg: #F2F4F7; --surface: #FFFFFF; --ink: #131B2A; --muted: #5B6578; --rule: #D8DDE5;
-  --accent: #C96A12; --stamp: #C42B2B;
+  --accent: #C96A12; --stamp: #C42B2B; --up: #C2571A; --down: #6B4FB8;
   --dpp: #1E8A3E; --kmt: #2646A0; --tpp: #158F8C; --npp: #B38900; --ind: #747D8F;
   --font-display: "Noto Serif TC", "Songti TC", "PMingLiU", serif;
   --font-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
@@ -18,14 +18,14 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0D121A; --surface: #151C27; --ink: #E7ECF3; --muted: #9AA5B7; --rule: #283242;
-    --accent: #F09A44; --stamp: #FF6B5F;
+    --accent: #F09A44; --stamp: #FF6B5F; --up: #F09A44; --down: #A98BEB;
     --dpp: #4FC06C; --kmt: #87A2F0; --tpp: #45CBC6; --npp: #E6C13D; --ind: #A3ABBA;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0D121A; --surface: #151C27; --ink: #E7ECF3; --muted: #9AA5B7; --rule: #283242;
-  --accent: #F09A44; --stamp: #FF6B5F;
+  --accent: #F09A44; --stamp: #FF6B5F; --up: #F09A44; --down: #A98BEB;
   --dpp: #4FC06C; --kmt: #87A2F0; --tpp: #45CBC6; --npp: #E6C13D; --ind: #A3ABBA;
   color-scheme: dark;
 }
@@ -138,6 +138,18 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
 .chart .fin { stroke: var(--stamp); stroke-width: 1.5; stroke-dasharray: 5 4; }
 .chart .fin-t { fill: var(--stamp); }
 .chart .pline { fill: none; stroke: var(--ink); stroke-width: 2; }
+.chart .prev { stroke: var(--muted); stroke-dasharray: 6 4; }
+.unitsw { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.tbig { font-family: var(--font-num); font-weight: 700; font-size: 56px; line-height: 1; text-align: center; font-variant-numeric: tabular-nums; }
+.tsub { text-align: center; font-size: 14px; color: var(--muted); }
+.chg { font-family: var(--font-num); font-weight: 700; }
+.chg.up { color: var(--up); } .chg.down { color: var(--down); }
+.card .tnum { font-family: var(--font-num); font-weight: 700; font-size: 26px; line-height: 1.1; padding: 10px 0 4px; font-variant-numeric: tabular-nums; }
+.card .tnum small { font-size: 12px; font-weight: 500; color: var(--muted); }
+.tbar { position: relative; height: 10px; border-radius: 5px; background: var(--surface); border: 1px solid var(--rule); margin: 4px 0 8px; }
+.tbar .rng { position: absolute; top: 1px; bottom: 1px; border-radius: 4px; background: var(--ink); opacity: 0.25; }
+.tbar .mid { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); }
+.tbar .pv { position: absolute; top: -4px; bottom: -4px; width: 0; border-left: 2px dashed var(--muted); }
 .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--muted); }
 .legend i { display: inline-block; width: 18px; height: 0; vertical-align: middle; margin-right: 5px; border-top: 2px solid var(--ink); }
 .legend i.cnt { border-top: 1.5px solid var(--muted); }
@@ -195,6 +207,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
     <p><b>The dial</b> is the chance each of a race's two main contenders wins, from the votes counted so far. Everyone else's votes are set aside. It starts wide and narrows as stations report. <b>Decided</b> means the lead is larger than every remaining elector could overturn, with no assumption about turnout.</p>
     <p><b>How it is worked out.</b> The stations already counted are compared with how the same villages voted before (the previous mayoral and presidential races, averaged). That swing is applied to the stations still out, with room for districts to move differently. Tested on the 2018 and 2022 nights; see <code>docs/needle.md</code> in the repository.</p>
     <p><b>Map.</b> Before a race has any counted stations, its county is hatched in the party color of the incumbent mayor. Once counting starts, it takes the color of the projected leader's own party (gray for independents, teal for 台灣民眾黨), shaded from light (toss-up) to solid (decided). 金門, 連江 and 澎湖 are drawn in insets.</p>
+    <p><b>Turnout view.</b> "Show: Turnout" switches the cards, map and race panel to the projected final turnout, worked out the same way as the vote swing: counted stations against their own turnout last time, applied to the stations still out. On the 2018 and 2022 nights it was within about 2 points by the time 5–10% of stations were in, against about 3.7 points for simply assuming last time's turnout. The "Ballots counted" line uses it to estimate what share of all ballots has been counted, which is a better progress measure than stations, since stations differ in size.</p>
     <p><b>Feed.</b> "Per station" is what the model can do with polling-station results. "District totals" shows what happens if the CEC's live feed only gives district (行政區) totals: the same model, noticeably less certain early on. Which one the 2026 feed provides is not yet known.</p>
     <p><b>Turnout.</b> The live estimate compares turnout at the stations already in with their own past turnout. The slider replaces it with a scenario (in standard deviations of past turnout changes) for the votes-left figures only; it barely moves the win probability, because turnout scales both sides.</p>
     <p><b>Caveats.</b> The two contenders are taken from the final result here; for 2026 they are set in advance. Times are when the CEC logged each station's report, which can trail what TV showed. 2018 counting ran past midnight in many places because referendums were counted the same night.</p>
@@ -207,8 +220,8 @@ const DATA = /*__DATA__*/null;
 <script>
 (() => {
   const NIGHTS = Object.fromEntries(DATA.nights.map(n => [n.id, n]));
-  const C = { t: 0, n: 1, b: 2, o: 3, p: 4, m: 5, sd: 6, cert: 7, remE: 8, eb: 9, vrem: 10, pd: 11, md: 12, sdd: 13, certd: 14, vremd: 15, rho: 16 };
-  const st = { night: '2022-mayors', area: '臺北市', t: 0, playing: false, speed: 5, feed: 'station', k: null, jitter: false };
+  const C = { t: 0, n: 1, b: 2, o: 3, p: 4, m: 5, sd: 6, cert: 7, remE: 8, eb: 9, vrem: 10, pd: 11, md: 12, sdd: 13, certd: 14, vremd: 15, rho: 16, cc: 17, tm: 18, tsd: 19, tmd: 20, tsdd: 21 };
+  const st = { night: '2022-mayors', area: '臺北市', t: 0, playing: false, speed: 5, feed: 'station', k: null, jitter: false, unit: 'votes', mode: 'winner' };
   const desk = document.getElementById('desk'), cards = document.getElementById('cards'), detail = document.getElementById('detail');
   const mapEl = document.getElementById('map'), mapLegend = document.getElementById('maplegend');
   const SHADE = { 'Toss-up': 0.18, 'Leaning': 0.38, 'Likely': 0.62, 'Very likely': 0.85, 'Decided': 1 };
@@ -245,6 +258,18 @@ const DATA = /*__DATA__*/null;
     return { pre: false, p, pb, mean, sd, cert, margin, ballotsLeft, twoLeft, lead, trail, needs,
       n: p[C.n], frac: p[C.n] / race.stations, remE: p[C.remE] };
   }
+  function tview(race, t) { // projected final turnout
+    const p = at(race, t);
+    const prev = race.prev_turnout;
+    if (!p) return { pre: true, prev };
+    const dist = st.feed === 'district';
+    const mean = dist ? p[C.tmd] : p[C.tm], sd = dist ? p[C.tsdd] : p[C.tsd], E = race.electors;
+    const eIn = E - p[C.remE];
+    return { pre: false, p, prev, proj: mean / E, lo: (mean - 1.2816 * sd) / E, hi: (mean + 1.2816 * sd) / E,
+      chg: mean / E - prev, counted: p[C.cc], expect: mean, shareCounted: mean > 0 ? p[C.cc] / mean : 0,
+      inTurnout: eIn > 0 ? p[C.cc] / eIn : null, frac: p[C.n] / race.stations, n: p[C.n] };
+  }
+  const pts1 = x => (x >= 0 ? '+' : '−') + Math.abs(100 * x).toFixed(1);
   function status(v) {
     if (v.pre) return { label: 'No stations in', cls: '' };
     if (v.cert) return { label: 'Decided', cls: 'decided' };
@@ -297,6 +322,9 @@ const DATA = /*__DATA__*/null;
         <div class="clock" id="clk">${clock(st.t)}</div>
         <div class="summary">${esc(night.title)} · ${esc(night.date)}<br><b>${started}</b> of ${night.races.length} races counting · <b>${decided}</b> decided</div>
         <span style="flex:1"></span>
+        <div class="ctl"><span>Show</span><div class="seg" role="group" aria-label="What the page projects">
+          <button data-mode="winner" aria-pressed="${st.mode === 'winner'}">Who wins</button>
+          <button data-mode="turnout" aria-pressed="${st.mode === 'turnout'}">Turnout</button></div></div>
         <div class="ctl"><span>Night</span><div class="seg" role="group" aria-label="Night">
           ${DATA.nights.map(n => `<button data-night="${n.id}" aria-pressed="${n.id === st.night}">${n.id.slice(0, 4)}</button>`).join('')}</div></div>
       </div>
@@ -317,12 +345,14 @@ const DATA = /*__DATA__*/null;
         <label class="ctl"><input type="checkbox" id="jit" ${st.jitter ? 'checked' : ''}> Jitter</label>
       </div>
       ${st.feed === 'district' ? `<div class="flag">District totals only: the projection can't see which stations within a district have reported, so it stays less certain for longer. This is what the page would show if the 2026 live feed has no per-station results.</div>` : ''}
+      ${st.mode === 'turnout' ? `<div class="summary">Turnout view: each county's projected final turnout, from the stations already in compared with how many of their electors voted in ${baseYear}; the change is against ${baseYear}'s turnout.</div>` : ''}
       <div class="summary">Turnout: "Live" estimates it from the stations already in. Drag the slider for a scenario instead: turnout vs ${baseYear} in each village, in steps of σ = ${sig} points. It changes the votes-left figures, not the dial.</div>`;
   }
 
   function renderCards() {
     const night = NIGHTS[st.night];
     let s = night.races.map(r => {
+      if (st.mode === 'turnout') return turnoutCard(r);
       const v = view(r, st.t), stt = status(v);
       const leader = v.pre ? null : (v.pb >= 0.5 ? r.blue : r.other), q = v.pre ? 0 : Math.max(v.pb, 1 - v.pb);
       return `<button class="card" data-area="${esc(r.area)}" aria-pressed="${r.area === st.area}">
@@ -335,6 +365,20 @@ const DATA = /*__DATA__*/null;
     cards.innerHTML = s;
   }
 
+  function tbar(tv) { // scale 40%..90%
+    const X = q => Math.max(0, Math.min(100, (q - 0.4) / 0.5 * 100)).toFixed(1) + '%';
+    return `<div class="tbar">${tv.pre ? '' : `<span class="rng" style="left:${X(tv.lo)};right:calc(100% - ${X(tv.hi)})"></span><span class="mid" style="left:${X(tv.proj)}"></span>`}<span class="pv" style="left:${X(tv.prev)}" title="previous turnout"></span></div>`;
+  }
+  function turnoutCard(r) {
+    const tv = tview(r, st.t);
+    return `<button class="card" data-area="${esc(r.area)}" aria-pressed="${r.area === st.area}">
+      <div class="top"><span class="area">${esc(r.area)}</span><span class="pct">${tv.pre ? '—' : Math.round(100 * tv.frac) + '% in'}</span></div>
+      <div class="tnum">${tv.pre ? '—' : (100 * tv.proj).toFixed(1) + '%'} <small>projected</small></div>
+      ${tbar(tv)}
+      <div class="lead">${tv.pre ? `<span class="muted">last time ${(100 * tv.prev).toFixed(1)}%</span>` : `<span class="chg ${tv.chg >= 0 ? 'up' : 'down'}">${pts1(tv.chg)} pts</span><span class="muted">vs ${(100 * tv.prev).toFixed(1)}%</span>`}</div>
+    </button>`;
+  }
+
   function renderMap() {
     const night = NIGHTS[st.night], M = DATA.map;
     const defs = TONES.map(t => `<pattern id="h-${t}" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
@@ -345,7 +389,12 @@ const DATA = /*__DATA__*/null;
     for (const [area, d] of Object.entries(M.counties)) {
       const r = byArea[area], k = skip[area];
       let fill, op = 1, label;
-      if (r) {
+      if (r && st.mode === 'turnout') {
+        const tv = tview(r, st.t);
+        if (tv.pre) { fill = 'url(#h-ind)'; op = 0.6; label = `${area}: no count yet · last time ${(100 * tv.prev).toFixed(1)}%`; }
+        else { fill = tv.chg >= 0 ? 'var(--up)' : 'var(--down)'; op = Math.min(1, 0.15 + Math.abs(tv.chg) / 0.06 * 0.85);
+          label = `${area}: projected ${(100 * tv.proj).toFixed(1)}% (${pts1(tv.chg)} pts)`; }
+      } else if (r) {
         const v = view(r, st.t), stt = status(v);
         if (v.pre) { fill = `url(#h-${r.incumbent ? r.incumbent.tone : 'ind'})`; label = `${area}: no count yet · incumbent ${r.incumbent ? r.incumbent.name : ''}`; }
         else { const lead = v.pb >= 0.5 ? r.blue : r.other; fill = tone(lead); op = SHADE[stt.label]; label = `${area}: ${lead.name} ${pctTxt(Math.max(v.pb, 1 - v.pb))} · ${stt.label}`; }
@@ -360,6 +409,13 @@ const DATA = /*__DATA__*/null;
   }
   function renderMapLegend() {
     const sw = t => `<svg viewBox="0 0 16 12"><rect width="16" height="12" fill="url(#h-${t})"/></svg>`;
+    if (st.mode === 'turnout') {
+      const r2 = c => `<span class="ramp">${[0.3, 0.55, 0.8, 1].map(o => `<i style="background:var(--${c});opacity:${o}"></i>`).join('')}</span>`;
+      mapLegend.innerHTML = `<div class="row"><span>${sw('ind')}</span>no count yet</div>
+        <div class="row">${r2('down')} lower · higher ${r2('up')}</div>
+        <div class="row">projected turnout vs the previous mayoral election; solid = 6 points or more.</div>`;
+      return;
+    }
     const ramp = t => `<span class="ramp">${Object.values(SHADE).map(o => `<i style="background:var(--${t});opacity:${o}"></i>`).join('')}</span>`;
     mapLegend.innerHTML = `
       <div class="row"><span>${sw('kmt')}${sw('dpp')}${sw('ind')}</span>no count yet: party of the incumbent (hatched)</div>
@@ -398,15 +454,20 @@ const DATA = /*__DATA__*/null;
     const pts = race.pts; if (!pts.length) return '';
     const t0 = pts[0][C.t] - 5, t1 = Math.max(pts[pts.length - 1][C.t], t0 + 10);
     const ob = race.other, bl = race.blue;
+    const PTS = st.unit === 'pts';
+    // points: margin as a share of the two contenders' votes (counted so far, or projected for the final)
     const allRows = pts.map(p => { const dist = st.feed === 'district'; const m = -(dist ? p[C.md] : p[C.m]), sd = dist ? p[C.sdd] : p[C.sd];
-      return [p[C.t], p[C.o] - p[C.b], m, m - 1.2816 * sd, m + 1.2816 * sd, p[C.n] / race.stations]; });
+      const two = p[C.b] + p[C.o], fin2 = two + (dist ? p[C.vremd] : p[C.vrem]);
+      const kc = PTS ? (two ? 100 / two : 0) : 1, kf = PTS ? (fin2 ? 100 / fin2 : 0) : 1;
+      return [p[C.t], (p[C.o] - p[C.b]) * kc, m * kf, (m - 1.2816 * sd) * kf, (m + 1.2816 * sd) * kf, p[C.n] / race.stations]; });
     const rows = allRows.filter(r => r[0] <= st.t);
     // Live y-range: only what has been counted by now. The band's first wild minutes (under 2% of
     // stations) are left out of the range so they don't flatten everything else; the current band always counts.
     const vals = [0];
     rows.forEach((r, i) => { vals.push(r[1], r[2]); if (r[5] >= 0.02 || i === rows.length - 1) vals.push(r[3], r[4]); });
     let lo = Math.min(...vals), hi = Math.max(...vals);
-    if (hi - lo < 2000) { hi += 1000; lo -= 1000; }
+    const minSpan = PTS ? 2 : 2000;
+    if (hi - lo < minSpan) { hi += minSpan / 2; lo -= minSpan / 2; }
     // Like the NYT needle's margin chart (2016: Wyoming, R+48, still showed "+10%" on the Democratic side),
     // the side that is behind keeps at least one labelled tick beyond zero.
     let step;
@@ -421,9 +482,11 @@ const DATA = /*__DATA__*/null;
     let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Margin over the night: ${esc(ob.name)} ahead up, ${esc(bl.name)} ahead down">`;
     s += `<rect x="${L}" y="${T}" width="${W - L - Rr}" height="${Math.max(0, y(0) - T)}" fill="${tone(ob)}" opacity="0.06"/>`;
     s += `<rect x="${L}" y="${y(0)}" width="${W - L - Rr}" height="${Math.max(0, H - B - y(0))}" fill="${tone(bl)}" opacity="0.06"/>`;
-    const gy = []; for (let v = lo; v <= hi + step / 2; v += step) gy.push(Math.round(v));
+    const dec = Math.max(0, -Math.floor(Math.log10(step) + 1e-9));
+    const gy = []; for (let v = lo; v <= hi + step / 2; v += step) gy.push(+v.toFixed(dec));
+    const fmt = v => PTS ? '+' + Math.abs(v).toFixed(dec) + ' pts' : '+' + comma(Math.abs(v));
     s += `<g class="grid">${gy.map(v => `<line x1="${L}" x2="${W - Rr}" y1="${y(v)}" y2="${y(v)}"/>`).join('')}</g>`;
-    s += gy.map(v => v === 0 ? ylab(L - 6, y(0) + 4, '0', '', 'var(--muted)') : ylab(L - 6, y(v) - 1, lead(v)[0], '+' + comma(Math.abs(v)), lead(v)[1])).join('');
+    s += gy.map(v => v === 0 ? ylab(L - 6, y(0) + 4, '0', '', 'var(--muted)') : ylab(L - 6, y(v) - 1, lead(v)[0], fmt(v), lead(v)[1])).join('');
     s += `<line class="zero" x1="${L}" x2="${W - Rr}" y1="${y(0)}" y2="${y(0)}"/>`;
     s += ticks(t0, t1, x, H - B);
     const up = rows.map((r, i) => `${i ? 'L' : 'M'}${x(r[0]).toFixed(1)},${y(r[4]).toFixed(1)}`).join('');
@@ -461,6 +524,9 @@ const DATA = /*__DATA__*/null;
       return `<div class="side b-${c.tone} ${right ? 'right' : ''}"><span class="nm">${esc(c.name)}</span><span class="pt">${esc(c.party)} · No. ${c.no}</span>
         <span class="v num">${v.pre ? '—' : comma(votes)}</span><span class="p">${pw == null ? 'chance —' : 'chance to win ' + pctTxt(pw)}</span></div>`;
     };
+    if (st.mode === 'turnout') { renderTurnoutDetail(race); return; }
+    const tvw = tview(race, st.t);
+    const ptsOf = (m, two) => two > 0 ? (100 * Math.abs(m) / two).toFixed(1) + ' pts' : '—';
     let reads = '';
     if (v.pre) reads = `<div class="read"><span class="k">Status</span><span class="v">No polling stations have reported yet.</span></div>`;
     else {
@@ -471,8 +537,10 @@ const DATA = /*__DATA__*/null;
         : `${esc(v.trail.name)} needs <b class="num">${(100 * v.needs).toFixed(v.needs < 0.6 ? 1 : 0)}%</b> of the remaining two-way vote to catch up.`;
       reads = `
         <div class="read"><span class="k">Counted</span><span class="v"><b class="num">${comma(v.n)}</b> of ${comma(race.stations)} stations (${(100 * v.frac).toFixed(1)}%) · ${esc(v.lead.name)} leads by <b class="num">${comma(Math.abs(v.margin))}</b></span></div>
-        <div class="read"><span class="k">Projected final</span><span class="v">${v.cert ? `${esc(who(v.mean))} by ${comma(Math.abs(v.mean))}` : `${esc(who(v.mean))} by <b class="num">${comma(Math.abs(v.mean))}</b>; 80% range ${esc(who(lo))} ${comma(Math.abs(lo))} to ${esc(who(hi))} ${comma(Math.abs(hi))}`}</span></div>
+        <div class="read"><span class="k">Projected final</span><span class="v">${(() => { const f2 = v.p[C.b] + v.p[C.o] + v.twoLeft, u = m => st.unit === 'pts' ? ptsOf(m, f2) : comma(Math.abs(m));
+          return v.cert ? `${esc(who(v.mean))} by ${u(v.mean)}` : `${esc(who(v.mean))} by <b class="num">${u(v.mean)}</b>; 80% range ${esc(who(lo))} ${u(lo)} to ${esc(who(hi))} ${u(hi)}`; })()}</span></div>
         <div class="read"><span class="k">To catch up</span><span class="v">${needTxt}</span></div>
+        <div class="read"><span class="k">Ballots counted</span><span class="v">an estimated <b class="num">${Math.min(100, 100 * tvw.shareCounted).toFixed(0)}%</b> of the expected ${comma(tvw.expect)} (projected turnout ${(100 * tvw.proj).toFixed(1)}%)</span></div>
         <div class="read"><span class="k">Votes left</span><span class="v">about <b class="num">${comma(v.ballotsLeft)}</b> ballots (${st.k == null ? 'live turnout estimate' : 'turnout scenario'}), ${comma(v.twoLeft)} for these two</span></div>`;
     }
     detail.innerHTML = `
@@ -487,11 +555,66 @@ const DATA = /*__DATA__*/null;
         </div>
         <div class="panel">
           <h2>Chance to win over the night</h2>${chartP(race)}
-          <h2>Margin: counted and projected</h2>${chartM(race)}
+          <div class="unitsw"><h2>Margin: counted and projected</h2><div class="seg" role="group" aria-label="Margin unit">
+            <button data-unit="votes" aria-pressed="${st.unit === 'votes'}">Votes</button><button data-unit="pts" aria-pressed="${st.unit === 'pts'}">Points</button></div></div>
+          ${chartM(race)}
+          ${st.unit === 'pts' ? '<p class="note muted" style="margin:0;font-size:12px">Points: the lead as a share of the two contenders\' votes (counted so far, or projected for the final), not of all valid votes.</p>' : ''}
           <div class="legend"><span><i></i>projected final (as estimated at each moment)</span><span><i class="band"></i>80% range</span><span><i class="cnt"></i>counted so far</span></div>
         </div>
       </div>`;
     startJitter(race, v);
+  }
+  function chartT(race) {
+    const W = 560, H = 230, L = 52, Rr = 12, T = 14, B = 30;
+    const pts = race.pts; if (!pts.length) return '';
+    const t0 = pts[0][C.t] - 5, t1 = Math.max(pts[pts.length - 1][C.t], t0 + 10), E = race.electors, dist = st.feed === 'district';
+    const rows = pts.filter(p => p[C.t] <= st.t).map(p => { const m = dist ? p[C.tmd] : p[C.tm], sd = dist ? p[C.tsdd] : p[C.tsd], eIn = E - p[C.remE];
+      return [p[C.t], 100 * m / E, 100 * (m - 1.2816 * sd) / E, 100 * (m + 1.2816 * sd) / E, eIn > 0 ? 100 * p[C.cc] / eIn : null, p[C.n] / race.stations]; });
+    const prev = 100 * race.prev_turnout;
+    const vals = [prev];
+    rows.forEach((r, i) => { vals.push(r[1]); if (r[4] != null) vals.push(r[4]); if (r[5] >= 0.02 || i === rows.length - 1) vals.push(r[2], r[3]); });
+    let lo = Math.min(...vals) - 1, hi = Math.max(...vals) + 1;
+    const step = tickStep(lo, hi, 4); lo = Math.floor(lo / step) * step; hi = Math.ceil(hi / step) * step;
+    const x = t => L + (t - t0) / (t1 - t0) * (W - L - Rr), y = v => T + (hi - Math.max(lo, Math.min(hi, v))) / (hi - lo) * (H - T - B);
+    let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Projected turnout over the night">`;
+    const gy = []; for (let v = lo; v <= hi + step / 2; v += step) gy.push(+v.toFixed(1));
+    s += `<g class="grid">${gy.map(v => `<line x1="${L}" x2="${W - Rr}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${v}%</text>`).join('')}</g>`;
+    s += `<line class="prev" x1="${L}" x2="${W - Rr}" y1="${y(prev)}" y2="${y(prev)}"/><text x="${W - Rr - 4}" y="${y(prev) - 5}" text-anchor="end">last time ${prev.toFixed(1)}%</text>`;
+    s += ticks(t0, t1, x, H - B);
+    if (rows.length) {
+      const up = rows.map((r, i) => `${i ? 'L' : 'M'}${x(r[0]).toFixed(1)},${y(r[3]).toFixed(1)}`).join('');
+      const dn = rows.slice().reverse().map(r => `L${x(r[0]).toFixed(1)},${y(r[2]).toFixed(1)}`).join('');
+      s += `<path class="band" d="${up}${dn}Z"/>`;
+      s += `<path class="cnt" d="${rows.filter(r => r[4] != null).map((r, i) => `${i ? 'L' : 'M'}${x(r[0]).toFixed(1)},${y(r[4]).toFixed(1)}`).join('')}"/>`;
+      s += `<path class="proj" d="${rows.map((r, i) => `${i ? 'L' : 'M'}${x(r[0]).toFixed(1)},${y(r[1]).toFixed(1)}`).join('')}"/>`;
+    }
+    if (st.t >= t0) s += `<line class="cursor" x1="${x(Math.min(st.t, t1))}" x2="${x(Math.min(st.t, t1))}" y1="${T}" y2="${H - B}"/>`;
+    return s + '</svg>';
+  }
+  function renderTurnoutDetail(race) {
+    const tv = tview(race, st.t), night = NIGHTS[st.night], prevYear = night.previous.slice(0, 4);
+    const reads = tv.pre ? `<div class="read"><span class="k">Status</span><span class="v">No polling stations have reported yet. Last time: ${(100 * tv.prev).toFixed(1)}%.</span></div>` : `
+      <div class="read"><span class="k">Counted</span><span class="v"><b class="num">${comma(tv.n)}</b> of ${comma(race.stations)} stations (${(100 * tv.frac).toFixed(1)}%) · ${comma(tv.counted)} ballots</span></div>
+      <div class="read"><span class="k">At those stations</span><span class="v">${tv.inTurnout == null ? '—' : (100 * tv.inTurnout).toFixed(1) + '% of their electors voted'}</span></div>
+      <div class="read"><span class="k">Ballots counted</span><span class="v">an estimated <b class="num">${Math.min(100, 100 * tv.shareCounted).toFixed(0)}%</b> of the expected ${comma(tv.expect)}</span></div>
+      <div class="read"><span class="k">${prevYear}</span><span class="v">${(100 * tv.prev).toFixed(1)}% turnout in the mayoral race</span></div>`;
+    detail.innerHTML = `
+      <div class="dhead"><h3>${esc(race.area)} · turnout</h3><span class="sub">${comma(race.electors)} electors</span></div>
+      <div class="detail">
+        <div class="panel" style="padding:16px">
+          <div class="tsub">Projected final turnout</div>
+          <div class="tbig">${tv.pre ? '—' : (100 * tv.proj).toFixed(1) + '%'}</div>
+          <div class="tsub">${tv.pre ? 'waiting for the first station' : `80% range ${(100 * tv.lo).toFixed(1)}–${(100 * tv.hi).toFixed(1)}% · <span class="chg ${tv.chg >= 0 ? 'up' : 'down'}">${pts1(tv.chg)} pts</span> vs ${prevYear}`}</div>
+          ${tbar(tv)}
+          <div class="reads" style="margin-top:6px">${reads}</div>
+        </div>
+        <div class="panel">
+          <h2>Projected turnout over the night</h2>${chartT(race)}
+          <div class="legend"><span><i></i>projected final turnout</span><span><i class="band"></i>80% range</span><span><i class="cnt"></i>turnout at stations counted so far</span><span><i style="border-top:2px dashed var(--muted)"></i>${prevYear} turnout</span></div>
+          <p class="note muted" style="margin:0;font-size:12px">Stations that report early can differ from the rest (in 2022 they had noticeably lower turnout), so turnout at the stations counted so far isn't the projection: the projection compares each counted station with its own past turnout and applies that to the stations still out.</p>
+        </div>
+      </div>`;
+    jstate.v = null;
   }
   // Jitter: one loop for the page's life. renderDetail() only updates what the loop reads, so
   // playback (which re-renders several times a second) no longer resets the needle.
@@ -520,7 +643,7 @@ const DATA = /*__DATA__*/null;
     line.setAttribute('x2', x.toFixed(1)); line.setAttribute('y2', y.toFixed(1));
   }
 
-  function render() { renderDesk(); renderMap(); renderCards(); renderDetail(); writeHash(); }
+  function render() { renderDesk(); renderMap(); renderMapLegend(); renderCards(); renderDetail(); writeHash(); }
   function light() { // during playback: avoid re-rendering the desk controls
     document.getElementById('clk').innerHTML = clock(st.t);
     const r = document.getElementById('t'); if (r) r.value = st.t;
@@ -557,12 +680,14 @@ const DATA = /*__DATA__*/null;
     else if (b.dataset.speed) { st.speed = +b.dataset.speed; render(); }
     else if (b.dataset.feed) { st.feed = b.dataset.feed; render(); }
     else if (b.dataset.k) { st.k = null; render(); }
+    else if (b.dataset.mode) { st.mode = b.dataset.mode; render(); }
   });
   desk.addEventListener('input', e => {
     if (e.target.id === 't') { st.t = +e.target.value; document.getElementById('clk').innerHTML = clock(st.t); renderMap(); renderCards(); renderDetail(); }
     if (e.target.id === 'k') { st.k = +e.target.value; render(); document.getElementById('k').focus(); }
   });
   desk.addEventListener('change', e => { if (e.target.id === 'jit') { st.jitter = e.target.checked; renderDetail(); } });
+  detail.addEventListener('click', e => { const b = e.target.closest('[data-unit]'); if (b) { st.unit = b.dataset.unit; renderDetail(); } });
   const pick = area => { if (!NIGHTS[st.night].races.some(r => r.area === area)) return; st.area = area; renderMap(); renderCards(); renderDetail(); writeHash();
     if (matchMedia('(max-width: 899px)').matches) detail.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
   cards.addEventListener('click', e => { const c = e.target.closest('.card[data-area]'); if (c) pick(c.dataset.area); });

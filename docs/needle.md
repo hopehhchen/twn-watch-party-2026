@@ -67,6 +67,18 @@ Every case could be placed, so no longer lookback was needed. Swapping sides in 
 
 Win probability barely depends on the turnout assumption (log loss moves in the third decimal across a ±11-point scenario range), because turnout scales both sides. It matters for the projected margin in votes and for the "certain" line. Live turnout (reported stations vs their own baseline turnout) beats holding the baseline turnout fixed once ~5% of stations are in. Suggested slider: around 2022 turnout, σ ≈ 3.75 points (the spread of county turnout changes, 2014→2018 and 2018→2022), as a prior and what-if; the live estimate takes over as stations report.
 
+## Projected turnout (`Night.turnout`)
+
+The same structure as the vote swing, on turnout: at each counted station, log(ballots / (electors × that village's turnout in the previous mayoral race)); a citywide ratio plus district deviations, applied to stations still out; uncertainty from the spread of those ratios, plus a floor for the stations still out differing from those in. Mean error in final turnout, 43 races:
+
+| Stations in | 0% (last time's turnout) | 5% | 10% | 30% | 70% |
+|---|---|---|---|---|---|
+| Mean error, points of turnout | 3.7 | 2.2 | 1.9 | 1.1 | 0.4 |
+
+In 2022 the stations still out had 3–5% more ballots than the early-reporting stations implied; in 2018 they didn't. The floor (`sys` in `TURNOUT_PRIOR`) is a compromise: its 80% ranges held about 81–95% of the time for 2022 and more often than intended for 2018 (too wide). Two nights aren't enough to tell which is typical.
+
+The page uses this for the turnout view and for "estimated share of ballots counted" (counted ballots / projected total).
+
 ## What could break this in 2026
 
 - **Feed granularity.** The backtest uses station-level results. If the CEC's live feed only gives district totals, the same model still runs and stays calibrated but is weaker (log loss 1.1–1.8× the station-level figure through half the count). Not yet verified what the 2026 feed provides.

@@ -52,6 +52,11 @@ def incumbents(prev):
     return out
 
 
+def turnout_cols(ns, nd, n):
+    a, d = ns.turnout(n), nd.turnout(n)
+    return [a["counted"], round(a["mean"]), round(a["sd"]), round(d["mean"]), round(d["sd"])]
+
+
 def build(night):
     cfg = NIGHTS[night]
     inc = incumbents(cfg["previous"])
@@ -81,11 +86,13 @@ def build(night):
                         round(a["p"], 4), round(a["mean"]), round(a["sd"]), int(a["certain"]),
                         a["remE"], round(a["eb"]), round(a["vrem"]),
                         round(d["p"], 4), round(d["mean"]), round(d["sd"]), int(d["certain"]), round(d["vrem"]),
-                        round(a.get("rho", 1.0), 4)])
+                        round(a.get("rho", 1.0), 4)]
+                       + turnout_cols(ns, nd, n))
         races.append({
             "area": county,
             "blue": cand(race, ns.ia, total), "other": cand(race, ns.ib, total), "others_final": others,
             "stations": M, "electors": sum(s["E"] for s in race["stations"]),
+            "prev_turnout": round(ns.base[(None, None)][1], 4),
             "pair_how": ns.target_how, "baseline_how": ns.how, "incumbent": inc.get(county),
             "pts": pts,
         })
@@ -97,7 +104,9 @@ def build(night):
                               "p_blue", "margin_mean", "margin_sd", "certain", "electors_left",
                               "ballots_left_at_baseline_turnout", "two_way_votes_left",
                               "p_blue_district", "margin_mean_district", "margin_sd_district",
-                              "certain_district", "two_way_votes_left_district", "live_turnout_ratio"],
+                              "certain_district", "two_way_votes_left_district", "live_turnout_ratio",
+                              "ballots_counted", "ballots_final_mean", "ballots_final_sd",
+                              "ballots_final_mean_district", "ballots_final_sd_district"],
             "races": races, "skipped": skipped}
 
 

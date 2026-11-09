@@ -33,6 +33,7 @@ import stations as ST  # noqa: E402
 from build_cec_night import minute_ceiling  # noqa: E402
 
 KMT, DPP = "中國國民黨", "民主進步黨"
+TURNOUT_PRIOR = dict(tau=0.05, sigma=0.08, k0=8, n0=10, glob=0.12, sys=0.02)  # log-ratio scale
 PRIOR = dict(tau=0.08, sigma=0.25, k0=8, n0=10, glob=0.05)  # logit-scale priors; chosen by cross-validation 2018<->2022
 
 
@@ -308,6 +309,55 @@ class Night:
         df = max(3, K - 1) if K < 30 else 200
         p = t_cdf(mean / sd, df) if sd > 0 else (1.0 if mean > 0 else 0.0)
         return dict(p=p, mean=mean, sd=sd, certain=False, delta=delta, rho=rho, K=K, vrem=vrem, **extra)
+
+    def turnout(self, n, prior=None):
+        """Projected final ballots cast (and sd) after the first n stations are in.
+
+        Same structure as the swing: at reported stations, log(ballots / (electors x baseline turnout))
+        gives a turnout ratio; one citywide ratio plus district deviations, applied to stations still out.
+        """
+        pr = prior or TURNOUT_PRIOR
+        R, U = self.st[:n], self.st[n:]
+        if self.granularity == "district":
+            R = self._district_totals(R)
+        counted = sum(s["C"] for s in R)
+        if not U:
+            return dict(mean=counted, sd=0.0, counted=counted)
+        res = [(s["district"], math.log(max(s["C"], 1) / max(s["E"] * s["_b"][1], 1)), s["E"]) for s in R if s["E"] > 0]
+        W = sum(w for *_, w in res)
+        delta = sum(r * w for _, r, w in res) / W if W else 0.0
+        dsum = defaultdict(lambda: [0.0, 0.0, 0])
+        for d, r, w in res:
+            dsum[d][0] += r * w
+            dsum[d][1] += w
+            dsum[d][2] += 1
+        dmean = {d: (v[0] / v[1], v[2]) for d, v in dsum.items()}
+        K, nst = len(dmean), len(res)
+        within = sum(w * (r - dmean[d][0]) ** 2 for d, r, w in res) / W if W else 0.0
+        between = sum((m - delta) ** 2 for m, _ in dmean.values()) / (K - 1) if K > 1 else 0.0
+        dof_w = max(nst - K, 0)
+        sigma2 = (dof_w * within + pr["k0"] * pr["sigma"] ** 2) / (dof_w + pr["k0"])
+        tau2 = (max(K - 1, 0) * between + pr["k0"] * pr["tau"] ** 2) / (max(K - 1, 0) + pr["k0"])
+        frac_in = 1 - sum(s["E"] for s in U) / max(sum(s["E"] for s in self.st), 1)
+        # sys: stations still out can differ from those in for reasons the count can't show yet (in 2022
+        # late-reporting stations had ~3-5% more ballots than their early-reporting neighbours implied;
+        # in 2018 they didn't), so a floor that doesn't shrink as districts report
+        g2 = (tau2 / max(K, 1) + sigma2 / max(nst, 1) + pr["glob"] ** 2 * (1 - frac_in) ** 2 / (1 + K)
+              + pr["sys"] ** 2)
+        if not res:  # nothing in yet: the baseline turnout, with the prior's full uncertainty
+            g2 = pr["glob"] ** 2 + pr["tau"] ** 2
+        mean, G, var_s = float(counted), defaultdict(float), 0.0
+        n0 = pr["n0"]
+        for s in U:
+            dm, dn = dmean.get(s["district"], (delta, 0))
+            x = delta + dn / (dn + n0) * (dm - delta)
+            b = min(s["E"], s["E"] * s["_b"][1] * math.exp(x))
+            mean += b
+            G[s["district"]] += b
+            var_s += b * b * sigma2
+        var_d = sum(gk * gk * tau2 * n0 / (dmean.get(d, (0, 0))[1] + n0) for d, gk in G.items())
+        sd = math.sqrt(sum(G.values()) ** 2 * g2 + var_d + var_s)
+        return dict(mean=mean, sd=sd, counted=counted)
 
     @staticmethod
     def _district_totals(R):
