@@ -79,6 +79,13 @@ In 2022 the stations still out had 3–5% more ballots than the early-reporting 
 
 The page uses this for the turnout view and for "estimated share of ballots counted" (counted ballots / projected total).
 
+## 2024 presidential night and three-way races
+
+- **National race:** every station in the country as one race (`NationalNight`), counties standing in for districts in the correlated error; 賴清德 vs 侯友宜 (柯文哲 set aside in the dial, his projected share shown alongside). Baseline: the 2020 presidential race at village level. It beat a blend with the 2022 mayoral races on this night (county log loss 0.070 vs 0.074; national ranges much tighter). The national projection leaned toward too big a 賴 margin all night (e.g. −1.09M ± 0.13M at 10% counted vs −0.91M final).
+- **Three-way races** (柯文哲 in the top two, or within 10 points of the winner; 8 counties; picked from the final result here, from polls in 2026): no dial and no win chance. The two candidates with an earlier election to compare with (侯 vs 賴) are split by the usual swing model; the third candidate's share at stations still out is their share at counted stations in the district, with a slope on station size (in 2024, 柯's share rose with station size in every county, r = 0.1–0.65, and larger stations report later) and district deviations, with uncertainty from both. Across 2024's 22 counties at 2–50% counted, the 80% ranges for all three shares held 81% of the time; 柯's share was off by 1.8 points on average, and still ran low early in some counties (苗栗: 26.5% projected at 20% counted vs 30.0% final).
+- **For 2026's three-way races** (花蓮, possibly 彰化 with 邱建富 and 金門): the same idea, generalized — the candidates with a baseline (the KMT side vs the rest, from 2022) get the swing model, and the rest is split among the candidates without one by their counted shares per district plus the station-size slope.
+- **Channel watch:** the national race view now carries the channels' on-screen counts at the clock time (公視 own count, 華視, 三立, TVBS), with the floor (max of reliable), the field (mean and range), and the model's projected final from the CEC count. A channel above the top of the model's 80% range is marked red, the live counterpart of "above the final".
+
 ## What could break this in 2026
 
 - **Feed granularity.** The backtest uses station-level results. If the CEC's live feed only gives district totals, the same model still runs and stays calibrated but is weaker (log loss 1.1–1.8× the station-level figure through half the count). Not yet verified what the 2026 feed provides.

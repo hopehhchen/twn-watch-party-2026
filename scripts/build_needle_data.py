@@ -31,7 +31,28 @@ NIGHTS = {
                         previous="2018-mayors"),
     "2018-mayors": dict(baseline="2014-mayors+2016-president", title="2018 縣市長選舉", date="2018-11-24",
                         previous="2014-mayors"),
+    # presidential: the 2020 presidential race alone beat a blend with the 2022 mayoral races on this night
+    "2024-president": dict(baseline="2020-president", title="2024 總統選舉", date="2024-01-13",
+                           previous="2020-president", national=True),
 }
+NIGHTS_DIR = ROOT / "data" / "nights"
+CHANNELS = [  # 2024 broadcast counts read from the channels' streams (data/nights/2024-president.<id>.json)
+    ("pts", "pts-own", "公視", "PTS, own count", "reliable"),
+    ("cts", "cts", "華視", "CTS", "reliable"),
+    ("set", "set", "三立", "SET", "field"),
+    ("tvbs", "tvbs", "TVBS", "TVBS", "field"),
+]
+
+
+def three_way_rule(total, ia, ib, third):
+    """Show a race as three-way (projected shares, no win chance) when the third candidate finished in
+    the top two, or within 10 points of the winner. In 2026 this is decided before the night, from polls;
+    in the replay it uses the final result, which is hindsight."""
+    order = sorted(range(len(total)), key=lambda k: -total[k])
+    V = sum(total)
+    if third in order[:2]:
+        return True
+    return (total[order[0]] - total[third]) / V < 0.10
 # turnout spread for the scenario slider: county turnout change between elections, 2014->18 and 2018->22
 TURNOUT_SIGMA = 3.75
 
@@ -57,13 +78,85 @@ def turnout_cols(ns, nd, n):
     return [a["counted"], round(a["mean"]), round(a["sd"]), round(d["mean"]), round(d["sd"])]
 
 
+def three_cols(ns, nd, n, third):
+    out = []
+    for nt in (ns, nd):
+        r = nt.three_way(n, third)
+        out += [round(x, 4) for x in r["mean"]] + [round(x, 4) for x in r["sd"]] + [int(r["certain"])]
+    cnt = sum(s["v"][third] for s in ns.st[:n])
+    return [cnt] + out
+
+
+def race_entry(ns, nd, race, area, label, t0, inc=None, third=None):
+    total = [sum(s["v"][k] for s in race["stations"]) for k in range(len(race["cands"]))]
+    others = sum(total) - total[ns.ia] - total[ns.ib]
+    pts = []
+    M = len(ns.st)
+    for n in range(1, M + 1):
+        if n < M and minute_ceiling(ns.t[n]) == minute_ceiling(ns.t[n - 1]):
+            continue
+        t = (minute_ceiling(ns.t[n - 1]) - t0).total_seconds() / 60
+        a, d = ns.estimate(n), nd.estimate(n)
+        row = [round(t), n, a["ka"], a["kb"],
+               round(a["p"], 4), round(a["mean"]), round(a["sd"]), int(a["certain"]),
+               a["remE"], round(a["eb"]), round(a["vrem"]),
+               round(d["p"], 4), round(d["mean"]), round(d["sd"]), int(d["certain"]), round(d["vrem"]),
+               round(a.get("rho", 1.0), 4)] + turnout_cols(ns, nd, n)
+        if third is not None:
+            row += three_cols(ns, nd, n, third)
+        pts.append(row)
+    e = {
+        "area": area, "label": label,
+        "blue": cand(race, ns.ia, total), "other": cand(race, ns.ib, total), "others_final": others,
+        "stations": M, "electors": sum(s["E"] for s in race["stations"]),
+        "prev_turnout": round(ns.base[(None, None)][1], 4),
+        "pair_how": ns.target_how, "baseline_how": ns.how, "incumbent": inc,
+        "pts": pts,
+    }
+    if third is not None:
+        e["third"] = cand(race, third, total)
+        e["mode"] = "three" if three_way_rule(total, ns.ia, ns.ib, third) and area != "全國" else "two"
+    print(f"  {area}: {len(pts)} points" + (f" ({e['mode']})" if third is not None else ""))
+    return e
+
+
+def channel_sources(night):
+    if night != "2024-president":
+        return None
+    out = []
+    for key, fname, label, en, cohort in CHANNELS:
+        d = json.loads((NIGHTS_DIR / f"2024-president.{fname}.json").read_text())
+        nos = d["options"]  # ballot numbers: 1 柯文哲, 2 賴清德, 3 侯友宜
+        idx = {no: i for i, no in enumerate(nos)}
+
+        def tmin(hhmm):
+            p = [int(x) for x in hhmm.split(":")]
+            return round((p[0] - 16) * 60 + p[1] + (p[2] / 60 if len(p) > 2 else 0), 2)
+        series = [[tmin(r[0])] + [r[1 + idx[no]] for no in (3, 2, 1)] for r in d["series"]]  # blue, other, third
+        out.append({"id": key, "label": label, "en": en, "cohort": cohort, "series": series,
+                    "ends": tmin("18:20") if key == "pts" else None})
+    return out
+
+
 def build(night):
     cfg = NIGHTS[night]
     inc = incumbents(cfg["previous"])
     t0 = datetime.fromisoformat(cfg["date"] + "T16:00:00")
     races, skipped = [], []
     loaded = ST.load(night)
-    for county in ORDER:
+    if cfg.get("national"):
+        ns = N.NationalNight(night, cfg["baseline"])
+        nd = N.NationalNight(night, cfg["baseline"], granularity="district")
+        nat = {"cands": ns.race["cands"], "stations": ns.race["stations"]}
+        third = next(k for k in range(len(nat["cands"])) if k not in (ns.ia, ns.ib))
+        e = race_entry(ns, nd, nat, "全國", "全國 · 總統", t0, None, third)
+        e["sources"] = channel_sources(night)
+        races.append(e)
+        for county in ORDER:
+            ns = N.Night(night, county, cfg["baseline"])
+            nd = N.Night(night, county, cfg["baseline"], granularity="district")
+            races.append(race_entry(ns, nd, loaded[county], county, f"{county} · 總統", t0, inc.get(county), third))
+    for county in ([] if cfg.get("national") else ORDER):
         race = loaded.get(county)
         if race is None:
             continue
@@ -73,30 +166,7 @@ def build(night):
             continue
         ns = N.Night(night, county, cfg["baseline"])
         nd = N.Night(night, county, cfg["baseline"], granularity="district")
-        total = [sum(s["v"][k] for s in race["stations"]) for k in range(len(race["cands"]))]
-        others = sum(total) - total[ns.ia] - total[ns.ib]
-        pts = []
-        M = len(ns.st)
-        for n in range(1, M + 1):
-            if n < M and minute_ceiling(ns.t[n]) == minute_ceiling(ns.t[n - 1]):
-                continue
-            t = (minute_ceiling(ns.t[n - 1]) - t0).total_seconds() / 60
-            a, d = ns.estimate(n), nd.estimate(n)
-            pts.append([round(t), n, a["ka"], a["kb"],
-                        round(a["p"], 4), round(a["mean"]), round(a["sd"]), int(a["certain"]),
-                        a["remE"], round(a["eb"]), round(a["vrem"]),
-                        round(d["p"], 4), round(d["mean"]), round(d["sd"]), int(d["certain"]), round(d["vrem"]),
-                        round(a.get("rho", 1.0), 4)]
-                       + turnout_cols(ns, nd, n))
-        races.append({
-            "area": county,
-            "blue": cand(race, ns.ia, total), "other": cand(race, ns.ib, total), "others_final": others,
-            "stations": M, "electors": sum(s["E"] for s in race["stations"]),
-            "prev_turnout": round(ns.base[(None, None)][1], 4),
-            "pair_how": ns.target_how, "baseline_how": ns.how, "incumbent": inc.get(county),
-            "pts": pts,
-        })
-        print(f"  {night} {county}: {len(pts)} points")
+        races.append(race_entry(ns, nd, race, county, f"{county}長", t0, inc.get(county)))
     end = max(r["pts"][-1][0] for r in races)
     return {"id": night, "title": cfg["title"], "date": cfg["date"], "baseline": cfg["baseline"],
             "start": 0, "end": end, "turnout_sigma": TURNOUT_SIGMA, "previous": cfg["previous"],
@@ -106,13 +176,15 @@ def build(night):
                               "p_blue_district", "margin_mean_district", "margin_sd_district",
                               "certain_district", "two_way_votes_left_district", "live_turnout_ratio",
                               "ballots_counted", "ballots_final_mean", "ballots_final_sd",
-                              "ballots_final_mean_district", "ballots_final_sd_district"],
+                              "ballots_final_mean_district", "ballots_final_sd_district",
+                              "(three-way races) third_votes", "share_blue", "share_other", "share_third",
+                              "sd_blue", "sd_other", "sd_third", "certain3", "...same seven for district feed"],
             "races": races, "skipped": skipped}
 
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
-    for night in NIGHTS:
+    for night in (sys.argv[1:] or NIGHTS):
         d = build(night)
         path = OUT / f"{night}.json"
         path.write_text(json.dumps(d, ensure_ascii=False, separators=(",", ":")) + "\n")

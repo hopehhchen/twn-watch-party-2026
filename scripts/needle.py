@@ -185,7 +185,7 @@ class Night:
         self.turnout_shift, self.live_turnout, self.granularity = turnout_shift, live_turnout, granularity
         self.race = ST.load(target)[county]
         self.county, self.target, self.baseline, self.prior = county, target, baseline, prior
-        bp = blue_pair(self.race, (target, county), role="target")
+        bp = blue_pair(self.race, (target, county), top_two="president" not in target, role="target")
         if bp is None:
             raise ValueError(f"{target} {county}: no blue side")
         self.ia, self.ib, self.target_how = bp
@@ -359,6 +359,84 @@ class Night:
         sd = math.sqrt(sum(G.values()) ** 2 * g2 + var_d + var_s)
         return dict(mean=mean, sd=sd, counted=counted)
 
+    def three_way(self, n, third):
+        """Projected final shares of all valid votes for the blue side, the other side and one more
+        candidate (index `third`) who has no earlier election to compare with (e.g. 柯文哲 in 2024).
+
+        The blue/other split of their combined vote comes from the two-way swing model; the third
+        candidate's share at stations still out is their share at counted stations in the same district,
+        pulled toward their share across the whole race while the district has few stations in.
+        """
+        e = self.estimate(n)
+        R, U = self.st[:n], self.st[n:]
+        if self.granularity == "district":
+            R = self._district_totals(R)
+        cnt = [sum(s["v"][k] for s in R) for k in (self.ia, self.ib, third)]
+        valid_in = sum(s["A"] for s in R)
+        if not U:
+            V = sum(cnt) and valid_in
+            return dict(mean=[c / V for c in cnt], sd=[0, 0, 0], counted=[c / max(valid_in, 1) for c in cnt],
+                        certain=True, leader=max(range(3), key=lambda i: cnt[i]), n=n)
+        # third candidate's share: overall level, a slope on station size (larger stations, often in newer
+        # urban areas, leaned more to 柯 in 2024 and reported later; size is known before counting),
+        # and district deviations
+        lx = lambda s_: math.log(max(s_["E"], 1))
+        pts_ = [(lx(s_), s_["v"][third] / s_["A"], s_["A"], s_["district"]) for s_ in R if s_["A"] > 0]
+        W = sum(w for *_, w, _ in pts_) or 1.0
+        ybar = sum(y * w for _, y, w, _ in pts_) / W if pts_ else 0.3
+        xbar = sum(x * w for x, _, w, _ in pts_) / W if pts_ else 0.0
+        beta = 0.0
+        if pts_ and self.granularity != "district":
+            sxy = sum(w * (x - xbar) * (y - ybar) for x, y, w, _ in pts_)
+            sxx = sum(w * (x - xbar) ** 2 for x, y, w, _ in pts_)
+            beta = sxy / (sxx + 30 * 0.15 * (W / len(pts_)))  # ridge: ~30 stations' worth of doubt
+        ds = defaultdict(lambda: [0.0, 0.0, 0])
+        for x, y, w, d in pts_:
+            ds[d][0] += w * (y - ybar - beta * (x - xbar))
+            ds[d][1] += w
+            ds[d][2] += 1
+        city = ybar
+        resid = [(v[0] / v[1], v[1]) for v in ds.values() if v[1]]
+        K = len(resid)
+        between = sum(w * r * r for r, w in resid) / max(sum(w for _, w in resid), 1) if K > 1 else 0.0
+        tau2 = (max(K - 1, 0) * between + 8 * 0.04 ** 2) / (max(K - 1, 0) + 8)  # prior: districts differ by ~4 pts
+        n0 = 10
+        tr = self.turnout(n)
+        ballots_left = max(tr["mean"] - tr["counted"], 0.0)
+        valid_ratio = valid_in / max(sum(s_["C"] for s_ in R), 1) if R else 0.985
+        third_left, Gd = 0.0, defaultdict(float)
+        U_ballots = sum(s_["E"] * s_["_b"][1] for s_ in U) or 1.0
+        for s_ in U:
+            d = ds.get(s_["district"])
+            dn = d[2] if d else 0
+            dev = (d[0] / d[1]) if d and d[1] else 0.0
+            sh = min(0.95, max(0.0, city + beta * (lx(s_) - xbar) + dn / (dn + n0) * dev))
+            v = ballots_left * (s_["E"] * s_["_b"][1] / U_ballots) * valid_ratio
+            third_left += v * sh
+            Gd[s_["district"]] += v
+        valid_left = ballots_left * valid_ratio
+        frac_in = valid_in / max(valid_in + valid_left, 1)
+        # uncertainty of the third candidate's remaining votes: a shared part (their overall level isn't
+        # known until much is counted) and a district part
+        glob2 = (0.06 * (1 - frac_in)) ** 2 / (1 + K) + tau2 / max(K, 1)
+        var_c = (valid_left ** 2) * glob2 + sum(g * g * tau2 * n0 / ((ds[d][2] if d in ds else 0) + n0) for d, g in Gd.items())
+        two_left = max(valid_left - third_left, 0.0)
+        # blue - other margin from the two-way model, rescaled to the votes left after the third candidate
+        m_two = e["mean"] - (cnt[0] - cnt[1])  # projected margin among votes still out
+        scale = two_left / e["vrem"] if e.get("vrem") else 1.0
+        m_left = m_two * scale
+        a_left, b_left = (two_left + m_left) / 2, (two_left - m_left) / 2
+        tot = [cnt[0] + a_left, cnt[1] + b_left, cnt[2] + third_left]
+        V = valid_in + valid_left
+        sd_m = e["sd"] * scale
+        sd_c = math.sqrt(var_c)
+        sds = [math.sqrt((sd_m / 2) ** 2 + (sd_c / 2) ** 2), math.sqrt((sd_m / 2) ** 2 + (sd_c / 2) ** 2), sd_c]
+        order = sorted(range(3), key=lambda i: -cnt[i])
+        remE = sum(s_["E"] for s_ in U)
+        certain = cnt[order[0]] - cnt[order[1]] > remE
+        return dict(mean=[t / V for t in tot], sd=[x / V for x in sds], counted=[c / max(valid_in, 1) for c in cnt],
+                    certain=certain, leader=max(range(3), key=lambda i: tot[i]), n=n)
+
     @staticmethod
     def _district_totals(R):
         agg = {}
@@ -388,6 +466,41 @@ class Night:
         mean = ka - kb + Vrem * (2 * y - 1)
         sd = 2 * Vrem * math.sqrt(s2 / len(shares))
         return dict(p=0.5 * (1 + math.erf(mean / sd / math.sqrt(2))) if sd else float(mean > 0), mean=mean, sd=sd)
+
+
+class NationalNight(Night):
+    """The whole country as one race: stations from every county, grouped by county (in place of
+    district) for the correlated part of the error; each station keeps its own county's baseline."""
+
+    def __init__(self, target, baseline, prior=PRIOR, granularity="station", turnout_shift=0.0, live_turnout=True):
+        self.turnout_shift, self.live_turnout, self.granularity = turnout_shift, live_turnout, granularity
+        self.county, self.target, self.baseline, self.prior = "全國", target, baseline, prior
+        races = ST.load(target)
+        any_race = next(iter(races.values()))
+        self.ia, self.ib, self.target_how = blue_pair(any_race, (target, "全國"), top_two=False, role="target")
+        self.axis = "blue"
+        tm = ST.times(target)
+        st, hows, agg = [], set(), [0.0, 0.0, 0.0]
+        for county, race in races.items():
+            base, how = self._baseline(baseline, county)
+            hows.add(how)
+            for s0 in race["stations"]:
+                s = dict(s0)
+                s["_t"] = tm[(county, s["district"], s["no"])]
+                s["_b"] = base_for(base, s) if granularity == "station" else (base.get((s["district"], None)) or base[(None, None)])
+                s["county"], s["district"] = county, county
+                agg[0] += s["E"] * s["_b"][1]
+                agg[1] += s["E"]
+                st.append(s)
+        if granularity == "district":  # county totals only: every station takes its county's baseline
+            pass
+        self.race = {"cands": any_race["cands"], "stations": st}
+        self.base = {(None, None): (0.5, agg[0] / agg[1], 0.9)}
+        self.how = "; ".join(sorted(hows))[:200]
+        self.st = sorted(st, key=lambda s: s["_t"])
+        self.t = [s["_t"] for s in self.st]
+        self.final_axis = sum(s["v"][self.ia] for s in self.st)
+        self.final_rival = sum(s["v"][self.ib] for s in self.st)
 
 
 BACKTESTS = {"2018-mayors": ["2014-mayors", "2016-president", "2014-mayors+2016-president"],

@@ -136,7 +136,7 @@ STANDALONE_HEAD = """<!doctype html>
 def needle_data():
     """Precomputed by scripts/build_needle_data.py (needs the raw station files and xlrd/openpyxl)."""
     out = []
-    for night in ("2022-mayors", "2018-mayors"):
+    for night in ("2018-mayors", "2022-mayors", "2024-president"):
         out.append(json.loads((ROOT / "data" / "needle" / f"{night}.json").read_text()))
     return {"nights": out, "map": json.loads((ROOT / "data" / "map" / "taiwan-counties.json").read_text())}
 
