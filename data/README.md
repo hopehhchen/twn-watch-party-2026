@@ -100,3 +100,13 @@ node scripts/build-finals.mjs
 
 The snapshot was first taken through a browser (this workspace can't reach db.cec.gov.tw directly); running `snapshotTsv` from `scripts/cec-snapshot.mjs` in the browser reproduced the same SHA-256.
 
+
+## `raw/cec-mayor-turnout.tsv` — mayoral turnout history
+
+One row per mayoral race, 1994–2022 (直轄市長 since 1994; 縣市長 since 2009), from the CEC database's district-level profiles (`/static/elections/data/profiles/ELC/<C1|C2>/00/<theme>/C/00_000_00_000_0000.json`). Columns, tab-separated, no header:
+
+`vote_date  subject(C1=special municipality, C2=county/city)  area  electors  ballots_cast  valid  invalid  turnout_pct`
+
+Checked: valid + invalid = ballots for every row, and turnout_pct = ballots / electors to 0.01. The SHA-256 in `cec-mayor-turnout.tsv.sha256` matches the copy assembled in the browser. 2022 嘉義市 is the 12/18 rerun.
+
+The 2026 elector counts are not here: by law (公職人員選舉罷免法 第38條) the commission announces them three days before voting, i.e. by 2026-11-25.
