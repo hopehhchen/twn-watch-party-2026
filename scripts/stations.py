@@ -26,7 +26,8 @@ ELECTIONS = {
     "2018-mayors": dict(zips=["2018-municipal-mayor-stations.zip", "2018-county-mayor-stations.zip"], date="2018-11-24",
                         times="2018-station-times.xlsx"),
     "2022-mayors": dict(zips=["2022-municipal-mayor-stations.zip", "2022-county-mayor-stations.zip"], date="2022-11-26",
-                        times="2022-station-times.xls"),
+                        times="2022-station-times.xls",
+                        extra={"嘉義市": "2022-chiayi-city-rerun-stations.xls"}),  # 嘉義市 voted 2022-12-18
     "2016-president": dict(zips=["2016-president-stations.zip"], date="2016-01-16", pick="A05-4"),
     "2020-president": dict(zips=["2020-president-stations.zip"], date="2020-01-11", pick="A05-4"),
     "2024-president": dict(zips=["2024-president-stations.zip"], date="2024-01-13", pick="A05-4",
@@ -67,6 +68,8 @@ def parse_sheet(rows, president):
         if not raw or not m or j >= ia:
             continue
         parts = [p.strip() for p in re.split(r"[\n\r]+", m.group(2)) if p.strip()]
+        if not parts and not president:  # 2022 嘉義市 rerun: number, name and party on three rows
+            parts = [clean(rows[hdr + 2][j]), clean(rows[hdr + 3][j])]
         if president:
             name = re.sub(r"\s", "", m.group(2))[:3]
             party = PRESIDENT_PARTY.get(name, "")
@@ -83,7 +86,7 @@ def parse_sheet(rows, president):
             district = c0
             continue
         if c2.replace(".0", "").isdigit():
-            village = c1 or village
+            village = (c1.split("、")[0] if c1 else None) or village  # stations spanning villages: first one
             stations.append({"district": district, "village": village, "no": norm_station(c2),
                              "E": to_int(r[ie]) or 0, "C": to_int(r[ic]) or 0, "A": to_int(r[ia]) or 0,
                              "v": [to_int(r[j]) or 0 for j in cols]})
@@ -106,6 +109,10 @@ def load(election):
                 continue
             rows = rows_xls(data) if name.endswith(".xls") else rows_xlsx(data)
             out[county] = parse_sheet(rows, president)
+    for county, fname in cfg.get("extra", {}).items():
+        data = (RAW / fname).read_bytes()
+        out[county] = parse_sheet(rows_xls(data) if fname.endswith(".xls") else rows_xlsx(data), president)
+        out[county]["no_times"] = True  # not on the main election night
     return out
 
 

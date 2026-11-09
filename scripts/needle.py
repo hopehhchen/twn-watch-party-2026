@@ -5,12 +5,12 @@
   python3 scripts/needle.py race 2022-mayors 臺北市 [--baseline 2018-mayors]
 
 Model (two contenders per race, everyone else ignored):
-  * Axis. Each race is scored as one party's share of the two contenders' votes: KMT when a
-    contender is KMT, otherwise DPP. Every share below is "axis share of the top two".
-  * Baseline. For each village (村里) in an earlier election: the axis party's share of the top two
-    there (KMT votes / (KMT + strongest non-KMT); for presidential races 侯/韓/朱 vs the strongest
-    other ticket), its turnout, and the fraction of ballots that went to the top two. If the axis
-    party had no candidate, the opposite party's complement is used (non-DPP share).
+  * Sides. Each race is scored as the "blue" contender's share of the two contenders' votes. Blue is
+    the KMT contender; with no KMT contender, whoever faces the DPP; CAMPS overrides the few races
+    where labels mislead (independents, two KMT members, a KMT-backed independent).
+  * Baseline. For each village (村里) in an earlier election: the blue side's share of that race's
+    top two (by the same rules; presidential races: KMT ticket vs DPP ticket), its turnout, and the
+    fraction of ballots that went to those two.
   * Swing. At reported stations, logit(target share) - logit(baseline share) estimates the swing:
     one citywide swing plus district (行政區) deviations shrunk toward it.
   * Size of what's left. Each unreported station: its electors x village turnout x a citywide
@@ -87,33 +87,54 @@ def contenders(race):
     return sorted(range(len(tot)), key=lambda k: -tot[k])[:2]
 
 
-def axis_of(race, pair):
-    parties = [race["cands"][k]["party"] for k in pair]
-    if KMT in parties:
-        return KMT, pair[parties.index(KMT)], pair[1 - parties.index(KMT)]
-    if DPP in parties:
-        return DPP, pair[parties.index(DPP)], pair[1 - parties.index(DPP)]
-    return None, pair[0], pair[1]
+# Which candidate stands on the "blue" side of a race, when the party label alone doesn't say.
+# (election, county): (blue-side name, other-side name). Evidence in docs/needle.md: party moves,
+# endorsements, and the village-level correlation of each candidate's share with the presidential vote.
+CAMPS = {
+    ("2014-mayors", "花蓮縣"): ("傅", "蔡啟塔"),      # 傅崐萁 (ex-KMT, independent) carried the blue machine
+    ("2014-mayors", "連江縣"): ("劉增應", "楊綏生"),  # both KMT; 劉 was the nominee and the 2018 incumbent
+    ("2018-mayors", "新竹縣"): ("楊文科", "鄭朝方"),  # as a baseline: KMT vs DPP; 徐欣瑩 (民國黨, 2nd) set aside
+    ("2022-mayors", "連江縣"): ("王忠銘", "曹爾元"),  # both KMT members; 王 the nominee, same pair in 2026
+    ("2022-mayors", "苗栗縣"): ("鍾東錦", "徐定禎"),  # 鍾 (independent, since rejoined KMT) vs DPP
+    ("2022-mayors", "新竹市"): ("高虹安", "沈慧虹"),  # TPP vs DPP; 高's share tracks blue areas
+}
+BASELINE_ONLY = {("2018-mayors", "新竹縣")}  # as the race being predicted, its real top two (楊 vs 徐) apply
 
 
-def baseline_shares(base_race, axis):
-    """Per village: (axis share of top two, turnout, top-two fraction of ballots). Returns (dict, how)."""
-    cands = base_race["cands"]
-    tot = [sum(s["v"][k] for s in base_race["stations"]) for k in range(len(cands))]
+def _find(cands, name):
+    return next(k for k, c in enumerate(cands) if c["name"].startswith(name))
+
+
+def blue_pair(race, key, top_two=True, role="baseline"):
+    """(blue index, other index, how) for a race; None when it can't be decided."""
+    cands = race["cands"]
+    if key in CAMPS and not (role == "target" and key in BASELINE_ONLY):
+        a, b = (_find(cands, n) for n in CAMPS[key])
+        return a, b, f"{cands[a]['name']} vs {cands[b]['name']} (camp override)"
+    tot = [sum(s["v"][k] for s in race["stations"]) for k in range(len(cands))]
     order = sorted(range(len(tot)), key=lambda k: -tot[k])
-    ax = [k for k in order if cands[k]["party"] == axis]
-    other = DPP if axis == KMT else KMT
-    if ax:
-        a = ax[0]
-        b = next(k for k in order if k != a)
-        how, flip = f"{cands[a]['name']} vs {cands[b]['name']}", False
+    if not top_two:  # presidential: the KMT ticket against the DPP ticket
+        a = next(k for k in order if cands[k]["party"] == KMT)
+        b = next(k for k in order if cands[k]["party"] == DPP)
+        return a, b, f"{cands[a]['name']} vs {cands[b]['name']}"
+    pair = order[:2]
+    parties = [cands[k]["party"] for k in pair]
+    if KMT in parties and parties.count(KMT) == 1:
+        a = pair[parties.index(KMT)]
+    elif DPP in parties:
+        a = pair[1 - parties.index(DPP)]
     else:
-        op = [k for k in order if cands[k]["party"] == other]
-        if not op:
-            return None, "no axis party in baseline"
-        b = op[0]
-        a = next(k for k in order if k != b)
-        how, flip = f"non-{'KMT' if other == KMT else 'DPP'}: {cands[a]['name']} vs {cands[b]['name']}", False
+        return None
+    b = pair[1] if a == pair[0] else pair[0]
+    return a, b, f"{cands[a]['name']} vs {cands[b]['name']}"
+
+
+def baseline_shares(base_race, key):
+    """Per village: (blue share of the two sides, turnout, two-side fraction of ballots). Returns (dict, how)."""
+    bp = blue_pair(base_race, key, top_two="president" not in key[0])
+    if bp is None:
+        return None, "can't tell which side is blue"
+    a, b, how = bp
     agg = defaultdict(lambda: [0, 0, 0, 0])  # axis, rival, ballots, electors
     for s in base_race["stations"]:
         g = agg[(s["district"], s["village"])]
@@ -151,8 +172,11 @@ class Night:
         self.turnout_shift, self.live_turnout, self.granularity = turnout_shift, live_turnout, granularity
         self.race = ST.load(target)[county]
         self.county, self.target, self.baseline, self.prior = county, target, baseline, prior
-        self.pair = contenders(self.race)
-        self.axis, self.ia, self.ib = axis_of(self.race, self.pair)
+        bp = blue_pair(self.race, (target, county), role="target")
+        if bp is None:
+            raise ValueError(f"{target} {county}: no blue side")
+        self.ia, self.ib, self.target_how = bp
+        self.axis = "blue"
         self.base, self.how = self._baseline(baseline, county)
         tm = ST.times(target)
         self.st = sorted(self.race["stations"], key=lambda s: tm[(county, s["district"], s["no"])])
@@ -171,7 +195,7 @@ class Night:
             if county not in races:
                 why.append(f"no {b} race")
                 continue
-            d, how = baseline_shares(races[county], self.axis)
+            d, how = baseline_shares(races[county], (b, county))
             if d is None:
                 why.append(f"{b}: {how}")
                 continue
@@ -309,7 +333,9 @@ CHECKPOINTS = [0.01, 0.03, 0.05, 0.10, 0.20, 0.30, 0.50, 0.70]
 def backtest(prior=PRIOR, verbose=True):
     rows = []
     for target, bases in BACKTESTS.items():
-        for county in ST.load(target):
+        for county, race in ST.load(target).items():
+            if race.get("no_times"):
+                continue
             for bl in bases:
                 nt = Night(target, county, bl, prior)
                 if nt.base is None:

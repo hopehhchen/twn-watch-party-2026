@@ -10,15 +10,15 @@
 | 2016 president | yes | no |
 | 2018 mayors | yes | yes (logged for all contests and referendums at a station) |
 | 2020 president | yes | no |
-| 2022 mayors | yes (嘉義市 rerun not included) | yes |
+| 2022 mayors | yes (嘉義市: the 12/18 rerun, used as a baseline only) | yes |
 | 2024 president | yes | yes |
 
-`scripts/stations.py` reads them all into one shape. Station numbers are renumbered between elections, so baselines are matched by village (村里): 97–99% of electors match; the rest fall back to their district.
+`scripts/stations.py` reads them all into one shape. Station numbers are renumbered between elections, so baselines are matched by village (村里; a station covering several villages is keyed by the first): 97–100% of electors match; the rest fall back to their district.
 
 ## Model
 
-1. **Two contenders, one axis.** Only the two leading candidates count; their votes are renormalized to 100%. The race is scored as the KMT contender's share (DPP's when there is no KMT contender, e.g. 2022 新竹市).
-2. **Baseline per village.** The same party's share of the top two in an earlier election. For Taipei 2022 that is 丁守中's share of 丁 + 柯文哲 in 2018, and 韓國瑜's share of 韓 + 蔡英文 in 2020: the non-KMT side stands in for this year's non-KMT contender, whoever they are. The previous mayoral and presidential races are averaged (in logit), which beat either alone.
+1. **Two contenders, two sides.** Only the two main contenders count; their votes are renormalized to 100%. The race is scored as the "blue" contender's share: the KMT contender, or whoever faces the DPP when the KMT fields no one, with explicit overrides where labels mislead (see "Which side is blue" below).
+2. **Baseline per village.** The blue side's share of the top two in an earlier election. For Taipei 2022 that is 丁守中's share of 丁 + 柯文哲 in 2018, and 韓國瑜's share of 韓 + 蔡英文 in 2020: the other side stands in for this year's non-blue contender, whoever they are. The previous mayoral and presidential races are averaged (in logit), which beat either alone.
 3. **Swing from reported stations.** The difference between tonight's share and the baseline share at stations already in, citywide plus district deviations. It is applied to every station still out.
 4. **What's left.** Each station still out: electors × its village's baseline turnout × a live turnout ratio (reported stations vs their own baseline turnout) × the share of ballots going to the top two.
 5. **Uncertainty.** Shared error in the citywide swing, district-level error where a district has little reporting, station noise; estimated from the residuals at reported stations, with priors early on (picked by cross-validation: tune on 2018, test on 2022, and the reverse). The probability comes from a Student-t on the predicted final margin.
@@ -28,17 +28,40 @@
 
 | Stations in | Log loss (model / naive) | 80% intervals that held (model / naive) | Mean margin error, % of valid votes (model / naive) |
 |---|---|---|---|
-| 1% | 0.37 / 0.60 | 58% / 46% | 11.7 / 12.9 |
-| 5% | 0.13 / 0.17 | 77% / 44% | 4.8 / 6.2 |
-| 10% | 0.13 / 0.07 | 84% / 44% | 3.8 / 4.4 |
-| 30% | 0.07 / 0.02 | 93% / 33% | 1.3 / 2.6 |
-| 70% | 0.02 / 0.01 | 88% / 26% | 0.6 / 1.2 |
+| 1% | 0.37 / 0.60 | 56% / 46% | 11.6 / 12.9 |
+| 5% | 0.13 / 0.17 | 79% / 44% | 4.6 / 6.2 |
+| 10% | 0.13 / 0.07 | 84% / 44% | 3.7 / 4.4 |
+| 30% | 0.07 / 0.02 | 93% / 33% | 1.4 / 2.6 |
+| 70% | 0.02 / 0.01 | 86% / 26% | 0.6 / 1.2 |
 
 "Naive" assumes the votes still out split like the votes already counted, with sampling error only.
 
 - The model's margin estimate is better at every stage, and its stated uncertainty roughly holds.
 - The naive version's stated 80% intervals miss far more than 20% of the time: it is overconfident. It still scores better log loss after ~10% because no race in this sample flipped late, so its overconfidence went unpunished. It whipsaws in close races: 2022 屏東縣 went from 81% to 7% for 蘇清泉 between 18:00 and 18:30; 2018 嘉義市 showed 0.1% for the eventual winner at 18:00.
 - 2018 臺北市 (柯文哲 by 3,567 votes): the model gave 丁守中 roughly 20–25% from 18:30 to 19:30 and under 10% from 21:00; the naive version showed 柯 at 99%+ from 18:00 on, much more sure than the count justified.
+
+## Which side is blue
+
+Party labels decide most races. Where a top-two candidate is an independent or a third party, or both are KMT members, the side was set from what is known about the candidate (party moves, endorsements) and checked against the data: across villages, does the candidate's share against the other contender rise where the DPP presidential vote is high (r > 0, green-leaning) or where it is low (r < 0, blue-leaning)? For reference, 陳時中 vs 蔣萬安 (Taipei 2022) gives r = +0.97 to +0.99 and 周春米 vs 蘇清泉 (Pingtung 2022) +0.80.
+
+| Race | Candidate | r vs DPP presidential share | Known | Treated as |
+|---|---|---|---|---|
+| 2014 臺北市 | 柯文哲 vs 連勝文 | +0.99 (2016) | DPP backed him, fielded no one | other side (green) |
+| 2018 臺北市 | 柯文哲 vs 丁守中 | +0.93 / +0.94 (2016 / 2020) | ran against both parties | other side |
+| 2014 新竹縣 | 鄭永金 vs 邱鏡淳 | +0.35 | ex-KMT independent | other side (default) |
+| 2014 花蓮縣 | 傅崐萁 vs 蔡啟塔 | −0.22 to −0.41 | ex-KMT, later rejoined; his wife won as KMT in 2018 | **blue side** (override) |
+| 2014–2022 金門縣 | 陳福海 vs KMT | +0.20 to −0.39 (37 villages) | local independent; no DPP base | other side |
+| 2018 苗栗縣 | 徐定禎 vs 徐耀昌 | +0.64 / +0.66 | independent, later DPP nominee | other side |
+| 2022 苗栗縣 | 鍾東錦 vs 徐定禎 | −0.93 / −0.92 | expelled by KMT, rejoined, 2026 KMT nominee | **blue side** (override) |
+| 2018 新竹縣 | 徐欣瑩 (民國黨) vs 楊文科 | +0.69 / +0.77 | ex-KMT, 2026 KMT nominee | set aside: baseline uses 楊 vs 鄭朝方 (DPP) |
+| 2022 新竹市 | 高虹安 vs 沈慧虹 | −0.71 / −0.79 | TPP in 2022; in 2026 an independent with no KMT nominee against her | **blue side** (override) |
+| 2014, 2022 連江縣 | two KMT members | too few villages to test | 2022 nominee 王忠銘 vs 曹爾元, same pair in 2026 | 王 blue (override) |
+
+Every case could be placed, so no longer lookback was needed. Swapping sides in single races (e.g. 2018 臺北市 as 丁 vs 姚文智 instead of 丁 vs 柯) changed the 2022 forecast by less than the noise between races, and not consistently in either direction.
+
+## 2026 contenders
+
+`data/2026-contenders.json`: all 22 races from the CEC's candidate list (2026-10-16) with ballot numbers and parties (中央社, 2026-10-27). Blue is a KMT nominee in 19 races; 新竹市 高虹安 (independent, no KMT nominee), 嘉義市 張啓楷 (TPP, joint KMT-TPP candidate) and 嘉義縣 吳品叡 (KMT-backed independent) are the exceptions. Not settled: **花蓮縣** (the second contender is 張峻 or 魏嘉賢; polls disagree) and **金門縣** (six independents against 陳玉珍; 李文良 is the most prominent, no public poll). For those, "other" should be whichever non-blue candidate leads the count so far.
 
 ## Turnout
 
@@ -47,8 +70,8 @@ Win probability barely depends on the turnout assumption (log loss moves in the 
 ## What could break this in 2026
 
 - **Feed granularity.** The backtest uses station-level results. If the CEC's live feed only gives district totals, the same model still runs and stays calibrated but is weaker (log loss 1.1–1.8× the station-level figure through half the count). Not yet verified what the 2026 feed provides.
-- **Station electors.** The backtest knows each station's electors; in 2026 those may only be known per village or district before results.
-- **Contenders.** Picked here as the two leaders of the final result; in 2026 they are named before the night.
+- **Station electors.** Not published before the vote. The law (選罷法 §38) requires announcing elector totals three days before; past announcements give citywide totals for mayor (and district totals for council and referendum rolls), not per-village or per-station counts. Polling-station locations and the villages each covers are public (公告 2026-08-31). So until a station reports, its electors have to be estimated from 2022/2024 station data, scaled to the announced total.
+- **Contenders.** In the backtest, picked as the two leaders of the final result; for 2026 they are set in advance (see above), with two races unsettled.
 - **Small sample.** 43 races, few of them close. Calibration estimates are rough.
 - Report times are when the CEC logged a station, for all contests at once (and, in 2018, referendums too).
 
