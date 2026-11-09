@@ -133,24 +133,37 @@ STANDALONE_HEAD = """<!doctype html>
 """
 
 
-def main():
-    """site/index.html is the page body (the artifact viewer adds its own <head>).
-    With --standalone OUT, also write a complete HTML document (for GitHub Pages)."""
-    import sys
-    data = {"nights": [night_2024(), night_2022()]}
-    tpl = (ROOT / "site" / "template.html").read_text()
+def needle_data():
+    """Precomputed by scripts/build_needle_data.py (needs the raw station files and xlrd/openpyxl)."""
+    out = []
+    for night in ("2022-mayors", "2018-mayors"):
+        out.append(json.loads((ROOT / "data" / "needle" / f"{night}.json").read_text()))
+    return {"nights": out}
+
+
+def render(template, data, name, standalone_dir):
+    tpl = (ROOT / "site" / template).read_text()
     marker = "/*__DATA__*/null"
     assert marker in tpl
     out = tpl.replace(marker, json.dumps(data, ensure_ascii=False, separators=(",", ":")))
-    (ROOT / "site" / "index.html").write_text(out)
-    print(f"site/index.html: {len(out) / 1024:.0f} KB")
-    if "--standalone" in sys.argv:
-        dest = Path(sys.argv[sys.argv.index("--standalone") + 1])
+    (ROOT / "site" / name).write_text(out)
+    print(f"site/{name}: {len(out) / 1024:.0f} KB")
+    if standalone_dir:
+        dest = standalone_dir / name
         dest.parent.mkdir(parents=True, exist_ok=True)
         # the template starts with <title>, <meta> and <link>/<style> tags: they belong in <head>
         split = out.index('<div class="wrap">')
         dest.write_text(STANDALONE_HEAD + out[:split] + "</head>\n<body>\n" + out[split:] + "\n</body>\n</html>\n")
         print(f"{dest}: standalone document")
+
+
+def main():
+    """site/index.html and site/needle.html are page bodies (the artifact viewer adds its own <head>).
+    With --standalone OUT, also write complete HTML documents next to OUT (for GitHub Pages)."""
+    import sys
+    sdir = Path(sys.argv[sys.argv.index("--standalone") + 1]).parent if "--standalone" in sys.argv else None
+    render("template.html", {"nights": [night_2024(), night_2022()]}, "index.html", sdir)
+    render("needle-template.html", needle_data(), "needle.html", sdir)
 
 
 if __name__ == "__main__":

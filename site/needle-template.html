@@ -1,0 +1,469 @@
+<title>TWN Watch Party · Needle</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&display=swap">
+<style>
+/* Needle replay: a control desk (clock, play, feed, turnout), a grid of every race as a small dial,
+   and one race opened up with a big dial, the numbers behind it, and its night on two charts. */
+:root {
+  --bg: #F2F4F7; --surface: #FFFFFF; --ink: #131B2A; --muted: #5B6578; --rule: #D8DDE5;
+  --accent: #C96A12; --stamp: #C42B2B;
+  --dpp: #1E8A3E; --kmt: #2646A0; --tpp: #158F8C; --npp: #B38900; --ind: #747D8F;
+  --font-display: "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+  --font-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --font-num: "IBM Plex Sans Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0D121A; --surface: #151C27; --ink: #E7ECF3; --muted: #9AA5B7; --rule: #283242;
+    --accent: #F09A44; --stamp: #FF6B5F;
+    --dpp: #4FC06C; --kmt: #87A2F0; --tpp: #45CBC6; --npp: #E6C13D; --ind: #A3ABBA;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0D121A; --surface: #151C27; --ink: #E7ECF3; --muted: #9AA5B7; --rule: #283242;
+  --accent: #F09A44; --stamp: #FF6B5F;
+  --dpp: #4FC06C; --kmt: #87A2F0; --tpp: #45CBC6; --npp: #E6C13D; --ind: #A3ABBA;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55; margin: 0;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 48px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 18px; }
+a { color: inherit; text-underline-offset: 3px; }
+button, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.num { font-family: var(--font-num); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.muted { color: var(--muted); }
+
+.mast { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; padding-block: 22px 0; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.stamp { width: 40px; height: 40px; border-radius: 50%; border: 2.5px solid var(--stamp); color: var(--stamp); display: grid; place-items: center; font-family: var(--font-display); font-weight: 900; font-size: 22px; transform: rotate(-8deg); flex: none; }
+.brand h1 { margin: 0; font-family: var(--font-display); font-weight: 900; font-size: 26px; letter-spacing: 0.02em; line-height: 1.1; }
+.brand h1 small { display: block; font-family: var(--font-body); font-weight: 500; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.tabs { display: flex; gap: 4px; padding: 4px; background: var(--surface); border: 1px solid var(--rule); border-radius: 999px; }
+.tabs a { text-decoration: none; padding: 6px 14px; border-radius: 999px; font-weight: 500; font-size: 14px; color: var(--muted); }
+.tabs a[aria-current="page"] { background: var(--ink); color: var(--bg); }
+.proto { font-size: 13px; color: var(--muted); max-width: 78ch; margin: 0; }
+
+/* desk */
+.desk { position: sticky; top: 0; z-index: 5; background: var(--surface); border: 1px solid var(--rule); border-radius: 0 0 var(--radius) var(--radius); padding: 12px 16px; display: grid; gap: 10px; box-shadow: 0 6px 18px -14px rgba(0,0,0,0.5); }
+.desk-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; }
+.clock { font-family: var(--font-num); font-weight: 700; font-size: 38px; line-height: 1; font-variant-numeric: tabular-nums; min-width: 4.4ch; }
+.clock sup { font-size: 13px; color: var(--muted); font-weight: 500; margin-left: 2px; }
+.summary { font-size: 13px; color: var(--muted); line-height: 1.35; }
+.summary b { color: var(--ink); font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+.play { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--rule); background: var(--bg); cursor: pointer; display: grid; place-items: center; flex: none; }
+.play:hover { border-color: var(--ink); }
+.play svg { width: 15px; height: 15px; fill: var(--ink); }
+.scrub { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center; }
+input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
+.ctl { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.ctl > span { letter-spacing: 0.06em; text-transform: uppercase; }
+.seg { display: inline-flex; gap: 2px; padding: 2px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); }
+.seg button { border: 0; background: transparent; border-radius: 6px; padding: 3px 9px; font-size: 13px; cursor: pointer; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.turnout { display: flex; align-items: center; gap: 8px; min-width: 260px; flex: 1 1 300px; max-width: 420px; }
+.turnout output { font-family: var(--font-num); font-size: 13px; color: var(--ink); min-width: 12ch; white-space: nowrap; text-align: right; }
+.flag { font-size: 12px; padding: 6px 10px; border-radius: 8px; background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--ink); border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); }
+
+/* grid of races */
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; display: grid; gap: 12px; min-width: 0; align-content: start; }
+.panel h2 { margin: 0; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.cards { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(158px, 1fr)); }
+.card { text-align: left; border: 1px solid var(--rule); border-radius: 9px; background: var(--bg); padding: 8px 10px 9px; cursor: pointer; display: grid; gap: 2px; min-width: 0; }
+.card:hover { border-color: var(--muted); }
+.card[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); background: var(--surface); }
+.card .top { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
+.card .area { font-family: var(--font-display); font-weight: 900; font-size: 16px; }
+.card .pct { font-family: var(--font-num); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.card svg { width: 100%; height: auto; display: block; }
+.card .lead { font-size: 12.5px; display: flex; justify-content: space-between; gap: 6px; align-items: baseline; min-height: 1.4em; }
+.card .lead b { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chip { font-size: 11px; padding: 0 7px; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap; line-height: 1.6; }
+.chip.decided { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.card.skip { cursor: default; opacity: 0.6; }
+
+/* detail */
+.detail { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) { .detail { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); } }
+.dhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 14px; }
+.dhead h3 { margin: 0; font-family: var(--font-display); font-weight: 900; font-size: 28px; }
+.dhead .sub { font-size: 13px; color: var(--muted); }
+.bigdial svg { width: 100%; max-width: 480px; height: auto; display: block; margin: 0 auto; }
+.verdict { text-align: center; display: grid; gap: 2px; }
+.verdict .big { font-size: 20px; font-weight: 700; }
+.verdict .small { font-size: 13px; color: var(--muted); }
+.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.side { border-top: 4px solid var(--ind); padding-top: 8px; display: grid; gap: 2px; min-width: 0; }
+.side.right { text-align: right; }
+.side .nm { font-weight: 700; font-size: 17px; }
+.side .pt { font-size: 12px; color: var(--muted); }
+.side .v { font-size: 24px; }
+.side .p { font-size: 13px; color: var(--muted); }
+.b-dpp { border-color: var(--dpp); } .b-kmt { border-color: var(--kmt); } .b-tpp { border-color: var(--tpp); } .b-npp { border-color: var(--npp); } .b-ind { border-color: var(--ind); }
+.reads { display: grid; gap: 8px; }
+.read { font-size: 14px; display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 10px; align-items: baseline; }
+.read .k { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+@media (max-width: 520px) { .read { grid-template-columns: 1fr; gap: 0; } }
+.chart { width: 100%; height: auto; display: block; }
+.chart text { fill: var(--muted); font-family: var(--font-num); font-size: 11px; }
+.chart .grid line { stroke: var(--rule); }
+.chart .zero { stroke: var(--muted); stroke-dasharray: 3 3; }
+.chart .cursor { stroke: var(--ink); }
+.chart .cnt { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+.chart .proj { fill: none; stroke: var(--ink); stroke-width: 2; }
+.chart .band { fill: var(--ink); opacity: 0.12; }
+.chart .fin { stroke: var(--stamp); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.chart .fin-t { fill: var(--stamp); }
+.chart .pline { fill: none; stroke: var(--ink); stroke-width: 2; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--muted); }
+.legend i { display: inline-block; width: 18px; height: 0; vertical-align: middle; margin-right: 5px; border-top: 2px solid var(--ink); }
+.legend i.cnt { border-top: 1.5px solid var(--muted); }
+.legend i.band { height: 10px; border: 0; background: var(--ink); opacity: 0.15; }
+.legend i.fin { border-top: 2px dashed var(--stamp); }
+.notes { font-size: 14px; color: var(--muted); display: grid; gap: 10px; max-width: 80ch; }
+.notes h2 { margin: 0; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
+.notes p { margin: 0; }
+.notes b { color: var(--ink); }
+@media (max-width: 520px) {
+  .clock { font-size: 32px; } .dhead h3 { font-size: 24px; }
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .panel { padding: 12px; }
+  .turnout { min-width: 0; flex-basis: 100%; max-width: none; }
+}
+@media (max-width: 699px) { .desk { position: static; border-radius: var(--radius); } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <div class="brand">
+      <div class="stamp" aria-hidden="true">卜</div>
+      <h1>開票觀察 Watch Party<small>Win-probability needle · replay prototype</small></h1>
+    </div>
+    <nav class="tabs" aria-label="Pages">
+      <a href="index.html">Sources replay</a>
+      <a href="needle.html" aria-current="page">Needle</a>
+    </nav>
+  </header>
+  <p class="proto">A replay of real election nights from the CEC's own records, with the projection model run as if live. Pick a night, press play, open any race. Nothing here is simulated; the final result is shown only because these nights are over.</p>
+  <section class="desk" id="desk" aria-label="Replay controls"></section>
+  <section class="panel" aria-labelledby="h-cards"><h2 id="h-cards">Every race</h2><div class="cards" id="cards"></div></section>
+  <section class="panel" id="detail" aria-live="polite"></section>
+  <section class="notes" aria-labelledby="h-notes">
+    <h2 id="h-notes">How to read this</h2>
+    <p><b>The dial</b> is the chance each of a race's two main contenders wins, from the votes counted so far. Everyone else's votes are set aside. It starts wide and narrows as stations report. <b>Decided</b> means the lead is larger than every remaining elector could overturn, with no assumption about turnout.</p>
+    <p><b>How it is worked out.</b> The stations already counted are compared with how the same villages voted before (the previous mayoral and presidential races, averaged). That swing is applied to the stations still out, with room for districts to move differently. Tested on the 2018 and 2022 nights; see <code>docs/needle.md</code> in the repository.</p>
+    <p><b>Feed.</b> "Per station" is what the model can do with polling-station results. "District totals" shows what happens if the CEC's live feed only gives district (行政區) totals: the same model, noticeably less certain early on. Which one the 2026 feed provides is not yet known.</p>
+    <p><b>Turnout.</b> The live estimate compares turnout at the stations already in with their own past turnout. The slider replaces it with a scenario (in standard deviations of past turnout changes) for the votes-left figures only; it barely moves the win probability, because turnout scales both sides.</p>
+    <p><b>Caveats.</b> The two contenders are taken from the final result here; for 2026 they are set in advance. Times are when the CEC logged each station's report, which can trail what TV showed. 2018 counting ran past midnight in many places because referendums were counted the same night.</p>
+  </section>
+</div>
+
+<script>
+const DATA = /*__DATA__*/null;
+</script>
+<script>
+(() => {
+  const NIGHTS = Object.fromEntries(DATA.nights.map(n => [n.id, n]));
+  const C = { t: 0, n: 1, b: 2, o: 3, p: 4, m: 5, sd: 6, cert: 7, remE: 8, eb: 9, vrem: 10, pd: 11, md: 12, sdd: 13, certd: 14, vremd: 15, rho: 16 };
+  const st = { night: '2022-mayors', area: '臺北市', t: 0, playing: false, speed: 5, feed: 'station', k: null, jitter: false };
+  const desk = document.getElementById('desk'), cards = document.getElementById('cards'), detail = document.getElementById('detail');
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const comma = n => Math.round(n).toLocaleString('en-US');
+  const signed = n => (n > 0 ? '+' : n < 0 ? '−' : '') + comma(Math.abs(n));
+  const clock = t => { const m = Math.round(t) + 16 * 60, d = Math.floor(m / 1440), mm = m % 1440;
+    return String(Math.floor(mm / 60)).padStart(2, '0') + ':' + String(mm % 60).padStart(2, '0') + (d ? '<sup>+1</sup>' : ''); };
+  const clockTxt = t => clock(t).replace(/<sup>\+1<\/sup>/, ' (+1)');
+  const tone = c => `var(--${c.tone})`;
+  const phi = z => 0.5 * (1 + erf(z / Math.SQRT2));
+  function erf(x) { const s = Math.sign(x); x = Math.abs(x); const t = 1 / (1 + 0.3275911 * x);
+    return s * (1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x)); }
+
+  function at(race, t) { // last point at or before t
+    const P = race.pts; let lo = 0, hi = P.length - 1, k = -1;
+    while (lo <= hi) { const mid = (lo + hi) >> 1; if (P[mid][C.t] <= t) { k = mid; lo = mid + 1; } else hi = mid - 1; }
+    return k < 0 ? null : P[k];
+  }
+  function view(race, t) {
+    const p = at(race, t), night = NIGHTS[st.night];
+    if (!p) return { pre: true };
+    const dist = st.feed === 'district';
+    const pb = dist ? p[C.pd] : p[C.p], mean = dist ? p[C.md] : p[C.m], sd = dist ? p[C.sdd] : p[C.sd];
+    const cert = !!p[C.cert], vrem = dist ? p[C.vremd] : p[C.vrem];
+    const margin = p[C.b] - p[C.o];
+    // votes left: live, or a turnout scenario k sigma away from baseline turnout
+    const ballotsLeft = st.k == null ? p[C.eb] * p[C.rho] : p[C.eb] + p[C.remE] * st.k * night.turnout_sigma / 100;
+    const twoShare = p[C.eb] * p[C.rho] > 0 ? vrem / (p[C.eb] * p[C.rho]) : 0;
+    const twoLeft = st.k == null ? vrem : Math.max(0, ballotsLeft * twoShare);
+    const lead = margin >= 0 ? race.blue : race.other, trail = margin >= 0 ? race.other : race.blue;
+    const needs = twoLeft > 0 ? 0.5 + Math.abs(margin) / (2 * twoLeft) : Infinity;
+    return { pre: false, p, pb, mean, sd, cert, margin, ballotsLeft, twoLeft, lead, trail, needs,
+      n: p[C.n], frac: p[C.n] / race.stations, remE: p[C.remE] };
+  }
+  function status(v) {
+    if (v.pre) return { label: 'No stations in', cls: '' };
+    if (v.cert) return { label: 'Decided', cls: 'decided' };
+    const q = Math.max(v.pb, 1 - v.pb);
+    return { label: q >= 0.99 ? 'Very likely' : q >= 0.9 ? 'Likely' : q >= 0.7 ? 'Leaning' : 'Toss-up', cls: '' };
+  }
+
+  // dial: left end = other 100%, right end = blue 100%
+  function dial(race, v, big, jitterP) {
+    const W = big ? 520 : 160, H = big ? 262 : 92, cx = W / 2, cy = big ? 230 : 84, R = big ? 186 : 72, sw = big ? 30 : 12;
+    const ang = p => Math.PI * (1 - p); // p=0 -> left (pi), p=1 -> right (0)
+    const pt = (p, r) => [cx + r * Math.cos(ang(p)), cy - r * Math.sin(ang(p))];
+    const arc = (p0, p1, r) => { const [x0, y0] = pt(p0, r), [x1, y1] = pt(p1, r); return `M${x0.toFixed(1)},${y0.toFixed(1)} A${r},${r} 0 0 1 ${x1.toFixed(1)},${y1.toFixed(1)}`; };
+    const zones = [[0, 0.01, 'other', 1], [0.01, 0.1, 'other', 0.75], [0.1, 0.3, 'other', 0.5], [0.3, 0.5, 'other', 0.22],
+      [0.5, 0.7, 'blue', 0.22], [0.7, 0.9, 'blue', 0.5], [0.9, 0.99, 'blue', 0.75], [0.99, 1, 'blue', 1]];
+    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(dialLabel(race, v))}">`;
+    for (const [a, b, who, op] of zones) s += `<path d="${arc(a, b, R)}" stroke="${tone(race[who])}" stroke-opacity="${op}" stroke-width="${sw}" fill="none"/>`;
+    s += `<line x1="${cx}" y1="${cy - R - sw / 2 - 2}" x2="${cx}" y2="${cy - R + sw / 2 + 2}" stroke="var(--surface)" stroke-width="2"/>`;
+    if (big) {
+      const lab = [[0.035, 'Very likely'], [0.2, 'Likely'], [0.37, 'Lean'], [0.63, 'Lean'], [0.8, 'Likely'], [0.965, 'Very likely']];
+      for (const [p, l] of lab) { const [x, y] = pt(p, R - sw / 2 - 30); s += `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="var(--font-num)">${l}</text>`; }
+      s += `<text x="${cx}" y="${cy - R + sw / 2 + 56}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="var(--font-num)">Toss-up</text>`;
+      s += `<text x="${cx - R}" y="${cy + 22}" text-anchor="middle" font-size="13" font-weight="700" fill="${tone(race.other)}">${esc(race.other.name)}</text>`;
+      s += `<text x="${cx + R}" y="${cy + 22}" text-anchor="middle" font-size="13" font-weight="700" fill="${tone(race.blue)}">${esc(race.blue.name)}</text>`;
+    }
+    if (!v.pre) {
+      const p = jitterP != null ? jitterP : v.pb;
+      const [x, y] = pt(p, R + (big ? 6 : 2));
+      s += `<line class="ndl" x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--ink)" stroke-width="${big ? 3.5 : 2}" stroke-linecap="round"/>`;
+    }
+    s += `<circle cx="${cx}" cy="${cy}" r="${big ? 9 : 4}" fill="var(--ink)"/></svg>`;
+    return s;
+  }
+  function dialLabel(race, v) {
+    if (v.pre) return `${race.area}: no stations in yet`;
+    return `${race.area}: ${race.blue.name} ${Math.round(100 * v.pb)}%, ${race.other.name} ${Math.round(100 * (1 - v.pb))}%`;
+  }
+  const pctTxt = p => p >= 0.995 ? '>99%' : p <= 0.005 ? '<1%' : Math.round(100 * p) + '%';
+
+  function renderDesk() {
+    const night = NIGHTS[st.night];
+    const vs = night.races.map(r => view(r, st.t));
+    const decided = vs.filter(v => !v.pre && v.cert).length, started = vs.filter(v => !v.pre).length;
+    const sig = night.turnout_sigma, baseYear = night.baseline.slice(0, 4);
+    const kTxt = st.k == null ? 'live estimate' : `${st.k > 0 ? '+' : ''}${st.k}σ (${st.k > 0 ? '+' : ''}${(st.k * sig).toFixed(1)} pts)`;
+    desk.innerHTML = `
+      <div class="desk-row">
+        <div class="clock" id="clk">${clock(st.t)}</div>
+        <div class="summary">${esc(night.title)} · ${esc(night.date)}<br><b>${started}</b> of ${night.races.length} races counting · <b>${decided}</b> decided</div>
+        <span style="flex:1"></span>
+        <div class="ctl"><span>Night</span><div class="seg" role="group" aria-label="Night">
+          ${DATA.nights.map(n => `<button data-night="${n.id}" aria-pressed="${n.id === st.night}">${n.id.slice(0, 4)}</button>`).join('')}</div></div>
+      </div>
+      <div class="scrub">
+        <button class="play" id="play" aria-label="${st.playing ? 'Pause' : 'Play'}">${st.playing ? '<svg viewBox="0 0 16 16"><rect x="3" y="2" width="3.5" height="12"/><rect x="9.5" y="2" width="3.5" height="12"/></svg>' : '<svg viewBox="0 0 16 16"><path d="M4 2l10 6-10 6z"/></svg>'}</button>
+        <input type="range" id="t" min="${night.start}" max="${night.end}" step="1" value="${st.t}" aria-label="Time">
+      </div>
+      <div class="desk-row">
+        <div class="ctl"><span>Speed</span><div class="seg" role="group" aria-label="Speed">
+          ${[2, 5, 15].map(s => `<button data-speed="${s}" aria-pressed="${s === st.speed}">${s} min/s</button>`).join('')}</div></div>
+        <div class="ctl"><span>Feed</span><div class="seg" role="group" aria-label="Feed">
+          <button data-feed="station" aria-pressed="${st.feed === 'station'}">Per station</button>
+          <button data-feed="district" aria-pressed="${st.feed === 'district'}">District totals</button></div></div>
+        <div class="ctl turnout"><span>Turnout</span>
+          <div class="seg"><button data-k="live" aria-pressed="${st.k == null}">Live</button></div>
+          <input type="range" id="k" min="-3" max="3" step="1" value="${st.k == null ? 0 : st.k}" aria-label="Turnout scenario, standard deviations from ${baseYear}" style="opacity:${st.k == null ? 0.45 : 1}">
+          <output>${esc(kTxt)}</output></div>
+        <label class="ctl"><input type="checkbox" id="jit" ${st.jitter ? 'checked' : ''}> Jitter</label>
+      </div>
+      ${st.feed === 'district' ? `<div class="flag">District totals only: the projection can't see which stations within a district have reported, so it stays less certain for longer. This is what the page would show if the 2026 live feed has no per-station results.</div>` : ''}
+      <div class="summary">Turnout: "Live" estimates it from the stations already in. Drag the slider for a scenario instead: turnout vs ${baseYear} in each village, in steps of σ = ${sig} points. It changes the votes-left figures, not the dial.</div>`;
+  }
+
+  function renderCards() {
+    const night = NIGHTS[st.night];
+    let s = night.races.map(r => {
+      const v = view(r, st.t), stt = status(v);
+      const leader = v.pre ? null : (v.pb >= 0.5 ? r.blue : r.other), q = v.pre ? 0 : Math.max(v.pb, 1 - v.pb);
+      return `<button class="card" data-area="${esc(r.area)}" aria-pressed="${r.area === st.area}">
+        <div class="top"><span class="area">${esc(r.area)}</span><span class="pct">${v.pre ? '—' : Math.round(100 * v.frac) + '% in'}</span></div>
+        ${dial(r, v, false)}
+        <div class="lead">${leader ? `<b style="color:${tone(leader)}">${esc(leader.name)} ${pctTxt(q)}</b>` : '<span class="muted">waiting</span>'}<span class="chip ${stt.cls}">${stt.label}</span></div>
+      </button>`;
+    }).join('');
+    s += (night.skipped || []).map(k => `<div class="card skip" title="${esc(k.why)}"><div class="top"><span class="area">${esc(k.area)}</span></div><div class="lead"><span class="muted">${esc(k.why)}</span></div></div>`).join('');
+    cards.innerHTML = s;
+  }
+
+  function series(race, col, colD) { return race.pts.map(p => [p[C.t], st.feed === 'district' ? p[colD] : p[col], p]); }
+  function chartP(race) {
+    const W = 560, H = 170, L = 38, Rr = 12, T = 10, B = 24;
+    const pts = race.pts; if (!pts.length) return '';
+    const t0 = pts[0][C.t] - 5, t1 = Math.max(pts[pts.length - 1][C.t], t0 + 10);
+    const x = t => L + (t - t0) / (t1 - t0) * (W - L - Rr), y = p => T + (1 - p) * (H - T - B);
+    const S = series(race, C.p, C.pd).filter(r => r[0] <= st.t);
+    const d = S.map(([t, p], i) => `${i ? 'L' : 'M'}${x(t).toFixed(1)},${y(p).toFixed(1)}`).join('');
+    let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Chance ${esc(race.blue.name)} wins over the night">`;
+    s += `<rect x="${L}" y="${T}" width="${W - L - Rr}" height="${(H - T - B) / 2}" fill="${tone(race.blue)}" opacity="0.07"/>`;
+    s += `<rect x="${L}" y="${T + (H - T - B) / 2}" width="${W - L - Rr}" height="${(H - T - B) / 2}" fill="${tone(race.other)}" opacity="0.07"/>`;
+    s += `<g class="grid">${[0, 0.5, 1].map(p => `<line x1="${L}" x2="${W - Rr}" y1="${y(p)}" y2="${y(p)}"/><text x="${L - 6}" y="${y(p) + 4}" text-anchor="end">${p * 100}%</text>`).join('')}</g>`;
+    s += ticks(t0, t1, x, H - B);
+    s += `<path class="pline" d="${d}"/>`;
+    s += `<text x="${L + 6}" y="${T + 13}" style="fill:${tone(race.blue)};font-weight:700">${esc(race.blue.name)} wins ↑</text>`;
+    s += `<text x="${L + 6}" y="${H - B - 6}" style="fill:${tone(race.other)};font-weight:700">${esc(race.other.name)} wins ↓</text>`;
+    if (st.t >= t0) s += `<line class="cursor" x1="${x(Math.min(st.t, t1))}" x2="${x(Math.min(st.t, t1))}" y1="${T}" y2="${H - B}"/>`;
+    return s + '</svg>';
+  }
+  function chartM(race) {
+    const W = 560, H = 200, L = 62, Rr = 12, T = 12, B = 24;
+    const pts = race.pts; if (!pts.length) return '';
+    const t0 = pts[0][C.t] - 5, t1 = Math.max(pts[pts.length - 1][C.t], t0 + 10);
+    const fin = race.blue.final - race.other.final;
+    const allRows = pts.map(p => { const dist = st.feed === 'district'; const m = dist ? p[C.md] : p[C.m], sd = dist ? p[C.sdd] : p[C.sd];
+      return [p[C.t], p[C.b] - p[C.o], m, m - 1.2816 * sd, m + 1.2816 * sd]; });
+    const rows = allRows.filter(r => r[0] <= st.t);
+    // y range from the whole night (so the axis doesn't jump while playing), ignoring the widest early bands
+    const late = allRows.filter((r, i) => i >= Math.floor(allRows.length * 0.05));
+    let lo = Math.min(0, fin, ...late.map(r => Math.min(r[1], r[3]))), hi = Math.max(0, fin, ...late.map(r => Math.max(r[1], r[4])));
+    const pad = (hi - lo) * 0.08 || 1; lo -= pad; hi += pad;
+    const x = t => L + (t - t0) / (t1 - t0) * (W - L - Rr), y = v => T + (hi - Math.max(lo, Math.min(hi, v))) / (hi - lo) * (H - T - B);
+    let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Margin over the night">`;
+    const gy = niceTicks(lo, hi, 4);
+    s += `<g class="grid">${gy.map(v => `<line x1="${L}" x2="${W - Rr}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${signed(v)}</text>`).join('')}</g>`;
+    s += `<line class="zero" x1="${L}" x2="${W - Rr}" y1="${y(0)}" y2="${y(0)}"/>`;
+    s += ticks(t0, t1, x, H - B);
+    const up = rows.map((r, i) => `${i ? 'L' : 'M'}${x(r[0]).toFixed(1)},${y(r[4]).toFixed(1)}`).join('');
+    const dn = rows.slice().reverse().map(r => `L${x(r[0]).toFixed(1)},${y(r[3]).toFixed(1)}`).join('');
+    if (rows.length) s += `<path class="band" d="${up}${dn}Z"/>`;
+    s += `<path class="cnt" d="${rows.map((r, i) => `${i ? 'L' : 'M'}${x(r[0]).toFixed(1)},${y(r[1]).toFixed(1)}`).join('')}"/>`;
+    s += `<path class="proj" d="${rows.map((r, i) => `${i ? 'L' : 'M'}${x(r[0]).toFixed(1)},${y(r[2]).toFixed(1)}`).join('')}"/>`;
+    s += `<line class="fin" x1="${L}" x2="${W - Rr}" y1="${y(fin)}" y2="${y(fin)}"/><text class="fin-t" x="${W - Rr - 4}" y="${y(fin) - 5}" text-anchor="end">final ${signed(fin)}</text>`;
+    s += `<text x="${L + 4}" y="${T + 10}" style="fill:${tone(race.blue)};font-weight:700">↑ ${esc(race.blue.name)} ahead</text>`;
+    s += `<text x="${L + 4}" y="${H - B - 5}" style="fill:${tone(race.other)};font-weight:700">↓ ${esc(race.other.name)} ahead</text>`;
+    if (st.t >= t0) s += `<line class="cursor" x1="${x(Math.min(st.t, t1))}" x2="${x(Math.min(st.t, t1))}" y1="${T}" y2="${H - B}"/>`;
+    return s + '</svg>';
+  }
+  function niceTicks(lo, hi, n) {
+    const span = hi - lo, step0 = span / n, mag = Math.pow(10, Math.floor(Math.log10(step0))), f = step0 / mag;
+    const step = (f < 1.5 ? 1 : f < 3 ? 2 : f < 7 ? 5 : 10) * mag; const out = [];
+    for (let v = Math.ceil(lo / step) * step; v <= hi; v += step) out.push(Math.round(v)); return out;
+  }
+  function ticks(t0, t1, x, yb) {
+    const span = t1 - t0, step = span > 360 ? 120 : span > 180 ? 60 : 30; let s = '';
+    for (let t = Math.ceil(t0 / step) * step; t <= t1; t += step) s += `<text x="${x(t)}" y="${yb + 16}" text-anchor="middle">${clockTxt(t).replace(' (+1)', '')}</text>`;
+    return s;
+  }
+
+  let jit = null;
+  function renderDetail() {
+    const night = NIGHTS[st.night];
+    const race = night.races.find(r => r.area === st.area) || night.races[0];
+    st.area = race.area;
+    const v = view(race, st.t), stt = status(v);
+    const sideHtml = (c, right) => {
+      const votes = v.pre ? 0 : (c === race.blue ? v.p[C.b] : v.p[C.o]);
+      const pw = v.pre ? null : (c === race.blue ? v.pb : 1 - v.pb);
+      return `<div class="side b-${c.tone} ${right ? 'right' : ''}"><span class="nm">${esc(c.name)}</span><span class="pt">${esc(c.party)} · No. ${c.no}</span>
+        <span class="v num">${v.pre ? '—' : comma(votes)}</span><span class="p">${pw == null ? 'chance —' : 'chance to win ' + pctTxt(pw)}</span></div>`;
+    };
+    let reads = '';
+    if (v.pre) reads = `<div class="read"><span class="k">Status</span><span class="v">No polling stations have reported yet.</span></div>`;
+    else {
+      const lo = v.mean - 1.2816 * v.sd, hi = v.mean + 1.2816 * v.sd;
+      const who = m => m >= 0 ? race.blue.name : race.other.name;
+      const needTxt = v.cert ? `Can't be overturned: the lead (${comma(Math.abs(v.margin))}) is larger than all ${comma(v.remE)} electors at stations still out.`
+        : v.needs > 1 ? `${esc(v.trail.name)} can't catch up even with every remaining vote, if turnout is as assumed.`
+        : `${esc(v.trail.name)} needs <b class="num">${(100 * v.needs).toFixed(v.needs < 0.6 ? 1 : 0)}%</b> of the remaining two-way vote to catch up.`;
+      reads = `
+        <div class="read"><span class="k">Counted</span><span class="v"><b class="num">${comma(v.n)}</b> of ${comma(race.stations)} stations (${(100 * v.frac).toFixed(1)}%) · ${esc(v.lead.name)} leads by <b class="num">${comma(Math.abs(v.margin))}</b></span></div>
+        <div class="read"><span class="k">Projected final</span><span class="v">${v.cert ? `${esc(who(v.mean))} by ${comma(Math.abs(v.mean))}` : `${esc(who(v.mean))} by <b class="num">${comma(Math.abs(v.mean))}</b>; 80% range ${esc(who(lo))} ${comma(Math.abs(lo))} to ${esc(who(hi))} ${comma(Math.abs(hi))}`}</span></div>
+        <div class="read"><span class="k">To catch up</span><span class="v">${needTxt}</span></div>
+        <div class="read"><span class="k">Votes left</span><span class="v">about <b class="num">${comma(v.ballotsLeft)}</b> ballots (${st.k == null ? 'live turnout estimate' : 'turnout scenario'}), ${comma(v.twoLeft)} for these two</span></div>`;
+    }
+    detail.innerHTML = `
+      <div class="dhead"><h3>${esc(race.area)}長</h3><span class="sub">${esc(race.blue.name)} vs ${esc(race.other.name)}${race.others_final ? ` · others: ${comma(race.others_final)} votes, set aside` : ''}</span></div>
+      <div class="detail">
+        <div class="panel" style="padding:12px">
+          <div class="bigdial" id="bigdial">${dial(race, v, true)}</div>
+          <div class="verdict"><span class="big">${v.pre ? 'Waiting for the first station' : v.cert ? `${esc(v.lead.name)} — decided` : `${esc((v.pb >= 0.5 ? race.blue : race.other).name)} ${stt.label.toLowerCase()}`}</span>
+            <span class="small">${v.pre ? '' : `${clockTxt(st.t)} · ${st.feed === 'district' ? 'district totals only' : 'per-station feed'}`}</span></div>
+          <div class="duo">${sideHtml(race.other, false)}${sideHtml(race.blue, true)}</div>
+          <div class="reads" style="margin-top:6px">${reads}</div>
+        </div>
+        <div class="panel">
+          <h2>Chance to win over the night</h2>${chartP(race)}
+          <h2>Margin: counted and projected</h2>${chartM(race)}
+          <div class="legend"><span><i></i>projected final (as estimated at each moment)</span><span><i class="band"></i>80% range</span><span><i class="cnt"></i>counted so far</span><span><i class="fin"></i>actual final (replay only)</span></div>
+        </div>
+      </div>`;
+    startJitter(race, v);
+  }
+  function startJitter(race, v) {
+    if (jit) { cancelAnimationFrame(jit); jit = null; }
+    if (!st.jitter || v.pre || v.cert || !v.sd) return;
+    const z = v.mean / v.sd, pLo = phi(z - 0.674), pHi = phi(z + 0.674);
+    const toP = q => v.pb + (q - (pLo + pHi) / 2); // keep centred on the model's P
+    let cur = v.pb, target = v.pb, last = 0;
+    const el = document.getElementById('bigdial');
+    const step = ts => {
+      if (ts - last > 260) { target = Math.min(1, Math.max(0, toP(pLo + Math.random() * (pHi - pLo)))); last = ts; }
+      cur += (target - cur) * 0.12;
+      el.innerHTML = dial(race, v, true, cur);
+      jit = requestAnimationFrame(step);
+    };
+    jit = requestAnimationFrame(step);
+  }
+
+  function render() { renderDesk(); renderCards(); renderDetail(); writeHash(); }
+  function light() { // during playback: avoid re-rendering the desk controls
+    document.getElementById('clk').innerHTML = clock(st.t);
+    const r = document.getElementById('t'); if (r) r.value = st.t;
+    renderCards(); renderDetail();
+  }
+  function writeHash() { history.replaceState(null, '', `#${st.night.slice(0, 4)}/${encodeURIComponent(st.area)}`); }
+  function readHash() {
+    const m = decodeURIComponent(location.hash.slice(1)).split('/');
+    const n = DATA.nights.find(x => x.id.startsWith(m[0]));
+    if (n) { st.night = n.id; if (m[1] && n.races.some(r => r.area === m[1])) st.area = m[1]; }
+  }
+
+  let timer = null, lastTick = 0;
+  function tick(ts) {
+    if (!st.playing) return;
+    if (ts - lastTick >= 250) {
+      const night = NIGHTS[st.night];
+      st.t = Math.min(night.end, st.t + st.speed / 4); lastTick = ts;
+      if (st.t >= night.end) { st.playing = false; render(); return; }
+      light();
+    }
+    timer = requestAnimationFrame(tick);
+  }
+  function setNight(id) {
+    st.night = id; const night = NIGHTS[id];
+    if (!night.races.some(r => r.area === st.area)) st.area = night.races[0].area;
+    st.t = Math.max(0, Math.min(...night.races.map(r => r.pts[0][C.t])) - 10);
+  }
+
+  desk.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.id === 'play') { st.playing = !st.playing; if (st.playing) { const n = NIGHTS[st.night]; if (st.t >= n.end) st.t = n.start; lastTick = 0; timer = requestAnimationFrame(tick); } render(); }
+    else if (b.dataset.night) { st.playing = false; setNight(b.dataset.night); render(); }
+    else if (b.dataset.speed) { st.speed = +b.dataset.speed; render(); }
+    else if (b.dataset.feed) { st.feed = b.dataset.feed; render(); }
+    else if (b.dataset.k) { st.k = null; render(); }
+  });
+  desk.addEventListener('input', e => {
+    if (e.target.id === 't') { st.t = +e.target.value; document.getElementById('clk').innerHTML = clock(st.t); renderCards(); renderDetail(); }
+    if (e.target.id === 'k') { st.k = +e.target.value; render(); document.getElementById('k').focus(); }
+  });
+  desk.addEventListener('change', e => { if (e.target.id === 'jit') { st.jitter = e.target.checked; renderDetail(); } });
+  cards.addEventListener('click', e => { const c = e.target.closest('.card[data-area]'); if (!c) return; st.area = c.dataset.area; renderCards(); renderDetail(); writeHash();
+    if (matchMedia('(max-width: 899px)').matches) detail.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+
+  readHash(); setNight(st.night);
+  // open at a moment where things are happening
+  st.t = st.night === '2022-mayors' ? 150 : 180;
+  render();
+})();
+</script>

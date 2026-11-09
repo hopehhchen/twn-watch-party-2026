@@ -179,7 +179,8 @@ class Night:
         self.axis = "blue"
         self.base, self.how = self._baseline(baseline, county)
         tm = ST.times(target)
-        self.st = sorted(self.race["stations"], key=lambda s: tm[(county, s["district"], s["no"])])
+        # copies: the loaded stations are shared (cached), and each Night attaches its own baseline
+        self.st = sorted((dict(s) for s in self.race["stations"]), key=lambda s: tm[(county, s["district"], s["no"])])
         self.t = [tm[(county, s["district"], s["no"])] for s in self.st]
         for s in self.st:
             s["_b"] = base_for(self.base, s) if self.base else None
@@ -222,11 +223,11 @@ class Night:
         ka = sum(s["v"][ia] for s in R)
         kb = sum(s["v"][ib] for s in R)
         remE = sum(s["E"] for s in U)
+        eb = sum(s["E"] * s["_b"][1] for s in U)  # ballots left at baseline turnout
         margin = ka - kb
-        if U and abs(margin) > remE:
-            return dict(p=1.0 if margin > 0 else 0.0, mean=margin, sd=0.0, certain=True, n=n)
-        if not U:
-            return dict(p=1.0 if margin > 0 else 0.0, mean=margin, sd=0.0, certain=True, n=n)
+        extra = dict(n=n, ka=ka, kb=kb, remE=remE, eb=eb)
+        if (U and abs(margin) > remE) or not U:
+            return dict(p=1.0 if margin > 0 else 0.0, mean=margin, sd=0.0, certain=True, vrem=0.0, **extra)
         # residuals at reported stations
         res = []  # (district, resid_logit, weight)
         tnum = tden = fnum = fden = 0.0
@@ -270,6 +271,7 @@ class Night:
         g2 = tau2 / max(K, 1) + sigma2 / max(nst, 1) + (pr["glob"] ** 2) * (1 - frac_in) ** 2 / (1 + K)
         # predictions for unreported stations
         mean = margin
+        vrem = 0.0
         G = defaultdict(float)
         var_station = 0.0
         for s in U:
@@ -281,6 +283,7 @@ class Night:
             y = expit(x)
             V = min(s["E"], s["E"] * min(b[1] * rho, 1.0) * min(b[2] * phi, 1.0))
             mean += V * (2 * y - 1)
+            vrem += V
             gj = 2 * V * y * (1 - y)
             G[d] += gj
             var_station += gj * gj * sigma2
@@ -292,7 +295,7 @@ class Night:
         sd = math.sqrt(var_g + var_d + var_station)
         df = max(3, K - 1) if K < 30 else 200
         p = t_cdf(mean / sd, df) if sd > 0 else (1.0 if mean > 0 else 0.0)
-        return dict(p=p, mean=mean, sd=sd, certain=False, n=n, delta=delta, rho=rho, K=K)
+        return dict(p=p, mean=mean, sd=sd, certain=False, delta=delta, rho=rho, K=K, vrem=vrem, **extra)
 
     @staticmethod
     def _district_totals(R):

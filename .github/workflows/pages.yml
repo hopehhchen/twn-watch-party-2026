@@ -24,7 +24,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Build standalone page
-        run: python3 scripts/build_site.py --standalone _site/index.html
+        run: python3 scripts/build_site.py --standalone _site/index.html  # also writes _site/needle.html
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
