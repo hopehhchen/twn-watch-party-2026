@@ -186,7 +186,17 @@ td .age { display: block; font-size: 11px; color: var(--muted); font-family: var
   .figs { gap: 12px; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.mast-right { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+.themes { display: inline-flex; gap: 2px; padding: 3px; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); }
+.themes button { border: 0; background: transparent; border-radius: 999px; padding: 4px 10px; font-size: 12px; cursor: pointer; color: var(--muted); }
+.themes button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
 </style>
+<script>
+/* theme: "auto" follows the device; "light"/"dark" are remembered in this browser */
+(() => { let t = 'auto'; try { t = localStorage.getItem('twn-theme') || 'auto'; } catch (e) {}
+  if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); })();
+</script>
+
 
 <div class="wrap">
   <header class="mast">
@@ -194,11 +204,14 @@ td .age { display: block; font-size: 11px; color: var(--muted); font-family: var
       <div class="stamp" aria-hidden="true">卜</div>
       <h1>開票觀察 Watch Party<small>Cross-source ballot count tracker · prototype</small></h1>
     </div>
+    <div class="mast-right">
     <nav class="tabs" aria-label="Election night">
       <a href="#night-2024" id="tab-2024">2024 總統</a>
       <a href="#night-2022" id="tab-2022">2022 縣市長</a>
       <a href="needle.html">Needle</a>
     </nav>
+      <div class="themes" role="group" aria-label="Color theme"><button data-theme-set="auto">Auto</button><button data-theme-set="light">Light</button><button data-theme-set="dark">Dark</button></div>
+    </div>
   </header>
   <p class="proto">A replay of past election nights, built from the CEC's own records and from what TV channels showed on screen. Counts from sources that only report real ballots set a <b>floor</b> the final can't go below. Commercial TV counts are shown as a <b>field</b> average with their spread.</p>
   <main id="app" class="wrap"></main>
@@ -526,5 +539,20 @@ const DATA = {"nights":[{"id":"2024","title":"2024 presidential election","title
   }
   window.addEventListener('hashchange', route);
   route();
+})();
+</script>
+<script>
+(() => {
+  const root = document.documentElement;
+  const get = () => { try { return localStorage.getItem('twn-theme') || 'auto'; } catch (e) { return 'auto'; } };
+  const mark = t => document.querySelectorAll('[data-theme-set]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themeSet === t)));
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-theme-set]'); if (!b) return;
+    const t = b.dataset.themeSet;
+    if (t === 'auto') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', t);
+    try { localStorage.setItem('twn-theme', t); } catch (err) {}
+    mark(t);
+  });
+  mark(get());
 })();
 </script>

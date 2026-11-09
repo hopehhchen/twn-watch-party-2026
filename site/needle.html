@@ -157,7 +157,17 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
 }
 @media (max-width: 699px) { .desk { position: static; border-radius: var(--radius); } }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+.mast-right { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+.themes { display: inline-flex; gap: 2px; padding: 3px; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); }
+.themes button { border: 0; background: transparent; border-radius: 999px; padding: 4px 10px; font-size: 12px; cursor: pointer; color: var(--muted); }
+.themes button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
 </style>
+<script>
+/* theme: "auto" follows the device; "light"/"dark" are remembered in this browser */
+(() => { let t = 'auto'; try { t = localStorage.getItem('twn-theme') || 'auto'; } catch (e) {}
+  if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); })();
+</script>
+
 
 <div class="wrap">
   <header class="mast">
@@ -165,10 +175,13 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
       <div class="stamp" aria-hidden="true">卜</div>
       <h1>開票觀察 Watch Party<small>Win-probability needle · replay prototype</small></h1>
     </div>
+    <div class="mast-right">
     <nav class="tabs" aria-label="Pages">
       <a href="index.html">Sources replay</a>
       <a href="needle.html" aria-current="page">Needle</a>
     </nav>
+      <div class="themes" role="group" aria-label="Color theme"><button data-theme-set="auto">Auto</button><button data-theme-set="light">Light</button><button data-theme-set="dark">Dark</button></div>
+    </div>
   </header>
   <p class="proto">A replay of real election nights from the CEC's own records, with the projection model run as if live. Pick a night, press play, open any race. Nothing here is simulated, and nothing from later in the night leaks in: every chart and axis only uses what had been counted by the time on the clock.</p>
   <section class="desk" id="desk" aria-label="Replay controls"></section>
@@ -559,5 +572,20 @@ const DATA = {"nights":[{"id":"2022-mayors","title":"2022 縣市長選舉","date
   // open at a moment where things are happening
   st.t = st.night === '2022-mayors' ? 150 : 180;
   render();
+})();
+</script>
+<script>
+(() => {
+  const root = document.documentElement;
+  const get = () => { try { return localStorage.getItem('twn-theme') || 'auto'; } catch (e) { return 'auto'; } };
+  const mark = t => document.querySelectorAll('[data-theme-set]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themeSet === t)));
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-theme-set]'); if (!b) return;
+    const t = b.dataset.themeSet;
+    if (t === 'auto') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', t);
+    try { localStorage.setItem('twn-theme', t); } catch (err) {}
+    mark(t);
+  });
+  mark(get());
 })();
 </script>
