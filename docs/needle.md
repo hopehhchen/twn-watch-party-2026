@@ -13,7 +13,7 @@
 | 2022 mayors | yes (嘉義市: the 12/18 rerun, used as a baseline only) | yes |
 | 2024 president | yes | yes |
 
-`scripts/stations.py` reads them all into one shape. Station numbers are renumbered between elections, so baselines are matched by village (村里; a station covering several villages is keyed by the first): 97–100% of electors match; the rest fall back to their district.
+`scripts/stations.py` reads them all into one shape. Station numbers are renumbered between elections, so baselines are matched by village (村里; a station covering several villages is keyed by the first): 98–100% of electors match exactly or to a village in the same district whose name differs by one character (variant spellings such as 晉/晋); the rest fall back to their district. The CEC's spreadsheets write rare characters as Private Use Area code points; `stations.py` maps all 32 that occur back to real characters (e.g. 江聰淵, 傅崐萁, 廍, 磘), checked against other years' village names and the CEC's own JSON.
 
 ## Model
 

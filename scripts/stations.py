@@ -41,6 +41,22 @@ PRESIDENT_PARTY = {"朱立倫": "中國國民黨", "韓國瑜": "中國國民黨
 
 COUNTY_ALIAS = {"桃園縣": "桃園市", "臺北縣": "新北市"}
 
+# The CEC's spreadsheets write rare characters as Private Use Area code points (its own font).
+# Mapped back by matching against the same village in other years' files, or, for candidate names,
+# against the CEC's JSON (which spells them as @HEX@ Unicode, e.g. 江@2F97F@淵 = 江聰淵 after NFC).
+PUA = {
+    "\ue000": "𦰡", "\ue001": "𥕢", "\ue006": "塭", "\ue007": "壳", "\ue008": "磘", "\ue018": "聰", "\ue01a": "硘",
+    "\ue01c": "嵵", "\ue01d": "廍", "\ue01f": "獇", "\ue02a": "欍", "\ue34c": "双", "\ue434": "坂", "\ue435": "坔",
+    "\ue5c5": "响", "\ue6c0": "凉", "\ue6ff": "峯", "\ue730": "晋", "\ue808": "堃", "\ue82f": "崐", "\ue8d7": "脚",
+    "\ue929": "黄", "\ue93a": "厦", "\uea0d": "硦", "\uea47": "菓", "\ueab7": "塩", "\ued74": "槺", "\uee8e": "濓",
+    "\ueea9": "磜", "\ueebe": "舘", "\uf073": "壠", "\uf19f": "鷄",
+}
+_PUA_RE = re.compile("[\ue000-\uf8ff]")
+
+
+def fix(text):
+    return _PUA_RE.sub(lambda m: PUA.get(m.group(0), m.group(0)), text) if text else text
+
 
 def _county(name):
     m = re.search(r"\((\S{2,3}[縣市])\)", name)
@@ -70,8 +86,9 @@ def parse_sheet(rows, president):
         parts = [p.strip() for p in re.split(r"[\n\r]+", m.group(2)) if p.strip()]
         if not parts and not president:  # 2022 嘉義市 rerun: number, name and party on three rows
             parts = [clean(rows[hdr + 2][j]), clean(rows[hdr + 3][j])]
+        parts = [fix(p) for p in parts]
         if president:
-            name = re.sub(r"\s", "", m.group(2))[:3]
+            name = fix(re.sub(r"\s", "", m.group(2)))[:3]
             party = PRESIDENT_PARTY.get(name, "")
         else:
             name = parts[0] if parts else ""
@@ -83,10 +100,10 @@ def parse_sheet(rows, president):
         r = list(r) + [None] * 3
         c0, c1, c2 = clean(r[0]), clean(r[1]), clean(r[2])
         if c0 and not c2:
-            district = c0
+            district = fix(c0)
             continue
         if c2.replace(".0", "").isdigit():
-            village = (c1.split("、")[0] if c1 else None) or village  # stations spanning villages: first one
+            village = (fix(c1.split("、")[0]) if c1 else None) or village  # stations spanning villages: first one
             stations.append({"district": district, "village": village, "no": norm_station(c2),
                              "E": to_int(r[ie]) or 0, "C": to_int(r[ic]) or 0, "A": to_int(r[ia]) or 0,
                              "v": [to_int(r[j]) or 0 for j in cols]})
@@ -137,6 +154,18 @@ def times(election):
     return t
 
 
+def leftover_pua():
+    """Any Private Use Area characters still in names (should be none)."""
+    out = set()
+    for e in ELECTIONS:
+        for c, r in load(e).items():
+            for k in r["cands"]:
+                out |= set(_PUA_RE.findall(k["name"]))
+            for s in r["stations"]:
+                out |= set(_PUA_RE.findall((s["district"] or "") + (s["village"] or "")))
+    return out
+
+
 def check(election):
     """Every station's candidate votes add up to its valid ballots."""
     bad = 0
@@ -155,6 +184,7 @@ def main():
         miss = sum(1 for c, r in d.items() for s in r["stations"] if t and (c, s["district"], s["no"]) not in t)
         print(f"{e}: {len(d)} counties, {n} stations, vote-sum mismatches {check(e)}, "
               f"times {len(t)} (stations without a time: {miss if t else 'n/a'})")
+    print("unmapped private-use characters:", sorted(hex(ord(c)) for c in leftover_pua()) or "none")
     print("station match rates by (county, district, station no) and by (+ village):")
     for a, b in (("2014-mayors", "2018-mayors"), ("2018-mayors", "2022-mayors"), ("2016-president", "2018-mayors"),
                  ("2020-president", "2022-mayors"), ("2022-mayors", "2024-president")):

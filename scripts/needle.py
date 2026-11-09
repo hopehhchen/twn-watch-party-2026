@@ -157,7 +157,19 @@ def baseline_shares(base_race, key):
 
 
 def base_for(base, s):
-    return base.get((s["district"], s["village"])) or base.get((s["district"], None)) or base[(None, None)]
+    """The station's village in the baseline; failing that, a village in the same district whose name
+    differs by one character (variant spellings such as 晉/晋, 峰/峯, renamed 欍埔/瓊埔 are not
+    caught by the exact match); failing that, its district; failing that, the whole county."""
+    d, v = s["district"], s["village"]
+    hit = base.get((d, v))
+    if hit:
+        return hit
+    if v:
+        near = [k for k in base if k[0] == d and k[1] and len(k[1]) == len(v)
+                and sum(a != b for a, b in zip(k[1], v)) == 1]
+        if len(near) == 1:
+            return base[near[0]]
+    return base.get((d, None)) or base[(None, None)]
 
 
 class Night:
