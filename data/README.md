@@ -114,3 +114,10 @@ The 2026 elector counts are not here: by law (公職人員選舉罷免法 第38�
 ## `raw/cec-stations/` — per-polling-station results, 2014–2024
 
 Mayoral (2014, 2018, 2022) and presidential (2016, 2020, 2024) per-station sheets, plus the 2018, 2022 and 2024 station report-time files. All downloaded from the CEC election database attachments; `SHA256SUMS` matches the hashes the CEC publishes. `scripts/stations.py` reads them into one shape and checks that each station's candidate votes add up to its valid ballots (they all do). Used by `scripts/needle.py`; see `docs/needle.md`.
+
+## Council (議員) results, 2018 and 2022
+
+- `raw/cec-stations/<year>-<municipal|county>-council-stations.zip`: per-polling-station votes for every council candidate, one sheet per electoral district (選舉區), including the indigenous districts. Same layout as the mayoral sheets; report times are the same station-time files as the mayoral races.
+- `raw/cec-council-tickets.tsv` (+ `.sha256`): every candidate's final votes with the CEC's elected flag, from the database's district-level JSON. Columns: election, subject (T1 直轄市議員 / T2 縣市議員), seat_type (T1 區域, T2 平地原住民, T3 山地原住民), county_code, district_code, district, cand_no, name, party, sex (1 male, 2 female), votes, victor. victor: `*` elected, `!` elected through the women's quota, `-` displaced by the quota, blank not elected. 912 seats in 2018 (908 `*` + 4 `!`), 910 in 2022 (906 + 4).
+
+Not yet used by the site.
