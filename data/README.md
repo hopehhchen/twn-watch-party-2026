@@ -110,3 +110,7 @@ One row per mayoral race, 1994–2022 (直轄市長 since 1994; 縣市長 since 
 Checked: valid + invalid = ballots for every row, and turnout_pct = ballots / electors to 0.01. The SHA-256 in `cec-mayor-turnout.tsv.sha256` matches the copy assembled in the browser. 2022 嘉義市 is the 12/18 rerun.
 
 The 2026 elector counts are not here: by law (公職人員選舉罷免法 第38條) the commission announces them three days before voting, i.e. by 2026-11-25.
+
+## `raw/cec-stations/` — per-polling-station results, 2014–2024
+
+Mayoral (2014, 2018, 2022) and presidential (2016, 2020, 2024) per-station sheets, plus the 2018, 2022 and 2024 station report-time files. All downloaded from the CEC election database attachments; `SHA256SUMS` matches the hashes the CEC publishes. `scripts/stations.py` reads them into one shape and checks that each station's candidate votes add up to its valid ballots (they all do). Used by `scripts/needle.py`; see `docs/needle.md`.

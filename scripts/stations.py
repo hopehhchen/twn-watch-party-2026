@@ -1,0 +1,164 @@
+#!/usr/bin/env python3
+"""Per-polling-station results for every election we model, in one shape.
+
+  load(election) -> {county: Race}
+  times(election) -> {(county, district, station_no): datetime} or {} when there is no file
+
+Race = {"cands": [{"no", "name", "party"}], "stations": [Station]}
+Station = {"district", "village", "no", "E" (electors), "C" (ballots cast), "A" (valid), "v": [votes per cand]}
+
+Sources (data/raw/cec-stations/, from db.cec.gov.tw election attachments; SHA256SUMS lists the hashes
+the CEC publishes): 縣表3-1 sheets for mayors, 總統-A05-4 sheets for presidents.
+
+  python3 scripts/stations.py        # prints a summary and cross-election station match rates
+"""
+import re
+import sys
+from datetime import datetime
+from functools import lru_cache
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from build_cec_night import RAW, clean, norm_station, read_times, rows_xls, rows_xlsx, to_int, zip_members  # noqa: E402
+
+ELECTIONS = {
+    "2014-mayors": dict(zips=["2014-municipal-mayor-stations.zip", "2014-county-mayor-stations.zip"], date="2014-11-29"),
+    "2018-mayors": dict(zips=["2018-municipal-mayor-stations.zip", "2018-county-mayor-stations.zip"], date="2018-11-24",
+                        times="2018-station-times.xlsx"),
+    "2022-mayors": dict(zips=["2022-municipal-mayor-stations.zip", "2022-county-mayor-stations.zip"], date="2022-11-26",
+                        times="2022-station-times.xls"),
+    "2016-president": dict(zips=["2016-president-stations.zip"], date="2016-01-16", pick="A05-4"),
+    "2020-president": dict(zips=["2020-president-stations.zip"], date="2020-01-11", pick="A05-4"),
+    "2024-president": dict(zips=["2024-president-stations.zip"], date="2024-01-13", pick="A05-4",
+                           times="2024-station-times.xlsx"),
+}
+
+# presidential sheets name the tickets but not their parties
+PRESIDENT_PARTY = {"朱立倫": "中國國民黨", "韓國瑜": "中國國民黨", "侯友宜": "中國國民黨",
+                   "蔡英文": "民主進步黨", "賴清德": "民主進步黨",
+                   "宋楚瑜": "親民黨", "柯文哲": "台灣民眾黨"}
+
+COUNTY_ALIAS = {"桃園縣": "桃園市", "臺北縣": "新北市"}
+
+
+def _county(name):
+    m = re.search(r"\((\S{2,3}[縣市])\)", name)
+    return COUNTY_ALIAS.get(m.group(1), m.group(1)) if m else None
+
+
+def _col(header, *keys, exclude=()):
+    for j, c in enumerate(header):
+        if any(k in c for k in keys) and not any(x in c for x in exclude):
+            return j
+    raise KeyError(keys)
+
+
+def parse_sheet(rows, president):
+    rows = list(rows)
+    hdr = next(i for i, r in enumerate(rows) if any(clean(c) in ("投開票所別", "投票所別") for c in r[:4]))
+    H = [clean(c) for c in rows[hdr]]
+    ia = _col(H, "有效票數")
+    ic = _col(H, "投票數", exclude=("有效", "無效", "已領"))
+    ie = _col(H, "選舉人數")
+    cands, cols = [], []
+    for j, c in enumerate(rows[hdr + 1]):
+        raw = str(c or "").strip()
+        m = re.match(r"\(?(\d+)\)?\s*(.*)", raw, re.S)
+        if not raw or not m or j >= ia:
+            continue
+        parts = [p.strip() for p in re.split(r"[\n\r]+", m.group(2)) if p.strip()]
+        if president:
+            name = re.sub(r"\s", "", m.group(2))[:3]
+            party = PRESIDENT_PARTY.get(name, "")
+        else:
+            name = parts[0] if parts else ""
+            party = parts[1] if len(parts) > 1 else ""
+        cands.append({"no": int(m.group(1)), "name": name, "party": party})
+        cols.append(j)
+    stations, district, village = [], None, None
+    for r in rows[hdr + 2:]:
+        r = list(r) + [None] * 3
+        c0, c1, c2 = clean(r[0]), clean(r[1]), clean(r[2])
+        if c0 and not c2:
+            district = c0
+            continue
+        if c2.replace(".0", "").isdigit():
+            village = c1 or village
+            stations.append({"district": district, "village": village, "no": norm_station(c2),
+                             "E": to_int(r[ie]) or 0, "C": to_int(r[ic]) or 0, "A": to_int(r[ia]) or 0,
+                             "v": [to_int(r[j]) or 0 for j in cols]})
+    return {"cands": cands, "stations": stations}
+
+
+@lru_cache(maxsize=None)
+def load(election):
+    cfg = ELECTIONS[election]
+    president = "president" in election
+    out = {}
+    for z in cfg["zips"]:
+        for name, data in zip_members(RAW / z):
+            if cfg.get("pick") and cfg["pick"] not in name:
+                continue
+            if not name.endswith((".xls", ".xlsx")):
+                continue
+            county = _county(name)
+            if not county:
+                continue
+            rows = rows_xls(data) if name.endswith(".xls") else rows_xlsx(data)
+            out[county] = parse_sheet(rows, president)
+    return out
+
+
+@lru_cache(maxsize=None)
+def times(election):
+    cfg = ELECTIONS[election]
+    if "times" not in cfg:
+        return {}
+    path = RAW / cfg["times"]
+    t = read_times(path)
+    if t:
+        return t
+    # 2018 file: 縣市 / 行政區 / 投開票所 / 'MM/DD HH:MM:SS' (no year)
+    year = int(cfg["date"][:4])
+    rows = rows_xls(path.read_bytes()) if path.suffix == ".xls" else rows_xlsx(path.read_bytes())
+    for row in rows:
+        county, district, st, ts = (clean(x) for x in row[:4])
+        m = re.match(r"(\d+)/(\d+)(\d\d:\d\d:\d\d)$", ts)
+        if m and st.replace(".0", "").isdigit():
+            t[(COUNTY_ALIAS.get(county, county), district, norm_station(st))] = datetime.strptime(
+                f"{year}-{m.group(1)}-{m.group(2)} {m.group(3)}", "%Y-%m-%d %H:%M:%S")
+    return t
+
+
+def check(election):
+    """Every station's candidate votes add up to its valid ballots."""
+    bad = 0
+    for county, race in load(election).items():
+        for s in race["stations"]:
+            if sum(s["v"]) != s["A"]:
+                bad += 1
+    return bad
+
+
+def main():
+    for e in ELECTIONS:
+        d = load(e)
+        n = sum(len(r["stations"]) for r in d.values())
+        t = times(e)
+        miss = sum(1 for c, r in d.items() for s in r["stations"] if t and (c, s["district"], s["no"]) not in t)
+        print(f"{e}: {len(d)} counties, {n} stations, vote-sum mismatches {check(e)}, "
+              f"times {len(t)} (stations without a time: {miss if t else 'n/a'})")
+    print("station match rates by (county, district, station no) and by (+ village):")
+    for a, b in (("2014-mayors", "2018-mayors"), ("2018-mayors", "2022-mayors"), ("2016-president", "2018-mayors"),
+                 ("2020-president", "2022-mayors"), ("2022-mayors", "2024-president")):
+        A, B = load(a), load(b)
+        k1 = {(c, s["district"], s["no"]) for c, r in A.items() for s in r["stations"]}
+        k2 = {(c, s["district"], s["village"], s["no"]) for c, r in A.items() for s in r["stations"]}
+        bs = [(c, s) for c, r in B.items() for s in r["stations"]]
+        m1 = sum((c, s["district"], s["no"]) in k1 for c, s in bs) / len(bs)
+        m2 = sum((c, s["district"], s["village"], s["no"]) in k2 for c, s in bs) / len(bs)
+        print(f"  {a} -> {b}: {100 * m1:.1f}%  {100 * m2:.1f}%")
+
+
+if __name__ == "__main__":
+    main()
