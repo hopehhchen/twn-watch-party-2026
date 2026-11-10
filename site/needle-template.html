@@ -102,12 +102,6 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
 /* national panel */
 .nat { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
 @media (min-width: 900px) { .nat.two { grid-template-columns: minmax(260px, 340px) minmax(0, 1fr); gap: 22px; } }
-.natrace { text-align: left; border: 1px solid var(--rule); border-radius: 9px; background: var(--bg); padding: 10px 12px; cursor: pointer; display: grid; gap: 4px; font-size: 13px; }
-.natrace:hover { border-color: var(--muted); }
-.natrace[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); background: var(--surface); }
-.natrace svg { width: 100%; max-width: 230px; height: auto; display: block; margin: 0 auto; }
-.natrace .big { font-size: 17px; font-weight: 700; text-align: center; }
-.natrace .sm { color: var(--muted); text-align: center; font-size: 12.5px; }
 .sbar { display: flex; height: 26px; border-radius: 4px; overflow: hidden; background: var(--bg); border: 1px solid var(--rule); gap: 1px; }
 .sbar i { display: block; height: 100%; flex: 1 1 0; }
 .sbar i.wait { background: repeating-linear-gradient(45deg, var(--rule) 0 3px, transparent 3px 7px); }
@@ -120,6 +114,35 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
 .tally .p .s { font-size: 12px; color: var(--muted); }
 .nkey { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--muted); align-items: center; }
 .nkey i { display: inline-block; width: 16px; height: 10px; border-radius: 2px; vertical-align: middle; margin-right: 5px; background: var(--ink); }
+.sbar.blocks .blk { flex: 1 1 0; min-width: 0; height: 100%; border: 0; padding: 0; margin: 0; cursor: pointer; border-radius: 0; }
+.sbar.blocks .blk.skip { background: var(--rule); opacity: 0.5; cursor: default; }
+.sbar.blocks .blk:hover, .sbar.blocks .blk:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
+.sbar.blocks .blk.sel { box-shadow: inset 0 -4px 0 var(--ink); }
+.sbar.blocks { height: 30px; overflow: visible; }
+.tip { position: absolute; z-index: 20; background: var(--surface); color: var(--ink); border: 1px solid var(--rule); border-radius: 8px; padding: 6px 10px; font-size: 12.5px; line-height: 1.45; box-shadow: 0 8px 20px -10px rgba(0,0,0,0.45); pointer-events: none; max-width: 240px; }
+.card .third3 { font-size: 11.5px; color: var(--muted); }
+.watch { display: grid; gap: 10px; border-top: 1px solid var(--rule); padding-top: 12px; margin-top: 4px; }
+.wkey { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--muted); }
+.wkey i { display: inline-block; width: 18px; height: 10px; border-radius: 2px; vertical-align: middle; margin-right: 5px; }
+.wkey .k-fl { background: var(--ink); opacity: 0.75; }
+.wkey .k-band { border: 1px solid var(--ink); background: transparent; }
+.wkey .k-prj { background: repeating-linear-gradient(90deg, var(--muted) 0 2px, transparent 2px 4px); opacity: 0.6; }
+.wrow { display: grid; gap: 4px; }
+.whead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 16px; }
+.whead .nm { font-weight: 700; min-width: 4.5em; }
+.wf { display: inline-flex; align-items: baseline; gap: 5px; font-size: 12px; color: var(--muted); }
+.wf label { text-transform: uppercase; letter-spacing: 0.06em; font-size: 10.5px; }
+.wf b { color: var(--ink); font-size: 15px; }
+.wf b.over { color: var(--stamp); }
+.wf small { font-size: 11px; }
+.wbar { position: relative; height: 20px; border-radius: 4px; background: var(--bg); border: 1px solid var(--rule); overflow: hidden; }
+.wbar .fl { position: absolute; inset: 3px auto 3px 0; opacity: 0.85; border-radius: 0 3px 3px 0; }
+.wbar .prj { position: absolute; top: 0; bottom: 0; background: repeating-linear-gradient(90deg, var(--muted) 0 2px, transparent 2px 4px); opacity: 0.35; }
+.wbar .prm { position: absolute; top: 0; bottom: 0; border-left: 2px dashed var(--ink); }
+.wbar .band { position: absolute; top: 5px; bottom: 5px; border: 1.5px solid var(--ink); border-radius: 3px; }
+.wbar .mean { position: absolute; top: 2px; bottom: 2px; width: 3px; margin-left: -1.5px; background: var(--ink); }
+.watch details summary { cursor: pointer; font-size: 13px; color: var(--muted); }
+.watch details[open] summary { margin-bottom: 6px; }
 .maplegend { display: grid; gap: 6px; font-size: 12px; color: var(--muted); }
 .maplegend .row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
 .maplegend svg { width: 16px; height: 12px; vertical-align: middle; margin-right: 4px; }
@@ -250,7 +273,8 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
     <h2 id="h-notes">How to read this</h2>
     <p><b>The dial</b> is the chance each of a race's two main contenders wins, from the votes counted so far. Everyone else's votes are set aside. It starts wide and narrows as stations report. <b>Decided</b> means the lead is larger than every remaining elector could overturn, with no assumption about turnout.</p>
     <p><b>How it is worked out.</b> The stations already counted are compared with how the same villages voted before (the previous mayoral and presidential races, averaged). That swing is applied to the stations still out, with room for districts to move differently. Tested on the 2018 and 2022 nights; see <code>docs/needle.md</code> in the repository.</p>
-    <p><b>Top panel.</b> Every race at once: one block per race (2024: per county), colored by the projected leader and shaded by how sure the model is, the same shading as the map, with counts by party and how many each party won last time. On the 2024 night it also carries the national race; click it to open the national race with the channel watch. In the turnout view it shows projected turnout for the whole country (2024) or the counties counting so far added up.</p>
+    <p><b>Top panel.</b> Mayoral nights: one block per race, colored by the projected leader and shaded by how sure the model is (as on the map), with counts by party and how many each won last time; hover a block for the race, click it to open it below. 2024: the national race itself, with its chance and margin charts and the count watch. In the turnout view it shows projected turnout for the whole country (2024) or the counties counting so far, added up.</p>
+    <p><b>Three-way races</b> (2024: eight counties where 柯文哲 was close): the dial shows the two candidates likeliest to win, and the third candidate's chance is given beside it. The chances come from the projected shares and their uncertainty, and start at the 5th station counted. <b>Count watch</b> (2024): per candidate, the floor (highest count among the CEC and the reliable channels), the other channels' range, and the model's projected final with its 80% range.</p>
     <p><b>Map.</b> Before a race has any counted stations, its county is hatched in the party color of the incumbent mayor. Once counting starts, it takes the color of the projected leader's own party (gray for independents, teal for 台灣民眾黨), shaded from light (toss-up) to solid (decided). 金門, 連江 and 澎湖 are drawn in insets.</p>
     <p><b>Turnout view.</b> "Show: Turnout" switches the cards, map and race panel to the projected final turnout, worked out the same way as the vote swing: counted stations against their own turnout last time, applied to the stations still out. On the 2018 and 2022 nights it was within about 2 points by the time 5–10% of stations were in, against about 3.7 points for simply assuming last time's turnout. The "Ballots counted" line uses it to estimate what share of all ballots has been counted, which is a better progress measure than stations, since stations differ in size.</p>
     <p><b>Feed.</b> "Per station" is what the model can do with polling-station results. "District totals" shows what happens if the CEC's live feed only gives district (行政區) totals: the same model, noticeably less certain early on. Which one the 2026 feed provides is not yet known.</p>
@@ -265,7 +289,7 @@ const DATA = /*__DATA__*/null;
 <script>
 (() => {
   const NIGHTS = Object.fromEntries(DATA.nights.map(n => [n.id, n]));
-  const C = { t: 0, n: 1, b: 2, o: 3, p: 4, m: 5, sd: 6, cert: 7, remE: 8, eb: 9, vrem: 10, pd: 11, md: 12, sdd: 13, certd: 14, vremd: 15, rho: 16, cc: 17, tm: 18, tsd: 19, tmd: 20, tsdd: 21, c3: 22, s3: 23, sd3: 26, cert3: 29, s3d: 30, sd3d: 33, cert3d: 36 };
+  const C = { t: 0, n: 1, b: 2, o: 3, p: 4, m: 5, sd: 6, cert: 7, remE: 8, eb: 9, vrem: 10, pd: 11, md: 12, sdd: 13, certd: 14, vremd: 15, rho: 16, cc: 17, tm: 18, tsd: 19, tmd: 20, tsdd: 21, c3: 22, s3: 23, sd3: 26, cert3: 29, s3d: 30, sd3d: 33, cert3d: 36, p3: 37, p3d: 40 };
   const st = { night: '2022-mayors', area: '臺北市', t: 0, playing: false, speed: 5, feed: 'station', k: null, jitter: false, unit: 'votes', mode: 'winner' };
   const desk = document.getElementById('desk'), cards = document.getElementById('cards'), detail = document.getElementById('detail');
   const mapEl = document.getElementById('map'), mapLegend = document.getElementById('maplegend');
@@ -326,7 +350,8 @@ const DATA = /*__DATA__*/null;
     const rows = cands.map((c, i) => ({ c, share: p[s0 + i], sd: p[q0 + i], counted: tot ? counted[i] / tot : 0, votes: counted[i] }));
     const order = rows.slice().sort((a, b) => b.share - a.share);
     const lead = order[0].share - order[1].share, lsd = Math.hypot(order[0].sd, order[1].sd);
-    return { pre: false, p, rows, order, lead, lsd, z: lsd > 0 ? lead / lsd : 99, cert: !!p[d ? C.cert3d : C.cert3],
+    const has = p.length > C.p3d, pw = has && p[d ? C.p3d : C.p3] != null ? [0, 1, 2].map(i => p[(d ? C.p3d : C.p3) + i]) : null;
+    return { pre: false, p, rows, order, lead, lsd, z: lsd > 0 ? lead / lsd : 99, cert: !!p[d ? C.cert3d : C.cert3], pw, early: has && !pw,
       n: p[C.n], frac: p[C.n] / race.stations, remE: p[C.remE] };
   }
   function status3(v) {
@@ -340,6 +365,23 @@ const DATA = /*__DATA__*/null;
     return `<div class="bars3 ${big ? 'big3' : ''}">${v.rows.map(r => `<div class="bar3"><span class="nm" style="color:${tone(r.c)}">${esc(big ? r.c.name : short(r.c.name))}</span>
       <span class="trk"><span class="fillc" style="width:${X(r.share)};background:${tone(r.c)}"></span>${r.sd > 0 ? `<span class="rng" style="left:${X(r.share - 1.2816 * r.sd)};width:calc(${X(r.share + 1.2816 * r.sd)} - ${X(r.share - 1.2816 * r.sd)})"></span>` : ''}</span>
       <span class="v">${(100 * r.share).toFixed(1)}%</span></div>`).join('')}</div>`;
+  }
+  // three-way races with win chances (2024): a two-way needle between the two likeliest winners, and the
+  // third candidate's chance alongside. Right side of the dial: the KMT candidate if in the pair, else the non-DPP one.
+  function pair3(race, v) {
+    const cs = [race.blue, race.other, race.third];
+    const pw = v && !v.pre && v.pw ? v.pw : null;
+    const ix = pw ? [0, 1, 2].sort((a, b) => pw[b] - pw[a] || v.rows[b].share - v.rows[a].share) : [0, 1, 2];
+    const [a, b, t] = ix;
+    const right = cs[a].tone === 'kmt' ? a : cs[b].tone === 'kmt' ? b : cs[a].tone === 'dpp' ? b : a, left = right === a ? b : a;
+    const sum = pw ? pw[right] + pw[left] : 1;
+    return { pr: { area: race.area, blue: cs[right], other: cs[left] }, p: pw && sum > 0 ? pw[right] / sum : 0.5, ri: right, li: left,
+      third: cs[t], pt: pw ? pw[t] : null, lead: cs[ix[0]], q: pw ? pw[ix[0]] : null, cs };
+  }
+  function statusQ(pre, cert, q) {
+    if (pre) return { label: 'No stations in', cls: '' };
+    if (cert) return { label: 'Decided', cls: 'decided' };
+    return { label: q >= 0.99 ? 'Very likely' : q >= 0.9 ? 'Likely' : q >= 0.7 ? 'Leaning' : 'Toss-up', cls: '' };
   }
   function status(v) {
     if (v.pre) return { label: 'No stations in', cls: '' };
@@ -420,56 +462,105 @@ const DATA = /*__DATA__*/null;
       <div class="summary">Turnout: "Live" estimates it from the stations already in. Drag the slider for a scenario instead: turnout vs ${baseYear} in each village, in steps of σ = ${sig} points. It changes the votes-left figures, not the dial.</div>`;
   }
 
-  // ---- national panel: every race at a glance (2024: the national race, then counties by leader)
+  // ---- national panel. Mayoral nights: every race at a glance, one block per race (hover for details,
+  // click to open it). 2024: the national race itself, with its charts and the channel watch.
   const nation = document.getElementById('nation');
   const PARTY = { kmt: '國民黨', dpp: '民進黨', tpp: '民眾黨', npp: '時代力量', ind: '無黨籍' };
   const TIER = { dec: [1, 'decided'], likely: [0.7, 'likely'], lean: [0.45, 'leaning'], toss: [0.22, 'toss-up'] };
   function standing(r) { // who leads a race at st.t, and how sure (same tiers as the cards' chips)
-    if (r.mode === 'three') { const v = view3(r, st.t); if (v.pre) return { pre: true };
-      return { lead: v.order[0].c, tier: v.cert ? 'dec' : v.z >= 2.5 ? 'likely' : v.z >= 1 ? 'lean' : 'toss' }; }
-    const v = view(r, st.t); if (v.pre) return { pre: true };
+    if (r.mode === 'three') { const v = view3(r, st.t); if (v.pre || v.early) return { pre: true, frac: 0 };
+      if (v.pw) { const pp = pair3(r, v); return { lead: pp.lead, q: pp.q, tier: v.cert ? 'dec' : pp.q >= 0.9 ? 'likely' : pp.q >= 0.7 ? 'lean' : 'toss', frac: v.frac }; }
+      return { lead: v.order[0].c, q: null, tier: v.cert ? 'dec' : v.z >= 2.5 ? 'likely' : v.z >= 1 ? 'lean' : 'toss', frac: v.frac }; }
+    const v = view(r, st.t); if (v.pre) return { pre: true, frac: 0 };
     const q = Math.max(v.pb, 1 - v.pb);
-    return { lead: v.pb >= 0.5 ? r.blue : r.other, tier: v.cert ? 'dec' : q >= 0.9 ? 'likely' : q >= 0.7 ? 'lean' : 'toss' };
+    return { lead: v.pb >= 0.5 ? r.blue : r.other, q, tier: v.cert ? 'dec' : q >= 0.9 ? 'likely' : q >= 0.7 ? 'lean' : 'toss', frac: v.frac };
   }
   const hatchBg = 'repeating-linear-gradient(45deg,var(--rule) 0 3px,transparent 3px 7px)';
+  function tipFor(area) { // hover text for a block
+    const night = NIGHTS[st.night], r = night.races.find(x => x.area === area), k = (night.skipped || []).find(x => x.area === area);
+    if (k) return `<b>${esc(area)}</b><br>${esc(k.why)}`;
+    if (!r) return '';
+    const s = standing(r);
+    if (s.pre) return `<b>${esc(area)}</b><br>No stations in yet${r.incumbent ? `<br><span class="muted">incumbent ${esc(r.incumbent.name)} (${esc(PARTY[r.incumbent.tone] || r.incumbent.party)})</span>` : ''}`;
+    return `<b>${esc(area)}</b> · ${(100 * s.frac).toFixed(0)}% of stations<br><span style="color:${tone(s.lead)};font-weight:700">${esc(s.lead.name)}</span> ${esc(s.lead.party)}<br>${s.tier === 'dec' ? 'decided' : `${pctTxt(s.q)} to win · ${TIER[s.tier][1]}`}<br><span class="muted">click to open</span>`;
+  }
   function renderNation() {
-    const night = NIGHTS[st.night], nat = night.races.find(r => r.area === '全國'), counties = night.races.filter(r => r.area !== '全國');
-    const skipped = night.skipped || [], prevYear = night.previous.slice(0, 4), total = counties.length + skipped.length;
-    if (st.mode === 'turnout') { nation.innerHTML = nationTurnout(night, nat, counties); return; }
+    const night = NIGHTS[st.night], nat = night.races.find(r => r.area === '全國');
+    if (st.mode === 'turnout') { nation.innerHTML = nationTurnout(night, nat, night.races.filter(r => r.area !== '全國')); return; }
+    if (nat) { renderNationalRace(nat); return; }
+    const counties = night.races, skipped = night.skipped || [], prevYear = night.previous.slice(0, 4), total = counties.length + skipped.length;
     const S = counties.map(r => ({ r, s: standing(r) }));
     const groups = {};
     for (const { s } of S) { if (s.pre) continue;
-      const g = groups[s.lead.tone] || (groups[s.lead.tone] = { tone: s.lead.tone, label: nat ? s.lead.name : PARTY[s.lead.tone] || s.lead.party, n: 0, dec: 0, likely: 0 });
+      const g = groups[s.lead.tone] || (groups[s.lead.tone] = { tone: s.lead.tone, label: PARTY[s.lead.tone] || s.lead.party, n: 0, dec: 0, likely: 0 });
       g.n++; if (s.tier === 'dec') g.dec++; else if (s.tier === 'likely') g.likely++; }
     const prev = {};
     for (const r of counties.concat(skipped)) if (r.incumbent) prev[r.incumbent.tone] = (prev[r.incumbent.tone] || 0) + 1;
-    if (!nat) for (const t of Object.keys(prev)) if (!groups[t]) groups[t] = { tone: t, label: PARTY[t] || t, n: 0, dec: 0, likely: 0 };
+    for (const t of Object.keys(prev)) if (!groups[t]) groups[t] = { tone: t, label: PARTY[t] || t, n: 0, dec: 0, likely: 0 };
     const order = Object.values(groups).sort((a, b) => b.n - a.n || b.dec - a.dec || (prev[b.tone] || 0) - (prev[a.tone] || 0));
+    // within a party and tier, blocks keep the county order used everywhere on the page (north to south)
     const rank = { dec: 0, likely: 1, lean: 2, toss: 3 }, waiting = S.filter(x => x.s.pre);
+    const blk = (area, style, cls) => `<button class="blk${cls ? ' ' + cls : ''}${area === st.area ? ' sel' : ''}" data-area="${esc(area)}" style="${style}" aria-label="${esc(area)}"></button>`;
     let bar = order.map(g => S.filter(x => !x.s.pre && x.s.lead.tone === g.tone).sort((a, b) => rank[a.s.tier] - rank[b.s.tier])
-      .map(({ r, s }) => `<i style="background:var(--${s.lead.tone});opacity:${TIER[s.tier][0]}" title="${esc(r.area)}: ${esc(s.lead.name)}, ${TIER[s.tier][1]}"></i>`).join('')).join('');
-    bar += waiting.map(({ r }) => `<i class="wait" title="${esc(r.area)}: no stations in yet"></i>`).join('');
-    bar += skipped.map(k => `<i class="skip" title="${esc(k.area)}: ${esc(k.why)}"></i>`).join('');
+      .map(({ r, s }) => blk(r.area, `background:var(--${s.lead.tone});opacity:${TIER[s.tier][0]}`)).join('')).join('');
+    bar += waiting.map(({ r }) => blk(r.area, `background:${hatchBg}`)).join('');
+    bar += skipped.map(k => blk(k.area, '', 'skip')).join('');
     const tally = order.map(g => `<div class="p"><span class="k"><i style="background:var(--${g.tone})"></i>${esc(g.label)}</span><span class="v">${g.n}</span>
-      <span class="s">${g.dec} decided · ${g.likely} likely</span>${prev[g.tone] != null || !nat ? `<span class="s">${prev[g.tone] || 0} in ${prevYear}</span>` : ''}</div>`).join('')
+      <span class="s">${g.dec} decided · ${g.likely} likely</span><span class="s">${prev[g.tone] || 0} in ${prevYear}</span></div>`).join('')
       + (waiting.length ? `<div class="p"><span class="k"><i style="background:${hatchBg}"></i>no stations yet</span><span class="v">${waiting.length}</span><span class="s">&nbsp;</span></div>` : '')
       + (skipped.length ? `<div class="p"><span class="k"><i style="background:var(--rule)"></i>not tonight</span><span class="v">${skipped.length}</span><span class="s">${skipped.map(k => esc(k.area)).join('、')}</span></div>` : '');
     const key = `<div class="nkey"><span><i></i>decided</span><span><i style="opacity:.7"></i>likely</span><span><i style="opacity:.45"></i>leaning</span><span><i style="opacity:.22"></i>toss-up</span><span><i style="background:${hatchBg}"></i>no stations yet</span></div>`;
-    const right = `<div style="display:grid;gap:10px;align-content:start;min-width:0">
-      <h2>${nat ? `Counties at ${clockTxt(st.t)}: who leads` : `All ${total} mayors at ${clockTxt(st.t)}: who leads, and how sure`}</h2>
-      <div class="sbar">${bar}</div>${key}<div class="tally">${tally}</div>
-      <p class="note muted" style="margin:0;font-size:12px">${nat ? `One block per county, by the projected leader in that county (three-way counties by projected share). "In ${prevYear}": counties each party's candidate carried last time.` : `One block per race, by the projected leader's party; shading as on the map. "In ${prevYear}": mayors each party won last time.`}</p></div>`;
-    if (!nat) { nation.innerHTML = right; return; }
-    const v = view(nat, st.t), stt = status(v), lead = v.pre ? null : (v.pb >= 0.5 ? nat.blue : nat.other), q = v.pre ? 0 : Math.max(v.pb, 1 - v.pb);
-    const v3 = view3(nat, st.t), third = v3.pre ? null : v3.rows[2];
-    const left = `<button class="natrace" data-area="全國" aria-pressed="${st.area === '全國'}">
-      <h2 style="text-align:center">${esc(nat.label || '全國')}</h2>
-      ${dial(nat, v, false)}
-      <span class="big">${v.pre ? '<span class="muted">Waiting for the first station</span>' : v.cert ? `<span style="color:${tone(lead)}">${esc(lead.name)} — decided</span>` : `<span style="color:${tone(lead)}">${esc(lead.name)} ${pctTxt(q)}</span> <span class="muted" style="font-weight:400;font-size:13px">${esc(stt.label.toLowerCase())}</span>`}</span>
-      <span class="sm">${v.pre ? '' : `${(100 * v.frac).toFixed(0)}% of stations · ${esc(nat.third ? nat.third.name : '')} projected ${(100 * third.share).toFixed(1)}%`}</span>
-      <span class="sm" style="color:var(--ink)">Open the national race, with channel watch ›</span></button>`;
-    nation.innerHTML = `<div class="nat two">${left}${right}</div>`;
+    nation.innerHTML = `<div style="display:grid;gap:10px;min-width:0">
+      <h2>All ${total} mayors at ${clockTxt(st.t)}: who leads, and how sure</h2>
+      <div class="sbar blocks">${bar}</div>${key}<div class="tally">${tally}</div>
+      <p class="note muted" style="margin:0;font-size:12px">One block per race, by the projected leader's party; shading as on the map. Hover a block for the race, click to open it. Within a party, blocks run from most to least certain, then in the county order of the cards. "In ${prevYear}": mayors each party won last time.</p></div>`;
+    refreshTip();
   }
+  function renderNationalRace(nat) {
+    const v = view(nat, st.t), stt = status(v), lead = v.pre ? null : (v.pb >= 0.5 ? nat.blue : nat.other), q = v.pre ? 0 : Math.max(v.pb, 1 - v.pb);
+    const v3 = view3(nat, st.t), third = v3.pre ? null : v3.rows[2], tvw = tview(nat, st.t);
+    const who = m => m >= 0 ? nat.blue.name : nat.other.name;
+    let reads = '';
+    if (v.pre) reads = `<div class="read"><span class="k">Status</span><span class="v">No polling stations have reported yet.</span></div>`;
+    else {
+      const f2 = v.p[C.b] + v.p[C.o] + v.twoLeft, u = m => st.unit === 'pts' ? (f2 > 0 ? (100 * Math.abs(m) / f2).toFixed(1) + ' pts' : '—') : comma(Math.abs(m));
+      const lo = v.mean - 1.2816 * v.sd, hi = v.mean + 1.2816 * v.sd;
+      reads = `
+        <div class="read"><span class="k">Counted</span><span class="v"><b class="num">${(100 * v.frac).toFixed(1)}%</b> of stations · ${esc(v.lead.name)} leads by <b class="num">${comma(Math.abs(v.margin))}</b></span></div>
+        <div class="read"><span class="k">Projected</span><span class="v">${v.cert ? `${esc(who(v.mean))} by ${u(v.mean)}` : `${esc(who(v.mean))} by <b class="num">${u(v.mean)}</b>; 80% range ${esc(who(lo))} ${u(lo)} to ${esc(who(hi))} ${u(hi)}`}</span></div>
+        ${third ? `<div class="read"><span class="k">${esc(nat.third.name)}</span><span class="v">projected ${(100 * third.share).toFixed(1)}% of the vote (80% range ${(100 * (third.share - 1.2816 * third.sd)).toFixed(1)}–${(100 * (third.share + 1.2816 * third.sd)).toFixed(1)}%); set aside in the dial</span></div>` : ''}
+        <div class="read"><span class="k">Ballots</span><span class="v">an estimated <b class="num">${Math.min(100, 100 * tvw.shareCounted).toFixed(0)}%</b> counted · projected turnout ${(100 * tvw.proj).toFixed(1)}%</span></div>`;
+    }
+    nation.innerHTML = `
+      <div class="dhead"><h3>全國 · 總統</h3><span class="sub">${esc(nat.blue.name)} vs ${esc(nat.other.name)} · ${esc(nat.third.name)} set aside in the dial</span></div>
+      <div class="detail">
+        <div class="panel" style="padding:12px">
+          <div class="bigdial">${dial(nat, v, true, null)}</div>
+          <div class="verdict"><span class="big">${v.pre ? 'Waiting for the first station' : v.cert ? `${esc(v.lead.name)} — decided` : `${esc(lead.name)} ${pctTxt(q)} · ${stt.label.toLowerCase()}`}</span>
+            <span class="small">${v.pre ? '' : `${clockTxt(st.t)} · ${st.feed === 'district' ? 'district totals only' : 'per-station feed'}`}</span></div>
+          <div class="reads" style="margin-top:6px">${reads}</div>
+        </div>
+        <div class="panel">
+          <h2>Chance to win over the night</h2>${chartP(nat)}
+          ${unitSwitch()}${chartM(nat)}
+          <div class="legend"><span><i></i>projected final (as estimated at each moment)</span><span><i class="band"></i>80% range</span><span><i class="cnt"></i>counted so far</span></div>
+        </div>
+      </div>
+      ${watch(nat)}`;
+  }
+  const unitSwitch = () => `<div class="unitsw"><h2>Margin: counted and projected</h2><div class="seg" role="group" aria-label="Margin unit">
+    <button data-unit="votes" aria-pressed="${st.unit === 'votes'}">Votes</button><button data-unit="pts" aria-pressed="${st.unit === 'pts'}">Points</button></div></div>`;
+  // block tooltip: one floating element, kept in step with the replay while the pointer rests on a block
+  const tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; document.body.appendChild(tip);
+  let tipArea = null;
+  function placeTip(el) { const b = el.getBoundingClientRect(); tip.innerHTML = tipFor(el.dataset.area); tip.hidden = false;
+    const w = tip.offsetWidth; tip.style.left = Math.max(8, Math.min(innerWidth - w - 8, b.left + b.width / 2 - w / 2)) + 'px';
+    tip.style.top = (b.bottom + 8 + scrollY) + 'px'; }
+  function refreshTip() { if (!tipArea) return; const el = nation.querySelector(`.blk[data-area="${tipArea}"]`); if (el) placeTip(el); else { tip.hidden = true; tipArea = null; } }
+  nation.addEventListener('mouseover', e => { const b = e.target.closest('.blk'); if (!b) return; tipArea = b.dataset.area; placeTip(b); });
+  nation.addEventListener('mouseout', e => { const b = e.target.closest('.blk'); if (b && !b.contains(e.relatedTarget)) { tip.hidden = true; tipArea = null; } });
+  nation.addEventListener('focusin', e => { const b = e.target.closest('.blk'); if (b) { tipArea = b.dataset.area; placeTip(b); } });
+  nation.addEventListener('focusout', () => { tip.hidden = true; tipArea = null; });
   function nationTurnout(night, nat, counties) {
     const one = (label, tv, extra) => tv.pre ? `<h2>${label}</h2><p class="muted" style="margin:0">No stations in yet. Last time: ${(100 * tv.prev).toFixed(1)}%.</p>` :
       `<h2>${label}</h2><div class="tnum">${(100 * tv.proj).toFixed(1)}% <small>projected turnout · 80% range ${(100 * tv.lo).toFixed(1)}–${(100 * tv.hi).toFixed(1)}%</small></div>
@@ -490,7 +581,17 @@ const DATA = /*__DATA__*/null;
     let s = night.races.filter(r => r.area !== '全國').map(r => {
       if (st.mode === 'turnout') return turnoutCard(r);
       if (r.mode === 'three') {
-        const v3 = view3(r, st.t), s3 = status3(v3);
+        const v3 = view3(r, st.t), pp = pair3(r, v3);
+        if (v3.pre || v3.pw || v3.early) {
+          const sq = v3.early ? { label: 'Early', cls: '' } : statusQ(v3.pre, v3.cert, pp.q);
+          return `<button class="card" data-area="${esc(r.area)}" aria-pressed="${r.area === st.area}">
+            <div class="top"><span class="area">${esc(r.area)}</span><span class="pct">${v3.pre ? '—' : Math.round(100 * v3.frac) + '% in'}</span></div>
+            ${dial(pp.pr, { pre: v3.pre || v3.early, pb: pp.p }, false)}
+            <div class="lead">${v3.pre ? '<span class="muted">waiting · three-way</span>' : v3.early ? `<span class="muted">${v3.n} station${v3.n > 1 ? 's' : ''} in</span>` : `<b style="color:${tone(pp.lead)}">${esc(pp.lead.name)} ${pctTxt(pp.q)}</b>`}<span class="chip ${sq.cls}">${sq.label}</span></div>
+            <div class="third3">${v3.pre ? `three-way: ${esc(pp.third.name)} too` : v3.early ? 'win chances from the 5th station' : `${esc(pp.third.name)}: ${pctTxt(pp.pt)} to win`}</div>
+          </button>`;
+        }
+        const s3 = status3(v3);
         return `<button class="card" data-area="${esc(r.area)}" aria-pressed="${r.area === st.area}">
           <div class="top"><span class="area">${esc(r.area)}</span><span class="pct">${v3.pre ? '—' : Math.round(100 * v3.frac) + '% in'}</span></div>
           <div style="padding:8px 0 6px">${v3.pre ? '<span class="muted" style="font-size:12px">three-way race · waiting</span>' : bars3(v3, false)}</div>
@@ -540,7 +641,9 @@ const DATA = /*__DATA__*/null;
           label = `${area}: projected ${(100 * tv.proj).toFixed(1)}% (${pts1(tv.chg)} pts)`; }
       } else if (r && r.mode === 'three') {
         const v3 = view3(r, st.t), s3 = status3(v3);
-        if (v3.pre) { fill = `url(#h-${r.incumbent ? r.incumbent.tone : 'ind'})`; label = `${area}: no count yet`; }
+        if (v3.pre || v3.early) { fill = `url(#h-${r.incumbent ? r.incumbent.tone : 'ind'})`; label = v3.pre ? `${area}: no count yet` : `${area}: three-way · fewer than 5 stations in`; }
+        else if (v3.pw) { const pp = pair3(r, v3), sq = statusQ(false, v3.cert, pp.q); fill = tone(pp.lead); op = SHADE[sq.label];
+          label = `${area}: three-way · ${pp.lead.name} ${pctTxt(pp.q)} · ${pp.third.name} ${pctTxt(pp.pt)} · ${sq.label}`; }
         else { fill = tone(v3.order[0].c); op = s3.op; label = `${area}: three-way · ${v3.order[0].c.name} +${(100 * v3.lead).toFixed(1)} pts · ${s3.label}`; }
       } else if (r) {
         const v = view(r, st.t), stt = status(v);
@@ -663,7 +766,7 @@ const DATA = /*__DATA__*/null;
   let jit = null;
   function renderDetail() {
     const night = NIGHTS[st.night];
-    const race = night.races.find(r => r.area === st.area) || night.races[0];
+    const race = night.races.find(r => r.area === st.area && r.area !== '全國') || night.races.find(r => r.area !== '全國');
     st.area = race.area;
     const v = view(race, st.t), stt = status(v);
     const sideHtml = (c, right) => {
@@ -705,13 +808,13 @@ const DATA = /*__DATA__*/null;
         </div>
         <div class="panel">
           <h2>Chance to win over the night</h2>${chartP(race)}
-          <div class="unitsw"><h2>Margin: counted and projected</h2><div class="seg" role="group" aria-label="Margin unit">
-            <button data-unit="votes" aria-pressed="${st.unit === 'votes'}">Votes</button><button data-unit="pts" aria-pressed="${st.unit === 'pts'}">Points</button></div></div>
+          ${unitSwitch()}
           ${chartM(race)}
           ${st.unit === 'pts' ? '<p class="note muted" style="margin:0;font-size:12px">Points: the lead as a share of the two contenders\' votes (counted so far, or projected for the final), not of all valid votes.</p>' : ''}
           <div class="legend"><span><i></i>projected final (as estimated at each moment)</span><span><i class="band"></i>80% range</span><span><i class="cnt"></i>counted so far</span></div>
+          ${watch(race)}
         </div>
-      </div>${race.sources ? sourcesPanel(race) : ''}`;
+      </div>`;
     startJitter(race, v);
   }
   // ---- three-way races
@@ -744,7 +847,52 @@ const DATA = /*__DATA__*/null;
     return s + '</svg>';
   }
   function renderThreeDetail(race) {
-    const v = view3(race, st.t), s3 = status3(v);
+    const v = view3(race, st.t);
+    if (!v.pre && !v.pw && !v.early) return renderThreeDetailShares(race, v);
+    const pp = pair3(race, v), sq = statusQ(v.pre, v.cert, pp.q), wait = v.pre || v.early;
+    const side = (k, right) => { const c = pp.cs[k]; const votes = v.pre ? null : v.rows[k].votes;
+      return `<div class="side b-${c.tone} ${right ? 'right' : ''}"><span class="nm">${esc(c.name)}</span><span class="pt">${esc(c.party)} · No. ${c.no}</span>
+        <span class="v num">${votes == null ? '—' : comma(votes)}</span><span class="p">${wait ? 'chance —' : 'chance to win ' + pctTxt(v.pw[k])}</span></div>`; };
+    const reads = v.pre ? `<div class="read"><span class="k">Status</span><span class="v">No polling stations have reported yet.</span></div>` : `
+      <div class="read"><span class="k">Counted</span><span class="v"><b class="num">${comma(v.n)}</b> of ${comma(race.stations)} stations (${(100 * v.frac).toFixed(1)}%) · so far ${v.rows.map(r => `${esc(r.c.name)} ${(100 * r.counted).toFixed(1)}%`).join(' · ')}</span></div>
+      <div class="read"><span class="k">Projected lead</span><span class="v">${esc(v.order[0].c.name)} over ${esc(v.order[1].c.name)} by <b class="num">${(100 * v.lead).toFixed(1)} pts</b> (± ${(128.16 * v.lsd).toFixed(1)} at 80%)${v.cert ? ' — decided: the lead is larger than every elector still out' : ''}</span></div>`;
+    detail.innerHTML = `
+      <div class="dhead"><h3>${esc(race.label || race.area)}</h3><span class="sub">three-way race · the dial shows the two likeliest winners</span></div>
+      <div class="detail">
+        <div class="panel" style="padding:12px">
+          <div class="bigdial">${dial(pp.pr, { pre: wait, pb: pp.p }, true, null)}</div>
+          <div class="verdict"><span class="big">${v.pre ? 'Waiting for the first station' : v.early ? `${v.n} station${v.n > 1 ? 's' : ''} in: too few for a win chance` : v.cert ? `${esc(pp.lead.name)} — decided` : `${esc(pp.lead.name)} ${pctTxt(pp.q)} · ${sq.label.toLowerCase()}`}</span>
+            <span class="small">${v.pre ? `three-way race with ${esc(pp.third.name)}` : v.early ? `In a three-way race the dial starts at the 5th station: one or two stations say little about ${esc(pp.third.name)}'s level, which has no earlier election to compare with.` : `<b style="color:${tone(pp.third)}">${esc(pp.third.name)}</b>, third most likely: ${pctTxt(pp.pt)} to win. The dial splits the other ${pctTxt(1 - pp.pt)} between the two.`}</span></div>
+          <div class="duo">${side(pp.li, false)}${side(pp.ri, true)}</div>
+          <div class="tsub" style="margin-top:10px">Projected share of the vote</div>
+          ${v.pre ? '<div class="muted">—</div>' : bars3(v, true)}
+          <div class="reads" style="margin-top:6px">${reads}</div>
+        </div>
+        <div class="panel">
+          <h2>Chance to win over the night</h2>${chartP3(race)}
+          <h2>Projected shares over the night</h2>${chart3(race)}
+          <p class="note muted" style="margin:0;font-size:12px">${esc(race.third.name)} has no earlier election to compare with, so their share is projected from the counted stations in each district, adjusted for station size (larger stations leaned more to them in 2024); the other two from the swing since 2020. Win chances come from the same projection and its uncertainty. They can't be checked well: eight three-way counties on one night.</p>
+          ${watch(race)}
+        </div>
+      </div>`;
+    jstate.v = null;
+  }
+  function chartP3(race) { // each candidate's chance to win, 0-100%
+    const W = 560, H = 170, L = 46, Rr = 12, T = 10, B = 24, d = st.feed === 'district';
+    const pts = race.pts; if (!pts.length) return '';
+    const t0 = pts[0][C.t] - 5, t1 = Math.max(pts[pts.length - 1][C.t], t0 + 10), cs = [race.blue, race.other, race.third];
+    const x = t => L + (t - t0) / (t1 - t0) * (W - L - Rr), y = q => T + (1 - q) * (H - T - B);
+    const rows = pts.filter(p => p[C.t] <= st.t && p.length > C.p3d && p[d ? C.p3d : C.p3] != null);
+    let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Each candidate's chance to win over the night">`;
+    s += `<g class="grid">${[0, 0.25, 0.5, 0.75, 1].map(q => `<line x1="${L}" x2="${W - Rr}" y1="${y(q)}" y2="${y(q)}"/>`).join('')}</g>`;
+    s += [0, 0.5, 1].map(q => `<text x="${L - 6}" y="${y(q) + (q === 1 ? 8 : q === 0 ? -2 : 4)}" text-anchor="end" style="fill:var(--muted)">${100 * q}%</text>`).join('');
+    s += ticks(t0, t1, x, H - B);
+    for (let k = 0; k < 3; k++) s += `<path d="${rows.map((p, i) => `${i ? 'L' : 'M'}${x(p[C.t]).toFixed(1)},${y(p[(d ? C.p3d : C.p3) + k]).toFixed(1)}`).join('')}" fill="none" stroke="${tone(cs[k])}" stroke-width="2.2"/>`;
+    if (st.t >= t0) s += `<line class="cursor" x1="${x(Math.min(st.t, t1))}" x2="${x(Math.min(st.t, t1))}" y1="${T}" y2="${H - B}"/>`;
+    return s + '</svg>' + `<div class="legend">${cs.map(c => `<span><i style="border-top:2.5px solid ${tone(c)}"></i>${esc(c.name)}</span>`).join('')}</div>`;
+  }
+  function renderThreeDetailShares(race, v) {
+    const s3 = status3(v);
     const reads = v.pre ? `<div class="read"><span class="k">Status</span><span class="v">No polling stations have reported yet.</span></div>` : `
       <div class="read"><span class="k">Counted</span><span class="v"><b class="num">${comma(v.n)}</b> of ${comma(race.stations)} stations (${(100 * v.frac).toFixed(1)}%)</span></div>
       <div class="read"><span class="k">Counted so far</span><span class="v">${v.rows.map(r => `${esc(r.c.name)} ${(100 * r.counted).toFixed(1)}%`).join(' · ')}</span></div>
@@ -762,7 +910,7 @@ const DATA = /*__DATA__*/null;
           <h2>Projected shares over the night</h2>${chart3(race)}
           <p class="note muted" style="margin:0;font-size:12px">Three-way race: the page shows projected shares and who is ahead, not a win chance. ${esc(race.third.name)} has no earlier election to compare with, so their share is projected from the counted stations in each district, adjusted for station size (larger stations leaned more to them in 2024). The other two are projected from the swing since 2020.</p>
         </div>
-      </div>${race.sources ? sourcesPanel(race) : ''}`;
+      </div>`;
     jstate.v = null;
   }
 
@@ -773,40 +921,63 @@ const DATA = /*__DATA__*/null;
     if (k < 0 || (src.ends != null && t > src.ends + 10)) return null;
     return { v: S[k].slice(1), age: t - S[k][0] };
   }
-  function sourcesPanel(race) {
+  // Channel / CEC count watch (2024): per candidate, the floor (highest reliable count), the field (other
+  // channels: mean and range) and the model's projected final with its 80% range. A count above the top of
+  // that range is red: more than the count can plausibly reach, the live counterpart of "above the final".
+  function watchData(race) {
     const p = at(race, st.t);
-    const cands = [race.other, race.blue, race.third]; const idx = [1, 0, 2]; // display order: 賴, 侯, 柯
+    const cands = [race.blue, race.other, race.third];
     const cec = p ? [p[C.b], p[C.o], p[C.c3]] : null;
     const v3 = view3(race, st.t);
     // projected final votes: projected share x projected valid votes (ballots projected x counted valid/ballot ratio)
     const proj = p && !v3.pre ? (() => { const vb = (p[C.b] + p[C.o] + p[C.c3]) / Math.max(p[C.cc], 1), tot = p[st.feed === 'district' ? C.tmd : C.tm] * vb;
-      return v3.rows.map(r => ({ m: r.share * tot, hi: (r.share + 1.2816 * r.sd) * tot })); })() : null;
+      return v3.rows.map(r => ({ m: r.share * tot, lo: Math.max(0, r.share - 1.2816 * r.sd) * tot, hi: (r.share + 1.2816 * r.sd) * tot })); })() : null;
     const rows = [], reliable = [], field = [];
-    if (cec) { rows.push({ label: '中選會', en: 'CEC count', cohort: 'reliable', v: cec, age: 0 }); reliable.push(cec); }
-    for (const src of race.sources) {
+    if (cec) { rows.push({ label: '中選會', en: 'CEC count', cohort: 'reliable', v: cec, age: 0 }); reliable.push({ v: cec, label: '中選會' }); }
+    for (const src of race.sources || []) {
       const r = srcAt(src, st.t);
       if (!r || r.age > (src.stale || 10)) { rows.push({ label: src.label, en: src.en, cohort: src.cohort, v: null, why: r ? `last reading ${Math.round(r.age)} min ago` : (src.ends != null && st.t > src.ends ? 'switched to the CEC feed' : 'no reading yet') }); continue; }
       rows.push({ label: src.label, en: src.en, cohort: src.cohort, v: r.v, age: r.age });
-      (src.cohort === 'reliable' ? reliable : field).push(r.v);
+      (src.cohort === 'reliable' ? reliable : field).push({ v: r.v, label: src.label });
     }
-    const cell = (val, i) => val == null ? '<td class="stale">—</td>' : `<td class="${proj && val > proj[i].hi ? 'over' : ''}"><span class="num">${comma(val)}</span></td>`;
     // a channel that didn't show a candidate (null) is left out for that candidate, not counted as 0
-    const col = (arr, i) => arr.map(v => v[i]).filter(x => x != null);
-    const floor = reliable.length ? [0, 1, 2].map(i => { const c = col(reliable, i); return c.length ? Math.max(...c) : null; }) : null;
-    const fmean = field.length ? [0, 1, 2].map(i => { const c = col(field, i); return c.length ? c.reduce((a, x) => a + x, 0) / c.length : null; }) : null;
-    const frange = field.length ? [0, 1, 2].map(i => { const c = col(field, i); return c.length ? [Math.min(...c), Math.max(...c)] : null; }) : null;
-    return `<div class="panel" style="margin-top:16px">
-      <h2>Channel watch at ${clockTxt(st.t)}</h2>
-      <div class="tbl"><table class="srcs"><thead><tr><th>Source</th>${idx.map(i => `<th style="color:${tone(cands[idx.indexOf(i)])}">${esc(cands[idx.indexOf(i)].name)}</th>`).join('')}<th>Reading</th></tr></thead><tbody>
-        ${rows.map(r => `<tr><td><b>${esc(r.label)}</b><span class="cohort">${r.cohort === 'reliable' ? 'reliable' : 'field'}</span></td>${r.v ? idx.map(i => cell(r.v[i], i)).join('') : '<td class="stale">—</td><td class="stale">—</td><td class="stale">—</td>'}<td class="stale">${r.v ? (r.age ? Math.round(r.age) + ' min old' : 'now') : esc(r.why)}</td></tr>`).join('')}
-        <tr class="agg"><td>Floor <span class="cohort">max of reliable</span></td>${floor ? idx.map(i => floor[i] == null ? '<td>—</td>' : `<td><span class="num">${comma(floor[i])}</span></td>`).join('') : '<td>—</td><td>—</td><td>—</td>'}<td></td></tr>
-        <tr class="agg"><td>Field <span class="cohort">mean · range</span></td>${fmean ? idx.map(i => fmean[i] == null ? '<td>—</td>' : `<td><span class="num">${comma(fmean[i])}</span><br><span class="stale" style="font-size:11px">${comma(frange[i][0])}–${comma(frange[i][1])}</span></td>`).join('') : '<td>—</td><td>—</td><td>—</td>'}<td></td></tr>
-        <tr class="agg"><td>Projected final <span class="cohort">model, from CEC</span></td>${proj ? idx.map(i => `<td><span class="num">${comma(proj[i].m)}</span></td>`).join('') : '<td>—</td><td>—</td><td>—</td>'}<td></td></tr>
-      </tbody></table></div>
-      <p class="note muted" style="margin:0;font-size:12px">${race.area === '全國' ? '' : `County counts: 華視's side panel, which rotated through the counties, so a reading can be up to 15 minutes old; read off the recording by OCR, with misreads dropped (so some readings are missing). From about 18:15 華視 showed the CEC's own county numbers. Only 華視's county numbers have been read so far. `}Each channel's latest on-screen count (readings older than ${race.area === '全國' ? 10 : 15} minutes are dropped). <span style="color:var(--stamp);font-weight:700">Red</span>: above the top of the model's 80% range for the final, i.e. more than the count can plausibly reach — on the night, the live counterpart of "above the final". Channel counts were read from their YouTube recordings; the floor and field are as on the sources page.</p>
+    const floor = [0, 1, 2].map(i => { const c = reliable.filter(x => x.v[i] != null); if (!c.length) return null;
+      const b = c.reduce((a, x) => x.v[i] > a.v[i] ? x : a); return { v: b.v[i], src: b.label }; });
+    const fld = [0, 1, 2].map(i => { const c = field.map(x => x.v[i]).filter(x => x != null); return c.length ? { mean: c.reduce((a, x) => a + x, 0) / c.length, min: Math.min(...c), max: Math.max(...c), n: c.length } : null; });
+    return { cands, rows, floor, fld, proj, p };
+  }
+  function watch(race) {
+    if (race.third == null) return '';
+    const W = watchData(race);
+    if (!W.p) return `<div class="watch"><h2>Count watch</h2><p class="muted" style="margin:0;font-size:13px">No counts yet.</p></div>`;
+    const order = [1, 0, 2].filter(i => W.cands[i]); // 賴, 侯, 柯 (ballot order would be 柯, 賴, 侯)
+    const scale = Math.max(1, ...order.map(i => Math.max(W.proj ? W.proj[i].hi : 0, W.floor[i] ? W.floor[i].v : 0, W.fld[i] ? W.fld[i].max : 0))) * 1.04;
+    const pc = v => `${Math.max(0, Math.min(100, 100 * v / scale)).toFixed(2)}%`;
+    const over = (v, i) => W.proj && v != null && v > W.proj[i].hi;
+    const bars = order.map(i => { const c = W.cands[i], f = W.floor[i], fd = W.fld[i], pr = W.proj ? W.proj[i] : null;
+      return `<div class="wrow">
+        <div class="whead"><span class="nm" style="color:${tone(c)}">${esc(c.name)}</span>
+          <span class="wf"><label>Floor</label><b class="num${over(f && f.v, i) ? ' over' : ''}">${f ? comma(f.v) : '—'}</b><small>${f ? esc(f.src) : ''}</small></span>
+          ${race.sources && race.sources.some(s => s.cohort === 'field') ? `<span class="wf"><label>Field</label><b class="num${over(fd && fd.mean, i) ? ' over' : ''}">${fd ? comma(fd.mean) : '—'}</b><small>${fd ? (fd.n > 1 ? `${comma(fd.min)}–${comma(fd.max)}` : '1 channel') : 'no reading'}</small></span>` : ''}
+          <span class="wf"><label>Projected final</label><b class="num">${pr ? comma(pr.m) : '—'}</b><small>${pr ? `${comma(pr.lo)}–${comma(pr.hi)}` : ''}</small></span></div>
+        <div class="wbar" role="img" aria-label="${esc(c.name)}: floor ${f ? comma(f.v) : 'none'}${fd ? ', field ' + comma(fd.mean) : ''}${pr ? ', projected final ' + comma(pr.m) : ''}">
+          ${pr ? `<div class="prj" style="left:${pc(pr.lo)};width:calc(${pc(pr.hi)} - ${pc(pr.lo)})"></div><div class="prm" style="left:${pc(pr.m)}"></div>` : ''}
+          <div class="fl" style="width:${f ? pc(f.v) : '0%'};background:${tone(c)}"></div>
+          ${fd ? `<div class="band" style="left:${pc(fd.min)};width:calc(${pc(fd.max)} - ${pc(fd.min)} + 2px)"></div><div class="mean" style="left:${pc(fd.mean)}"></div>` : ''}
+        </div></div>`; }).join('');
+    const cell = (val, i) => val == null ? '<td class="stale">—</td>' : `<td class="${over(val, i) ? 'over' : ''}"><span class="num">${comma(val)}</span></td>`;
+    const table = `<table class="srcs"><thead><tr><th>Source</th>${order.map(i => `<th style="color:${tone(W.cands[i])}">${esc(W.cands[i].name)}</th>`).join('')}<th>Reading</th></tr></thead><tbody>
+      ${W.rows.map(r => `<tr><td><b>${esc(r.label)}</b><span class="cohort">${r.cohort === 'reliable' ? 'reliable' : 'field'}</span></td>${r.v ? order.map(i => cell(r.v[i], i)).join('') : order.map(() => '<td class="stale">—</td>').join('')}<td class="stale">${r.v ? (r.age ? Math.round(r.age) + ' min old' : 'now') : esc(r.why)}</td></tr>`).join('')}
+    </tbody></table>`;
+    const nat = race.area === '全國';
+    return `<div class="watch">
+      <h2>Count watch at ${clockTxt(st.t)}</h2>
+      <div class="wkey"><span><i class="k-fl"></i>floor: highest reliable count</span>${race.sources && race.sources.some(s => s.cohort === 'field') ? '<span><i class="k-band"></i>field: other channels, range and mean</span>' : ''}<span><i class="k-prj"></i>projected final, 80% range</span></div>
+      ${bars}
+      <details><summary>Readings by source</summary><div class="tbl">${table}</div></details>
+      <p class="note muted" style="margin:0;font-size:12px">${nat ? 'Reliable: 中選會, 公視 (own count), 華視. Field: 三立, TVBS. ' : race.sources ? "County counts: 中選會 and 華視's rotating county panel (read off the recording; a reading can be up to 15 minutes old, and some misreads were dropped). From about 18:15 華視 showed the CEC's numbers. " : "No channel's county numbers were read for this county; the floor is the CEC count. "}<span style="color:var(--stamp);font-weight:700">Red</span>: above the top of the projected 80% range, more than the count can plausibly reach.</p>
     </div>`;
   }
-
   function chartT(race) {
     const W = 560, H = 230, L = 52, Rr = 12, T = 14, B = 30;
     const pts = race.pts; if (!pts.length) return '';
@@ -912,7 +1083,7 @@ const DATA = /*__DATA__*/null;
   }
   function setNight(id) {
     st.night = id; const night = NIGHTS[id];
-    if (!night.races.some(r => r.area === st.area)) st.area = night.races[0].area;
+    if (!night.races.some(r => r.area === st.area) || st.area === '全國') st.area = night.races.find(r => r.area !== '全國').area;
     st.t = Math.max(0, Math.min(...night.races.map(r => r.pts[0][C.t])) - 10);
   }
 
@@ -930,10 +1101,11 @@ const DATA = /*__DATA__*/null;
     if (e.target.id === 'k') { st.k = +e.target.value; render(); document.getElementById('k').focus(); }
   });
   desk.addEventListener('change', e => { if (e.target.id === 'jit') { st.jitter = e.target.checked; renderDetail(); } });
-  detail.addEventListener('click', e => { const b = e.target.closest('[data-unit]'); if (b) { st.unit = b.dataset.unit; renderDetail(); } });
+  detail.addEventListener('click', e => { const b = e.target.closest('[data-unit]'); if (b) { st.unit = b.dataset.unit; renderNation(); renderDetail(); } });
   const pick = (area, scroll) => { if (!NIGHTS[st.night].races.some(r => r.area === area)) return; st.area = area; renderNation(); renderMap(); renderCards(); renderDetail(); writeHash();
     if (scroll || matchMedia('(max-width: 899px)').matches) detail.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
-  nation.addEventListener('click', e => { const b = e.target.closest('[data-area]'); if (b) pick(b.dataset.area, true); });
+  nation.addEventListener('click', e => { const u = e.target.closest('[data-unit]'); if (u) { st.unit = u.dataset.unit; renderNation(); renderDetail(); return; }
+    const b = e.target.closest('[data-area]'); if (b) { tip.hidden = true; tipArea = null; pick(b.dataset.area, true); } });
   cards.addEventListener('click', e => { const c = e.target.closest('.card[data-area]'); if (c) pick(c.dataset.area); });
   mapEl.addEventListener('click', e => { const c = e.target.closest('path[data-area]'); if (c) pick(c.dataset.area); });
 

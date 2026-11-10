@@ -12,7 +12,8 @@ Things set aside on purpose, to look at again before 2026-11-28. Newest first.
 
 ## Needle page
 
-- **National panel** (added 2026-11-10): check whether it makes the old "Every race" heading and the per-race cards redundant on phones.
+- **National panel** (added 2026-11-10): on phones the 2024 version (dial, two charts, count watch) is long before the map. Consider collapsing the charts or the count watch there.
+- **Count watch** now uses bars plus a collapsible per-source table. Check that the old table isn't missed.
 - Control bar is busy. The turnout scenario slider is possibly redundant now that "Live" works.
 - Votes vs points switch on the margin chart: keep one?
 - Dial left/right vs chart top/bottom orientation: make consistent.

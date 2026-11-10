@@ -173,6 +173,21 @@ def base_for(base, s):
     return base.get((d, None)) or base[(None, None)]
 
 
+
+def win3(tot, sd_m, sd_c, k=6.0, g=121):
+    """Chance each of three candidates finishes first, from Night.three_way's two independent errors:
+    X, the third candidate's remaining votes (sd_c), and Y, the blue-other margin among the rest (sd_m).
+    Final votes: blue + (Y - X)/2, other - (Y + X)/2, third + X. Integrated on a grid over +-k sd."""
+    import numpy as np
+    xs = np.linspace(-k, k, g)
+    w = np.exp(-xs ** 2 / 2)
+    w /= w.sum()
+    X, Y = np.meshgrid(xs * sd_c, xs * sd_m, indexing="ij")
+    W = np.outer(w, w)
+    a, b, c = tot[0] + (Y - X) / 2, tot[1] - (Y + X) / 2, tot[2] + X
+    first = np.argmax(np.stack([a, b, c]), axis=0)
+    return [float(W[first == i].sum()) for i in range(3)]
+
 class Night:
     """One race on one night, against one baseline."""
 
@@ -375,8 +390,9 @@ class Night:
         valid_in = sum(s["A"] for s in R)
         if not U:
             V = sum(cnt) and valid_in
+            lead = max(range(3), key=lambda i: cnt[i])
             return dict(mean=[c / V for c in cnt], sd=[0, 0, 0], counted=[c / max(valid_in, 1) for c in cnt],
-                        certain=True, leader=max(range(3), key=lambda i: cnt[i]), n=n)
+                        certain=True, leader=lead, n=n, p_win=[float(i == lead) for i in range(3)])
         # third candidate's share: overall level, a slope on station size (larger stations, often in newer
         # urban areas, leaned more to 柯 in 2024 and reported later; size is known before counting),
         # and district deviations
@@ -434,8 +450,9 @@ class Night:
         order = sorted(range(3), key=lambda i: -cnt[i])
         remE = sum(s_["E"] for s_ in U)
         certain = cnt[order[0]] - cnt[order[1]] > remE
+        p_win = [float(i == order[0]) for i in range(3)] if certain else win3(tot, sd_m, sd_c)
         return dict(mean=[t / V for t in tot], sd=[x / V for x in sds], counted=[c / max(valid_in, 1) for c in cnt],
-                    certain=certain, leader=max(range(3), key=lambda i: tot[i]), n=n)
+                    certain=certain, leader=max(range(3), key=lambda i: tot[i]), n=n, p_win=p_win)
 
     @staticmethod
     def _district_totals(R):

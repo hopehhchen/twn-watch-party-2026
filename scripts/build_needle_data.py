@@ -78,13 +78,20 @@ def turnout_cols(ns, nd, n):
     return [a["counted"], round(a["mean"]), round(a["sd"]), round(d["mean"]), round(d["sd"])]
 
 
+# Three-way win chances are left out (null) until a race has this many stations in: with no earlier election
+# for the third candidate, one or two stations' share is a poor guide (2024 backtest, all 22 counties: log loss
+# of the eventual winner's chance 1.65 at 1 station, 0.64 at 2, 0.26 at 3, 0.13 at 5).
+MIN_STATIONS_WIN3 = 5
+
+
 def three_cols(ns, nd, n, third):
-    out = []
+    out, pw = [], []
     for nt in (ns, nd):
         r = nt.three_way(n, third)
         out += [round(x, 4) for x in r["mean"]] + [round(x, 4) for x in r["sd"]] + [int(r["certain"])]
+        pw += [round(x, 4) for x in r["p_win"]] if n >= MIN_STATIONS_WIN3 else [None] * 3
     cnt = sum(s["v"][third] for s in ns.st[:n])
-    return [cnt] + out
+    return [cnt] + out + pw
 
 
 def race_entry(ns, nd, race, area, label, t0, inc=None, third=None):
@@ -199,7 +206,8 @@ def build(night):
                               "ballots_counted", "ballots_final_mean", "ballots_final_sd",
                               "ballots_final_mean_district", "ballots_final_sd_district",
                               "(three-way races) third_votes", "share_blue", "share_other", "share_third",
-                              "sd_blue", "sd_other", "sd_third", "certain3", "...same seven for district feed"],
+                              "sd_blue", "sd_other", "sd_third", "certain3", "...same seven for district feed",
+                              "p_win_blue", "p_win_other", "p_win_third", "...same three for district feed"],
             "races": races, "skipped": skipped}
 
 
