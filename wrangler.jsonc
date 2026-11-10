@@ -1,0 +1,11 @@
+// Cloudflare Workers deployment: a static-assets-only Worker serving the built site.
+// Build first (python3 scripts/build_site.py _site), then `npx wrangler deploy`.
+// "name" must match the Worker's name in the Cloudflare dashboard.
+{
+  "name": "twn-watch-party-2026",
+  "compatibility_date": "2025-09-01",
+  "assets": {
+    "directory": "./_site",
+    "not_found_handling": "404-page"
+  }
+}
