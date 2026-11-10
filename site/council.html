@@ -92,12 +92,6 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
 .key { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--muted); align-items: center; }
 .key i { display: inline-block; width: 18px; height: 10px; border-radius: 2px; vertical-align: middle; margin-right: 5px; background: var(--ink); }
 
-.close { display: grid; gap: 6px; }
-.close button { text-align: left; border: 1px solid var(--rule); background: var(--bg); border-radius: 8px; padding: 6px 10px; cursor: pointer; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; font-size: 13px; }
-.close button:hover { border-color: var(--muted); }
-.close .w { font-weight: 700; }
-.close .g { font-family: var(--font-num); font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; }
-.close .d { grid-column: 1 / -1; color: var(--muted); font-size: 12px; }
 
 .overview { grid-template-columns: minmax(0, 1fr); }
 @media (min-width: 900px) { .overview { grid-template-columns: minmax(260px, 340px) minmax(0, 1fr); gap: 20px; } }
@@ -123,7 +117,6 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
 .dists { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
 @media (min-width: 900px) { .dists { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .dist { border: 1px solid var(--rule); border-radius: 9px; padding: 10px 12px; display: grid; gap: 6px; align-content: start; min-width: 0; background: var(--bg); }
-.dist.flash { box-shadow: 0 0 0 2px var(--accent); }
 .dist .dh { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px 10px; }
 .dist .dh b { font-size: 15px; }
 .dist .dh span { font-size: 12px; color: var(--muted); }
@@ -143,7 +136,6 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
 .st.q { color: var(--accent); }
 .gapline { font-size: 12px; color: var(--muted); }
 .gapline b { color: var(--ink); font-family: var(--font-num); }
-.sortsw { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
 .notes { font-size: 14px; color: var(--muted); display: grid; gap: 10px; max-width: 80ch; }
 .notes h2 { margin: 0; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
 .notes p { margin: 0; }
@@ -203,7 +195,7 @@ const META = {"nights":[{"year":2018,"src":"council/2018.json"},{"year":2022,"sr
 <script>
 (() => {
   const NIGHT = {};  // year -> loaded data
-  const st = { year: META.nights[META.nights.length - 1].year, area: '臺北市', t: 150, playing: false, speed: 5, sort: 'no', flash: null };
+  const st = { year: META.nights[META.nights.length - 1].year, area: '臺北市', t: 150, playing: false, speed: 5 };
   const desk = document.getElementById('desk'), nation = document.getElementById('nation'), cards = document.getElementById('cards'),
     detail = document.getElementById('detail'), mapEl = document.getElementById('map'), mapKey = document.getElementById('mapkey');
   const GROUPS = [['kmt', '國民黨'], ['dpp', '民進黨'], ['tpp', '民眾黨'], ['npp', '時代力量'], ['oth', '其他政黨'], ['ind', '無黨籍']];
@@ -287,21 +279,6 @@ const META = {"nights":[{"year":2018,"src":"council/2018.json"},{"year":2022,"sr
       ${cs.wait ? `<div class="p"><span class="k"><i class="wait" style="background:repeating-linear-gradient(45deg,var(--rule) 0 3px,transparent 3px 7px)"></i>not counting yet</span><span class="v">${cs.wait}</span><span class="s">seats</span></div>` : ''}</div>`;
   }
   const keyHtml = `<div class="key"><span><i></i>decided</span><span><i style="opacity:.42"></i>leading, not decided</span><span><i style="background:repeating-linear-gradient(45deg,var(--rule) 0 3px,transparent 3px 7px)"></i>no stations counted yet</span></div>`;
-  function closest(night, t, area) { // seat lines closest relative to the votes counted, districts at least half counted
-    const out = [];
-    for (const c of night.counties) { if (area && c.area !== area) continue;
-      c.districts.forEach((d, i) => { const s = dstate(d, t);
-        if (s.pre || s.decided || s.gap == null || s.frac < 0.5) return;
-        out.push({ c, d, i, s, rel: s.gap / Math.max(1, s.tot / d.seats) }); }); }
-    return out.sort((a, b) => a.rel - b.rel).slice(0, area ? 3 : 6);
-  }
-  function closeList(list) {
-    if (!list.length) return '<p class="muted" style="margin:0;font-size:13px">None right now (only districts at least half counted and not yet decided are listed).</p>';
-    return `<div class="close">${list.map(({ c, d, i, s }) => { const a = d.cands[s.lastIn], b = d.cands[s.firstOut];
-      return `<button data-go="${esc(c.area)}|${i}"><span class="w">${esc(c.area)} ${esc(d.name)}${d.seat_type !== '區域' ? ' · ' + esc(d.seat_type) : ''}</span><span class="g">${comma(s.gap)} votes</span>
-        <span class="d">seat ${d.seats}: ${esc(a.name)} (${esc(SHORT[a.party] || a.party)}) over ${esc(b.name)} (${esc(SHORT[b.party] || b.party)}) · ${(100 * s.frac).toFixed(0)}% of stations</span></button>`; }).join('')}</div>`;
-  }
-
   // ---- render
   function renderDesk() {
     const night = NIGHT[st.year];
@@ -330,10 +307,7 @@ const META = {"nights":[{"year":2018,"src":"council/2018.json"},{"year":2022,"sr
       for (const [g] of GROUPS) { all.seats[g].lead += cs.seats[g].lead; all.seats[g].won += cs.seats[g].won; } }
     document.getElementById('dsum').innerHTML = `${esc(night.title)} · ${esc(night.date)}<br><b>${all.counting}</b> of ${all.dists} districts counting · <b>${all.decided}</b> of ${all.total} seats decided`;
     nation.innerHTML = `<h2>Seats if counting stopped at ${clockTxt(st.t)} · all ${all.total} seats in 22 councils</h2>
-      ${seatBar(all, false, false)}${keyHtml}${tally(all)}
-      <h2 style="margin-top:6px">Closest seat lines right now</h2>
-      ${closeList(closest(night, st.t))}
-      <p class="muted" style="margin:0;font-size:12px">Gap between the last candidate in and the first one out, smallest relative to votes per seat counted so far, among districts at least half counted. Click one to open it.</p>`;
+      ${seatBar(all, false, false)}${keyHtml}${tally(all)}`;
   }
   function renderCards() {
     const night = NIGHT[st.year];
@@ -375,7 +349,7 @@ const META = {"nights":[{"year":2018,"src":"council/2018.json"},{"year":2022,"sr
       if (r === d.seats - 1 && r < show.length - 1) rows += '<tr class="line"><td colspan="5"></td></tr>';
     });
     const restV = rest.reduce((a, k) => a + s.v[k], 0);
-    return `<div class="dist${st.flash === i ? ' flash' : ''}" id="d-${i}">${head}
+    return `<div class="dist" id="d-${i}">${head}
       <table>${rows}</table>
       ${rest.length ? `<div class="more">+ ${rest.length} more candidate${rest.length > 1 ? 's' : ''}, ${comma(restV)} votes together</div>` : ''}
       ${s.gap != null && !s.decided ? `<div class="gapline">Seat line: <b>${comma(s.gap)}</b> votes between ${esc(d.cands[s.lastIn].name)} and ${esc(d.cands[s.firstOut].name)}; up to ${comma(s.R)} electors still out.</div>` : ''}</div>`;
@@ -384,17 +358,12 @@ const META = {"nights":[{"year":2018,"src":"council/2018.json"},{"year":2022,"sr
     const night = NIGHT[st.year], c = night.counties.find(x => x.area === st.area) || night.counties[0];
     st.area = c.area; const cs = NS[c.area];
     const idx = c.districts.map((d, i) => i);
-    if (st.sort === 'close') idx.sort((a, b) => { const sa = cs.ds[a], sb = cs.ds[b];
-      const ka = sa.pre || sa.decided || sa.gap == null ? Infinity : sa.gap / Math.max(1, sa.tot / c.districts[a].seats);
-      const kb = sb.pre || sb.decided || sb.gap == null ? Infinity : sb.gap / Math.max(1, sb.tot / c.districts[b].seats);
-      return ka - kb || a - b; });
     detail.innerHTML = `
       <div class="dhead"><h3>${esc(c.area)}議會</h3><span class="sub">${cs.total} seats in ${c.districts.length} districts · ${cs.decided} decided · ${cs.frac > 0 ? (100 * cs.frac).toFixed(0) + '% of stations counted' : 'not counting yet'}</span></div>
       ${seatBar(cs, false, true)}
       <div class="key"><span>Line: half the seats (${Math.floor(cs.total / 2) + 1} for a majority)</span></div>
       ${tally(cs)}
-      <div class="sortsw"><h2>Districts</h2><div class="ctl"><span>Order</span><div class="seg" role="group" aria-label="District order">
-        <button data-sort="no" aria-pressed="${st.sort === 'no'}">By number</button><button data-sort="close" aria-pressed="${st.sort === 'close'}">Closest seat line</button></div></div></div>
+      <h2>Districts</h2>
       <div class="dists">${idx.map(i => distBlock(c.districts[i], cs.ds[i], i)).join('')}</div>`;
   }
   function render() { if (!NIGHT[st.year]) return; compute(); renderDesk(); renderNation(); renderMap(); renderCards(); renderDetail(); writeHash(); }
@@ -429,14 +398,10 @@ const META = {"nights":[{"year":2018,"src":"council/2018.json"},{"year":2022,"sr
     else if (b.dataset.speed) { st.speed = +b.dataset.speed; renderDesk(); renderNation(); }
   });
   desk.addEventListener('input', e => { if (e.target.id === 't') { st.t = +e.target.value; light(); } });
-  const pick = (area, scroll) => { st.area = area; st.flash = null; renderMap(); renderCards(); renderDetail(); writeHash();
+  const pick = (area, scroll) => { st.area = area; renderMap(); renderCards(); renderDetail(); writeHash();
     if (scroll || matchMedia('(max-width: 899px)').matches) detail.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
   cards.addEventListener('click', e => { const c = e.target.closest('.card[data-area]'); if (c) pick(c.dataset.area); });
   mapEl.addEventListener('click', e => { const c = e.target.closest('path[data-area]'); if (c) pick(c.dataset.area); });
-  detail.addEventListener('click', e => { const b = e.target.closest('[data-sort]'); if (b) { st.sort = b.dataset.sort; renderDetail(); } });
-  nation.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (!b) return;
-    const [area, i] = b.dataset.go.split('|'); st.area = area; st.flash = +i; st.sort = 'no'; renderMap(); renderCards(); renderDetail(); writeHash();
-    const el = document.getElementById('d-' + i); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); });
 
   const m = decodeURIComponent(location.hash.slice(1)).split('/');
   const y0 = META.nights.some(n => String(n.year) === m[0]) ? +m[0] : st.year;

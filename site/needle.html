@@ -99,6 +99,27 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
 #map path.c:hover { stroke: var(--ink); stroke-width: 1.2; }
 #map path.c.sel { stroke: var(--ink); stroke-width: 2; }
 #map path.inset { fill: none; stroke: var(--rule); stroke-width: 0.8; }
+/* national panel */
+.nat { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) { .nat.two { grid-template-columns: minmax(260px, 340px) minmax(0, 1fr); gap: 22px; } }
+.natrace { text-align: left; border: 1px solid var(--rule); border-radius: 9px; background: var(--bg); padding: 10px 12px; cursor: pointer; display: grid; gap: 4px; font-size: 13px; }
+.natrace:hover { border-color: var(--muted); }
+.natrace[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); background: var(--surface); }
+.natrace svg { width: 100%; max-width: 230px; height: auto; display: block; margin: 0 auto; }
+.natrace .big { font-size: 17px; font-weight: 700; text-align: center; }
+.natrace .sm { color: var(--muted); text-align: center; font-size: 12.5px; }
+.sbar { display: flex; height: 26px; border-radius: 4px; overflow: hidden; background: var(--bg); border: 1px solid var(--rule); gap: 1px; }
+.sbar i { display: block; height: 100%; flex: 1 1 0; }
+.sbar i.wait { background: repeating-linear-gradient(45deg, var(--rule) 0 3px, transparent 3px 7px); }
+.sbar i.skip { background: var(--rule); opacity: 0.5; }
+.tally { display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 13px; }
+.tally .p { display: grid; min-width: 7em; }
+.tally .p .k { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+.tally .p .k i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.tally .p .v { font-family: var(--font-num); font-weight: 700; font-size: 24px; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.tally .p .s { font-size: 12px; color: var(--muted); }
+.nkey { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--muted); align-items: center; }
+.nkey i { display: inline-block; width: 16px; height: 10px; border-radius: 2px; vertical-align: middle; margin-right: 5px; background: var(--ink); }
 .maplegend { display: grid; gap: 6px; font-size: 12px; color: var(--muted); }
 .maplegend .row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
 .maplegend svg { width: 16px; height: 12px; vertical-align: middle; margin-right: 4px; }
@@ -145,6 +166,8 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
 .chg { font-family: var(--font-num); font-weight: 700; }
 .chg.up { color: var(--up); } .chg.down { color: var(--down); }
 .card .tnum { font-family: var(--font-num); font-weight: 700; font-size: 26px; line-height: 1.1; padding: 10px 0 4px; font-variant-numeric: tabular-nums; }
+#nation .tnum { font-family: var(--font-num); font-weight: 700; font-size: 30px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+#nation .tnum small { font-size: 12px; font-weight: 500; color: var(--muted); }
 .card .tnum small { font-size: 12px; font-weight: 500; color: var(--muted); }
 .bars3 { display: grid; gap: 7px; }
 .bar3 { display: grid; grid-template-columns: 4.6em minmax(0, 1fr) 3.4em; gap: 6px; align-items: center; font-size: 12.5px; }
@@ -217,6 +240,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
   </header>
   <p class="proto">A replay of real election nights from the CEC's own records, with the projection model run as if live. Pick a night, press play, open any race. Nothing here is simulated, and nothing from later in the night leaks in: every chart and axis only uses what had been counted by the time on the clock.</p>
   <section class="desk" id="desk" aria-label="Replay controls"></section>
+  <section class="panel" id="nation" aria-live="polite"></section>
   <section class="panel overview" aria-labelledby="h-cards">
     <div class="mapcol"><h2 id="h-map">Map</h2><div id="map"></div><div class="maplegend" id="maplegend"></div></div>
     <div class="cardcol"><h2 id="h-cards">Every race</h2><div class="cards" id="cards"></div></div>
@@ -226,6 +250,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
     <h2 id="h-notes">How to read this</h2>
     <p><b>The dial</b> is the chance each of a race's two main contenders wins, from the votes counted so far. Everyone else's votes are set aside. It starts wide and narrows as stations report. <b>Decided</b> means the lead is larger than every remaining elector could overturn, with no assumption about turnout.</p>
     <p><b>How it is worked out.</b> The stations already counted are compared with how the same villages voted before (the previous mayoral and presidential races, averaged). That swing is applied to the stations still out, with room for districts to move differently. Tested on the 2018 and 2022 nights; see <code>docs/needle.md</code> in the repository.</p>
+    <p><b>Top panel.</b> Every race at once: one block per race (2024: per county), colored by the projected leader and shaded by how sure the model is, the same shading as the map, with counts by party and how many each party won last time. On the 2024 night it also carries the national race; click it to open the national race with the channel watch. In the turnout view it shows projected turnout for the whole country (2024) or the counties counting so far added up.</p>
     <p><b>Map.</b> Before a race has any counted stations, its county is hatched in the party color of the incumbent mayor. Once counting starts, it takes the color of the projected leader's own party (gray for independents, teal for 台灣民眾黨), shaded from light (toss-up) to solid (decided). 金門, 連江 and 澎湖 are drawn in insets.</p>
     <p><b>Turnout view.</b> "Show: Turnout" switches the cards, map and race panel to the projected final turnout, worked out the same way as the vote swing: counted stations against their own turnout last time, applied to the stations still out. On the 2018 and 2022 nights it was within about 2 points by the time 5–10% of stations were in, against about 3.7 points for simply assuming last time's turnout. The "Ballots counted" line uses it to estimate what share of all ballots has been counted, which is a better progress measure than stations, since stations differ in size.</p>
     <p><b>Feed.</b> "Per station" is what the model can do with polling-station results. "District totals" shows what happens if the CEC's live feed only gives district (行政區) totals: the same model, noticeably less certain early on. Which one the 2026 feed provides is not yet known.</p>
@@ -395,9 +420,74 @@ const DATA = {"nights":[{"id":"2018-mayors","title":"2018 縣市長選舉","date
       <div class="summary">Turnout: "Live" estimates it from the stations already in. Drag the slider for a scenario instead: turnout vs ${baseYear} in each village, in steps of σ = ${sig} points. It changes the votes-left figures, not the dial.</div>`;
   }
 
+  // ---- national panel: every race at a glance (2024: the national race, then counties by leader)
+  const nation = document.getElementById('nation');
+  const PARTY = { kmt: '國民黨', dpp: '民進黨', tpp: '民眾黨', npp: '時代力量', ind: '無黨籍' };
+  const TIER = { dec: [1, 'decided'], likely: [0.7, 'likely'], lean: [0.45, 'leaning'], toss: [0.22, 'toss-up'] };
+  function standing(r) { // who leads a race at st.t, and how sure (same tiers as the cards' chips)
+    if (r.mode === 'three') { const v = view3(r, st.t); if (v.pre) return { pre: true };
+      return { lead: v.order[0].c, tier: v.cert ? 'dec' : v.z >= 2.5 ? 'likely' : v.z >= 1 ? 'lean' : 'toss' }; }
+    const v = view(r, st.t); if (v.pre) return { pre: true };
+    const q = Math.max(v.pb, 1 - v.pb);
+    return { lead: v.pb >= 0.5 ? r.blue : r.other, tier: v.cert ? 'dec' : q >= 0.9 ? 'likely' : q >= 0.7 ? 'lean' : 'toss' };
+  }
+  const hatchBg = 'repeating-linear-gradient(45deg,var(--rule) 0 3px,transparent 3px 7px)';
+  function renderNation() {
+    const night = NIGHTS[st.night], nat = night.races.find(r => r.area === '全國'), counties = night.races.filter(r => r.area !== '全國');
+    const skipped = night.skipped || [], prevYear = night.previous.slice(0, 4), total = counties.length + skipped.length;
+    if (st.mode === 'turnout') { nation.innerHTML = nationTurnout(night, nat, counties); return; }
+    const S = counties.map(r => ({ r, s: standing(r) }));
+    const groups = {};
+    for (const { s } of S) { if (s.pre) continue;
+      const g = groups[s.lead.tone] || (groups[s.lead.tone] = { tone: s.lead.tone, label: nat ? s.lead.name : PARTY[s.lead.tone] || s.lead.party, n: 0, dec: 0, likely: 0 });
+      g.n++; if (s.tier === 'dec') g.dec++; else if (s.tier === 'likely') g.likely++; }
+    const prev = {};
+    for (const r of counties.concat(skipped)) if (r.incumbent) prev[r.incumbent.tone] = (prev[r.incumbent.tone] || 0) + 1;
+    if (!nat) for (const t of Object.keys(prev)) if (!groups[t]) groups[t] = { tone: t, label: PARTY[t] || t, n: 0, dec: 0, likely: 0 };
+    const order = Object.values(groups).sort((a, b) => b.n - a.n || b.dec - a.dec || (prev[b.tone] || 0) - (prev[a.tone] || 0));
+    const rank = { dec: 0, likely: 1, lean: 2, toss: 3 }, waiting = S.filter(x => x.s.pre);
+    let bar = order.map(g => S.filter(x => !x.s.pre && x.s.lead.tone === g.tone).sort((a, b) => rank[a.s.tier] - rank[b.s.tier])
+      .map(({ r, s }) => `<i style="background:var(--${s.lead.tone});opacity:${TIER[s.tier][0]}" title="${esc(r.area)}: ${esc(s.lead.name)}, ${TIER[s.tier][1]}"></i>`).join('')).join('');
+    bar += waiting.map(({ r }) => `<i class="wait" title="${esc(r.area)}: no stations in yet"></i>`).join('');
+    bar += skipped.map(k => `<i class="skip" title="${esc(k.area)}: ${esc(k.why)}"></i>`).join('');
+    const tally = order.map(g => `<div class="p"><span class="k"><i style="background:var(--${g.tone})"></i>${esc(g.label)}</span><span class="v">${g.n}</span>
+      <span class="s">${g.dec} decided · ${g.likely} likely</span>${prev[g.tone] != null || !nat ? `<span class="s">${prev[g.tone] || 0} in ${prevYear}</span>` : ''}</div>`).join('')
+      + (waiting.length ? `<div class="p"><span class="k"><i style="background:${hatchBg}"></i>no stations yet</span><span class="v">${waiting.length}</span><span class="s">&nbsp;</span></div>` : '')
+      + (skipped.length ? `<div class="p"><span class="k"><i style="background:var(--rule)"></i>not tonight</span><span class="v">${skipped.length}</span><span class="s">${skipped.map(k => esc(k.area)).join('、')}</span></div>` : '');
+    const key = `<div class="nkey"><span><i></i>decided</span><span><i style="opacity:.7"></i>likely</span><span><i style="opacity:.45"></i>leaning</span><span><i style="opacity:.22"></i>toss-up</span><span><i style="background:${hatchBg}"></i>no stations yet</span></div>`;
+    const right = `<div style="display:grid;gap:10px;align-content:start;min-width:0">
+      <h2>${nat ? `Counties at ${clockTxt(st.t)}: who leads` : `All ${total} mayors at ${clockTxt(st.t)}: who leads, and how sure`}</h2>
+      <div class="sbar">${bar}</div>${key}<div class="tally">${tally}</div>
+      <p class="note muted" style="margin:0;font-size:12px">${nat ? `One block per county, by the projected leader in that county (three-way counties by projected share). "In ${prevYear}": counties each party's candidate carried last time.` : `One block per race, by the projected leader's party; shading as on the map. "In ${prevYear}": mayors each party won last time.`}</p></div>`;
+    if (!nat) { nation.innerHTML = right; return; }
+    const v = view(nat, st.t), stt = status(v), lead = v.pre ? null : (v.pb >= 0.5 ? nat.blue : nat.other), q = v.pre ? 0 : Math.max(v.pb, 1 - v.pb);
+    const v3 = view3(nat, st.t), third = v3.pre ? null : v3.rows[2];
+    const left = `<button class="natrace" data-area="全國" aria-pressed="${st.area === '全國'}">
+      <h2 style="text-align:center">${esc(nat.label || '全國')}</h2>
+      ${dial(nat, v, false)}
+      <span class="big">${v.pre ? '<span class="muted">Waiting for the first station</span>' : v.cert ? `<span style="color:${tone(lead)}">${esc(lead.name)} — decided</span>` : `<span style="color:${tone(lead)}">${esc(lead.name)} ${pctTxt(q)}</span> <span class="muted" style="font-weight:400;font-size:13px">${esc(stt.label.toLowerCase())}</span>`}</span>
+      <span class="sm">${v.pre ? '' : `${(100 * v.frac).toFixed(0)}% of stations · ${esc(nat.third ? nat.third.name : '')} projected ${(100 * third.share).toFixed(1)}%`}</span>
+      <span class="sm" style="color:var(--ink)">Open the national race, with channel watch ›</span></button>`;
+    nation.innerHTML = `<div class="nat two">${left}${right}</div>`;
+  }
+  function nationTurnout(night, nat, counties) {
+    const one = (label, tv, extra) => tv.pre ? `<h2>${label}</h2><p class="muted" style="margin:0">No stations in yet. Last time: ${(100 * tv.prev).toFixed(1)}%.</p>` :
+      `<h2>${label}</h2><div class="tnum">${(100 * tv.proj).toFixed(1)}% <small>projected turnout · 80% range ${(100 * tv.lo).toFixed(1)}–${(100 * tv.hi).toFixed(1)}%</small></div>
+       ${tbar(tv)}<div class="lead" style="font-size:13px"><span class="chg ${tv.chg >= 0 ? 'up' : 'down'}">${pts1(tv.chg)} pts</span> <span class="muted">vs ${(100 * tv.prev).toFixed(1)}% last time${extra || ''}</span></div>`;
+    if (nat) return `<div style="max-width:560px;display:grid;gap:8px">${one(`Turnout, whole country, at ${clockTxt(st.t)}`, tview(nat, st.t))}</div>`;
+    // mayoral nights: add up the counties already counting; ranges added as if every county's error ran the same way
+    let E = 0, m = 0, sd = 0, prevB = 0, k = 0;
+    for (const r of counties) { const tv = tview(r, st.t); if (tv.pre) continue; k++;
+      E += r.electors; m += tv.expect; sd += (tv.hi - tv.proj) * r.electors / 1.2816; prevB += tv.prev * r.electors; }
+    const agg = k ? { pre: false, proj: m / E, lo: (m - 1.2816 * sd) / E, hi: (m + 1.2816 * sd) / E, prev: prevB / E, chg: m / E - prevB / E } : { pre: true, prev: counties.reduce((a, r) => a + r.prev_turnout * r.electors, 0) / counties.reduce((a, r) => a + r.electors, 0) };
+    return `<div style="max-width:560px;display:grid;gap:8px">${one(`Turnout at ${clockTxt(st.t)}: the ${k} of ${counties.length} counties counting, together`, agg, '')}
+      <p class="note muted" style="margin:0;font-size:12px">Electors in those counties added up; the range assumes every county's error runs the same way, so it is on the wide side.</p></div>`;
+  }
+
   function renderCards() {
-    const night = NIGHTS[st.night];
-    let s = night.races.map(r => {
+    const night = NIGHTS[st.night], pres = night.races.some(r => r.area === '全國');
+    document.getElementById('h-cards').textContent = pres ? 'Every county' : 'Every race';
+    let s = night.races.filter(r => r.area !== '全國').map(r => {
       if (st.mode === 'turnout') return turnoutCard(r);
       if (r.mode === 'three') {
         const v3 = view3(r, st.t), s3 = status3(v3);
@@ -796,11 +886,11 @@ const DATA = {"nights":[{"id":"2018-mayors","title":"2018 縣市長選舉","date
     line.setAttribute('x2', x.toFixed(1)); line.setAttribute('y2', y.toFixed(1));
   }
 
-  function render() { renderDesk(); renderMap(); renderMapLegend(); renderCards(); renderDetail(); writeHash(); }
+  function render() { renderDesk(); renderNation(); renderMap(); renderMapLegend(); renderCards(); renderDetail(); writeHash(); }
   function light() { // during playback: avoid re-rendering the desk controls
     document.getElementById('clk').innerHTML = clock(st.t);
     const r = document.getElementById('t'); if (r) r.value = st.t;
-    renderMap(); renderCards(); renderDetail();
+    renderNation(); renderMap(); renderCards(); renderDetail();
   }
   function writeHash() { history.replaceState(null, '', `#${st.night.slice(0, 4)}/${encodeURIComponent(st.area)}`); }
   function readHash() {
@@ -836,13 +926,14 @@ const DATA = {"nights":[{"id":"2018-mayors","title":"2018 縣市長選舉","date
     else if (b.dataset.mode) { st.mode = b.dataset.mode; render(); }
   });
   desk.addEventListener('input', e => {
-    if (e.target.id === 't') { st.t = +e.target.value; document.getElementById('clk').innerHTML = clock(st.t); renderMap(); renderCards(); renderDetail(); }
+    if (e.target.id === 't') { st.t = +e.target.value; document.getElementById('clk').innerHTML = clock(st.t); renderNation(); renderMap(); renderCards(); renderDetail(); }
     if (e.target.id === 'k') { st.k = +e.target.value; render(); document.getElementById('k').focus(); }
   });
   desk.addEventListener('change', e => { if (e.target.id === 'jit') { st.jitter = e.target.checked; renderDetail(); } });
   detail.addEventListener('click', e => { const b = e.target.closest('[data-unit]'); if (b) { st.unit = b.dataset.unit; renderDetail(); } });
-  const pick = area => { if (!NIGHTS[st.night].races.some(r => r.area === area)) return; st.area = area; renderMap(); renderCards(); renderDetail(); writeHash();
-    if (matchMedia('(max-width: 899px)').matches) detail.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  const pick = (area, scroll) => { if (!NIGHTS[st.night].races.some(r => r.area === area)) return; st.area = area; renderNation(); renderMap(); renderCards(); renderDetail(); writeHash();
+    if (scroll || matchMedia('(max-width: 899px)').matches) detail.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  nation.addEventListener('click', e => { const b = e.target.closest('[data-area]'); if (b) pick(b.dataset.area, true); });
   cards.addEventListener('click', e => { const c = e.target.closest('.card[data-area]'); if (c) pick(c.dataset.area); });
   mapEl.addEventListener('click', e => { const c = e.target.closest('path[data-area]'); if (c) pick(c.dataset.area); });
 
