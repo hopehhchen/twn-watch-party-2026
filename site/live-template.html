@@ -670,7 +670,7 @@ const DATA = /*__DATA__*/null;
     if (!r) return '';
     const hint = `<br><span class="muted">${openHint()}</span>`;
     const s = standing(r);
-    if (s.pre) return `<b>${esc(area)}</b><br>${tx('No stations in yet', '尚未開票', '猶未開票')}${r.mode === 'three' || r.other ? `<br>${esc(r.blue.name)} · ${esc(r.other.name)}${r.third ? ' · ' + esc(r.third.name) : ''}` : ''}${r.incumbent ? `<br><span class="muted">${isLive() ? tx('won in 2022:', '2022 年當選：', '2022 年當選：') : tx('incumbent', '現任')} ${esc(r.incumbent.name)} (${esc(pname(r.incumbent.party))})</span>` : ''}${hint}`;
+    if (s.pre) return `<b>${esc(area)}</b><br>${tx('No stations in yet', '尚未開票', '猶未開票')}${r.mode === 'three' || r.other ? `<br>${esc(r.blue.name)} · ${esc(r.other.name)}${r.third ? ' · ' + esc(r.third.name) : ''}` : ''}${r.incumbent ? `<br><span class="muted">${tx('incumbent', '現任', '現任')} ${esc(r.incumbent.name)} (${esc(pname(r.incumbent.party))})</span>` : ''}${hint}`;
     return `<b>${esc(area)}</b> · ${tx(`${(100 * s.frac).toFixed(0)}% of stations`, `投開票所已開 ${(100 * s.frac).toFixed(0)}%`, `投開票所開 ${(100 * s.frac).toFixed(0)}% 矣`)}<br><span style="color:${tone(s.lead)};font-weight:700">${esc(s.lead.name)}</span> ${esc(pname(s.lead.party))}<br>${s.tier === 'dec' ? tierTxt('dec') : `${tx(`${pctTxt(s.q)} to win`, `勝率 ${pctTxt(s.q)}`, `贏面 ${pctTxt(s.q)}`)} · ${tierTxt(s.tier)}`}${hint}`;
   }
   function renderNation() {
@@ -687,7 +687,7 @@ const DATA = /*__DATA__*/null;
       const g = groups[s.lead.tone] || (groups[s.lead.tone] = { tone: s.lead.tone, label: PARTYN(s.lead.tone), n: 0, dec: 0, likely: 0 });
       g.n++; if (s.tier === 'dec') g.dec++; else if (s.tier === 'likely') g.likely++; }
     const prev = {};
-    for (const r of counties.concat(skipped)) if (r.incumbent) prev[r.incumbent.tone] = (prev[r.incumbent.tone] || 0) + 1;
+    for (const r of counties.concat(skipped)) if (r.incumbent) { const t = r.incumbent.tone2022 || r.incumbent.tone; prev[t] = (prev[t] || 0) + 1; } // seats won last time
     for (const t of Object.keys(prev)) if (!groups[t]) groups[t] = { tone: t, label: PARTYN(t), n: 0, dec: 0, likely: 0 };
     const order = Object.values(groups).sort((a, b) => b.n - a.n || b.dec - a.dec || (prev[b.tone] || 0) - (prev[a.tone] || 0));
     // within a party and tier, blocks keep the county order used everywhere on the page (north to south)
@@ -704,10 +704,9 @@ const DATA = /*__DATA__*/null;
     const key = `<div class="nkey"><span><i></i>${tierTxt('dec')}</span><span><i style="background:${mix('var(--ink)', .7)}"></i>${tierTxt('likely')}</span><span><i style="background:${mix('var(--ink)', .45)}"></i>${tierTxt('lean')}</span><span><i style="background:${mix('var(--ink)', .22)}"></i>${tierTxt('toss')}</span><span><i style="background:${hatchBg}"></i>${tx('no stations yet', '尚未開票', '猶未開票')}</span></div>`;
     nation.innerHTML = `<div style="display:grid;gap:10px;min-width:0">
       <h2>${tx(`All ${total} mayors at ${clockTxt(st.t)}: who leads, and how sure`, `${clockTxt(st.t)} 全部 ${total} 席縣市長：誰領先、多有把握`, `${clockTxt(st.t)} 全部 ${total} 席縣市長：啥人咧贏、有偌把握`)}</h2>
-      <div class="sbar blocks">${bar}</div>${key}<div class="tally">${tally}</div>
-      <p class="note muted" style="margin:0;font-size:12px">${tx('Shading as on the map.', '深淺同地圖。', '深淺佮地圖仝款。')}</p></div>`;
+      <div class="sbar blocks">${bar}</div>${key}<div class="tally">${tally}</div></div>`;
   }
-  // the live night before the first station: when counting starts, and who won each race last time (hatched)
+  // the live night before the first station: when counting starts, and the incumbent's party in each race (hatched)
   function renderNationBefore(night, counties) {
     const prevYear = night.previous.slice(0, 4), prev = {};
     for (const r of counties) if (r.incumbent) prev[r.incumbent.tone] = (prev[r.incumbent.tone] || 0) + 1;
@@ -719,8 +718,8 @@ const DATA = /*__DATA__*/null;
     nation.innerHTML = `<div style="display:grid;gap:10px;min-width:0">
       <h2>${tx(`All ${counties.length} mayors · counting starts at 16:00 on 28 November`, `全部 ${counties.length} 席縣市長 · 11 月 28 日 16:00 開票`, `全部 ${counties.length} 席縣市長 · 11 月 28 日 16:00 開票`)}</h2>
       <div class="sbar blocks">${bar}</div>
-      <div class="nkey before"><span class="muted">${tx(`Won in ${prevYear}:`, `${prevYear} 年當選：`, `${prevYear} 年當選：`)}</span>${tally}</div>
-      <p class="note muted" style="margin:0;font-size:12px">${tx(`Hatched: the party that won each race in ${prevYear}. Once counting starts, each block takes the projected leader's color. Hover a block for the race, click to open it.`, `斜線：${prevYear} 年在各場勝選的政黨。開票後，每格改為預估領先者的顏色。滑鼠移到格子上可看該場選舉，點一下即打開。`, `斜線：${prevYear} 年逐場當選的政黨。開票了後，逐格改做預估領先者的色。滑鼠囥佇格仔頂懸就看會著彼場選舉，揤一下就拍開。`)}</p></div>`;
+      <div class="nkey before"><span class="muted">${tx('Held now by:', '現任：', '現任：')}</span>${tally}</div>
+      <p class="note muted" style="margin:0;font-size:12px">${tx(`Hatched: the incumbent's party now. Once counting starts, each block takes the projected leader's color. Hover a block for the race, click to open it.`, `斜線：現任者目前的政黨。開票後，每格改為預估領先者的顏色。滑鼠移到格子上可看該場選舉，點一下即打開。`, `斜線：現任者這馬的政黨。開票了後，逐格改做預估領先者的色。滑鼠囥佇格仔頂懸就看會著彼場選舉，揤一下就拍開。`)}</p></div>`;
   }
   function renderNationalRace(nat) {
     const v = view(nat, st.t), stt = status(v), lead = v.pre ? null : (v.pb >= 0.5 ? nat.blue : nat.other), q = v.pre ? 0 : Math.max(v.pb, 1 - v.pb);
@@ -921,7 +920,7 @@ const DATA = /*__DATA__*/null;
     }
     const ramp = t => `<span class="ramp">${Object.values(SHADE).map(o => `<i style="background:${mix(`var(--${t})`, o)}"></i>`).join('')}</span>`;
     mapLegend.innerHTML = `
-      <div class="row"><span>${sw('kmt')}${sw('dpp')}${sw('ind')}</span>${NIGHTS[st.night].previous.includes('president') ? tx(`no count yet: party that carried the county in ${NIGHTS[st.night].previous.slice(0, 4)} (hatched)`, `尚未開票：${NIGHTS[st.night].previous.slice(0, 4)} 年在該縣市勝出的政黨（斜線）`, `猶未開票：${NIGHTS[st.night].previous.slice(0, 4)} 年佇這个縣市贏的政黨（斜線）`) : NIGHTS[st.night].live ? tx('no count yet: party that won in 2022 (hatched)', '尚未開票：2022 年勝選者的政黨（斜線）', '猶未開票：2022 年當選者的政黨（斜線）') : tx('no count yet: party of the incumbent (hatched)', '尚未開票：現任者的政黨（斜線）', '猶未開票：現任者的政黨（斜線）')}</div>
+      <div class="row"><span>${sw('kmt')}${sw('dpp')}${sw('ind')}</span>${NIGHTS[st.night].previous.includes('president') ? tx(`no count yet: party that carried the county in ${NIGHTS[st.night].previous.slice(0, 4)} (hatched)`, `尚未開票：${NIGHTS[st.night].previous.slice(0, 4)} 年在該縣市勝出的政黨（斜線）`, `猶未開票：${NIGHTS[st.night].previous.slice(0, 4)} 年佇這个縣市贏的政黨（斜線）`) : tx('no count yet: party of the incumbent (hatched)', '尚未開票：現任者的政黨（斜線）', '猶未開票：現任者的政黨（斜線）')}</div>
       <div class="row">${ramp('kmt')}${ramp('dpp')}</div>
       <div class="row">${tx('Light → solid: toss-up → decided. Gray: independent · teal: TPP.', '由淺到深：難分高下 → 確定。灰色：無黨籍 · 青綠色：民眾黨。', '對淺到深：五五波 → 確定。灰色：無黨籍 · 青綠色：民眾黨。')}</div>`;
   }
@@ -1533,8 +1532,7 @@ const DATA = /*__DATA__*/null;
       <p class="note muted" style="margin:0;font-size:12px">${tx("Districts: the projected leader in each; party list: the most likely split; indigenous: the top three so far. Line: half the seats.", '區域：各選區預估領先者；不分區：最可能的席次分配；原住民：目前前三名。中線：半數。', '區域：逐選區預估領先的人；不分區：上有可能的席次分配；原住民：這馬的頭前三名。中線：一半。')}</p>
       <div class="lgrid">
         <div style="display:grid;gap:8px;align-content:start;min-width:0"><h2>${tx(`Districts · ${L2.races.length} seats`, `區域立委 · ${L2.races.length} 席`)}</h2>
-          <div class="sbar blocks">${blocks}</div>${key}
-          <p class="note muted" style="margin:0;font-size:12px">${tx('Shading as on the map.', '深淺同地圖。', '深淺佮地圖仝款。')}</p></div>
+          <div class="sbar blocks">${blocks}</div>${key}</div>
         <div style="display:grid;gap:8px;align-content:start;min-width:0">${partyListHtml(L2)}</div>
       </div>
       <h2>${tx('Indigenous seats · 3 + 3', '原住民立委 · 3 + 3 席')}</h2>

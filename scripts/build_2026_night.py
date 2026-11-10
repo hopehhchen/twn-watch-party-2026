@@ -6,7 +6,8 @@
 Every race with its two contenders (and the third in an expected three-way race) from
 data/2026-contenders.json, ballot numbers from BALLOT below, and no points yet. Electors, stations and
 "last time" turnout are 2022's (the CEC publishes 2026 elector totals three days before the vote, and
-per-station counts not at all); incumbent = the 2022 winner, with the party they won under.
+per-station counts not at all); incumbent = the 2022 winner, with their party now: the 2026 ballot's party when
+they are running again, else INCUMBENT_PARTY below, else the party they won under.
 On the night, the live pipeline appends points in the same columns as the replayed nights.
 """
 import json
@@ -47,6 +48,9 @@ BALLOT = {
     "金門縣": "1 無黨籍 張國威|2 無黨籍 李文良|3 無黨籍 洪和成|4 無黨籍 張火木|5 國民黨 陳玉珍|6 無黨籍 梁文韜|7 無黨籍 黃世團",
     "連江縣": "1 國民黨 王忠銘|2 無黨籍 曹爾元",
 }
+# Incumbents not on the 2026 ballot whose party has changed since 2022 (none found as of 2026-11-10; the ones running
+# again take their ballot party: 新竹市 高虹安 台灣民眾黨 -> 無黨籍, 苗栗縣 鍾東錦 無黨籍 -> 中國國民黨).
+INCUMBENT_PARTY = {}
 END = 8 * 60  # 00:00; extended live if the count runs later
 
 
@@ -74,13 +78,18 @@ def main():
         winners[r["area"]] = {k: w[k] for k in ("no", "name", "party", "tone")}
     for k in prev_night.get("skipped", []):  # 嘉義市: voted 2022-12-18
         winners[k["area"]] = k["incumbent"]
-    races = []
+    races, changed = [], []
     for c in sorted(contenders["races"], key=lambda x: ORDER.index(x["area"])):
         area, b = c["area"], ballot(c["area"])
+        inc = dict(winners[area])
+        party = b[inc["name"]]["party"] if inc["name"] in b else INCUMBENT_PARTY.get(area, inc["party"])
+        if party != inc["party"]:
+            changed.append(f"{area} {inc['name']}: {inc['party']} -> {party}")
+            inc.update(party=party, tone=TONE.get(party, "ind"), party2022=inc["party"], tone2022=inc["tone"])
         stn = st22[area]["stations"]
         E, C = sum(s["E"] for s in stn), sum(s["C"] for s in stn)
         e = {"area": area, "label": area + "長", "blue": cand(b, c["blue"]), "other": cand(b, c["other"]),
-             "stations": len(stn), "electors": E, "prev_turnout": round(C / E, 4), "incumbent": winners[area],
+             "stations": len(stn), "electors": E, "prev_turnout": round(C / E, 4), "incumbent": inc,
              "sure": c.get("sure", True), "pts": []}
         tw = c.get("three_way") or {}
         if tw.get("status") == "expected" and tw.get("third"):
@@ -91,11 +100,11 @@ def main():
     out = {"id": "2026-mayors", "title": "2026 縣市長選舉", "date": "2026-11-28", "baseline": "2022-mayors+2024-president",
            "previous": "2022-mayors", "start": 0, "end": END, "live": True, "feed": "station",
            "turnout_sigma": prev_night.get("turnout_sigma"), "point_columns": prev_night["point_columns"],
-           "note": "Before the count. Electors, stations and last-time turnout are 2022's; incumbent = 2022 winner.",
+           "note": "Before the count. Electors, stations and last-time turnout are 2022's; incumbent = 2022 winner, with their current party.",
            "races": races, "skipped": []}
     path = ROOT / "data" / "needle" / "2026-mayors.json"
     path.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")) + "\n")
-    print(f"{path.relative_to(ROOT)}: {len(races)} races")
+    print(f"{path.relative_to(ROOT)}: {len(races)} races; incumbent party changes: {'; '.join(changed) or 'none'}")
 
 
 if __name__ == "__main__":
