@@ -50,7 +50,7 @@ CHANNELS = [  # 2024 broadcast counts read from the channels' streams (data/nigh
 
 def three_way_rule(total, ia, ib, third):
     """Show a race as three-way (projected shares, no win chance) when the third candidate finished in
-    the top two, or within 10 points of the winner. In 2026 this is decided before the night, from polls;
+    the top two, or within 10 points of the winner. In 2026 this is set before the night;
     in the replay it uses the final result, which is hindsight."""
     order = sorted(range(len(total)), key=lambda k: -total[k])
     V = sum(total)

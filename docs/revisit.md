@@ -38,7 +38,7 @@ The full plan with dates is in `docs/election-night.md`.
 
 ## Entry page
 
-- **Races to watch** (rewritten 2026-11-10 from news and analysts' previews): refresh the polls cited before the night. Polls by TVBS are not cited anywhere on the site (strong house effect, per the user); TVBS's on-screen vote counts stay in the count watch.
+- **Races to watch** (rewritten 2026-11-10 from news and analysts' previews): poll figures removed 2026-11-10 ahead of the 11/18 ban (選罷法 §53); none to be added back before voting closes. Polls by TVBS were never cited (strong house effect, per the user); TVBS's on-screen vote counts stay in the count watch.
 - **Credits**: published 2026-11-10 as the entry-page footer (earlier draft in `docs/credits-draft.md`).
 - **Poll ban**: every poll number must be off the site by 11/17 23:59 (選罷法 §53; see `docs/election-night.md`).
 

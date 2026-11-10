@@ -93,14 +93,11 @@
    "other": "陳素月",
    "other_party": "民主進步黨",
    "sure": true,
-   "why": "Third candidate 邱建富 (ex-DPP, independent) polled 12.7% in August; the top two look settled.",
+   "why": "Third candidate 邱建富 (ex-DPP, independent); the top two look settled.",
    "three_way": {
     "status": "watch",
     "third": "邱建富",
-    "why": "聯合報 2026-10-13..15, n=1,003: 陳素月 32%, 魏平政 16%, 邱建富 10%, undecided 42%. Two-way unless 邱 gets within 10 points of the leader in the count.",
-    "sources": [
-     "https://udn.com/news/story/124652/9822866"
-    ]
+    "why": "Two-way unless 邱建富 gets within 10 points of the leader in the count."
    }
   },
   {
@@ -160,15 +157,11 @@
    "other": "張峻",
    "other_party": "無黨籍",
    "sure": false,
-   "why": "DPP fielded no candidate. 張峻 is now ahead of 魏嘉賢 in the latest poll (October); the two have swapped places during the year.",
+   "why": "DPP fielded no candidate. 張峻 and 魏嘉賢, both independents, are the main challengers.",
    "three_way": {
     "status": "expected",
     "third": "魏嘉賢",
-    "why": "DPP fielded no candidate; two anti-傅 independents both poll in double digits. 關鍵調查 for Lai傳媒, 2026-10-24..27, n=1,202: 游淑貞 28.5%, 張峻 25.7%, 魏嘉賢 16.8%, 羅佩秦 0.5%, undecided 28.5% (67% of DPP supporters for 張). Earlier: 魏 led 張 28.6-21.8 (求真, April); 張 led 魏 19.4-18.4 (風傳媒, August). Model: 游 vs the non-KMT side by swing; 魏 (or whichever independent trails) as the third, projected from the count. Swap 張/魏 live if the count says so.",
-    "sources": [
-     "https://new-reporter.com/news/332318/",
-     "https://www.mirrormedia.mg/story/20261107-171soc-111948"
-    ]
+    "why": "DPP fielded no candidate; two anti-傅 independents. Model: 游 vs the non-KMT side by swing; whichever independent trails as the third, projected from the count. Swap 張/魏 live if the count says so."
    }
   },
   {
@@ -186,11 +179,11 @@
    "other": "吳淑瑾",
    "other_party": "民主進步黨",
    "sure": true,
-   "why": "Six candidates; 周倪安 (台聯, former legislator) is the best known of the rest. No recent public poll found.",
+   "why": "Six candidates; 周倪安 (台聯, former legislator) is the best known of the rest.",
    "three_way": {
     "status": "watch",
     "third": "周倪安?",
-    "why": "Six candidates; no recent public poll found. Watch whether a third candidate gets within 10 points in the count."
+    "why": "Six candidates. Watch whether a third candidate gets within 10 points in the count."
    }
   },
   {
@@ -200,14 +193,14 @@
    "other": "李文良?",
    "other_party": "無黨籍",
    "sure": false,
-   "why": "DPP fielded no candidate; six independents. 李文良 (former deputy magistrate under 陳福海, drew TPP supporters) is the most prominent, but no public poll ranks the challengers.",
+   "why": "DPP fielded no candidate; six independents. 李文良 (former deputy magistrate under 陳福海, drew TPP supporters) is the most prominent.",
    "baseline": [
     "2022-mayors"
    ],
    "three_way": {
     "status": "watch",
     "third": null,
-    "why": "陳玉珍 against several independents (李文良, 張國威, among others); no public poll ranks them. Possibly three-way if two independents split the anti-陳 vote evenly. \"other\" = whichever independent leads the count.",
+    "why": "陳玉珍 against several independents (李文良, 張國威, among others). Possibly three-way if two independents split the anti-陳 vote evenly. \"other\" = whichever independent leads the count.",
     "sources": [
      "https://cna.com.tw/news/aipl/202609280094.aspx"
     ]
@@ -227,5 +220,6 @@
   }
  ],
  "three_way_rule": "On the night a race is shown as three-way when it is marked \"expected\" here, or, live, when a third candidate is in the top two or within 10 points of the leader in the count with at least 5% of stations in. Win chances in a three-way race start at the 5th station. The third candidate can be changed live (which independent is \"other\" and which is \"third\").",
- "three_way_updated": "2026-11-10"
+ "three_way_updated": "2026-11-10",
+ "_note_polls": "Poll figures removed 2026-11-10 (選罷法 §53 ban on publishing or citing polls from 11/18 to the close of voting)."
 }
