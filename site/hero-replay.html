@@ -1,0 +1,131 @@
+<!-- Hero replay: a real past race replayed in about ten seconds, then the next. Injected into the entry page's hero by
+     scripts/build_site.py (currently only into mock-hero.html), with its data as window.HERO. -->
+<style>
+:root { --ind: #747D8F; --tint: #FFFFFF; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --ind: #A3ABBA; --tint: #5E6878; } }
+:root[data-theme="dark"] { --ind: #A3ABBA; --tint: #5E6878; }
+.hero.rp { grid-template-columns: minmax(0, 1fr); }
+.hero.rp > h2 { order: 0; } .hero.rp > .replay { order: 1; } .hero.rp > p { order: 2; } .hero.rp > .cta { order: 3; }
+@media (min-width: 860px) {
+  .hero.rp { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); grid-template-rows: auto auto 1fr; column-gap: 32px; align-items: start; }
+  .hero.rp > h2, .hero.rp > p, .hero.rp > .cta { grid-column: 1; }
+  .hero.rp > .replay { grid-column: 2; grid-row: 1 / span 3; align-self: center; }
+}
+.replay { margin: 0; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px 16px 12px; display: grid; gap: 6px; min-width: 0; }
+.rp-top { display: flex; align-items: baseline; gap: 10px; }
+.rp-tag { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; color: var(--stamp); }
+.rp-race { font-family: var(--font-display); font-weight: 900; font-size: 18px; }
+.rp-clock { margin-left: auto; font-size: 22px; }
+.replay svg { width: 100%; height: auto; display: block; }
+.rp-sides { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; line-height: 1.35; margin-top: -4px; }
+.rp-sides div:last-child { text-align: right; }
+.rp-sides b { display: block; font-size: 15px; }
+.rp-bar { height: 4px; background: var(--rule); border-radius: 2px; overflow: hidden; }
+.rp-bar i { display: block; height: 100%; width: 0; background: var(--ink); }
+.rp-sub { font-size: 12px; color: var(--muted); }
+.rp-cap { font-size: 13.5px; line-height: 1.5; min-height: 3em; transition: opacity .3s; }
+.rp-nav { display: flex; align-items: center; gap: 6px; }
+.rp-nav button { border: 1px solid var(--rule); background: none; border-radius: 999px; padding: 2px 10px; font-size: 12px; cursor: pointer; color: var(--muted); }
+.rp-nav button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.rp-nav .rp-pause { margin-left: auto; width: 30px; height: 30px; padding: 0; display: grid; place-items: center; color: var(--ink); }
+.replay.fade .rp-body { opacity: 0; } .rp-body { transition: opacity .35s; display: grid; gap: 6px; }
+</style>
+<figure class="replay" id="replay" aria-label="Replay of a past election night">
+  <div class="rp-body">
+    <div class="rp-top"><span class="rp-tag" id="rpTag">Replay</span><span class="rp-race" id="rpRace"></span><span class="rp-clock num" id="rpClock"></span></div>
+    <svg id="rpDial" viewBox="0 0 320 172" role="img"></svg>
+    <div class="rp-sides"><div id="rpL"></div><div id="rpR"></div></div>
+    <div class="rp-bar"><i id="rpBar"></i></div>
+    <div class="rp-sub" id="rpSub"></div>
+    <figcaption class="rp-cap" id="rpCap"></figcaption>
+  </div>
+  <div class="rp-nav" id="rpNav"></div>
+</figure>
+<script>
+(() => {
+  const H = window.HERO, root = document.documentElement, fig = document.getElementById('replay');
+  if (!H || !fig) return;
+  const lang = () => root.lang === 'zh-Hant' ? 'zh' : root.lang === 'nan-Hant-TW' ? 'tw' : 'en';
+  const tx = (en, zh, tw) => { const l = lang(); return l === 'tw' ? (tw ?? zh) : l === 'zh' ? zh : en; };
+  const nm = c => lang() === 'en' && c.en ? c.en : c.name;
+  const clock = t => { const m = Math.round(t), h = (16 + Math.floor(m / 60)) % 24; return `${String(h).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`; };
+  const comma = n => Math.round(n).toLocaleString('en-US');
+  const tone = c => `var(--${c.tone})`;
+  const mix = (c, op) => `color-mix(in srgb, ${c} ${Math.round(op * 100)}%, var(--tint))`;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // dial: left = "other" 100%, right = "blue" 100%, the same zones and shades as the results page
+  const D = { cx: 160, cy: 150, R: 128, sw: 22 };
+  const pt = (p, r) => { const a = Math.PI * (1 - p); return [D.cx + r * Math.cos(a), D.cy - r * Math.sin(a)]; };
+  const arc = (p0, p1, r) => { const [x0, y0] = pt(p0, r), [x1, y1] = pt(p1, r); return `M${x0.toFixed(1)},${y0.toFixed(1)} A${r},${r} 0 0 1 ${x1.toFixed(1)},${y1.toFixed(1)}`; };
+  const ZONES = [[0, .01, 'other', 1], [.01, .1, 'other', .75], [.1, .3, 'other', .5], [.3, .5, 'other', .22], [.5, .7, 'blue', .22], [.7, .9, 'blue', .5], [.9, .99, 'blue', .75], [.99, 1, 'blue', 1]];
+  const svg = document.getElementById('rpDial');
+  function drawFace(r) {
+    let s = ZONES.map(([a, b, who, op]) => `<path d="${arc(a, b, D.R)}" style="stroke:${mix(tone(r[who]), op)}" stroke-width="${D.sw}" fill="none"/>`).join('');
+    s += `<line x1="${D.cx}" y1="${D.cy - D.R - D.sw / 2 - 2}" x2="${D.cx}" y2="${D.cy - D.R + D.sw / 2 + 2}" stroke="var(--surface)" stroke-width="2"/>`;
+    s += `<line id="rpNdl" x1="${D.cx}" y1="${D.cy}" x2="${D.cx}" y2="${D.cy - D.R}" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/><circle cx="${D.cx}" cy="${D.cy}" r="7" fill="var(--ink)"/>`;
+    svg.innerHTML = s;
+  }
+  let i = 0, simT = 0, phase = 'run', phaseT = 0, paused = reduce, x = .5, vel = 0, w = 0, last = 0, raf = 0, visible = true;
+  const race = () => H.races[i];
+  const at = t => { const P = race().pts; let lo = -1; for (let k = 0; k < P.length && P[k][0] <= t; k++) lo = k; return lo < 0 ? null : P[lo]; };
+  const pctTxt = p => p >= .995 ? '>99%' : p <= .005 ? '<1%' : Math.round(100 * p) + '%';
+  function label() {
+    const r = race();
+    document.getElementById('rpTag').textContent = tx('Replay', '重播', '重播');
+    document.getElementById('rpRace').textContent = `${r.year} ${r.area}`;
+    fig.setAttribute('aria-label', tx(`Replay of the ${r.year} ${r.area} count`, `${r.year} 年${r.area}開票重播`, `${r.year} 年${r.area}開票重播`));
+    const w8 = nm(r.winner), dec = clock(r.decided), t90 = clock(r.t90);
+    document.getElementById('rpCap').textContent = phase === 'run' ? tx('A real count, replayed minute by minute as the model saw it.', '真實的開票夜，照模型當時看到的資料逐分鐘重播。', '真正的開票暗，照模型當時看著的資料一分鐘一分鐘重播。') : tx(`Decided at ${dec}. The needle had ${w8} above 90% from ${t90}.`, `${dec} 數學上確定；指針從 ${t90} 起就以 90% 以上看好${r.winner.name}。`, `${dec} 數學上確定；指針對 ${t90} 起就用 90% 以上看好${r.winner.name}。`);
+    document.getElementById('rpNav').innerHTML = H.races.map((q, k) => `<button type="button" data-rp="${k}" aria-pressed="${k === i}">${q.year} ${q.area}</button>`).join('')
+      + `<button type="button" class="rp-pause" id="rpPause" aria-label="${paused ? tx('Play', '播放', '播放') : tx('Pause', '暫停', '暫停')}">${paused ? '▶' : '❚❚'}</button>`;
+  }
+  function paint() {
+    const r = race(), q = at(simT), p = q ? q[1] : .5;
+    document.getElementById('rpClock').textContent = clock(Math.max(simT, 0));
+    const side = (c, chance, v) => `<b style="color:${tone(c)}">${nm(c)}</b>${q ? `${pctTxt(chance)} · ${comma(v)}` : '&nbsp;'}`;
+    document.getElementById('rpL').innerHTML = side(r.other, 1 - p, q ? q[3] : 0);
+    document.getElementById('rpR').innerHTML = side(r.blue, p, q ? q[2] : 0);
+    const share = q ? q[4] / r.stations : 0;
+    document.getElementById('rpBar').style.width = `${(100 * share).toFixed(1)}%`;
+    document.getElementById('rpSub').textContent = !q ? tx('Waiting for the first polling station', '等待第一個投開票所', '等第一个投開票所')
+      : q[5] ? tx(`Decided · ${comma(q[4])} of ${comma(r.stations)} stations counted`, `確定 · 已開 ${comma(q[4])} / ${comma(r.stations)} 所`, `確定 · 已開 ${comma(q[4])} / ${comma(r.stations)} 所`)
+      : tx(`${comma(q[4])} of ${comma(r.stations)} stations counted`, `已開 ${comma(q[4])} / ${comma(r.stations)} 所`, `已開 ${comma(q[4])} / ${comma(r.stations)} 所`);
+    svg.setAttribute('aria-label', q ? `${r.blue.name} ${pctTxt(p)}, ${r.other.name} ${pctTxt(1 - p)}` : '');
+    return p;
+  }
+  function needle() { const [x2, y2] = pt(Math.min(1, Math.max(0, x)), D.R + 4); const n = document.getElementById('rpNdl'); n.setAttribute('x2', x2.toFixed(1)); n.setAttribute('y2', y2.toFixed(1)); }
+  function start(k, finalState) {
+    i = k; const r = race();
+    simT = finalState ? r.end : r.start; phase = finalState ? 'hold' : 'run'; phaseT = 0;
+    drawFace(r); label(); x = finalState ? at(r.end)[1] : .5; vel = 0; w = 0; paint(); needle();
+  }
+  function step(ts) {
+    raf = 0;
+    const dt = last ? Math.min(64, ts - last) : 16; last = ts;
+    if (!paused && visible) {
+      const r = race();
+      if (phase === 'run') { simT += dt * (r.end - r.start) / H.ms; if (simT >= r.end) { simT = r.end; phase = 'hold'; phaseT = 0; label(); } }
+      else if (phase === 'hold') { phaseT += dt; if (phaseT > H.hold) { phase = 'fade'; phaseT = 0; fig.classList.add('fade'); } }
+      else if (phase === 'fade') { phaseT += dt; if (phaseT > 380) { fig.classList.remove('fade'); start((i + 1) % H.races.length); } }
+    }
+    const target = paint();
+    // spring toward the estimate, with a small wander while the race is uncertain (as on the results page)
+    const s = dt / 1000, unc = Math.sqrt(Math.max(target * (1 - target), 0)) * (phase === 'run' ? 1 : 0);
+    w += -1.2 * w * s + 0.12 * unc * Math.sqrt(s) * (Math.random() * 2 - 1) * 1.7;
+    const goal = Math.min(1, Math.max(0, target + w));
+    vel += (-49 * (x - goal) - 2 * 0.6 * 7 * vel) * s; x += vel * s;
+    needle();
+    if (!paused && visible) raf = requestAnimationFrame(step);
+  }
+  const go = () => { if (!raf && !paused && visible) { last = 0; raf = requestAnimationFrame(step); } };
+  fig.addEventListener('click', e => {
+    const b = e.target.closest('[data-rp]');
+    if (b) { fig.classList.remove('fade'); start(+b.dataset.rp, paused); go(); return; }
+    if (e.target.closest('#rpPause')) { paused = !paused; label(); go(); }
+  });
+  new IntersectionObserver(es => { visible = es[0].isIntersecting; go(); }).observe(fig);
+  document.addEventListener('visibilitychange', () => { visible = !document.hidden; go(); });
+  new MutationObserver(() => { label(); paint(); }).observe(root, { attributes: true, attributeFilter: ['lang'] });
+  start(0, reduce); go();
+})();
+</script>

@@ -57,6 +57,29 @@ def night_index():
     return out
 
 
+# Entry-page hero replay (mock): real races replayed in about ten seconds each. One won by each side, all
+# with a needle that moved: 2022 屏東 swung both ways in its first hour, 2018 嘉義市 was decided at 23:32,
+# 2018 臺北 not until 02:36.
+HERO_RACES = [("2022-mayors", "屏東縣"), ("2018-mayors", "嘉義市"), ("2018-mayors", "臺北市")]
+
+
+def hero_data(names):
+    races = []
+    for nid, area in HERO_RACES:
+        r = next(x for x in json.loads((ROOT / "data" / "needle" / f"{nid}.json").read_text())["races"] if x["area"] == area)
+        pts = [[x[0], round(x[4], 3), x[2], x[3], x[1], int(bool(x[7]))] for x in r["pts"]]
+        blue_won = r["blue"]["final"] > r["other"]["final"]
+        pw = [q[1] if blue_won else 1 - q[1] for q in pts]
+        below = [k for k, v in enumerate(pw) if v < 0.9]
+        t90 = pts[below[-1] + 1][0] if below else pts[0][0]
+        decided = next(q[0] for q in pts if q[5])
+        side = lambda c: {"name": c["name"], "en": names.get(c["name"]), "tone": c["tone"]}
+        races.append({"year": nid[:4], "area": area, "stations": r["stations"], "blue": side(r["blue"]), "other": side(r["other"]),
+                      "winner": side(r["blue"] if blue_won else r["other"]), "t90": t90, "decided": decided,
+                      "start": max(0, pts[0][0] - 12), "end": decided + 4, "pts": pts})
+    return {"ms": 9000, "hold": 3200, "races": races}
+
+
 def render(template, data, out_path):
     tpl = (ROOT / "site" / template).read_text()
     marker = "/*__DATA__*/null"
@@ -78,6 +101,16 @@ def main():
     if (ROOT / "site" / "index-template.html").exists():
         render("index-template.html", {"nights": nights, "accuracy": json.loads((ROOT / "data" / "accuracy.json").read_text())},
                out / "index.html")
+        # mock: the entry page with the hero replay (not linked from anywhere; for review)
+        idx = (out / "index.html").read_text()
+        frag = (ROOT / "site" / "hero-replay.html").read_text()
+        frag = frag.replace("<script>", "<script>window.HERO = " + json.dumps(hero_data(names), ensure_ascii=False, separators=(",", ":")) + ";\n", 1)
+        i = idx.index('<section class="hero">')
+        j = idx.index("</section>", i)
+        mock = idx[:i] + '<section class="hero rp">' + idx[i + len('<section class="hero">'):j] + frag + idx[j:]
+        mock = mock.replace("<head>", '<head>\n<meta name="robots" content="noindex">', 1)
+        (out / "mock-hero.html").write_text(mock)
+        print(f"{out / 'mock-hero.html'}: {len(mock) / 1024:.0f} KB")
     for sub, src in (("needle", ROOT / "data" / "needle"), ("council", ROOT / "data" / "council"),
                      ("legislature", ROOT / "data" / "legislature")):
         (out / sub).mkdir(exist_ok=True)
