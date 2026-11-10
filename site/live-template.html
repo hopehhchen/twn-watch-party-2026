@@ -456,7 +456,7 @@ const DATA = /*__DATA__*/null;
   const skipWhy = k => /rerun/.test(k.why) ? tx('voted on 2022-12-18 (rerun after a candidate died); not part of this night', '因候選人過世延至 2022-12-18 投票，不在今晚', '因為候選人過身延到 2022-12-18 投票，無佇今暗') : k.why;
   const Ll = label => LANG === 'en' ? label.toLowerCase() : L(label);
   const C = { t: 0, n: 1, b: 2, o: 3, p: 4, m: 5, sd: 6, cert: 7, remE: 8, eb: 9, vrem: 10, pd: 11, md: 12, sdd: 13, certd: 14, vremd: 15, rho: 16, cc: 17, tm: 18, tsd: 19, tmd: 20, tsdd: 21, c3: 22, s3: 23, sd3: 26, cert3: 29, s3d: 30, sd3d: 33, cert3d: 36, p3: 37, p3d: 40 };
-  const st = { night: (DATA.nights.find(n => n.live) || DATA.nights[DATA.nights.length - 1]).id, area: '臺北市', t: 0, playing: false, speed: 5, unit: 'votes', mode: 'winner' };
+  const st = { night: (DATA.nights.find(n => n.live) || DATA.nights[DATA.nights.length - 1]).id, area: '臺北市', t: 0, playing: false, speed: 5, unit: 'votes', mode: 'winner', follow: true };
   // feed: per-station results whenever the feed has them; district totals only when it doesn't (the night's data says which)
   const isDist = () => { const n = cur(); return !!(n && n.feed === 'district'); };
   const isLive = () => { const n = NIGHTS[st.night]; return !!(n && n.live); };
@@ -613,6 +613,26 @@ const DATA = /*__DATA__*/null;
     const decided = vs.filter(v => !v.pre && v.cert).length, started = vs.filter(v => !v.pre).length;
     return `${esc(night.title)} · ${esc(night.date)}<br>${tx(`<b>${started}</b> of ${night.races.length} races counting · <b>${decided}</b> decided`, `${night.races.length} 場中 <b>${started}</b> 場開票中 · <b>${decided}</b> 場確定`, `${night.races.length} 場內底 <b>${started}</b> 場咧開票 · <b>${decided}</b> 場確定`)}`;
   }
+  // the live night: a slider to look back over the count so far (it never plays), "Live" to come back to now,
+  // when the data last changed, and a warning if it stops changing while the count is under way
+  const liveEnd = night => Math.max(night.start || 0, ...night.races.map(r => r.pts.length ? r.pts[r.pts.length - 1][C.t] : 0));
+  function liveStamp(night) {
+    if (!night.updated) return '';
+    const u = new Date(night.updated), hm = u.toLocaleTimeString('en-GB', { timeZone: 'Asia/Taipei', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const counting = night.races.some(r => r.pts.length && !r.pts[r.pts.length - 1][C.cert]);
+    const stale = counting && Date.now() - u.getTime() > 5 * 60 * 1000;
+    return `<div class="${stale ? 'flag' : 'note muted'}" style="margin:0;font-size:12px">${stale
+      ? tx(`No new figures from the CEC since ${hm}. The page keeps checking.`, `中選會自 ${hm} 起沒有新數字，本頁會持續檢查。`, `中選會對 ${hm} 起無新數字，這頁會繼續檢查。`)
+      : tx(`Updated ${hm} · CEC count`, `更新於 ${hm} · 中選會開票資料`, `更新佇 ${hm} · 中選會開票資料`)}</div>`;
+  }
+  function liveDeskHtml(night) {
+    const end = liveEnd(night);
+    if (!night.races.some(r => r.pts.length)) return liveStamp(night);
+    return `<div class="scrub">
+        <button class="play" id="golive" aria-pressed="${st.follow}" title="${tx('Follow the count', '跟著開票', '綴開票')}" style="width:auto;padding:0 12px;font-size:12px;font-weight:700">${tx('Live', '即時')}</button>
+        <input type="range" id="t" min="${night.start}" max="${end}" step="1" value="${Math.min(st.t, end)}" aria-label="${tx('Look back over the count', '回看開票過程', '倒轉看開票過程')}">
+      </div>${liveStamp(night)}`;
+  }
   function renderDesk() {
     const night = NIGHTS[st.night], info = nightInfoOf(st.night), council = st.mode === 'council';
     const baseYear = night.previous.slice(0, 4);
@@ -630,7 +650,7 @@ const DATA = /*__DATA__*/null;
         <div class="ctl"><span>${tx('Night', '選舉')}</span><div class="seg" role="group" aria-label="${tx('Night', '選舉')}">
           ${DATA.nights.map(n => `<button data-night="${n.id}" aria-pressed="${n.id === st.night}" title="${esc(n.legis ? n.title.replace('總統選舉', '總統、立委選舉') : n.title)}">${n.id.slice(0, 4)}</button>`).join('')}</div></div>
       </div>
-      ${night.live ? '' : `
+      ${night.live ? liveDeskHtml(night) : `
       <div class="scrub">
         <button class="play" id="play" aria-label="${st.playing ? tx('Pause', '暫停') : tx('Play', '播放')}">${st.playing ? '<svg viewBox="0 0 16 16"><rect x="3" y="2" width="3.5" height="12"/><rect x="9.5" y="2" width="3.5" height="12"/></svg>' : '<svg viewBox="0 0 16 16"><path d="M4 2l10 6-10 6z"/></svg>'}</button>
         <input type="range" id="t" min="${night.start}" max="${playEnd()}" step="1" value="${st.t}" aria-label="${tx('Time', '時間')}">
@@ -1609,11 +1629,12 @@ const DATA = /*__DATA__*/null;
     // the legislature and council views pick their own area once their data is in (a link can name a district)
     if (st.mode !== 'legis' && st.mode !== 'council' && (!night.races.some(r => r.area === st.area) || st.area === '全國')) st.area = night.races.find(r => r.area !== '全國').area;
     const firsts = night.races.filter(r => r.pts.length).map(r => r.pts[0][C.t]);
-    st.t = night.live || !firsts.length ? night.start : Math.max(0, Math.min(...firsts) - 10);
+    st.t = night.live ? liveEnd(night) : !firsts.length ? night.start : Math.max(0, Math.min(...firsts) - 10);
   }
 
   desk.addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b) return;
+    if (b.id === 'golive') { st.follow = true; st.t = liveEnd(NIGHTS[st.night]); render(); return; }
     if (b.id === 'play') { st.playing = !st.playing; if (st.playing) { if (st.t >= playEnd()) st.t = NIGHTS[st.night].start; lastTick = 0; timer = requestAnimationFrame(tick); } render(); }
     else if (b.dataset.night) { st.playing = false; openNight(b.dataset.night); }
     else if (b.dataset.speed) { st.speed = +b.dataset.speed; render(); }
@@ -1621,7 +1642,7 @@ const DATA = /*__DATA__*/null;
     else if (b.dataset.lang) { setLang(b.dataset.lang); }
   });
   desk.addEventListener('input', e => {
-    if (e.target.id === 't') { st.t = +e.target.value; light(); }
+    if (e.target.id === 't') { st.t = +e.target.value; if (isLive()) st.follow = st.t >= liveEnd(NIGHTS[st.night]); light(); }
   });
   detail.addEventListener('click', e => { const b = e.target.closest('[data-unit]'); if (b) { st.unit = b.dataset.unit; renderNation(); renderDetail(); } });
   const pick = (area, scroll) => {
@@ -1644,6 +1665,22 @@ const DATA = /*__DATA__*/null;
     loadNight(id).then(() => { setNight(id); if (t != null) st.t = t; render(); })
       .catch(e => { nation.innerHTML = `<div class="loading">${tx(`Couldn't load this night's data (${esc(e.message)}). The page reads it from files published next to it, so open it from the site, not as a saved file.`, `無法載入資料（${esc(e.message)}）。資料檔與本頁一起發布，請從網站開啟，而非存檔後開啟。`, `資料載入袂起來（${esc(e.message)}）。資料檔佮這頁做伙發佈，請對網站拍開，毋通存檔了後才開。`)}</div>`; });
   }
+  // the live night's file is rewritten every minute on election night: fetch it again every 30 s while the page is
+  // visible, and follow the latest moment unless the reader has moved the slider back
+  const liveInfo = DATA.nights.find(n => n.live);
+  async function refreshLive() {
+    if (!liveInfo || document.hidden || !NIGHTS[liveInfo.id]) return;
+    try {
+      const r = await fetch(`${liveInfo.src}?v=${Date.now()}`, { cache: 'no-store' }); if (!r.ok) return;
+      const fresh = await r.json(), old = NIGHTS[liveInfo.id];
+      if (fresh.updated && fresh.updated === old.updated) return;
+      nameNight(fresh); NIGHTS[liveInfo.id] = fresh;
+      if (st.night !== liveInfo.id || st.playing) return;
+      if (st.follow) st.t = liveEnd(fresh);
+      render();
+    } catch (e) { /* keep what we have; the next round tries again */ }
+  }
+  if (liveInfo) { setInterval(refreshLive, 30000); document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshLive(); }); }
   function setLang(l) {
     LANG = l; try { localStorage.setItem('twn-lang', l); } catch (e) {}
     document.documentElement.lang = l === 'zh' ? 'zh-Hant' : l === 'tw' ? 'nan-Hant-TW' : 'en';

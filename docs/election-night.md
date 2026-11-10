@@ -1,58 +1,106 @@
 # Election night plan: 2026-11-28
 
-Written 2026-11-10. All times are Taiwan time (UTC+8). "Unverified" means a date or fact we believe but haven't confirmed from an official source.
+Written 2026-11-10, updated the same day once the mayoral pipeline was built. All times are Taiwan time (UTC+8). "Unverified" means a date or fact we believe but haven't confirmed from an official source.
 
-## Where things stand
+## What we know about the CEC's live count
 
-Done: the 2026 page before the count (contenders, ballot numbers, incumbents, hatched map), four replayed nights, the model, the About page, the domain.
+- **Where:** the CEC's count site (計票資訊查詢網站). In 2025 it was `vote.cec.gov.tw/zh-TW/` (the referendum page `F1/00000000000000000.html`). Today that address forwards to the CEC's 2026 election page, so the count site isn't up yet. Another 2026 project reports that it's announced about a week before the vote (unverified).
+- **Level:** the county and each town (鄉鎮市區), not polling stations. Each page gives every candidate's votes so far and the number of stations reported (已送/應送). Pages per cycle: 22 county + 368 town candidate pages (prefix `TC`) and 22 turnout pages (`SC`). The page code is county(5) + `00` + town(3) + `0000000`; the 2022 codes are in `data/live/towns-2022.json`, from the CEC's own 2022 site menu.
+- **Markup:** changed between 2022 (class-based) and 2025 (id-based). The parser reads tables by their header labels, and works on saved pages of both (`tests/fixtures/cec/`, copies from the Wayback Machine collected by github.com/outsider987/vote, MIT).
+- **Location:** the same project advises polling "from a Taiwan-located machine because the CEC may geo-limit" (unverified). From Hope's browser today, the CEC's 2026 election page loads; the count site itself isn't up to test.
+- **Candidates:** the CEC's candidate files (`info.cec.gov.tw/vote2026/static/json/cand/C1/<county code>.json`) are up. All 22 races match our names and ballot numbers (checked 11/10).
+- **Same night:** one national referendum (廢除非核家園, 第22案). 2022 also had one referendum; its count ended at 23:40.
 
-**Not built yet, and the critical path:** nothing on the site updates by itself. The page already loads `needle/2026-mayors.json` (and the council file) at runtime, so the night needs something that keeps those files fresh:
+## The pipeline (built 11/10)
 
-1. **Read the live count.** Find where the CEC publishes the 2026 count, in what format, how often, and at what level (per polling station, or only per township). Per-station data keeps the model at full strength; township totals still work, but the needle settles later (`docs/needle.md`, "Feed granularity"). Also check whether the CEC site is reachable from outside Taiwan on the night: unverified either way.
-2. **Turn it into needle points.** Run `scripts/needle.py` on each new snapshot and append points in the same columns as the replayed nights; same for council seats.
-3. **Publish the files.** A push to GitHub triggers a full Cloudflare build (about a minute, one at a time), which is too slow to repeat every minute. Proposed: write the live JSON to Cloudflare storage (R2 or KV) behind the existing Worker, with a 15–30 s cache.
-4. **Live mode on the page.** Poll every 30 s; follow the real clock; unfreeze the 2026 view when the first points arrive; show "updated hh:mm"; warn if the data goes stale (say, nothing new for 5 minutes during the count).
-5. **Other live sources** (the count watch). Find which outlets put up 2026 live pages or endpoints (in past cycles 中央社 and 公視 did), test them, and name them on the page only once they work.
-6. **Where it runs.** Steps 1–3 need a machine that stays on through the night: most likely Hope's Mac, on power, sleep off, plus a fallback. This cloud workspace can't hold a long-running job.
+```
+CEC count site --(every 60 s)--> scripts/live/poll.py --> live-out/needle/2026-mayors.json --> scripts/live/publish.py --> election-2026.tw
+                                   | archive of every snapshot (live-out/archive/)                 (npx wrangler deploy)       page refetches every 30 s
+```
+
+- **`scripts/live/cec_parse.py`** reads the candidate and turnout pages.
+- **`scripts/live/live_model.py`** runs the needle on town totals (the replay's "district feed"). Two approximations, both tested:
+  - The counted part of a town gets an elector count corrected for the fact that early stations are small. On the 2018/2020/2022/2024 nights the counted stations held about 75% of their average share early in a town's count; `SIZE_H`.
+  - The uncounted part splits the rest of the town's electors.
+  - "Decided" needs the lead to beat the largest stations each town could still have out, from 2022's sizes plus 10%.
+- **`scripts/live/poll.py`** fetches with conditional requests, 4 at a time, with timeouts and retries. A page that fails keeps its last good value. It applies the contender rules:
+  - 金門's "other" is whoever leads among non-KMT candidates.
+  - 花蓮 is three-way from the start.
+  - Any race goes three-way once 5% is in if a third candidate is in the top two or within 10 points of the leader.
+  - When a race's contenders change, its points are recomputed from the archive. `--rebuild` recomputes the whole night after a fix.
+- **`scripts/live/publish.py`** checks each new file before it goes up: it parses, has all 22 races, and no count went backwards. It then deploys at most every 45 s.
+- **The page** (`live-template.html`) fetches the file again every 30 s and follows the latest moment. A slider looks back over the count (it never plays), and "Live" returns to now. It shows "Updated hh:mm:ss · CEC count", and warns if nothing new arrives for 5 minutes while races are still undecided.
+- **`scripts/live/mock_cec.py`** is a stand-in count site for rehearsals: the 2022 count replayed on the 2026 ballot, at any speed, in either markup, with optional failures (`--fail 0.03`).
+
+**Tests**
+- `python3 tests/test_live.py`: parser, town map, one full race.
+- `python3 scripts/live/replay_live.py`: scores against the replays. Town totals match the replay's district feed: log loss at 1/5/10/30% counted 0.44 / 0.22 / 0.14 / 0.08, against 0.37 / 0.14 / 0.13 / 0.07 with per-station results.
+- `python3 scripts/live/check_certainty.py`: 43 races, never "decided" early or on the wrong side; on average 14 stations after the truth.
+- Rehearsal on 11/10: mock site at 60× with 3% failures → poller every 10 s → publisher → local site. The page followed the count, kept a reader's look-back position across refreshes, and returned with "Live". No errors.
+
+### Running it
+
+```sh
+# once, on the machine that runs the night (repository at the frozen commit)
+pip install --break-system-packages openpyxl xlrd   # what scripts/stations.py needs to read the CEC station files
+python3 scripts/build_site.py _site
+export CLOUDFLARE_API_TOKEN=...  CLOUDFLARE_ACCOUNT_ID=...    # a token that can deploy this Worker
+python3 scripts/live/poll.py --probe --base https://<count host>/zh-TW/    # when the site is announced: must parse
+
+# the night (two terminals; start by 15:30)
+python3 scripts/live/poll.py --base https://<count host>/zh-TW/
+python3 scripts/live/publish.py --deploy
+
+# rehearsal (three terminals): stand-in site, poller, publisher into a local copy
+python3 scripts/live/mock_cec.py --speed 16 --start 16:00 --fail 0.03
+python3 scripts/live/poll.py --base http://127.0.0.1:8790/zh-TW/ --interval 20
+python3 scripts/live/publish.py            # copies into _site; serve _site with python3 -m http.server
+```
+
+**Rules for the night**
+- No pushes to GitHub after the code freeze. A push makes Cloudflare rebuild the site from the repository, which would put the empty pre-count file back until the next publish (about a minute). It could also mismatch the code the publisher deploys.
+- The publisher deploys the local `_site`, so that copy must be built from the same commit as the site.
+
+## Not built yet
+
+- **Council seats live.** The page's Council button is greyed out on 2026 with "Council seats appear here once counting starts". The council model (`scripts/council.py`) needs the council pages (prefix `T1` and others, 215 districts × their towns). Decide: build it, or change that line.
+- **Count watch** (other outlets' numbers next to the CEC's): sources to find once 2026 pages are up (in past cycles 中央社 relayed the CEC as JSON).
+- **Turnout view on 2026:** works from the same points; checked only in the rehearsal.
 
 ## Timeline
 
 | When | What | Who | Status |
 |---|---|---|---|
-| by 11/14 (Sat) | Find the CEC 2026 live results source and its format; decide the publishing setup (step 3) and where it runs | Claude researches, Hope decides | open |
-| by 11/17 (Tue), 23:59 | **Take every poll number off the site.** Taiwan bans publishing, citing or commenting on election polls from 10 days before the vote until voting closes (公職人員選舉罷免法 §53; fines from NT$100,000). Here that runs 11/18 00:00 to 11/28 16:00. On the About page that means the poll lines in "Races to watch" and their links (蘇/李 numbers, the 28% line, the two poll sources), and the "Polls … credited where they appear" line in the credits | Claude edits, Hope approves | open |
-| ~11/17 (unverified) | CEC announces the official candidate list. Check every name and ballot number against it, then rebuild (`scripts/build_2026_night.py`) | Claude | open |
-| 11/18–11/27 | Campaign period. Poll ban in force | | |
-| by 11/21 (Sat) | Live pipeline working end to end: replay 2022 through it as if live, to a test URL; page live mode working | Claude builds, Hope runs it on the Mac | open |
-| by 11/21 | Count-watch sources picked and tested, if 2026 pages are up by then | Claude | open |
-| by 11/24 | Taiwanese review back from reviewers (`docs/taigi-review.md`; regenerate it first) | Hope | open |
-| 11/25 (Wed) | CEC announces elector totals, three days before the vote (選罷法 §38): city and county totals, not per station. Replace 2022's in `2026-mayors.json` | Claude | open |
-| 11/26 (Thu) | Dress rehearsal on the real domain: full 2022 replay through the live path, on phones and desktop, both themes, all three languages; load check | both | open |
-| 11/27 (Fri), evening | Code freeze: after this only data changes. Final rebuild; confirm the fallback machine | both | open |
-| 11/28, 08:00 | Voting opens | | |
-| 11/28, 14:00 | Pipeline up and polling; health checks; page still shows "before the count" | Hope | |
-| 11/28, 15:30 | Final check; group chat open for reports from friends | Hope | |
-| 11/28, 16:00 | Voting closes, counting starts. TV counts from about 16:00 | | |
-| 11/28, ~17:00–17:30 | First CEC data usually reaches media; first needle points | | |
-| 11/28, ~17:40 | Half the races have their first 1% of stations in (2022: 17:38; 2018: 17:52) | | |
-| 11/28, ~18:00–19:00 | Most races pass 10–30% counted; needles settle in most races | | |
-| 11/28, ~19:30 | TV channels switch to relaying the CEC (2024: from about 19:25) | | |
-| 11/28, ~20:00–22:00 | Last mayoral races reach 70% (2022 median 19:53, latest 21:38); councils run later | | |
-| 11/28, ~00:00 | Chart axis ends at 00:00 and extends if counting runs later | | |
-| 11/29 (Sun) | Freeze the night: final snapshot, switch 2026 from live to replay, archive the raw feed; short note to friends | both | |
-| after the CEC certifies results (unverified: about a week later) | Score 2026 against the certified results and add it to the accuracy section; review what broke | Claude | |
-
-## On the night: watch for
-
-- **Stale data:** no new CEC snapshot for 5 minutes while counting is under way.
-- **Candidate mix-ups:** races are matched by ballot number, not name (`data/README.md`). One outlet attached minor candidates' counts to the wrong names in 2022.
-- **Counts going backwards** in any source: hold the last good value and flag it.
-- **Three-way races:** the watch list is set in advance (花蓮 expected). Switch a race to three-way live if a third candidate reaches the top two, or comes within 10 points of the leader, once 5% of stations are in (`docs/needle.md`).
-- **Traffic:** static files on Cloudflare should hold. Keep the live JSON small and cached briefly.
+| done 11/10 | Poll figures removed from the site and the repository's current files (ban 11/18 00:00 – 11/28 16:00, 選罷法 §53) | Claude | done |
+| done 11/10 | Candidate names and ballot numbers checked against the CEC's candidate files: all 22 match | Claude | done |
+| done 11/10 | Mayoral pipeline: parser, live model, poller, publisher, page live mode, stand-in site, tests, first rehearsal | Claude | done |
+| by 11/14 (Sat) | Decide where it runs on the night (a Taiwan-located machine is safest; see below) and set up a Cloudflare deploy token there | Hope | open |
+| by 11/17 | Decide on council live (build or not) | Hope | open |
+| by 11/21 (Sat) | Full rehearsal on the machine that will run the night, deploying to a test Worker, not the real site | both | open |
+| ~11/21 (unverified) | CEC announces the count site: `poll.py --probe` from the night's machine; refresh `towns-2022.json` from the 2026 site menu if towns changed | Claude + Hope | open |
+| by 11/24 | Taiwanese review back (`docs/taigi-review.md`, regenerated 11/10) | Hope | open |
+| 11/25 (Wed) | CEC announces elector totals (選罷法 §38). The poller takes town electors from the turnout pages on the night anyway; update `2026-mayors.json` for the before-count page | Claude | open |
+| 11/26 (Thu) | Dress rehearsal on the real domain at 16× (16:00–24:00 in 30 min), phones and desktop, all three languages; then rebuild the empty pre-count file | both | open |
+| 11/27 (Fri), evening | Code freeze; final build on the night's machine; fallback machine ready | both | open |
+| 11/28, 14:00 | Poller and publisher running (the count site has no data yet: the poller just waits) | Hope | |
+| 11/28, 16:00 | Voting closes, counting starts | | |
+| 11/28, ~17:00–17:30 | First CEC figures; first needle points | | |
+| 11/28, ~17:40 | Half the races have their first 1% in (2022: 17:38; 2018: 17:52) | | |
+| 11/28, ~18:00–20:00 | Most needles settle (replays: above 95% for the eventual winner typically 1–2 hours before the race is mathematically decided) | | |
+| 11/28, ~21:00–24:00 | Last mayoral races decided (2022: count over at 23:40 with one referendum) | | |
+| 11/29 (Sun) | Final snapshot; switch 2026 from live to a replay; keep the archive | both | |
+| after certification (unverified: about a week) | Score 2026 against the certified results; add it to the accuracy section | Claude | |
 
 ## Open decisions
 
-- Publishing setup for the live files (R2/KV behind the Worker, or something else).
-- The machine on the night, and the fallback.
-- Which outlets to show in the count watch.
-- Whether to show council results live from the start, or only once the mayors are settled.
+- **Where the poller runs.** If the CEC limits access by location, a machine outside Taiwan gets nothing. Options:
+  - A small cloud server in Taiwan (Google Cloud's asia-east1 region is in Taiwan; a few dollars for the week).
+  - A friend's computer in Taiwan.
+  - Hope's Mac if he's in Taiwan that night.
+  - Whichever is chosen, keep a second machine ready to take over, since the archive lets a new poller pick up where the old one stopped.
+- **Model: sampling noise in tiny first stations** (recommended, not applied). The model treats a 9-vote first station like a 900-vote one. In the replays this sent the needle to 99%+ on the first station a few times (2022 臺東: 2 vs 7 votes → 0.7% for the eventual winner). Adding the votes' own binomial noise to the swing's uncertainty (`model_review.py`, `samp=1`):
+  - Mayoral first-station log loss drops 0.84 → 0.68, and confidently wrong calls (<5% for the winner) at the first station drop 3 → 1.
+  - Presidential counties: 0.95 → 0.80, and 5 → 3.
+  - Legislative districts: 0.53 → 0.50, and stays at 3.
+  - Later checkpoints change by under 0.01.
+- Council live (above). Count-watch sources (above).

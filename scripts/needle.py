@@ -276,7 +276,8 @@ class Night:
         eb = sum(s["E"] * s["_b"][1] for s in U)  # ballots left at baseline turnout
         margin = ka - kb
         extra = dict(n=n, ka=ka, kb=kb, remE=remE, eb=eb)
-        if (U and abs(margin) > remE) or not U:
+        # rem_bound: an upper bound on the electors still out when they are only estimated (live town totals)
+        if (U and abs(margin) > max(remE, getattr(self, "rem_bound", 0) or 0)) or not U:
             return dict(p=1.0 if margin > 0 else 0.0, mean=margin, sd=0.0, certain=True, vrem=0.0, **extra)
         # residuals at reported stations
         res = []  # (district, resid_logit, weight)
@@ -477,7 +478,7 @@ class Night:
         sd_c = math.sqrt(var_c)
         sds = [math.sqrt((sd_m / 2) ** 2 + (sd_c / 2) ** 2), math.sqrt((sd_m / 2) ** 2 + (sd_c / 2) ** 2), sd_c]
         order = sorted(range(3), key=lambda i: -cnt[i])
-        remE = sum(s_["E"] for s_ in U)
+        remE = max(sum(s_["E"] for s_ in U), getattr(self, "rem_bound", 0) or 0)
         certain = cnt[order[0]] - cnt[order[1]] > remE
         p_win = [float(i == order[0]) for i in range(3)] if certain else win3(tot, sd_m, sd_c)
         return dict(mean=[t / V for t in tot], sd=[x / V for x in sds], counted=[c / max(valid_in, 1) for c in cnt],

@@ -22,14 +22,15 @@ from build_needle_data import ORDER, TONE  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 PARTY_FULL = {"國民黨": "中國國民黨", "民進黨": "民主進步黨", "民眾黨": "台灣民眾黨", "無黨籍": "無黨籍"}
-# Ballot numbers and parties (中央社 2026-10-27, https://www.cna.com.tw/news/aipl/202610275002.aspx; transcribed
-# 2026-11-10 from an automated reading of that page: check against the CEC's ballot before the night).
+# Ballot numbers and parties (中央社 2026-10-27, https://www.cna.com.tw/news/aipl/202610275002.aspx). Checked
+# 2026-11-10 against the CEC's own candidate files (info.cec.gov.tw/vote2026/static/json/cand/C1/<county code>.json):
+# every name and ballot number matches; minor-party names follow the CEC's spelling.
 BALLOT = {
-    "臺北市": "1 台灣麻將最大黨 郭璽|2 無黨籍 林志成|3 民進黨 沈伯洋|4 台灣SoR無法黨 蕭文乾|5 國民黨 蔣萬安|6 三勢團結促進聯盟 唐新民",
+    "臺北市": "1 台灣麻將最大黨 郭璽|2 無黨籍 林志成|3 民進黨 沈伯洋|4 臺灣SoR無法黨 蕭文乾|5 國民黨 蔣萬安|6 三勢團結促進聯盟 唐新民",
     "新北市": "1 民進黨 蘇巧慧|2 無黨籍 蘇輝湟|3 國民黨 李四川",
     "桃園市": "1 民進黨 黃世杰|2 國民黨 張善政",
     "臺中市": "1 民進黨 何欣純|2 司法正義黨 洪麗華|3 國民黨 江啟臣",
-    "臺南市": "1 台灣SoR無法黨 蕭燐洪|2 國民黨 謝龍介|3 民進黨 陳亭妃|4 無黨籍 葉人文",
+    "臺南市": "1 臺灣SoR無法黨 蕭燐洪|2 國民黨 謝龍介|3 民進黨 陳亭妃|4 無黨籍 葉人文",
     "高雄市": "1 司法改革黨 張靜|2 無黨籍 王肇民|3 國民黨 柯志恩|4 無黨籍 洪方隆|5 民進黨 賴瑞隆",
     "基隆市": "1 民進黨 童子瑋|2 無黨籍 魏造文|3 國民黨 謝國樑",
     "新竹市": "1 無黨籍 高虹安|2 無黨籍 何志勇|3 民進黨 莊競程",
@@ -44,7 +45,7 @@ BALLOT = {
     "宜蘭縣": "1 民進黨 林國漳|2 無黨籍 陳宏毅|3 國民黨 吳宗憲|4 無黨籍 劉燦輝|5 無黨籍 楊鉯婷",
     "臺東縣": "1 無黨籍 李吳穎智|2 民進黨 陳瑩|3 無黨籍 王志偉|4 國民黨 吳秀華",
     "花蓮縣": "1 無黨籍 魏嘉賢|2 無黨籍 張峻|3 國民黨 游淑貞|4 台灣工黨 羅佩秦",
-    "澎湖縣": "1 無黨籍 許智富|2 台灣團結聯盟 周倪安|3 無黨籍 葉竹林|4 民進黨 吳淑瑾|5 國民黨 陳振中|6 無黨籍 陳盡川",
+    "澎湖縣": "1 無黨籍 許智富|2 台聯黨 周倪安|3 無黨籍 葉竹林|4 民進黨 吳淑瑾|5 國民黨 陳振中|6 無黨籍 陳盡川",
     "金門縣": "1 無黨籍 張國威|2 無黨籍 李文良|3 無黨籍 洪和成|4 無黨籍 張火木|5 國民黨 陳玉珍|6 無黨籍 梁文韜|7 無黨籍 黃世團",
     "連江縣": "1 國民黨 王忠銘|2 無黨籍 曹爾元",
 }

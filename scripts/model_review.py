@@ -41,6 +41,7 @@ class Variant(N.Night):
     beta0 = 0.0    # size slope prior mean (logit swing per unit log electors); with `size`, the ridge pulls toward it
     lam = 12.0     # prior weight of the slope, in stations' worth of data: decays in effect as stations come in
     huber = None   # Huber cut (in station sds) for down-weighting outlying stations
+    samp = 0.0     # multiplier on the binomial sampling variance of the counted two-way votes (1 = exact)
 
     def estimate(self, n):
         R, U = self.st[:n], self.st[n:]
@@ -109,6 +110,9 @@ class Variant(N.Night):
         tau2 = (max(K - 1, 0) * between + pr["k0"] * pr["tau"] ** 2) / (max(K - 1, 0) + pr["k0"])
         frac_in = sum(s["E"] for s in R) / (sum(s["E"] for s in R) + remE)
         g2 = tau2 / max(K, 1) + sigma2 / max(nst, 1) + (pr["glob"] ** 2) * (1 - frac_in) ** 2 / (1 + K)
+        if self.samp and res:  # binomial noise in the counted votes themselves (matters when only a few hundred are in)
+            yb = min(max(ka / max(ka + kb, 1), 0.05), 0.95)
+            g2 += self.samp / (max(W, 1) * yb * (1 - yb))
         delta_raw = delta
         if self.s0:
             v = tau2 / max(K, 1) + sigma2 / max(nst, 1)
