@@ -5,7 +5,8 @@
 
 Reads data/needle/<night>.json (scripts/build_needle_data.py) and scores the per-station model at the
 moment each race reached a share of its stations: win probability, projected margin and its 80% range,
-projected turnout. Everything is compared with the race's own final count. The entry page shows it.
+projected turnout. Everything is compared with the race's own final count. Also records the clock time
+(CEC report log) at which races passed each share: median, earliest and latest. The entry page shows it.
 """
 import json
 import math
@@ -22,7 +23,7 @@ CC, TM = 17, 18
 
 def clock(t):
     m = round(t) + 16 * 60
-    return f"{m // 60 % 24:02d}:{m % 60:02d}"
+    return f"{m // 60 % 24:02d}:{m % 60:02d}" + (" (+1)" if m >= 24 * 60 else "")
 
 
 def score_race(r):
@@ -37,6 +38,7 @@ def score_race(r):
         p = next((q for q in pts if q[N] / S >= f), pts[-1])
         pw = p[P] if blue_won else 1 - p[P]
         out["at"][f] = {
+            "t": p[T],  # minutes after 16:00 when the race reached this share of its stations
             "p_winner": round(pw, 4),
             "margin_err_pts": round(100 * abs(p[M] - fin) / two, 2),
             "in_80": abs(p[M] - fin) <= Z80 * p[SD] or (p[SD] == 0 and p[M] == fin),
@@ -63,6 +65,9 @@ def summarize(races):
             "in_80": round(sum(x["in_80"] for x in xs) / len(xs), 2),
             "turnout_err_pts": round(sum(x["turnout_err_pts"] for x in xs) / len(xs), 1),
             "favorite_won": sum(x["p_winner"] > 0.5 for x in xs),
+            # clock time the races reached this share of their stations: median, earliest, latest
+            "time_median": clock(sorted(x["t"] for x in xs)[len(xs) // 2]),
+            "time_first": clock(min(x["t"] for x in xs)), "time_last": clock(max(x["t"] for x in xs)),
         }
     leads = sorted(r["lead_minutes"] for r in races if r["lead_minutes"] is not None)
     return {"n": len(races), "at": s,

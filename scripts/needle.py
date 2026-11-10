@@ -235,6 +235,9 @@ class Night:
             if why:
                 return parts[0][0], parts[0][1] + f" (only; {'; '.join(why)})"
             return parts[0]
+        # vote split: both baselines averaged in logit. Turnout and the two-side fraction: the FIRST part only,
+        # which must be the same level as the target (e.g. "2018-mayors+2020-president" for a mayoral night),
+        # so turnout is never compared across levels (presidential turnout runs ~10 points higher)
         (d1, h1), (d2, h2) = parts
         out = {}
         for k, v in d1.items():

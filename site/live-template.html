@@ -319,6 +319,7 @@ html[lang="zh-Hant"] [data-l="en"], html:not([lang="zh-Hant"]) [data-l="zh"] { d
     <p><b>Map.</b> Before a race has any counted stations, its county is hatched in the party color of the incumbent. Once counting starts, it takes the color of the projected leader's own party (gray for independents, teal for 台灣民眾黨), shaded from light (toss-up) to solid (decided). 金門, 連江 and 澎湖 are drawn in insets.</p>
     <p><b>Turnout view.</b> "Show: Turnout" switches the cards, map and race panel to the projected final turnout, worked out the same way as the vote swing. On the 2018 and 2022 nights it was within about 2 points by the time 5–10% of stations were in. The "Ballots counted" line uses it to estimate what share of all ballots has been counted, a better progress measure than stations, since stations differ in size.</p>
     <p><b>Council view</b> (2018, 2022). Who would hold each council seat if counting stopped now. Each district elects several members; the candidates with the most votes win. A district electing 4 reserves a seat for a woman, plus one per 4 more seats (地方制度法 §33); "women's seat" marks a woman elected this way, "displaced" the man who loses his place. A seat is <b>decided</b> once even the most damaging split of the votes still out (every remaining elector voting, all for the closest challengers) couldn't change who holds it. Nothing is projected here.</p>
+    <p><b>Jitter.</b> With "Jitter" on, the needle swings across the middle of its range of outcomes each time the estimate moves, then settles on the estimate within a few seconds.</p>
     <p><b>Feed.</b> "Per station" is what the model can do with polling-station results. "District totals" shows what happens if the CEC's live feed only gives district (行政區) totals: the same model, noticeably less certain early on. Which one the 2026 feed provides is not yet known.</p>
     <p><b>Caveats.</b> The two contenders are taken from the final result here; for 2026 they are set in advance. Times are when the CEC logged each station's report (all contests at a station at once), which can trail what TV showed. 2018 counting ran past midnight in many places because referendums were counted the same night.</p>
     </div>
@@ -330,6 +331,7 @@ html[lang="zh-Hant"] [data-l="en"], html:not([lang="zh-Hant"]) [data-l="zh"] { d
     <p><b>地圖。</b>尚未開出任何投開票所時，以斜線標示現任者的政黨顏色。開票後改為預估領先者本人的政黨顏色（無黨籍為灰色、台灣民眾黨為青綠色），由淺（難分高下）到深（確定）。金門、連江與澎湖畫在小框內。</p>
     <p><b>投票率檢視。</b>「顯示：投票率」會把卡片、地圖與選舉面板換成預估的最終投票率，算法與得票擺盪相同。在 2018 與 2022 年，開出 5–10% 投開票所時誤差約 2 個百分點以內。「已開票數」一行用它來估計全部選票已開出的比例；由於各投開票所大小不同，這比投開票所數更能反映進度。</p>
     <p><b>議員檢視</b>（2018、2022）。如果此刻停止開票，每個議員席次會由誰拿下。每個選區應選數名，得票最高者當選。應選 4 名的選區保障 1 席婦女名額，每增 4 名再增 1 席（地方制度法第 33 條）；「婦女保障」標示依此當選的女性，「被排擠」標示因此落選的男性。即使剩餘票數以最不利的方式分配（所有未開票的選舉人都投票，且全投給最接近的挑戰者）也無法改變當選人時，該席為<b>確定</b>。這裡不做任何預測。</p>
+    <p><b>抖動。</b>開啟「抖動」後，每當估計有變化，指針會在可能結果的中段範圍內擺動，幾秒內再回到估計值。</p>
     <p><b>資料。</b>「逐所」是有投開票所層級結果時模型的表現；「鄉鎮市區」顯示若中選會即時資料只有鄉鎮市區合計時的情形：同一個模型，早期明顯較不確定。2026 年的即時資料會提供哪一種，目前還不知道。</p>
     <p><b>限制。</b>這裡的兩位主要候選人取自最終結果；2026 年會事先設定。時間是中選會登錄各投開票所回報的時間（同一所的所有選舉一起登錄），可能比電視畫面晚。2018 年因同晚開公投票，許多地方開票到午夜以後。</p>
     </div>
@@ -1090,10 +1092,15 @@ const DATA = /*__DATA__*/null;
   }
   // Jitter: one loop for the page's life. renderDetail() only updates what the loop reads, so
   // playback (which re-renders several times a second) no longer resets the needle.
-  const jstate = { race: null, v: null, cur: null, target: null, last: 0 };
+  // The swing shrinks over JITTER_SETTLE ms after the estimate last moved (or the race or night changed), then
+  // the needle rests on the estimate. A move of 2 points or more in the win chance starts the swing again.
+  const JITTER_SETTLE = 8000;
+  const jstate = { race: null, v: null, cur: null, target: null, last: 0, since: 0, anchor: null };
   function startJitter(race, v) {
     jstate.race = race; jstate.v = v;
-    if (jstate.cur == null || jstate.raceId !== race.area + st.night) { jstate.cur = v.pb; jstate.target = v.pb; jstate.raceId = race.area + st.night; }
+    const id = race.area + st.night;
+    if (jstate.cur == null || jstate.raceId !== id) { jstate.cur = v.pb; jstate.target = v.pb; jstate.raceId = id; jstate.anchor = null; }
+    if (!v.pre && (jstate.anchor == null || Math.abs(v.pb - jstate.anchor) >= 0.02)) { jstate.anchor = v.pb; jstate.since = performance.now(); }
     if (!jit) jit = requestAnimationFrame(jitterStep);
   }
   function jitterStep(ts) {
@@ -1102,11 +1109,13 @@ const DATA = /*__DATA__*/null;
     const line = document.querySelector('#bigdial .ndl');
     if (!race || !v || !line) return;
     let goal = v.pb;
-    if (st.jitter && !v.pre && !v.cert && v.sd > 0) {
+    const left = 1 - (ts - jstate.since) / JITTER_SETTLE, width = left > 0 ? left * left : 0; // eases out to 0
+    if (st.jitter && !v.pre && !v.cert && v.sd > 0 && width > 0) {
       if (ts - jstate.last > 220) {
-        // the chance of winning if the final margin sat anywhere in the middle half of its range
+        // somewhere in the chance of winning if the final margin sat in the middle half of its range,
+        // pulled toward the estimate as the swing settles
         const z = v.mean / v.sd, pLo = phi(z - 0.674), pHi = phi(z + 0.674);
-        jstate.target = pLo + Math.random() * (pHi - pLo); jstate.last = ts;
+        jstate.target = v.pb + (pLo + Math.random() * (pHi - pLo) - v.pb) * width; jstate.last = ts;
       }
       goal = jstate.target;
     }
@@ -1336,7 +1345,7 @@ const DATA = /*__DATA__*/null;
     if (e.target.id === 't') { st.t = +e.target.value; light(); }
     if (e.target.id === 'k') { st.k = +e.target.value; render(); document.getElementById('k').focus(); }
   });
-  desk.addEventListener('change', e => { if (e.target.id === 'jit') { st.jitter = e.target.checked; renderDetail(); } });
+  desk.addEventListener('change', e => { if (e.target.id === 'jit') { st.jitter = e.target.checked; jstate.since = performance.now(); renderDetail(); } });
   detail.addEventListener('click', e => { const b = e.target.closest('[data-unit]'); if (b) { st.unit = b.dataset.unit; renderNation(); renderDetail(); } });
   const pick = (area, scroll) => {
     const ok = st.mode === 'council' ? COUNCIL[st.night] && COUNCIL[st.night].counties.some(c => c.area === area) : NIGHTS[st.night].races.some(r => r.area === area);

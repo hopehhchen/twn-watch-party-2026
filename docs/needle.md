@@ -65,7 +65,9 @@ Every case could be placed, so no longer lookback was needed. Swapping sides in 
 
 ## Turnout
 
-Win probability barely depends on the turnout assumption (log loss moves in the third decimal across a ±11-point scenario range), because turnout scales both sides. It matters for the projected margin in votes and for the "certain" line. Live turnout (reported stations vs their own baseline turnout) beats holding the baseline turnout fixed once ~5% of stations are in. Suggested slider: around 2022 turnout, σ ≈ 3.75 points (the spread of county turnout changes, 2014→2018 and 2018→2022), as a prior and what-if; the live estimate takes over as stations report.
+Win probability barely depends on the turnout assumption (log loss moves in the third decimal across a ±11-point scenario range), because turnout scales both sides. It matters for the projected margin in votes and for the "certain" line. Live turnout (reported stations vs their own baseline turnout) beats holding the baseline turnout fixed once ~5% of stations are in. The slider is a what-if around last time's turnout. One step is the typical county turnout change between consecutive elections of the same level: the root mean square over counties, both pairs pooled, including the nationwide shift. From the station files that is 5.8 points for mayors (2014→18: 3.0; 2018→22: 7.6) and 6.8 for presidents (2016→20: 9.1; 2020→24: 3.4). Until 2026-11-10 every night used 3.75, a mayoral figure that couldn't be reproduced from these files. The live estimate takes over as stations report.
+
+**Same-level comparison.** Every turnout figure compares with the previous election of the same level: mayoral nights with the previous mayoral race, presidential nights with the previous presidential race. This covers the projection, the change shown, the map and the "last time" numbers. The win-probability baseline for mayors blends in the previous presidential race, but only for the vote split; the turnout part always comes from the mayoral race, the first part of the blend (`Night._baseline`). The 2026 night must keep the order `2022-mayors+2024-president`.
 
 ## Projected turnout (`Night.turnout`)
 

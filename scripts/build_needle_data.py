@@ -57,8 +57,11 @@ def three_way_rule(total, ia, ib, third):
     if third in order[:2]:
         return True
     return (total[order[0]] - total[third]) / V < 0.10
-# turnout spread for the scenario slider: county turnout change between elections, 2014->18 and 2018->22
-TURNOUT_SIGMA = 3.75
+# Turnout scenario slider: one step = the typical county turnout change between consecutive elections of the
+# same level (root mean square over counties, both pairs pooled; includes the nationwide shift). From the CEC
+# station files: mayors 2014->18 3.0 and 2018->22 7.6 -> 5.8; presidents 2016->20 9.1 and 2020->24 3.4 -> 6.8.
+# (Until 2026-11-10 every night used 3.75, a mayoral figure that couldn't be reproduced from these files.)
+TURNOUT_SIGMA = {"mayors": 5.8, "president": 6.8}
 
 
 def cand(race, k, total):
@@ -201,7 +204,7 @@ def build(night):
         races.append(race_entry(ns, nd, race, county, f"{county}長", t0, inc.get(county)))
     end = max(r["pts"][-1][0] for r in races)
     return {"id": night, "title": cfg["title"], "date": cfg["date"], "baseline": cfg["baseline"],
-            "start": 0, "end": end, "turnout_sigma": TURNOUT_SIGMA, "previous": cfg["previous"],
+            "start": 0, "end": end, "turnout_sigma": TURNOUT_SIGMA["president" if cfg.get("national") else "mayors"], "previous": cfg["previous"],
             "point_columns": ["t_min_after_16", "stations_in", "blue_votes", "other_votes",
                               "p_blue", "margin_mean", "margin_sd", "certain", "electors_left",
                               "ballots_left_at_baseline_turnout", "two_way_votes_left",
