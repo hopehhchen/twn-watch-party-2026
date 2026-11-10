@@ -32,6 +32,10 @@ NIGHTS = {
     "2018-mayors": dict(baseline="2014-mayors+2016-president", title="2018 縣市長選舉", date="2018-11-24",
                         previous="2014-mayors"),
     # presidential: the 2020 presidential race alone beat a blend with the 2022 mayoral races on this night
+    # 2020: the 2016 presidential race alone; a blend with the 2018 mayoral races scored slightly better on
+    # this night (county log loss 0.035 vs 0.044 at 5% counted) but worse on 2024's, so one rule for both
+    "2020-president": dict(baseline="2016-president", title="2020 總統選舉", date="2020-01-11",
+                           previous="2016-president", national=True),
     "2024-president": dict(baseline="2020-president", title="2024 總統選舉", date="2024-01-13",
                            previous="2020-president", national=True),
 }

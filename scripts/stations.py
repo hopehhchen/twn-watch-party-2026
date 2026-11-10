@@ -29,7 +29,8 @@ ELECTIONS = {
                         times="2022-station-times.xls",
                         extra={"嘉義市": "2022-chiayi-city-rerun-stations.xls"}),  # 嘉義市 voted 2022-12-18
     "2016-president": dict(zips=["2016-president-stations.zip"], date="2016-01-16", pick="A05-4"),
-    "2020-president": dict(zips=["2020-president-stations.zip"], date="2020-01-11", pick="A05-4"),
+    "2020-president": dict(zips=["2020-president-stations.zip"], date="2020-01-11", pick="A05-4",
+                           times="2020-station-times.xls"),
     "2024-president": dict(zips=["2024-president-stations.zip"], date="2024-01-13", pick="A05-4",
                            times="2024-station-times.xlsx"),
 }

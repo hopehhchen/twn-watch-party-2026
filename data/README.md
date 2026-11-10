@@ -132,7 +132,7 @@ The 2026 elector counts are not here: by law (公職人員選舉罷免法 第38�
 
 ## `raw/cec-stations/` — per-polling-station results, 2014–2024
 
-Mayoral (2014, 2018, 2022) and presidential (2016, 2020, 2024) per-station sheets, plus the 2018, 2022 and 2024 station report-time files. All downloaded from the CEC election database attachments; `SHA256SUMS` matches the hashes the CEC publishes. `scripts/stations.py` reads them into one shape and checks that each station's candidate votes add up to its valid ballots (they all do). Used by `scripts/needle.py`; see `docs/needle.md`.
+Mayoral (2014, 2018, 2022) and presidential (2016, 2020, 2024) per-station sheets, plus the 2018, 2020, 2022 and 2024 station report-time files. All downloaded from the CEC election database attachments; `SHA256SUMS` matches the hashes the CEC publishes. `scripts/stations.py` reads them into one shape and checks that each station's candidate votes add up to its valid ballots (they all do). Used by `scripts/needle.py`; see `docs/needle.md`.
 
 ## Council (議員) results, 2018 and 2022
 
@@ -151,4 +151,4 @@ Checks (run on every build):
 
 Five ballot numbers (2018 屏東縣 ×3, 2022 新北市 ×2) appear on the station sheets with 0 votes but not in the CEC's results list. They are left out.
 
-The council page (`site/council-template.html`) loads these files at runtime, so `build_site.py --standalone` copies them next to the page.
+The results page (`site/live-template.html`, "Show: Council") loads these files at runtime; `scripts/build_site.py` copies them, and the needle nights (`needle/<night>.json`), next to the page.

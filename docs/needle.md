@@ -9,7 +9,7 @@
 | 2014 mayors | yes | no |
 | 2016 president | yes | no |
 | 2018 mayors | yes | yes (logged for all contests and referendums at a station) |
-| 2020 president | yes | no |
+| 2020 president | yes | yes |
 | 2022 mayors | yes (嘉義市: the 12/18 rerun, used as a baseline only) | yes |
 | 2024 president | yes | yes |
 
@@ -79,6 +79,17 @@ In 2022 the stations still out had 3–5% more ballots than the early-reporting 
 
 The page uses this for the turnout view and for "estimated share of ballots counted" (counted ballots / projected total).
 
+## 2020 presidential night
+
+Added 2026-11-10 (report times: 109全國投開票所完成時間.xls, CEC attachments). Baseline: the 2016 presidential race at village level, the same rule as 2024. A blend with the 2018 mayoral races scored slightly better on this night (county log loss 0.035 vs 0.044 at 5% counted) but worse on 2024's. 宋楚瑜 (4%) is set aside in the dial; no county was three-way. The national projection ran low early (−2.38M ± 0.16M at 10% counted vs −2.65M final, 蔡英文's margin).
+
+## Accuracy summary
+
+`scripts/accuracy.py` scores every race in the replays at 1/5/10/30/70% of its stations against its own final count (`data/accuracy.json`, shown on the site's entry page). Margin errors there are in points of the two contenders' votes, not of all valid votes as in the backtest table above.
+- At 10% counted, the favourite went on to win 40 of 43 mayoral races (2018, 2022) and 44 of 44 county races on the two presidential nights.
+- No race gave the eventual loser 90% or more after 5% of stations were in.
+- The stated 80% margin ranges were too narrow in the 2024 county races once a third of the stations were in (59–64% held), and early on most nights.
+
 ## 2024 presidential night and three-way races
 
 - **National race:** every station in the country as one race (`NationalNight`), counties standing in for districts in the correlated error; 賴清德 vs 侯友宜 (柯文哲 set aside in the dial, his projected share shown alongside). Baseline: the 2020 presidential race at village level. It beat a blend with the 2022 mayoral races on this night (county log loss 0.070 vs 0.074; national ranges much tighter). The national projection leaned toward too big a 賴 margin all night (e.g. −1.09M ± 0.13M at 10% counted vs −0.91M final).
@@ -88,7 +99,12 @@ The page uses this for the turnout view and for "estimated share of ballots coun
   - These chances can't be checked well: eight three-way counties on one night.
   - Where they mattered, they looked right. In 新竹市 (final: 賴 34.8%, 柯 34.3%, 侯 30.9%), they gave 柯 about 42% at 20% counted. The two-way dial, which sets 柯 aside, gave 賴 97.5%.
   - In counties 柯 never threatened, the three-way chances score worse than the two-way p. This is expected: the two-way p can't be punished for ignoring a third candidate who never came close.
-- **For 2026's three-way races** (花蓮, possibly 彰化 with 邱建富 and 金門): the same idea, generalized — the candidates with a baseline (the KMT side vs the rest, from 2022) get the swing model, and the rest is split among the candidates without one by their counted shares per district plus the station-size slope.
+- **2026 three-way watch list** (`data/2026-contenders.json`, `three_way`; updated 2026-11-10). Adjust live if the count disagrees.
+  - **花蓮縣: expected three-way.** 游淑貞 (KMT) vs 張峻 vs 魏嘉賢 (both independents; the DPP fielded no one). Latest poll (關鍵調查 for Lai傳媒, 10/24–27, n = 1,202): 游 28.5%, 張 25.7%, 魏 16.8%, undecided 28.5%. 張 and 魏 have swapped places during the year. Model set-up: 游 vs the non-KMT side by the usual swing (baselines: 2022 mayoral and 2024 presidential, village level); the trailing independent as the third candidate, projected from the count. If 魏 overtakes 張 in the count, swap them.
+  - **彰化縣: watch.** 邱建富 (independent, ex-DPP) polled 10% (聯合報, 10/13–15; 陳素月 32%, 魏平政 16%, undecided 42%). Two-way unless 邱 gets within 10 points of the leader in the count.
+  - **金門縣: watch.** 陳玉珍 (KMT) against several independents (李文良, 張國威 and others); no public poll ranks them. "Other" is whichever independent leads the count. Possibly three-way if two independents split the anti-陳 vote evenly.
+  - **澎湖縣: watch.** Six candidates and no recent public poll.
+  - **Live rule:** show a race as three-way when it is marked expected, or when a third candidate is in the top two or within 10 points of the leader with at least 5% of stations in. Win chances start at the 5th station.
 - **County channel watch:** 華視's side panel rotated through county counts; `scripts/ocr_cts_county/` reads it off the recording's storyboard frames (party-color blocks, county-label templates, grayscale digit templates) and `scripts/clean_cts_county.py` drops misreads (a block whose shares jump more than 2 points from the same county's neighbouring blocks, then any value that breaks a non-decreasing run). Kept: 12 counties, 8–105 readings each (基隆市's 3 blocks dropped: values under 10,000 are misread). Eye check of 16 random blocks: 基隆 wrong, 1 of 39 other values wrong (dropped by the filter), 2 uncertain in the last digits. What the series shows: before ~18:15 華視's county counts ran far ahead of the CEC's logged station times (新北市 ~100,000 votes on 華視 before the CEC had logged a station); after that 華視 showed the CEC's numbers. The county race views carry it as a reliable source (floor = max of CEC and 華視).
 - **Channel watch:** the national panel at the top of the page (and every county view, below its margin chart) carries the channels' on-screen counts at the clock time (公視 own count, 華視, 三立, TVBS), with the floor (max of reliable), the field (mean and range), and the model's projected final from the CEC count. A channel above the top of the model's 80% range is marked red, the live counterpart of "above the final".
 

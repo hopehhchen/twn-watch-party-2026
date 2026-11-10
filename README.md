@@ -13,10 +13,17 @@ Sources are split into two cohorts:
 
 The site also keeps a record of every source that, at any point during the night, reported **more votes than the final certified count** for a candidate.
 
+## The site
+
+- **Entry page** (`index.html`): what the site does, how the model works, and how accurate it was on past nights. Bilingual (English / 繁中).
+- **Results** (`live.html`): for each night, a needle per race (chance to win, projected margin), projected turnout, and council seats ("Show: Council"). Presidential nights also get the national race. 2024 adds the count watch: channels vs CEC vs the projected final. Replays: 2018 and 2022 local, 2020 and 2024 presidential.
+
+Build: `python3 scripts/build_site.py _site` (GitHub Pages runs the same). The night files under `data/needle/` and `data/council/` come from `scripts/build_needle_data.py` and `scripts/build_council_data.py`, which need the raw CEC files. Model and backtests: [`docs/needle.md`](docs/needle.md). Accuracy summary: `scripts/accuracy.py` → `data/accuracy.json`.
+
 ## Example elections (development data)
 
-- 2022 local elections (mayors)
-- 2024 presidential election
+- 2018 and 2022 local elections (mayors, councils)
+- 2020 and 2024 presidential elections
 
 ## Status
 
