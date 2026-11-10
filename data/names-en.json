@@ -779,17 +779,33 @@
    "confirmed_by": [
     "Taipei Times 2018-11-25 front page"
    ]
+  },
+  {
+   "zh": "林聰賢",
+   "en": "Lin Tsung-hsien",
+   "source": "English Wikipedia article title",
+   "confirmed_by": [
+    "Taipei Times (2017)"
+   ]
+  },
+  {
+   "zh": "劉曉玫",
+   "en": "Liu Siao-mei",
+   "source": "English Wikipedia, Results of the 2018 Taiwanese magistrate/mayor elections, citing the CEC's archived English results pages (written Liu Siao-Mei there)",
+   "confirmed_by": []
+  },
+  {
+   "zh": "朱秀珍",
+   "en": "Chu Hsiu-chen",
+   "source": "English Wikipedia, Results of the 2018 Taiwanese magistrate/mayor elections, citing the CEC's archived English results pages; also the results box in Wikipedia's Liu Cheng-ying article",
+   "confirmed_by": []
   }
  ],
- "not_found": {
-  "劉曉玫": "2018 花蓮縣 DPP candidate: no English source found; shown in Chinese",
-  "朱秀珍": "2018 連江縣 independent: no English source found; shown in Chinese",
-  "林聰賢": "incumbent (tooltips only): not checked this session; shown in Chinese"
- },
- "decisions_open": [
-  "English given names vs formal names: the site uses the English name a person is commonly known by (Puma Shen, Johnny Chiang, George Hsieh, Ann Kao, Eric Chu, James Soong, Apollo Chen, Frida Tsai, Justin Huang, Helen Chang) and the formal romanization otherwise. CNA's roundup mixes the two (Hsieh Kuo-liang and Kao Hung-an, but Johnny Chiang and Alice Chang).",
-  "張嘉郡: Chang Chia-chun (Legislative Yuan) or Alice Chang (Focus Taiwan).",
-  "侯友宜: Hou Yu-ih (Wikipedia article, Focus Taiwan) or Hou You-yi (Taipei Times, Wikipedia's results tables).",
-  "劉增應 Liu Cheng-ying / Liu Tseng-ying; 王惠美 Wang Huei-mei / Wang Hui-mei: Wikipedia vs Taipei Times."
+ "not_found": {},
+ "decisions_open": [],
+ "decisions": [
+  "2026-11-10: use the English name a person is commonly known by where one exists (Puma Shen, Johnny Chiang, George Hsieh, Ann Kao, Eric Chu, James Soong, Apollo Chen, Frida Tsai, Justin Huang, Helen Chang); formal romanization otherwise.",
+  "Where sources disagree, keep the current choice: 張嘉郡 Chang Chia-chun (Legislative Yuan), 侯友宜 Hou Yu-ih, 劉增應 Liu Cheng-ying, 王惠美 Wang Huei-mei, 李文良 Lee Wen-liang (CNA).",
+  "A name with no English source: Hanyu Pinyin, hyphen between the given-name syllables (e.g. 朱秀珍 would be Zhu Xiu-zhen). None needed so far."
  ]
 }
