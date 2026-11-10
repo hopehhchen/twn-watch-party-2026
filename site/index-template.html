@@ -52,7 +52,8 @@ button { font: inherit; color: inherit; }
 .themes { display: inline-flex; gap: 2px; padding: 3px; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); }
 .themes button { border: 0; background: transparent; border-radius: 999px; padding: 4px 10px; font-size: 12px; cursor: pointer; color: var(--muted); }
 .themes button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
-html[lang="zh-Hant"] [data-l="en"], html:not([lang="zh-Hant"]) [data-l="zh"] { display: none !important; }
+html[lang="en"] [data-l="zh"], html[lang="en"] [data-l="tw"], html[lang="zh-Hant"] [data-l="en"], html[lang="zh-Hant"] [data-l="tw"],
+html[lang="nan-Hant-TW"] [data-l="en"], html[lang="nan-Hant-TW"] [data-l="zh"] { display: none !important; }
 
 .hero { display: grid; gap: 14px; padding: 8px 0 4px; }
 .hero h2 { margin: 0; font-family: var(--font-display); font-weight: 900; font-size: clamp(28px, 5vw, 42px); line-height: 1.2; text-wrap: balance; }
@@ -93,7 +94,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; }
   if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
   let l = null; try { l = localStorage.getItem('twn-lang'); } catch (e) {}
   if (!l) l = /^zh/i.test(navigator.language || '') ? 'zh' : 'en';
-  document.documentElement.lang = l === 'zh' ? 'zh-Hant' : 'en'; })();
+  document.documentElement.lang = l === 'zh' ? 'zh-Hant' : l === 'tw' ? 'nan-Hant-TW' : 'en'; })();
 </script>
 
 <div class="wrap">
@@ -104,7 +105,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; }
     </div>
     <div class="mast-right">
       <nav class="tabs" aria-label="Pages"><a href="index.html" aria-current="page">About · 說明</a><a href="live.html">Results · 開票</a></nav>
-      <div class="themes" role="group" aria-label="Language"><button data-lang-set="en">EN</button><button data-lang-set="zh">中文</button></div>
+      <div class="themes" role="group" aria-label="Language"><button data-lang-set="en">EN</button><button data-lang-set="zh">中文</button><button data-lang-set="tw" title="台語（試行版，猶未審稿）">台語</button></div>
       <div class="themes" role="group" aria-label="Color theme"><button data-theme-set="auto">Auto</button><button data-theme-set="light">Light</button><button data-theme-set="dark">Dark</button></div>
     </div>
   </header>
@@ -112,9 +113,11 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; }
   <section class="hero">
     <h2 data-l="en">Who's going to win, while the votes are still being counted</h2>
     <h2 data-l="zh">票還在開，誰會贏？</h2>
+    <h2 data-l="tw">票猶咧開，啥人會贏？</h2>
     <p data-l="en">On 28 November 2026 Taiwan elects its 22 mayors and county magistrates, and every city and county council. This site follows the count as it comes in: for each race, a needle with the chance each contender wins, the projected margin and turnout, and who would hold each council seat if counting stopped now. Until then it replays real past nights — 2018 and 2022 local, 2020 and 2024 presidential — minute by minute, exactly as the model would have seen them.</p>
     <p data-l="zh">2026 年 11 月 28 日，台灣將選出 22 位縣市長，以及各縣市議員。本站在開票過程中即時追蹤：每場縣市長選舉有一支指針，顯示各候選人的勝選機率、預估差距與投票率；議員則顯示若此刻停止開票、各席會由誰拿下。在那之前，本站以真實的過去開票夜（2018、2022 地方選舉，2020、2024 總統選舉）逐分鐘重播，完全照模型當時能看到的資料運算。</p>
-    <div class="cta"><a class="btn" href="live.html"><span data-l="en">Open the results</span><span data-l="zh">打開開票頁</span> →</a><a class="btn ghost" href="#accuracy"><span data-l="en">How accurate is it?</span><span data-l="zh">準不準？</span></a></div>
+    <p data-l="tw">2026 年 11 月 28 日，台灣欲選出 22 位縣市長，佮各縣市的議員。本站佇開票的時陣即時追蹤：逐場縣市長選舉有一支指針，顯示逐位候選人的當選機率、預估差距佮投票率；議員就顯示若這馬停止開票，逐席會予啥人提去。佇彼進前，本站用真正的過去開票暗（2018、2022 地方選舉，2020、2024 總統選舉）一分鐘一分鐘重播，完全照模型當時看會著的資料來算。</p>
+    <div class="cta"><a class="btn" href="live.html"><span data-l="en">Open the results</span><span data-l="zh">打開開票頁</span><span data-l="tw">拍開開票頁</span> →</a><a class="btn ghost" href="#accuracy"><span data-l="en">How accurate is it?</span><span data-l="zh">準不準？</span><span data-l="tw">準無準？</span></a></div>
   </section>
 
   <section class="panel" aria-labelledby="h-method">
@@ -149,14 +152,30 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; }
       <h3>投票率、議員席次與開票數字監看</h3>
       <p><b>投票率</b>的推估方式與得票相同：已開投開票所與其自身過去投票率比較。<b>議員席次</b>不做預測：頁面顯示若此刻停止開票、各席會由誰拿下（計入婦女保障名額），只有在剩餘票數無論如何分配都無法改變結果時才標示為確定。<b>開票數字監看</b>（2024）把各電視台畫面上的票數與中選會票數、模型預估的最終票數並列，若有票數超出合理可能達到的範圍就會標示出來。</p>
     </div>
+    <div data-l="tw">
+      <p>中央選舉委員會（中選會）用投開票所做單位公佈結果。逐个投開票所包含幾若个村里，逐个村里過去攏投過票。模型就是靠這點。</p>
+      <ol class="steps">
+        <li><b>兩爿。</b>逐場縣市長選舉化做一个數字：國民黨候選人佇頭前兩名內底的得票比例（國民黨無提名的時，就是佮民進黨對決彼个人的比例）。其他候選人先無算；第三人票數相倚的選舉，另外用三強的方式處理（看下跤）。</li>
+        <li><b>逐个村里的基準。</b>仝一个村里頂擺按怎投：縣市長選舉用頂一屆縣市長佮總統選舉的平均；總統選舉用頂一屆總統選舉。投開票所是用村里來對，所以投開票所重新編號、拆開抑是合併攏無影響（98–100% 的選舉人會使直接對著）。</li>
+        <li><b>這馬的擺盪。</b>佇已經開出來的投開票所，比今暗的比例佮基準差偌濟，分全市佮各區來算，才閣共這个擺盪套用到逐个猶未開出來的投開票所。</li>
+        <li><b>賰偌濟。</b>逐个猶未開出來的投開票所，選舉人數是知影的；會有偌濟人投票，就照已開的投開票所佮伊過去的投票率比較來估。</li>
+        <li><b>無確定性。</b>預估差距有一个區間，包含全市規个擺盪無仝、各區無仝，佮投開票所之間的雜訊。贏面就是對這个區間算出來的：起頭真闊，投開票所愈回報就愈收縮。</li>
+        <li><b>確定。</b>贏的票數比所有猶未開票的投開票所的選舉人閣較濟的時，毋管投票率按怎，輸贏已經定矣。</li>
+      </ol>
+      <h3>三強鼎立</h3>
+      <p>第三位候選人票數相倚的時（2024 年柯文哲佇八个縣市），有過去選舉通比的兩人用擺盪模型分，第三人的得票率就照各區已開的投開票所推算，閣照投開票所的大細調整。頁面顯示上有可能當選的兩人之間的指針，第三人的贏面另外標，對第 5 个投開票所開出來才開始。</p>
+      <h3>投票率、議員席次、立委佮開票數字監看</h3>
+      <p><b>投票率</b>的推算方式佮得票仝款：已開的投開票所佮伊家己過去的投票率比。<b>議員席次</b>無做預測：頁面顯示若這馬停止開票，逐席會予啥人提去（有算婦女保障名額），干焦佇賰的票按怎分攏改變袂著結果的時，才標做確定。<b>立委</b>（2020、2024）：73 个區域選區逐个有指針，34 席不分區用上有可能的席次分配佮機率呈現。<b>開票數字監看</b>（2024）共各電視台畫面頂懸的票數，佮中選會的票數、模型預估上尾的票數排做伙，若有票數超過合理會當到的範圍，就會標出來。</p>
+    </div>
   </section>
 
   <section class="panel" id="accuracy" aria-labelledby="h-acc">
     <h2 id="h-acc">How accurate was it? · 準確度</h2>
     <p data-l="en">Each past night was replayed with the station report times the CEC logged, and the model was run at every minute using only what had been counted by then. Below, each race is scored at the moment it reached a share of its stations, against its own final count.</p>
     <p data-l="zh">每個過去的開票夜都依中選會登錄的投開票所回報時間重播，模型在每一分鐘只用當時已開出的票運算。以下以每場選舉開出一定比例投開票所的時刻，與該場最終結果比較。</p>
+    <p data-l="tw">逐个過去的開票暗攏照中選會登錄的投開票所回報時間重播，模型逐分鐘干焦用彼陣已經開出來的票來算。下跤用逐場選舉開出一定比例投開票所的時刻，佮彼場上尾的結果比。</p>
     <div class="kpis" id="kpis"></div>
-    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px"><span class="note" data-l="en">Night</span><span class="note" data-l="zh">選舉</span><div class="seg" id="nightsel" role="group" aria-label="Night"></div></div>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px"><span class="note" data-l="en">Night</span><span class="note" data-l="zh">選舉</span><span class="note" data-l="tw">選舉</span><div class="seg" id="nightsel" role="group" aria-label="Night"></div></div>
     <div class="tbl" id="acctable"></div>
     <div id="accnotes" class="note"></div>
   </section>
@@ -177,12 +196,20 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; }
       <li><b>回報時間</b>是中選會登錄各投開票所的時間（同一所的所有選舉一起）。電視常常更早顯示票數。</li>
       <li><b>三強選舉</b>難以驗證：只有一晚、八個縣市。</li>
     </ul>
+    <ul class="steps" data-l="tw">
+      <li><b>樣本少。</b>四暗、87 場縣市層級的選舉，相倚的無濟。頂懸的校準數字干焦是粗略的參考。</li>
+      <li><b>2026 年的即時資料。</b>頂懸攏用逐所的結果。若當暗中選會的即時資料干焦有鄉鎮市區合計，仝一个模型猶原會使行，毋過早期明顯較無確定（開票頁的「鄉鎮市區」開關看會出差偌濟）。這馬猶毋知會提供佗一種。</li>
+      <li><b>逐个投開票所的選舉人數</b>投票進前無公佈，所以佇投開票所回報進前，用 2022、2024 年的資料來估。</li>
+      <li><b>回報時間</b>是中選會登錄逐个投開票所的時間（仝一所的所有選舉做伙）。電視定定較早就顯示票數。</li>
+      <li><b>三強選舉</b>歹驗證：干焦一暗、八个縣市。</li>
+    </ul>
   </section>
 
   <section class="panel" aria-labelledby="h-2026">
     <h2 id="h-2026">Races to watch on 28 November · 11/28 值得注意的選區</h2>
     <p data-l="en">Possible three-way races, from the latest public polls (as of 10 November). The page can switch a race to three-way on the night if the count says so.</p>
     <p data-l="zh">依最新公開民調（截至 11 月 10 日）可能出現三強的選區。若開票結果顯示如此，當晚可把該場切換為三強模式。</p>
+    <p data-l="tw">照上新的公開民調（到 11 月 10 日），可能出現三強的選區。若開票結果顯示按呢，當暗會使共彼場切換做三強模式。</p>
     <ul class="watch" data-l="en">
       <li class="hot"><b>花蓮縣</b> — expected three-way. 游淑貞 (KMT) 28.5%, 張峻 25.7%, 魏嘉賢 16.8%, undecided 28.5% (關鍵調查 for Lai傳媒, 24–27 Oct, n = 1,202). The DPP fielded no candidate.</li>
       <li><b>彰化縣</b> — watch. 陳素月 (DPP) 32%, 魏平政 (KMT) 16%, 邱建富 (independent) 10%, undecided 42% (聯合報, 13–15 Oct).</li>
@@ -195,11 +222,18 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; }
       <li><b>金門縣</b> — 觀察。陳玉珍（國民黨）對上多位無黨籍候選人；沒有公開民調排出高下。</li>
       <li><b>澎湖縣</b> — 觀察。六位候選人；近期沒有公開民調。</li>
     </ul>
+    <ul class="watch" data-l="tw">
+      <li class="hot"><b>花蓮縣</b> — 預期三強。游淑貞（國民黨）28.5%、張峻 25.7%、魏嘉賢 16.8%、猶未表態 28.5%（關鍵調查受 Lai傳媒委託，10/24–27，n = 1,202）。民進黨無提名。</li>
+      <li><b>彰化縣</b> — 觀察。陳素月（民進黨）32%、魏平政（國民黨）16%、邱建富（無黨籍）10%、猶未表態 42%（聯合報，10/13–15）。</li>
+      <li><b>金門縣</b> — 觀察。陳玉珍（國民黨）對幾若位無黨籍候選人；無公開民調排出輸贏。</li>
+      <li><b>澎湖縣</b> — 觀察。六位候選人；近來無公開民調。</li>
+    </ul>
   </section>
 
   <footer>
     <span data-l="en">Data: CEC election database (per-station results and report times; file hashes checked against the CEC's). TV counts read from the channels' YouTube recordings. Model, data and code: <a href="https://github.com/hopehhchen/twn-watch-party-2026">github.com/hopehhchen/twn-watch-party-2026</a>.</span>
     <span data-l="zh">資料：中選會選舉資料庫（逐所結果與回報時間；檔案雜湊值已與中選會公布者核對）。電視台票數取自各台 YouTube 錄影。模型、資料與程式碼：<a href="https://github.com/hopehhchen/twn-watch-party-2026">github.com/hopehhchen/twn-watch-party-2026</a>。</span>
+    <span data-l="tw">資料：中選會選舉資料庫（逐所結果佮回報時間；檔案雜湊值已經佮中選會公佈的核對過）。電視台的票數提自各台的 YouTube 錄影。模型、資料佮程式碼：<a href="https://github.com/hopehhchen/twn-watch-party-2026">github.com/hopehhchen/twn-watch-party-2026</a>。台語版是試行版，猶未經過母語者審稿。</span>
   </footer>
 </div>
 
@@ -209,11 +243,11 @@ const DATA = /*__DATA__*/null;
 <script>
 (() => {
   const A = DATA.accuracy, root = document.documentElement;
-  let LANG = root.lang === 'zh-Hant' ? 'zh' : 'en', night = 'mayors';
-  const tx = (en, zh) => LANG === 'zh' ? zh : en;
+  let LANG = root.lang === 'zh-Hant' ? 'zh' : root.lang === 'nan-Hant-TW' ? 'tw' : 'en', night = 'mayors';
+  const tx = (en, zh, tw) => LANG === 'tw' ? (tw ?? zh) : LANG === 'zh' ? zh : en;
   const pct = x => Math.round(100 * x) + '%';
   const NIGHTS = [['mayors', '2018 + 2022', '2018 + 2022'], ['2018-mayors', '2018 mayors', '2018 縣市長'], ['2020-president', '2020 president', '2020 總統'],
-    ['2022-mayors', '2022 mayors', '2022 縣市長'], ['2024-president', '2024 president', '2024 總統']];
+    ['2022-mayors', '2022 mayors', '2022 縣市長'], ['2024-president', '2024 president', '2024 總統']]; // 台語 labels: same as 華語
   const pick = id => id === 'mayors' ? A.mayors_both : A.nights[id].counties;
   function kpis() {
     const m = A.mayors_both, at30 = m.at['0.3'], p20 = A.nights['2020-president'], p24 = A.nights['2024-president'];
@@ -221,10 +255,10 @@ const DATA = /*__DATA__*/null;
     const presFav = prs.reduce((a, c) => a + c.at['0.3'].favorite_won, 0), presN = prs.reduce((a, c) => a + c.n, 0);
     const wrong = [m, ...prs].reduce((a, c) => a + c.wrong_way_90.length, 0);
     document.getElementById('kpis').innerHTML = [
-      [`${at30.favorite_won} / ${m.n}`, tx('mayoral races where the model\'s favourite at 30% of stations counted went on to win (2018, 2022)', '縣市長選舉中，開出 30% 投開票所時模型看好者最後勝選的場數（2018、2022）')],
-      [`${presFav} / ${presN}`, tx('county races in the 2020 and 2024 presidential elections, same test', '2020、2024 總統選舉的縣市層級，同樣標準')],
-      [String(wrong), tx('races where the eventual loser was ever given 90% or more after 5% of stations were in (all four nights)', '開出 5% 後，最終落敗者曾被給到 90% 以上勝率的場數（四個晚上）')],
-      [`${at30.margin_err_pts} ${tx('pts', '點')}`, tx('average error of the projected margin at 30% counted, mayoral races (share of the two contenders\' votes)', '開出 30% 時預估差距的平均誤差，縣市長選舉（以兩人票數的百分比計）')],
+      [`${at30.favorite_won} / ${m.n}`, tx('mayoral races where the model\'s favourite at 30% of stations counted went on to win (2018, 2022)', '縣市長選舉中，開出 30% 投開票所時模型看好者最後勝選的場數（2018、2022）', '縣市長選舉內底，開出 30% 投開票所的時，模型看好的人上尾當選的場數（2018、2022）')],
+      [`${presFav} / ${presN}`, tx('county races in the 2020 and 2024 presidential elections, same test', '2020、2024 總統選舉的縣市層級，同樣標準', '2020、2024 總統選舉的縣市層級，仝款的標準')],
+      [String(wrong), tx('races where the eventual loser was ever given 90% or more after 5% of stations were in (all four nights)', '開出 5% 後，最終落敗者曾被給到 90% 以上勝率的場數（四個晚上）', '開出 5% 了後，上尾落選的人捌予人估 90% 以上贏面的場數（四暗）')],
+      [`${at30.margin_err_pts} ${tx('pts', '點')}`, tx('average error of the projected margin at 30% counted, mayoral races (share of the two contenders\' votes)', '開出 30% 時預估差距的平均誤差，縣市長選舉（以兩人票數的百分比計）', '開出 30% 的時，預估差距的平均誤差，縣市長選舉（用兩人票數的百分比算）')],
     ].map(([v, k]) => `<div class="kpi"><span class="v">${v}</span><span class="k">${k}</span></div>`).join('');
   }
   function table() {
@@ -232,40 +266,40 @@ const DATA = /*__DATA__*/null;
     const S = pick(night), cps = A.checkpoints;
     const row = (label, f, warn) => `<tr><td>${label}</td>${cps.map(c => { const x = S.at[String(c)]; const v = f(x); return `<td class="${warn && warn(x) ? 'warn' : ''}">${v}</td>`; }).join('')}</tr>`;
     // when the races passed each share of their stations (CEC report log): median race, with the range on hover
-    const timeCell = (n, c) => { const x = A.nights[n].counties.at[String(c)]; return `<span title="${tx(`earliest ${x.time_first}, latest ${x.time_last}`, `最早 ${x.time_first}，最晚 ${x.time_last}`)}">${x.time_median}</span>`; };
+    const timeCell = (n, c) => { const x = A.nights[n].counties.at[String(c)]; return `<span title="${tx(`earliest ${x.time_first}, latest ${x.time_last}`, `最早 ${x.time_first}，最晚 ${x.time_last}`, `上早 ${x.time_first}，上晏 ${x.time_last}`)}">${x.time_median}</span>`; };
     const timeRow = night === 'mayors'
-      ? `<tr><td>${tx('Time reached (median race): 2018 / 2022', '達到時間（中位數）：2018 / 2022')}</td>${cps.map(c => `<td>${timeCell('2018-mayors', c)} / ${timeCell('2022-mayors', c)}</td>`).join('')}</tr>`
-      : `<tr><td>${tx('Time reached (median race)', '達到時間（中位數）')}</td>${cps.map(c => `<td>${timeCell(night, c)}</td>`).join('')}</tr>`;
+      ? `<tr><td>${tx('Time reached (median race): 2018 / 2022', '達到時間（中位數）：2018 / 2022', '到位的時間（中位數）：2018 / 2022')}</td>${cps.map(c => `<td>${timeCell('2018-mayors', c)} / ${timeCell('2022-mayors', c)}</td>`).join('')}</tr>`
+      : `<tr><td>${tx('Time reached (median race)', '達到時間（中位數）', '到位的時間（中位數）')}</td>${cps.map(c => `<td>${timeCell(night, c)}</td>`).join('')}</tr>`;
     let html = `<table><thead><tr><th>${tx(`Stations counted (${S.n} races)`, `已開投開票所（${S.n} 場）`)}</th>${cps.map(c => `<th>${Math.round(100 * c)}%</th>`).join('')}</tr></thead><tbody>
       ${timeRow}
-      ${row(tx('Favourite went on to win', '看好者最後勝選'), x => `${x.favorite_won} / ${S.n}`)}
+      ${row(tx('Favourite went on to win', '看好者最後勝選', '看好的人上尾當選'), x => `${x.favorite_won} / ${S.n}`)}
       ${row(tx('Average error, projected margin (pts)', '預估差距平均誤差（點）'), x => x.margin_err_pts.toFixed(1))}
-      ${row(tx('Final inside the stated 80% range', '最終結果落在 80% 區間內'), x => pct(x.in_80), x => x.in_80 < 0.7)}
+      ${row(tx('Final inside the stated 80% range', '最終結果落在 80% 區間內', '上尾結果佇 80% 區間內'), x => pct(x.in_80), x => x.in_80 < 0.7)}
       ${row(tx('Average error, projected turnout (pts)', '預估投票率平均誤差（點）'), x => x.turnout_err_pts.toFixed(1))}
-      ${row(tx('Log loss of the winner\'s chance (lower is better)', '勝選者機率的對數損失（越低越好）'), x => x.log_loss.toFixed(3))}
+      ${row(tx('Log loss of the winner\'s chance (lower is better)', '勝選者機率的對數損失（越低越好）', '當選者機率的對數損失（愈低愈好）'), x => x.log_loss.toFixed(3))}
     </tbody></table>`;
     document.getElementById('acctable').innerHTML = html;
     const notes = [];
     if (night !== 'mayors') { const n = A.nights[night];
       if (n.national) notes.push(tx(`National race: the needle passed 95% for ${n.national.winner} at ${n.national.stays_95_from} and stayed there; the race was mathematically decided at ${n.national.decided_at}. At 30% of stations the projected margin was off by ${n.national.at['0.3'].margin_err_pts} points of the two contenders' votes, ${n.national.at['0.3'].in_80 ? 'inside' : 'outside'} its stated 80% range.`,
-        `全國：指針在 ${n.national.stays_95_from} 超過 95% 看好${n.national.winner}並維持；${n.national.decided_at} 數學上確定。開出 30% 時預估差距誤差 ${n.national.at['0.3'].margin_err_pts} 點，${n.national.at['0.3'].in_80 ? '在' : '落在'}所示 80% 區間${n.national.at['0.3'].in_80 ? '內' : '之外'}。`));
-      if (n.three_way.length) notes.push(tx(`Three-way counties on this night (scored here on the two-way needle): ${n.three_way.join('、')}.`, `本晚的三強縣市（此處以兩人指針計分）：${n.three_way.join('、')}。`));
-      if (night === '2018-mayors') notes.push(tx('Counting ran past midnight in many places because ten referendums were counted the same night.', '因同晚開十項公投票，許多地方開票到午夜以後。'));
-      if (night === '2022-mayors') notes.push(tx('嘉義市 voted on 18 December (rerun) and is not part of this night.', '嘉義市延至 12 月 18 日投票，不在本晚。'));
+        `全國：指針在 ${n.national.stays_95_from} 超過 95% 看好${n.national.winner}並維持；${n.national.decided_at} 數學上確定。開出 30% 時預估差距誤差 ${n.national.at['0.3'].margin_err_pts} 點，${n.national.at['0.3'].in_80 ? '在' : '落在'}所示 80% 區間${n.national.at['0.3'].in_80 ? '內' : '之外'}。`, `全國：指針佇 ${n.national.stays_95_from} 超過 95% 看好${n.national.winner}，了後一直維持；${n.national.decided_at} 數學上確定。開出 30% 的時預估差距誤差 ${n.national.at['0.3'].margin_err_pts} 點，${n.national.at['0.3'].in_80 ? '佇' : '落佇'}所示 80% 區間${n.national.at['0.3'].in_80 ? '內' : '外口'}。`));
+      if (n.three_way.length) notes.push(tx(`Three-way counties on this night (scored here on the two-way needle): ${n.three_way.join('、')}.`, `本晚的三強縣市（此處以兩人指針計分）：${n.three_way.join('、')}。`, `這暗的三強縣市（遮用兩人指針來算分）：${n.three_way.join('、')}。`));
+      if (night === '2018-mayors') notes.push(tx('Counting ran past midnight in many places because ten referendums were counted the same night.', '因同晚開十項公投票，許多地方開票到午夜以後。', '因為仝暗閣開十項公投，真濟所在開票開到半暝以後。'));
+      if (night === '2022-mayors') notes.push(tx('嘉義市 voted on 18 December (rerun) and is not part of this night.', '嘉義市延至 12 月 18 日投票，不在本晚。', '嘉義市延到 12 月 18 日投票，無佇這暗。'));
     }
     notes.push(tx('Time reached: the clock time at which the median race passed that share of its stations, from the CEC\'s report log (hover for the earliest and latest race). The CEC logged stations later than TV showed counts, so on the night these moments may come somewhat sooner.',
-      '達到時間：中位數場次的已開投開票所達到該比例的時刻，依中選會回報紀錄（滑鼠移上可看最早與最晚的場次）。中選會的登錄時間比電視顯示的票數晚，因此當晚實際可能早一些。'));
+      '達到時間：中位數場次的已開投開票所達到該比例的時刻，依中選會回報紀錄（滑鼠移上可看最早與最晚的場次）。中選會的登錄時間比電視顯示的票數晚，因此當晚實際可能早一些。', '到位的時間：中位數彼場的已開投開票所到彼个比例的時刻，照中選會的回報紀錄（滑鼠囥頂懸看上早佮上晏的場次）。中選會登錄的時間比電視顯示的票數較晏，所以當暗實際上可能較早。'));
     const lead = S.median_lead_minutes;
-    if (lead != null) notes.push(tx(`Typical lead: the needle settled above 95% for the eventual winner about ${Math.round(lead / 60 * 10) / 10} hours before the race was mathematically decided (median).`, `一般而言，指針在數學上確定前約 ${Math.round(lead / 60 * 10) / 10} 小時就穩定在 95% 以上看好最終勝選者（中位數）。`));
+    if (lead != null) notes.push(tx(`Typical lead: the needle settled above 95% for the eventual winner about ${Math.round(lead / 60 * 10) / 10} hours before the race was mathematically decided (median).`, `一般而言，指針在數學上確定前約 ${Math.round(lead / 60 * 10) / 10} 小時就穩定在 95% 以上看好最終勝選者（中位數）。`, `一般來講，指針佇數學上確定進前大約 ${Math.round(lead / 60 * 10) / 10} 點鐘，就穩定佇 95% 以上看好上尾的當選人（中位數）。`));
     notes.push(tx('Orange: the final fell inside the stated 80% range less than 70% of the time. The ranges were too narrow in the 2024 county races once a third of the stations were in, and very early on most nights, so treat those ranges with caution. The win chances held up better: no favourite at 30% counted lost on either presidential night.',
-      '橘色：最終結果落在所示 80% 區間內的比例低於 70%。2024 年各縣市在開出三成投開票所後，以及多數晚上的最初階段，區間都偏窄，請保守看待。勝率表現較穩：兩個總統選舉夜中，開出 30% 時被看好者無一落敗。'));
+      '橘色：最終結果落在所示 80% 區間內的比例低於 70%。2024 年各縣市在開出三成投開票所後，以及多數晚上的最初階段，區間都偏窄，請保守看待。勝率表現較穩：兩個總統選舉夜中，開出 30% 時被看好者無一落敗。', '柑仔色：上尾結果落佇所示 80% 區間內的比例無到 70%。2024 年各縣市開出三成投開票所了後，佮大部份暗時開始的階段，區間攏傷狹，請保守看待。贏面較穩：兩个總統選舉暗，開出 30% 的時看好的人無一个落選。'));
     document.getElementById('accnotes').innerHTML = notes.map(n => `<p style="margin:0 0 6px">${n}</p>`).join('');
   }
   function render() { kpis(); table(); }
   document.addEventListener('click', e => {
     const n = e.target.closest('[data-n]'); if (n) { night = n.dataset.n; table(); return; }
     const l = e.target.closest('[data-lang-set]');
-    if (l) { LANG = l.dataset.langSet; try { localStorage.setItem('twn-lang', LANG); } catch (err) {} root.lang = LANG === 'zh' ? 'zh-Hant' : 'en'; mark(); render(); return; }
+    if (l) { LANG = l.dataset.langSet; try { localStorage.setItem('twn-lang', LANG); } catch (err) {} root.lang = LANG === 'zh' ? 'zh-Hant' : LANG === 'tw' ? 'nan-Hant-TW' : 'en'; mark(); render(); return; }
     const t = e.target.closest('[data-theme-set]');
     if (t) { const v = t.dataset.themeSet; if (v === 'auto') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', v);
       try { localStorage.setItem('twn-theme', v); } catch (err) {} mark(); }

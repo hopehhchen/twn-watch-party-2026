@@ -292,7 +292,8 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
 .themes { display: inline-flex; gap: 2px; padding: 3px; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); }
 .themes button { border: 0; background: transparent; border-radius: 999px; padding: 4px 10px; font-size: 12px; cursor: pointer; color: var(--muted); }
 .themes button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
-html[lang="zh-Hant"] [data-l="en"], html:not([lang="zh-Hant"]) [data-l="zh"] { display: none !important; }
+html[lang="en"] [data-l="zh"], html[lang="en"] [data-l="tw"], html[lang="zh-Hant"] [data-l="en"], html[lang="zh-Hant"] [data-l="tw"],
+html[lang="nan-Hant-TW"] [data-l="en"], html[lang="nan-Hant-TW"] [data-l="zh"] { display: none !important; }
 </style>
 <script>
 /* theme: "auto" follows the device; "light"/"dark" are remembered in this browser */
@@ -300,7 +301,7 @@ html[lang="zh-Hant"] [data-l="en"], html:not([lang="zh-Hant"]) [data-l="zh"] { d
   if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); })();
 (() => { let l = null; try { l = localStorage.getItem('twn-lang'); } catch (e) {}
   if (!l) l = /^zh/i.test(navigator.language || '') ? 'zh' : 'en';
-  document.documentElement.lang = l === 'zh' ? 'zh-Hant' : 'en'; })();
+  document.documentElement.lang = l === 'zh' ? 'zh-Hant' : l === 'tw' ? 'nan-Hant-TW' : 'en'; })();
 </script>
 
 
@@ -315,12 +316,13 @@ html[lang="zh-Hant"] [data-l="en"], html:not([lang="zh-Hant"]) [data-l="zh"] { d
       <a href="index.html">About · 說明</a>
       <a href="live.html" aria-current="page">Results · 開票</a>
     </nav>
-      <div class="themes" role="group" aria-label="Language"><button data-lang-set="en">EN</button><button data-lang-set="zh">中文</button></div>
+      <div class="themes" role="group" aria-label="Language"><button data-lang-set="en">EN</button><button data-lang-set="zh">中文</button><button data-lang-set="tw" title="台語（試行版，猶未審稿）">台語</button></div>
       <div class="themes" role="group" aria-label="Color theme"><button data-theme-set="auto">Auto</button><button data-theme-set="light">Light</button><button data-theme-set="dark">Dark</button></div>
     </div>
   </header>
   <p class="proto" data-l="en">A replay of real election nights from the CEC's own records, with the projection model run as if live. Pick a night, press play, open any race. Nothing here is simulated, and nothing from later in the night leaks in: every chart and axis only uses what had been counted by the time on the clock.</p>
   <p class="proto" data-l="zh">以中選會的原始紀錄重播真實的開票夜，預測模型如同現場即時運算。選一個晚上、按下播放、點開任何一場選舉。這裡沒有模擬數據，也不會用到之後才開出的結果：每張圖、每條座標軸都只用到時鐘當下已開出的票。</p>
+  <p class="proto" data-l="tw">用中選會的原始紀錄重播真正的開票暗，預測模型親像現場咧算。揀一暗、揤播放、拍開任何一場選舉。遮無模擬的數字，嘛袂用著較晏才開出來的結果：逐張圖、逐條座標軸，攏干焦用時鐘這陣已經開出來的票。</p>
   <section class="desk" id="desk" aria-label="Replay controls"></section>
   <section class="panel" id="nation" aria-live="polite"></section>
   <section class="panel overview" aria-labelledby="h-cards">
@@ -339,6 +341,7 @@ html[lang="zh-Hant"] [data-l="en"], html:not([lang="zh-Hant"]) [data-l="zh"] { d
     <p><b>Turnout view.</b> "Show: Turnout" switches the cards, map and race panel to the projected final turnout, worked out the same way as the vote swing. On the 2018 and 2022 nights it was within about 2 points by the time 5–10% of stations were in. The "Ballots counted" line uses it to estimate what share of all ballots has been counted, a better progress measure than stations, since stations differ in size.</p>
     <p><b>Council view</b> (2018, 2022). Who would hold each council seat if counting stopped now. Each district elects several members; the candidates with the most votes win. A district electing 4 reserves a seat for a woman, plus one per 4 more seats (地方制度法 §33); "women's seat" marks a woman elected this way, "displaced" the man who loses his place. A seat is <b>decided</b> once even the most damaging split of the votes still out (every remaining elector voting, all for the closest challengers) couldn't change who holds it. Nothing is projected here.</p>
     <p><b>Jitter.</b> With "Jitter" on, the needle swings across the middle of its range of outcomes each time the estimate moves, then settles on the estimate within a few seconds.</p>
+    <p><b>Legislature view</b> (2020, 2024). The 73 districts each get a needle, from the swing since the previous presidential race. The 34 party-list seats are shown as the most likely splits with their chances (parties at 5% or more, largest remainder). The six indigenous seats are shown like a council district. District needles are less sure-footed than the mayoral ones: districts are small and swing on candidates.</p>
     <p><b>Feed.</b> "Per station" is what the model can do with polling-station results. "District totals" shows what happens if the CEC's live feed only gives district (行政區) totals: the same model, noticeably less certain early on. Which one the 2026 feed provides is not yet known.</p>
     <p><b>Caveats.</b> The two contenders are taken from the final result here; for 2026 they are set in advance. Times are when the CEC logged each station's report (all contests at a station at once), which can trail what TV showed. 2018 counting ran past midnight in many places because referendums were counted the same night.</p>
     </div>
@@ -351,8 +354,22 @@ html[lang="zh-Hant"] [data-l="en"], html:not([lang="zh-Hant"]) [data-l="zh"] { d
     <p><b>投票率檢視。</b>「顯示：投票率」會把卡片、地圖與選舉面板換成預估的最終投票率，算法與得票擺盪相同。在 2018 與 2022 年，開出 5–10% 投開票所時誤差約 2 個百分點以內。「已開票數」一行用它來估計全部選票已開出的比例；由於各投開票所大小不同，這比投開票所數更能反映進度。</p>
     <p><b>議員檢視</b>（2018、2022）。如果此刻停止開票，每個議員席次會由誰拿下。每個選區應選數名，得票最高者當選。應選 4 名的選區保障 1 席婦女名額，每增 4 名再增 1 席（地方制度法第 33 條）；「婦女保障」標示依此當選的女性，「被排擠」標示因此落選的男性。即使剩餘票數以最不利的方式分配（所有未開票的選舉人都投票，且全投給最接近的挑戰者）也無法改變當選人時，該席為<b>確定</b>。這裡不做任何預測。</p>
     <p><b>抖動。</b>開啟「抖動」後，每當估計有變化，指針會在可能結果的中段範圍內擺動，幾秒內再回到估計值。</p>
+    <p><b>立委檢視</b>（2020、2024）。73 個區域選區各有一支指針，依上一屆總統選舉以來的擺盪推估。34 席不分區以最可能的席次分配及其機率呈現（得票 5% 以上的政黨，最大餘數法）。6 席原住民立委以議員選區的方式呈現。區域選區較小、受候選人影響較大，指針沒有縣市長的穩。</p>
     <p><b>資料。</b>「逐所」是有投開票所層級結果時模型的表現；「鄉鎮市區」顯示若中選會即時資料只有鄉鎮市區合計時的情形：同一個模型，早期明顯較不確定。2026 年的即時資料會提供哪一種，目前還不知道。</p>
     <p><b>限制。</b>這裡的兩位主要候選人取自最終結果；2026 年會事先設定。時間是中選會登錄各投開票所回報的時間（同一所的所有選舉一起登錄），可能比電視畫面晚。2018 年因同晚開公投票，許多地方開票到午夜以後。</p>
+    </div>
+    <div data-l="tw">
+    <p><b>指針</b>是逐場選舉兩位主要候選人個別當選的機率，照這馬已經開出來的票算，其他候選人的票先無算。起頭的範圍真闊，投開票所愈回報就愈收縮。<b>確定</b>的意思是贏的票數已經超過所有猶未開票的選舉人，免任何投票率的假設。</p>
+    <p><b>按怎算的。</b>共已經開出來的投開票所，佮仝一个村里過去的投票結果比（縣市長：頂一屆縣市長佮總統選舉的平均；總統：頂一屆總統選舉），共這个「擺盪」套用到猶未開出來的投開票所，嘛予各區有無仝的變化。模型過去準無準，請看<a href="index.html">說明頁</a>。</p>
+    <p><b>頂懸的面板。</b>縣市長選舉暗：一場選舉一格，色是預估領先者的政黨，深淺代表模型的把握（佮地圖仝款），閣列出各黨領先的數佮頂屆當選的數；滑鼠囥佇格仔頂懸看會著彼場選舉，揤一下就佇下跤拍開。總統選舉暗：全國的選情本身，有贏面佮差距的走勢圖（2024 年閣有開票數字監看）。</p>
+    <p><b>三強鼎立</b>（2024 年柯文哲票數相倚的八个縣市）：指針顯示上有可能當選的兩人，第三人的贏面另外標。贏面是對預估得票率佮伊的無確定性來的，愛等第 5 个投開票所開出來才顯示。<b>開票數字監看</b>（2024）：逐位候選人的「下限」（中選會佮可靠電視台內底上懸的票數）、其他電視台的範圍，佮模型預估上尾的票數佮 80% 區間。</p>
+    <p><b>地圖。</b>猶未開出任何投開票所的時，用斜線標現任者的政黨色。開票了後改做預估領先者本人的政黨色（無黨籍是灰色、台灣民眾黨是青綠色），對淺（五五波）到深（確定）。金門、連江佮澎湖畫佇細框仔內。</p>
+    <p><b>投票率檢視。</b>「顯示：投票率」會共卡片、地圖佮選舉面板換做預估上尾的投票率，算法佮得票擺盪仝款。2018 佮 2022 年，開出 5–10% 投開票所的時，誤差大約 2 个百分點以內。「已開票數」這逝用伊來估全部選票已經開出來偌濟；因為逐个投開票所大細無仝，這比投開票所的數較會反映進度。</p>
+    <p><b>議員檢視</b>（2018、2022）。若這馬停止開票，逐席議員會予啥人提去。逐个選區應選幾若名，得票上懸的當選。應選 4 名的選區保障 1 席婦女名額，逐加 4 名閣加 1 席（地方制度法第 33 條）；「婦女保障」標按呢當選的查某人，「予人擠掉」標因按呢落選的查埔人。就算賰的票用上僫的方式分（所有猶未開票的選舉人攏去投，閣攏投予上倚的挑戰者）嘛改變袂著當選人的時，彼席就是<b>確定</b>。遮無做任何預測。</p>
+    <p><b>立委檢視</b>（2020、2024）。73 个區域選區逐个有一支指針，照頂一屆總統選舉以來的擺盪推算。34 席不分區用上有可能的席次分配佮伊的機率呈現（得票 5% 以上的政黨，最大餘數法）。6 席原住民立委用議員選區的方式呈現。區域選區較細、受候選人影響較大，指針無縣市長的遐爾穩。</p>
+    <p><b>搖擺。</b>拍開「搖擺」了後，估計逐擺有變化，指針會佇可能結果的中段範圍內搖，幾秒鐘內閣倒轉來估計值。</p>
+    <p><b>資料。</b>「逐所」是有投開票所層級結果的時模型的表現；「鄉鎮市區」顯示若中選會的即時資料干焦有鄉鎮市區合計的情形：仝一个模型，早期明顯較無確定。2026 年的即時資料會提供佗一種，這馬猶毋知。</p>
+    <p><b>限制。</b>遮的兩位主要候選人是對上尾的結果揀的；2026 年會事先設定。時間是中選會登錄逐个投開票所回報的時間（仝一所的所有選舉做伙登錄），可能比電視畫面較晏。2018 年因為仝暗開公投票，真濟所在開票開到半暝以後。</p>
     </div>
   </section>
 </div>
@@ -373,12 +390,13 @@ const DATA = /*__DATA__*/null;
   const cur = () => st.mode === 'legis' && LEGIS[st.night] ? LEGIS[st.night] : NIGHTS[st.night];
   // language: English or Traditional Chinese for sentences; names and short bilingual labels stay as they are
   let LANG = (() => { try { const v = localStorage.getItem('twn-lang'); if (v) return v; } catch (e) {} return /^zh/i.test(navigator.language || '') ? 'zh' : 'en'; })();
-  const tx = (en, zh) => LANG === 'zh' ? zh : en; // pick the sentence for the current language
+  const tx = (en, zh, tw) => LANG === 'tw' ? (tw ?? zh) : LANG === 'zh' ? zh : en; // the sentence for the current language (台語 falls back to 華語)
   const LBL = { 'No stations in': '尚未開票', 'Decided': '確定', 'Very likely': '極可能', 'Likely': '可能', 'Leaning': '略佔上風',
     'Toss-up': '難分高下', 'Clearly ahead': '明顯領先', 'Ahead': '領先', 'Close': '接近', 'Early': '票數太少' };
-  const L = label => LANG === 'zh' ? (LBL[label] || label) : label;
-  const skipWhy = k => /rerun/.test(k.why) ? tx('voted on 2022-12-18 (rerun after a candidate died); not part of this night', '因候選人過世延至 2022-12-18 投票，不在今晚') : k.why;
-  const Ll = label => LANG === 'zh' ? (LBL[label] || label) : label.toLowerCase();
+  const LBL_TW = { 'No stations in': '猶未開票', 'Very likely': '足有可能', 'Leaning': '略贏', 'Toss-up': '五五波', 'Clearly ahead': '明顯贏', 'Ahead': '贏', 'Close': '相倚', 'Early': '票傷少' };
+  const L = label => LANG === 'tw' ? (LBL_TW[label] || LBL[label] || label) : LANG === 'zh' ? (LBL[label] || label) : label;
+  const skipWhy = k => /rerun/.test(k.why) ? tx('voted on 2022-12-18 (rerun after a candidate died); not part of this night', '因候選人過世延至 2022-12-18 投票，不在今晚', '因為候選人過身延到 2022-12-18 投票，無佇今暗') : k.why;
+  const Ll = label => LANG === 'en' ? label.toLowerCase() : L(label);
   const C = { t: 0, n: 1, b: 2, o: 3, p: 4, m: 5, sd: 6, cert: 7, remE: 8, eb: 9, vrem: 10, pd: 11, md: 12, sdd: 13, certd: 14, vremd: 15, rho: 16, cc: 17, tm: 18, tsd: 19, tmd: 20, tsdd: 21, c3: 22, s3: 23, sd3: 26, cert3: 29, s3d: 30, sd3d: 33, cert3d: 36, p3: 37, p3d: 40 };
   const st = { night: '2022-mayors', area: '臺北市', t: 0, playing: false, speed: 5, feed: 'station', k: null, jitter: false, unit: 'votes', mode: 'winner' };
   const desk = document.getElementById('desk'), cards = document.getElementById('cards'), detail = document.getElementById('detail');
@@ -494,9 +512,9 @@ const DATA = /*__DATA__*/null;
     for (const [a, b, who, op] of zones) s += `<path d="${arc(a, b, R)}" stroke="${tone(race[who])}" stroke-opacity="${op}" stroke-width="${sw}" fill="none"/>`;
     s += `<line x1="${cx}" y1="${cy - R - sw / 2 - 2}" x2="${cx}" y2="${cy - R + sw / 2 + 2}" stroke="var(--surface)" stroke-width="2"/>`;
     if (big) {
-      const lab = [[0.035, tx('Very likely', '極可能')], [0.2, tx('Likely', '可能')], [0.37, tx('Lean', '略佔')], [0.63, tx('Lean', '略佔')], [0.8, tx('Likely', '可能')], [0.965, tx('Very likely', '極可能')]];
+      const lab = [[0.035, tx('Very likely', '極可能', '足有可能')], [0.2, tx('Likely', '可能')], [0.37, tx('Lean', '略佔', '略贏')], [0.63, tx('Lean', '略佔', '略贏')], [0.8, tx('Likely', '可能')], [0.965, tx('Very likely', '極可能', '足有可能')]];
       for (const [p, l] of lab) { const [x, y] = pt(p, R - sw / 2 - 30); s += `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="var(--font-num)">${l}</text>`; }
-      s += `<text x="${cx}" y="${cy - R + sw / 2 + 56}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="var(--font-num)">${tx('Toss-up', '難分高下')}</text>`;
+      s += `<text x="${cx}" y="${cy - R + sw / 2 + 56}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="var(--font-num)">${tx('Toss-up', '難分高下', '五五波')}</text>`;
       s += `<text x="${cx - R}" y="${cy + 22}" text-anchor="middle" font-size="13" font-weight="700" fill="${tone(race.other)}">${esc(race.other.name)}</text>`;
       s += `<text x="${cx + R}" y="${cy + 22}" text-anchor="middle" font-size="13" font-weight="700" fill="${tone(race.blue)}">${esc(race.blue.name)}</text>`;
     }
@@ -517,28 +535,28 @@ const DATA = /*__DATA__*/null;
   function summaryHtml() {
     const night = NIGHTS[st.night];
     if (st.mode === 'legis' && LEGIS[st.night]) { const L2 = LEGIS[st.night], vs = L2.races.map(r => r.mode === 'three' ? view3(r, st.t) : view(r, st.t));
-      return `${esc(L2.title)} · ${esc(L2.date)}<br>${tx(`<b>${vs.filter(v => !v.pre).length}</b> of ${L2.races.length} districts counting · <b>${vs.filter(v => !v.pre && v.cert).length}</b> decided`, `${L2.races.length} 個選區中 <b>${vs.filter(v => !v.pre).length}</b> 個開票中 · <b>${vs.filter(v => !v.pre && v.cert).length}</b> 個確定`)}`; }
+      return `${esc(L2.title)} · ${esc(L2.date)}<br>${tx(`<b>${vs.filter(v => !v.pre).length}</b> of ${L2.races.length} districts counting · <b>${vs.filter(v => !v.pre && v.cert).length}</b> decided`, `${L2.races.length} 個選區中 <b>${vs.filter(v => !v.pre).length}</b> 個開票中 · <b>${vs.filter(v => !v.pre && v.cert).length}</b> 個確定`, `${L2.races.length} 个選區內底 <b>${vs.filter(v => !v.pre).length}</b> 个咧開票 · <b>${vs.filter(v => !v.pre && v.cert).length}</b> 个確定`)}`; }
     if (st.mode === 'council' && COUNCIL[st.night]) { const all = cstate()[''];
-      return `${esc(night.title.replace('長選舉', '議員選舉').replace('總統選舉', ''))} · ${esc(night.date)}<br>${tx(`<b>${all.counting}</b> of ${all.dists} districts counting · <b>${all.decided}</b> of ${all.total} seats decided`, `${all.dists} 個選區中 <b>${all.counting}</b> 個開票中 · ${all.total} 席中 <b>${all.decided}</b> 席確定`)}`; }
+      return `${esc(night.title.replace('長選舉', '議員選舉').replace('總統選舉', ''))} · ${esc(night.date)}<br>${tx(`<b>${all.counting}</b> of ${all.dists} districts counting · <b>${all.decided}</b> of ${all.total} seats decided`, `${all.dists} 個選區中 <b>${all.counting}</b> 個開票中 · ${all.total} 席中 <b>${all.decided}</b> 席確定`, `${all.dists} 个選區內底 <b>${all.counting}</b> 个咧開票 · ${all.total} 席內底 <b>${all.decided}</b> 席確定`)}`; }
     const vs = night.races.map(r => r.mode === 'three' ? view3(r, st.t) : view(r, st.t));
     const decided = vs.filter(v => !v.pre && v.cert).length, started = vs.filter(v => !v.pre).length;
-    return `${esc(night.title)} · ${esc(night.date)}<br>${tx(`<b>${started}</b> of ${night.races.length} races counting · <b>${decided}</b> decided`, `${night.races.length} 場中 <b>${started}</b> 場開票中 · <b>${decided}</b> 場確定`)}`;
+    return `${esc(night.title)} · ${esc(night.date)}<br>${tx(`<b>${started}</b> of ${night.races.length} races counting · <b>${decided}</b> decided`, `${night.races.length} 場中 <b>${started}</b> 場開票中 · <b>${decided}</b> 場確定`, `${night.races.length} 場內底 <b>${started}</b> 場咧開票 · <b>${decided}</b> 場確定`)}`;
   }
   function renderDesk() {
     const night = NIGHTS[st.night], info = nightInfoOf(st.night), council = st.mode === 'council';
     const sig = night.turnout_sigma, baseYear = night.baseline.slice(0, 4);
-    const kTxt = st.k == null ? tx('live estimate', '即時估計') : `${st.k > 0 ? '+' : ''}${st.k}σ (${st.k > 0 ? '+' : ''}${(st.k * sig).toFixed(1)} pts)`;
+    const kTxt = st.k == null ? tx('live estimate', '即時估計', '這馬的估計') : `${st.k > 0 ? '+' : ''}${st.k}σ (${st.k > 0 ? '+' : ''}${(st.k * sig).toFixed(1)} pts)`;
     const pres = night.races.some(r => r.area === '全國');
     desk.innerHTML = `
       <div class="desk-row">
         <div class="clock" id="clk">${clock(st.t)}</div>
         <div class="summary" id="dsum">${summaryHtml()}</div>
         <span style="flex:1"></span>
-        <div class="ctl"><span>${tx('Show', '顯示')}</span><div class="seg" role="group" aria-label="${tx('What the page shows', '顯示內容')}">
+        <div class="ctl"><span>${tx('Show', '顯示')}</span><div class="seg" role="group" aria-label="${tx('What the page shows', '顯示內容', '欲看啥物')}">
           <button data-mode="winner" aria-pressed="${st.mode === 'winner'}">${pres ? tx('President', '總統') : tx('Mayors', '縣市長')}</button>
           <button data-mode="turnout" aria-pressed="${st.mode === 'turnout'}">${tx('Turnout', '投票率')}</button>
           ${info.legis ? `<button data-mode="legis" aria-pressed="${st.mode === 'legis'}">${tx('Legislature', '立委')}</button>`
-            : `<button data-mode="council" aria-pressed="${council}" ${info.council ? '' : `disabled title="${tx('No council election on this night', '這一晚沒有議員選舉')}"`}>${tx('Council', '議員')}</button>`}</div></div>
+            : `<button data-mode="council" aria-pressed="${council}" ${info.council ? '' : `disabled title="${tx('No council election on this night', '這一晚沒有議員選舉', '這暗無議員選舉')}"`}>${tx('Council', '議員')}</button>`}</div></div>
         <div class="ctl"><span>${tx('Night', '選舉')}</span><div class="seg" role="group" aria-label="${tx('Night', '選舉')}">
           ${DATA.nights.map(n => `<button data-night="${n.id}" aria-pressed="${n.id === st.night}" title="${esc(n.title)}">${n.id.slice(0, 4)}${n.id.includes('president') ? tx(' pres.', ' 總統') : ''}</button>`).join('')}</div></div>
       </div>
@@ -554,21 +572,21 @@ const DATA = /*__DATA__*/null;
           <button data-feed="district" aria-pressed="${st.feed === 'district'}">${tx('District totals', '鄉鎮市區')}</button></div></div>
         <div class="ctl turnout"><span>${tx('Turnout', '投票率')}</span>
           <div class="seg"><button data-k="live" aria-pressed="${st.k == null}">${tx('Live', '即時')}</button></div>
-          <input type="range" id="k" min="-3" max="3" step="1" value="${st.k == null ? 0 : st.k}" aria-label="${tx(`Turnout scenario, standard deviations from ${baseYear}`, `投票率情境：相對 ${baseYear} 年的標準差`)}" style="opacity:${st.k == null ? 0.45 : 1}">
+          <input type="range" id="k" min="-3" max="3" step="1" value="${st.k == null ? 0 : st.k}" aria-label="${tx(`Turnout scenario, standard deviations from ${baseYear}`, `投票率情境：相對 ${baseYear} 年的標準差`, `投票率情境：佮 ${baseYear} 年比，差幾个標準差`)}" style="opacity:${st.k == null ? 0.45 : 1}">
           <output>${esc(kTxt)}</output></div>
-        <label class="ctl"><input type="checkbox" id="jit" ${st.jitter ? 'checked' : ''}> ${tx('Jitter', '抖動')}</label>`}
+        <label class="ctl"><input type="checkbox" id="jit" ${st.jitter ? 'checked' : ''}> ${tx('Jitter', '抖動', '搖擺')}</label>`}
       </div>
-      ${!council && st.feed === 'district' ? `<div class="flag">${tx("District totals only: the projection can't see which stations within a district have reported, so it stays less certain for longer. This is what the page would show if the 2026 live feed has no per-station results.", '僅有鄉鎮市區合計：模型看不到區內哪些投開票所已回報，因此較久才能確定。若 2026 年的即時資料沒有逐所結果，頁面就會是這樣。')}</div>` : ''}
-      ${st.mode === 'turnout' ? `<div class="summary">${tx(`Turnout view: each county's projected final turnout, from the stations already in compared with how many of their electors voted in ${baseYear}; the change is against ${baseYear}'s turnout.`, `投票率檢視：各縣市預估的最終投票率，依已開出投開票所與其 ${baseYear} 年投票率比較推算；增減以 ${baseYear} 年為準。`)}</div>` : ''}
-      ${council || st.mode === 'legis' ? '' : `<div class="summary">${tx(`Turnout: "Live" estimates it from the stations already in. Drag the slider for a scenario instead: turnout vs ${baseYear} in each village, in steps of σ = ${sig} points. It changes the votes-left figures, not the dial.`, `投票率：「即時」依已開出的投開票所估計。拖動滑桿可改用情境：各村里相對 ${baseYear} 年的投票率，每格 σ = ${sig} 個百分點。只影響剩餘票數，不影響指針。`)}</div>`}`;
+      ${!council && st.feed === 'district' ? `<div class="flag">${tx("District totals only: the projection can't see which stations within a district have reported, so it stays less certain for longer. This is what the page would show if the 2026 live feed has no per-station results.", '僅有鄉鎮市區合計：模型看不到區內哪些投開票所已回報，因此較久才能確定。若 2026 年的即時資料沒有逐所結果，頁面就會是這樣。', '干焦有鄉鎮市區的合計：模型看袂著區內佗幾所已經回報，所以愛較久才會確定。若 2026 年的即時資料無逐所的結果，頁面就會是這个款。')}</div>` : ''}
+      ${st.mode === 'turnout' ? `<div class="summary">${tx(`Turnout view: each county's projected final turnout, from the stations already in compared with how many of their electors voted in ${baseYear}; the change is against ${baseYear}'s turnout.`, `投票率檢視：各縣市預估的最終投票率，依已開出投開票所與其 ${baseYear} 年投票率比較推算；增減以 ${baseYear} 年為準。`, `投票率檢視：各縣市預估的上尾投票率，是用已經開出來的投開票所，佮各所 ${baseYear} 年的投票率比較推算出來的；加減是佮 ${baseYear} 年比。`)}</div>` : ''}
+      ${council || st.mode === 'legis' ? '' : `<div class="summary">${tx(`Turnout: "Live" estimates it from the stations already in. Drag the slider for a scenario instead: turnout vs ${baseYear} in each village, in steps of σ = ${sig} points. It changes the votes-left figures, not the dial.`, `投票率：「即時」依已開出的投開票所估計。拖動滑桿可改用情境：各村里相對 ${baseYear} 年的投票率，每格 σ = ${sig} 個百分點。只影響剩餘票數，不影響指針。`, `投票率：「即時」是照已經開出來的投開票所估的。拖滑桿會使改用情境：各村里佮 ${baseYear} 年比的投票率，一格 σ = ${sig} 个百分點。干焦影響賰的票數，袂影響指針。`)}</div>`}`;
   }
 
   // ---- national panel. Mayoral nights: every race at a glance, one block per race (hover for details,
   // click to open it). 2024: the national race itself, with its charts and the channel watch.
   const nation = document.getElementById('nation');
   const PARTY = { kmt: '國民黨', dpp: '民進黨', tpp: '民眾黨', npp: '時代力量', ind: '無黨籍' };
-  const TIER = { dec: [1, 'decided', '確定'], likely: [0.7, 'likely', '可能'], lean: [0.45, 'leaning', '略佔上風'], toss: [0.22, 'toss-up', '難分高下'] };
-  const tierTxt = t => LANG === 'zh' ? TIER[t][2] : TIER[t][1];
+  const TIER = { dec: [1, 'decided', '確定', '確定'], likely: [0.7, 'likely', '可能', '可能'], lean: [0.45, 'leaning', '略佔上風', '略贏'], toss: [0.22, 'toss-up', '難分高下', '五五波'] };
+  const tierTxt = t => LANG === 'tw' ? TIER[t][3] : LANG === 'zh' ? TIER[t][2] : TIER[t][1];
   function standing(r) { // who leads a race at st.t, and how sure (same tiers as the cards' chips)
     if (r.mode === 'three') { const v = view3(r, st.t); if (v.pre || v.early) return { pre: true, frac: 0 };
       if (v.pw) { const pp = pair3(r, v); return { lead: pp.lead, q: pp.q, tier: v.cert ? 'dec' : pp.q >= 0.9 ? 'likely' : pp.q >= 0.7 ? 'lean' : 'toss', frac: v.frac }; }
@@ -583,8 +601,8 @@ const DATA = /*__DATA__*/null;
     if (k) return `<b>${esc(area)}</b><br>${esc(skipWhy(k))}`;
     if (!r) return '';
     const s = standing(r);
-    if (s.pre) return `<b>${esc(area)}</b><br>${tx('No stations in yet', '尚未開票')}${r.incumbent ? `<br><span class="muted">${tx('incumbent', '現任')} ${esc(r.incumbent.name)} (${esc(PARTY[r.incumbent.tone] || r.incumbent.party)})</span>` : ''}`;
-    return `<b>${esc(area)}</b> · ${tx(`${(100 * s.frac).toFixed(0)}% of stations`, `投開票所已開 ${(100 * s.frac).toFixed(0)}%`)}<br><span style="color:${tone(s.lead)};font-weight:700">${esc(s.lead.name)}</span> ${esc(s.lead.party)}<br>${s.tier === 'dec' ? tierTxt('dec') : `${tx(`${pctTxt(s.q)} to win`, `勝率 ${pctTxt(s.q)}`)} · ${tierTxt(s.tier)}`}<br><span class="muted">${tx('click to open', '點一下打開')}</span>`;
+    if (s.pre) return `<b>${esc(area)}</b><br>${tx('No stations in yet', '尚未開票', '猶未開票')}${r.incumbent ? `<br><span class="muted">${tx('incumbent', '現任')} ${esc(r.incumbent.name)} (${esc(PARTY[r.incumbent.tone] || r.incumbent.party)})</span>` : ''}`;
+    return `<b>${esc(area)}</b> · ${tx(`${(100 * s.frac).toFixed(0)}% of stations`, `投開票所已開 ${(100 * s.frac).toFixed(0)}%`, `投開票所開 ${(100 * s.frac).toFixed(0)}% 矣`)}<br><span style="color:${tone(s.lead)};font-weight:700">${esc(s.lead.name)}</span> ${esc(s.lead.party)}<br>${s.tier === 'dec' ? tierTxt('dec') : `${tx(`${pctTxt(s.q)} to win`, `勝率 ${pctTxt(s.q)}`, `贏面 ${pctTxt(s.q)}`)} · ${tierTxt(s.tier)}`}<br><span class="muted">${tx('click to open', '點一下打開', '揤一下拍開')}</span>`;
   }
   function renderNation() {
     if (st.mode === 'council') return renderCouncilNation();
@@ -611,13 +629,13 @@ const DATA = /*__DATA__*/null;
     bar += skipped.map(k => blk(k.area, '', 'skip')).join('');
     const tally = order.map(g => `<div class="p"><span class="k"><i style="background:var(--${g.tone})"></i>${esc(g.label)}</span><span class="v">${g.n}</span>
       <span class="s">${tx(`${g.dec} decided · ${g.likely} likely`, `${g.dec} 確定 · ${g.likely} 可能`)}</span><span class="s">${tx(`${prev[g.tone] || 0} in ${prevYear}`, `${prevYear} 年 ${prev[g.tone] || 0} 席`)}</span></div>`).join('')
-      + (waiting.length ? `<div class="p"><span class="k"><i style="background:${hatchBg}"></i>${tx('no stations yet', '尚未開票')}</span><span class="v">${waiting.length}</span><span class="s">&nbsp;</span></div>` : '')
-      + (skipped.length ? `<div class="p"><span class="k"><i style="background:var(--rule)"></i>${tx('not tonight', '不在今晚')}</span><span class="v">${skipped.length}</span><span class="s">${skipped.map(k => esc(k.area)).join('、')}</span></div>` : '');
-    const key = `<div class="nkey"><span><i></i>${tierTxt('dec')}</span><span><i style="opacity:.7"></i>${tierTxt('likely')}</span><span><i style="opacity:.45"></i>${tierTxt('lean')}</span><span><i style="opacity:.22"></i>${tierTxt('toss')}</span><span><i style="background:${hatchBg}"></i>${tx('no stations yet', '尚未開票')}</span></div>`;
+      + (waiting.length ? `<div class="p"><span class="k"><i style="background:${hatchBg}"></i>${tx('no stations yet', '尚未開票', '猶未開票')}</span><span class="v">${waiting.length}</span><span class="s">&nbsp;</span></div>` : '')
+      + (skipped.length ? `<div class="p"><span class="k"><i style="background:var(--rule)"></i>${tx('not tonight', '不在今晚', '無佇今暗')}</span><span class="v">${skipped.length}</span><span class="s">${skipped.map(k => esc(k.area)).join('、')}</span></div>` : '');
+    const key = `<div class="nkey"><span><i></i>${tierTxt('dec')}</span><span><i style="opacity:.7"></i>${tierTxt('likely')}</span><span><i style="opacity:.45"></i>${tierTxt('lean')}</span><span><i style="opacity:.22"></i>${tierTxt('toss')}</span><span><i style="background:${hatchBg}"></i>${tx('no stations yet', '尚未開票', '猶未開票')}</span></div>`;
     nation.innerHTML = `<div style="display:grid;gap:10px;min-width:0">
-      <h2>${tx(`All ${total} mayors at ${clockTxt(st.t)}: who leads, and how sure`, `${clockTxt(st.t)} 全部 ${total} 席縣市長：誰領先、多有把握`)}</h2>
+      <h2>${tx(`All ${total} mayors at ${clockTxt(st.t)}: who leads, and how sure`, `${clockTxt(st.t)} 全部 ${total} 席縣市長：誰領先、多有把握`, `${clockTxt(st.t)} 全部 ${total} 席縣市長：啥人咧贏、有偌把握`)}</h2>
       <div class="sbar blocks">${bar}</div>${key}<div class="tally">${tally}</div>
-      <p class="note muted" style="margin:0;font-size:12px">${tx(`One block per race, by the projected leader's party; shading as on the map. Hover a block for the race, click to open it. Within a party, blocks run from most to least certain, then in the county order of the cards. "In ${prevYear}": mayors each party won last time.`, `每場選舉一格，顏色為預估領先者的政黨，深淺同地圖。滑鼠移到格子上可看該場選舉，點一下即打開。同一政黨內依把握由高到低排列，再依卡片的縣市順序。「${prevYear} 年」：各黨上屆當選席次。`)}</p></div>`;
+      <p class="note muted" style="margin:0;font-size:12px">${tx(`One block per race, by the projected leader's party; shading as on the map. Hover a block for the race, click to open it. Within a party, blocks run from most to least certain, then in the county order of the cards. "In ${prevYear}": mayors each party won last time.`, `每場選舉一格，顏色為預估領先者的政黨，深淺同地圖。滑鼠移到格子上可看該場選舉，點一下即打開。同一政黨內依把握由高到低排列，再依卡片的縣市順序。「${prevYear} 年」：各黨上屆當選席次。`, `一場選舉一格，色是預估領先者的政黨，深淺佮地圖仝款。滑鼠囥佇格仔頂懸就看會著彼場選舉，揤一下就拍開。仝一个政黨內底照把握對懸排到低，閣照卡片的縣市順序。「${prevYear} 年」：各黨頂屆當選的席次。`)}</p></div>`;
     refreshTip();
   }
   function renderNationalRace(nat) {
@@ -625,36 +643,36 @@ const DATA = /*__DATA__*/null;
     const v3 = view3(nat, st.t), third = v3.pre ? null : v3.rows[2], tvw = tview(nat, st.t);
     const who = m => m >= 0 ? nat.blue.name : nat.other.name;
     let reads = '';
-    if (v.pre) reads = `<div class="read"><span class="k">${tx('Status', '狀態')}</span><span class="v">${tx('No polling stations have reported yet.', '尚無投開票所回報。')}</span></div>`;
+    if (v.pre) reads = `<div class="read"><span class="k">${tx('Status', '狀態')}</span><span class="v">${tx('No polling stations have reported yet.', '尚無投開票所回報。', '猶無投開票所回報。')}</span></div>`;
     else {
-      const f2 = v.p[C.b] + v.p[C.o] + v.twoLeft, u = m => st.unit === 'pts' ? (f2 > 0 ? (100 * Math.abs(m) / f2).toFixed(1) + tx(' pts', ' 個百分點') : '—') : comma(Math.abs(m)) + tx('', ' 票');
+      const f2 = v.p[C.b] + v.p[C.o] + v.twoLeft, u = m => st.unit === 'pts' ? (f2 > 0 ? (100 * Math.abs(m) / f2).toFixed(1) + tx(' pts', ' 個百分點', ' 个百分點') : '—') : comma(Math.abs(m)) + tx('', ' 票');
       const lo = v.mean - 1.2816 * v.sd, hi = v.mean + 1.2816 * v.sd;
       reads = `
-        <div class="read"><span class="k">${tx('Counted', '已開')}</span><span class="v">${tx(`<b class="num">${(100 * v.frac).toFixed(1)}%</b> of stations · ${esc(v.lead.name)} leads by <b class="num">${comma(Math.abs(v.margin))}</b>`, `投開票所 <b class="num">${(100 * v.frac).toFixed(1)}%</b> · ${esc(v.lead.name)} 領先 <b class="num">${comma(Math.abs(v.margin))}</b> 票`)}</span></div>
-        <div class="read"><span class="k">${tx('Projected', '預估')}</span><span class="v">${v.cert ? tx(`${esc(who(v.mean))} by ${u(v.mean)}`, `${esc(who(v.mean))} 勝 ${u(v.mean)}`) : tx(`${esc(who(v.mean))} by <b class="num">${u(v.mean)}</b>; 80% range ${esc(who(lo))} ${u(lo)} to ${esc(who(hi))} ${u(hi)}`, `${esc(who(v.mean))} 勝 <b class="num">${u(v.mean)}</b>；80% 區間：${esc(who(lo))} ${u(lo)} 至 ${esc(who(hi))} ${u(hi)}`)}</span></div>
-        ${third ? `<div class="read"><span class="k">${esc(nat.third.name)}</span><span class="v">${tx(`projected ${(100 * third.share).toFixed(1)}% of the vote (80% range ${(100 * (third.share - 1.2816 * third.sd)).toFixed(1)}–${(100 * (third.share + 1.2816 * third.sd)).toFixed(1)}%); set aside in the dial`, `預估得票率 ${(100 * third.share).toFixed(1)}%（80% 區間 ${(100 * (third.share - 1.2816 * third.sd)).toFixed(1)}–${(100 * (third.share + 1.2816 * third.sd)).toFixed(1)}%）；指針不計`)}</span></div>` : ''}
-        <div class="read"><span class="k">${tx('Ballots', '選票')}</span><span class="v">${tx(`an estimated <b class="num">${Math.min(100, 100 * tvw.shareCounted).toFixed(0)}%</b> counted · projected turnout ${(100 * tvw.proj).toFixed(1)}%`, `估計已開 <b class="num">${Math.min(100, 100 * tvw.shareCounted).toFixed(0)}%</b> · 預估投票率 ${(100 * tvw.proj).toFixed(1)}%`)}</span></div>`;
+        <div class="read"><span class="k">${tx('Counted', '已開')}</span><span class="v">${tx(`<b class="num">${(100 * v.frac).toFixed(1)}%</b> of stations · ${esc(v.lead.name)} leads by <b class="num">${comma(Math.abs(v.margin))}</b>`, `投開票所 <b class="num">${(100 * v.frac).toFixed(1)}%</b> · ${esc(v.lead.name)} 領先 <b class="num">${comma(Math.abs(v.margin))}</b> 票`, `投開票所 <b class="num">${(100 * v.frac).toFixed(1)}%</b> · ${esc(v.lead.name)} 贏 <b class="num">${comma(Math.abs(v.margin))}</b> 票`)}</span></div>
+        <div class="read"><span class="k">${tx('Projected', '預估')}</span><span class="v">${v.cert ? tx(`${esc(who(v.mean))} by ${u(v.mean)}`, `${esc(who(v.mean))} 勝 ${u(v.mean)}`, `${esc(who(v.mean))} 贏 ${u(v.mean)}`) : tx(`${esc(who(v.mean))} by <b class="num">${u(v.mean)}</b>; 80% range ${esc(who(lo))} ${u(lo)} to ${esc(who(hi))} ${u(hi)}`, `${esc(who(v.mean))} 勝 <b class="num">${u(v.mean)}</b>；80% 區間：${esc(who(lo))} ${u(lo)} 至 ${esc(who(hi))} ${u(hi)}`, `${esc(who(v.mean))} 贏 <b class="num">${u(v.mean)}</b>；80% 區間：${esc(who(lo))} ${u(lo)} 到 ${esc(who(hi))} ${u(hi)}`)}</span></div>
+        ${third ? `<div class="read"><span class="k">${esc(nat.third.name)}</span><span class="v">${tx(`projected ${(100 * third.share).toFixed(1)}% of the vote (80% range ${(100 * (third.share - 1.2816 * third.sd)).toFixed(1)}–${(100 * (third.share + 1.2816 * third.sd)).toFixed(1)}%); set aside in the dial`, `預估得票率 ${(100 * third.share).toFixed(1)}%（80% 區間 ${(100 * (third.share - 1.2816 * third.sd)).toFixed(1)}–${(100 * (third.share + 1.2816 * third.sd)).toFixed(1)}%）；指針不計`, `預估得票率 ${(100 * third.share).toFixed(1)}%（80% 區間 ${(100 * (third.share - 1.2816 * third.sd)).toFixed(1)}–${(100 * (third.share + 1.2816 * third.sd)).toFixed(1)}%）；指針無算伊`)}</span></div>` : ''}
+        <div class="read"><span class="k">${tx('Ballots', '選票')}</span><span class="v">${tx(`an estimated <b class="num">${Math.min(100, 100 * tvw.shareCounted).toFixed(0)}%</b> counted · projected turnout ${(100 * tvw.proj).toFixed(1)}%`, `估計已開 <b class="num">${Math.min(100, 100 * tvw.shareCounted).toFixed(0)}%</b> · 預估投票率 ${(100 * tvw.proj).toFixed(1)}%`, `估計已經開 <b class="num">${Math.min(100, 100 * tvw.shareCounted).toFixed(0)}%</b> · 預估投票率 ${(100 * tvw.proj).toFixed(1)}%`)}</span></div>`;
     }
     nation.innerHTML = `
-      <div class="dhead"><h3>全國 · 總統</h3><span class="sub">${esc(nat.blue.name)} vs ${esc(nat.other.name)} · ${tx(`${esc(nat.third.name)} set aside in the dial`, `指針不計 ${esc(nat.third.name)}`)}</span></div>
+      <div class="dhead"><h3>全國 · 總統</h3><span class="sub">${esc(nat.blue.name)} vs ${esc(nat.other.name)} · ${tx(`${esc(nat.third.name)} set aside in the dial`, `指針不計 ${esc(nat.third.name)}`, `指針無算 ${esc(nat.third.name)}`)}</span></div>
       <div class="detail">
         <div class="panel" style="padding:12px">
           <div class="bigdial">${dial(nat, v, true, null)}</div>
-          <div class="verdict"><span class="big">${v.pre ? tx('Waiting for the first station', '等待第一個投開票所') : v.cert ? `${esc(v.lead.name)} — ${tx('decided', '確定')}` : `${esc(lead.name)} ${pctTxt(q)} · ${Ll(stt.label)}`}</span>
-            <span class="small">${v.pre ? '' : `${clockTxt(st.t)} · ${st.feed === 'district' ? tx('district totals only', '僅鄉鎮市區合計') : tx('per-station feed', '逐所資料')}`}</span></div>
+          <div class="verdict"><span class="big">${v.pre ? tx('Waiting for the first station', '等待第一個投開票所', '等第一个投開票所') : v.cert ? `${esc(v.lead.name)} — ${tx('decided', '確定')}` : `${esc(lead.name)} ${pctTxt(q)} · ${Ll(stt.label)}`}</span>
+            <span class="small">${v.pre ? '' : `${clockTxt(st.t)} · ${st.feed === 'district' ? tx('district totals only', '僅鄉鎮市區合計', '干焦鄉鎮市區合計') : tx('per-station feed', '逐所資料')}`}</span></div>
           <div class="reads" style="margin-top:6px">${reads}</div>
         </div>
         <div class="panel">
-          <h2>${tx('Chance to win over the night', '整晚勝率變化')}</h2>${chartP(nat)}
+          <h2>${tx('Chance to win over the night', '整晚勝率變化', '規暗的贏面變化')}</h2>${chartP(nat)}
           ${unitSwitch()}${chartM(nat)}
           ${marginLegend()}
         </div>
       </div>
       ${watch(nat)}`;
   }
-  const unitSwitch = () => `<div class="unitsw"><h2>${tx('Margin: counted and projected', '差距：已開與預估')}</h2><div class="seg" role="group" aria-label="${tx('Margin unit', '差距單位')}">
+  const unitSwitch = () => `<div class="unitsw"><h2>${tx('Margin: counted and projected', '差距：已開與預估', '差距：已開佮預估')}</h2><div class="seg" role="group" aria-label="${tx('Margin unit', '差距單位')}">
     <button data-unit="votes" aria-pressed="${st.unit === 'votes'}">${tx('Votes', '票數')}</button><button data-unit="pts" aria-pressed="${st.unit === 'pts'}">${tx('Points', '百分點')}</button></div></div>`;
-  const marginLegend = () => `<div class="legend"><span><i></i>${tx('projected final (as estimated at each moment)', '預估最終差距（各時點的估計）')}</span><span><i class="band"></i>${tx('80% range', '80% 區間')}</span><span><i class="cnt"></i>${tx('counted so far', '目前已開')}</span></div>`;
+  const marginLegend = () => `<div class="legend"><span><i></i>${tx('projected final (as estimated at each moment)', '預估最終差距（各時點的估計）', '預估上尾的差距（逐个時間點的估計）')}</span><span><i class="band"></i>${tx('80% range', '80% 區間')}</span><span><i class="cnt"></i>${tx('counted so far', '目前已開', '這馬已開')}</span></div>`;
   // block tooltip: one floating element, kept in step with the replay while the pointer rests on a block
   const tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; document.body.appendChild(tip);
   let tipArea = null;
@@ -667,17 +685,17 @@ const DATA = /*__DATA__*/null;
   nation.addEventListener('focusin', e => { const b = e.target.closest('.blk'); if (b) { tipArea = b.dataset.area; placeTip(b); } });
   nation.addEventListener('focusout', () => { tip.hidden = true; tipArea = null; });
   function nationTurnout(night, nat, counties) {
-    const one = (label, tv, extra) => tv.pre ? `<h2>${label}</h2><p class="muted" style="margin:0">${tx(`No stations in yet. Last time: ${(100 * tv.prev).toFixed(1)}%.`, `尚未開票。上次：${(100 * tv.prev).toFixed(1)}%。`)}</p>` :
+    const one = (label, tv, extra) => tv.pre ? `<h2>${label}</h2><p class="muted" style="margin:0">${tx(`No stations in yet. Last time: ${(100 * tv.prev).toFixed(1)}%.`, `尚未開票。上次：${(100 * tv.prev).toFixed(1)}%。`, `猶未開票。頂擺：${(100 * tv.prev).toFixed(1)}%。`)}</p>` :
       `<h2>${label}</h2><div class="tnum">${(100 * tv.proj).toFixed(1)}% <small>${tx(`projected turnout · 80% range ${(100 * tv.lo).toFixed(1)}–${(100 * tv.hi).toFixed(1)}%`, `預估投票率 · 80% 區間 ${(100 * tv.lo).toFixed(1)}–${(100 * tv.hi).toFixed(1)}%`)}</small></div>
-       ${tbar(tv)}<div class="lead" style="font-size:13px"><span class="chg ${tv.chg >= 0 ? 'up' : 'down'}">${pts1(tv.chg)} ${tx('pts', '個百分點')}</span> <span class="muted">${tx(`vs ${(100 * tv.prev).toFixed(1)}% last time`, `上次 ${(100 * tv.prev).toFixed(1)}%`)}${extra || ''}</span></div>`;
+       ${tbar(tv)}<div class="lead" style="font-size:13px"><span class="chg ${tv.chg >= 0 ? 'up' : 'down'}">${pts1(tv.chg)} ${tx('pts', '個百分點', '个百分點')}</span> <span class="muted">${tx(`vs ${(100 * tv.prev).toFixed(1)}% last time`, `上次 ${(100 * tv.prev).toFixed(1)}%`, `頂擺 ${(100 * tv.prev).toFixed(1)}%`)}${extra || ''}</span></div>`;
     if (nat) return `<div style="max-width:560px;display:grid;gap:8px">${one(tx(`Turnout, whole country, at ${clockTxt(st.t)}`, `${clockTxt(st.t)} 全國投票率`), tview(nat, st.t))}</div>`;
     // mayoral nights: add up the counties already counting; ranges added as if every county's error ran the same way
     let E = 0, m = 0, sd = 0, prevB = 0, k = 0;
     for (const r of counties) { const tv = tview(r, st.t); if (tv.pre) continue; k++;
       E += r.electors; m += tv.expect; sd += (tv.hi - tv.proj) * r.electors / 1.2816; prevB += tv.prev * r.electors; }
     const agg = k ? { pre: false, proj: m / E, lo: (m - 1.2816 * sd) / E, hi: (m + 1.2816 * sd) / E, prev: prevB / E, chg: m / E - prevB / E } : { pre: true, prev: counties.reduce((a, r) => a + r.prev_turnout * r.electors, 0) / counties.reduce((a, r) => a + r.electors, 0) };
-    return `<div style="max-width:560px;display:grid;gap:8px">${one(tx(`Turnout at ${clockTxt(st.t)}: the ${k} of ${counties.length} counties counting, together`, `${clockTxt(st.t)} 投票率：開票中的 ${k}/${counties.length} 縣市合計`), agg, '')}
-      <p class="note muted" style="margin:0;font-size:12px">${tx("Electors in those counties added up; the range assumes every county's error runs the same way, so it is on the wide side.", '合計這些縣市的選舉人；區間假設各縣市誤差同方向，因此偏寬。')}</p></div>`;
+    return `<div style="max-width:560px;display:grid;gap:8px">${one(tx(`Turnout at ${clockTxt(st.t)}: the ${k} of ${counties.length} counties counting, together`, `${clockTxt(st.t)} 投票率：開票中的 ${k}/${counties.length} 縣市合計`, `${clockTxt(st.t)} 投票率：咧開票的 ${k}/${counties.length} 縣市合計`), agg, '')}
+      <p class="note muted" style="margin:0;font-size:12px">${tx("Electors in those counties added up; the range assumes every county's error runs the same way, so it is on the wide side.", '合計這些縣市的選舉人；區間假設各縣市誤差同方向，因此偏寬。', '共這寡縣市的選舉人加起來；區間假設逐縣市的誤差攏仝方向，所以較闊。')}</p></div>`;
   }
 
   function renderCards() {
@@ -705,14 +723,14 @@ const DATA = /*__DATA__*/null;
           return `<button class="card" data-area="${esc(r.area)}" aria-pressed="${r.area === st.area}">
             <div class="top"><span class="area">${esc(areaLabel(r))}</span><span class="pct">${v3.pre ? '—' : Math.round(100 * v3.frac) + tx('% in', '% 已開')}</span></div>
             ${dial(pp.pr, { pre: v3.pre || v3.early, pb: pp.p }, false)}
-            <div class="lead">${v3.pre ? `<span class="muted">${tx('waiting · three-way', '等待開票 · 三強')}</span>` : v3.early ? `<span class="muted">${tx(`${v3.n} station${v3.n > 1 ? 's' : ''} in`, `已開 ${v3.n} 所`)}</span>` : `<b style="color:${tone(pp.lead)}">${esc(pp.lead.name)} ${pctTxt(pp.q)}</b>`}<span class="chip ${sq.cls}">${L(sq.label)}</span></div>
-            <div class="third3">${v3.pre ? tx(`three-way: ${esc(pp.third.name)} too`, `三強：另有 ${esc(pp.third.name)}`) : v3.early ? tx('win chances from the 5th station', '第 5 所開出後估勝率') : tx(`${esc(pp.third.name)}: ${pctTxt(pp.pt)} to win`, `${esc(pp.third.name)}：勝率 ${pctTxt(pp.pt)}`)}</div>
+            <div class="lead">${v3.pre ? `<span class="muted">${tx('waiting · three-way', '等待開票 · 三強', '等開票 · 三強')}</span>` : v3.early ? `<span class="muted">${tx(`${v3.n} station${v3.n > 1 ? 's' : ''} in`, `已開 ${v3.n} 所`)}</span>` : `<b style="color:${tone(pp.lead)}">${esc(pp.lead.name)} ${pctTxt(pp.q)}</b>`}<span class="chip ${sq.cls}">${L(sq.label)}</span></div>
+            <div class="third3">${v3.pre ? tx(`three-way: ${esc(pp.third.name)} too`, `三強：另有 ${esc(pp.third.name)}`, `三強：猶有 ${esc(pp.third.name)}`) : v3.early ? tx('win chances from the 5th station', '第 5 所開出後估勝率', '第 5 所開出來了後才估贏面') : tx(`${esc(pp.third.name)}: ${pctTxt(pp.pt)} to win`, `${esc(pp.third.name)}：勝率 ${pctTxt(pp.pt)}`, `${esc(pp.third.name)}：贏面 ${pctTxt(pp.pt)}`)}</div>
           </button>`;
         }
         const s3 = status3(v3);
         return `<button class="card" data-area="${esc(r.area)}" aria-pressed="${r.area === st.area}">
           <div class="top"><span class="area">${esc(areaLabel(r))}</span><span class="pct">${v3.pre ? '—' : Math.round(100 * v3.frac) + tx('% in', '% 已開')}</span></div>
-          <div style="padding:8px 0 6px">${v3.pre ? `<span class="muted" style="font-size:12px">${tx('three-way race · waiting', '三強 · 等待開票')}</span>` : bars3(v3, false)}</div>
+          <div style="padding:8px 0 6px">${v3.pre ? `<span class="muted" style="font-size:12px">${tx('three-way race · waiting', '三強 · 等待開票', '三強 · 等開票')}</span>` : bars3(v3, false)}</div>
           <div class="lead">${v3.pre ? '' : `<b style="color:${tone(v3.order[0].c)}">${esc(v3.order[0].c.name)} +${(100 * v3.lead).toFixed(1)}</b>`}<span class="chip ${s3.cls}">${v3.pre ? tx('three-way', '三強') : L(s3.label)}</span></div>
         </button>`;
       }
@@ -721,14 +739,14 @@ const DATA = /*__DATA__*/null;
       return `<button class="card" data-area="${esc(r.area)}" aria-pressed="${r.area === st.area}">
         <div class="top"><span class="area">${esc(areaLabel(r))}</span><span class="pct">${v.pre ? '—' : Math.round(100 * v.frac) + tx('% in', '% 已開')}</span></div>
         ${dial(r, v, false)}
-        <div class="lead">${leader ? `<b style="color:${tone(leader)}">${esc(leader.name)} ${pctTxt(q)}</b>` : `<span class="muted">${tx('waiting', '等待開票')}</span>`}<span class="chip ${stt.cls}">${L(stt.label)}</span></div>
+        <div class="lead">${leader ? `<b style="color:${tone(leader)}">${esc(leader.name)} ${pctTxt(q)}</b>` : `<span class="muted">${tx('waiting', '等待開票', '等開票')}</span>`}<span class="chip ${stt.cls}">${L(stt.label)}</span></div>
       </button>`;
     }
   }
 
   function tbar(tv) { // scale 40%..90%
     const X = q => Math.max(0, Math.min(100, (q - 0.4) / 0.5 * 100)).toFixed(1) + '%';
-    return `<div class="tbar">${tv.pre ? '' : `<span class="rng" style="left:${X(tv.lo)};right:calc(100% - ${X(tv.hi)})"></span><span class="mid" style="left:${X(tv.proj)}"></span>`}<span class="pv" style="left:${X(tv.prev)}" title="${tx('previous turnout', '上次投票率')}"></span></div>`;
+    return `<div class="tbar">${tv.pre ? '' : `<span class="rng" style="left:${X(tv.lo)};right:calc(100% - ${X(tv.hi)})"></span><span class="mid" style="left:${X(tv.proj)}"></span>`}<span class="pv" style="left:${X(tv.prev)}" title="${tx('previous turnout', '上次投票率', '頂擺投票率')}"></span></div>`;
   }
   function turnoutCard(r) {
     const tv = tview(r, st.t);
@@ -736,7 +754,7 @@ const DATA = /*__DATA__*/null;
       <div class="top"><span class="area">${esc(r.area)}</span><span class="pct">${tv.pre ? '—' : Math.round(100 * tv.frac) + tx('% in', '% 已開')}</span></div>
       <div class="tnum">${tv.pre ? '—' : (100 * tv.proj).toFixed(1) + '%'} <small>${tx('projected', '預估')}</small></div>
       ${tbar(tv)}
-      <div class="lead">${tv.pre ? `<span class="muted">${tx('last time', '上次')} ${(100 * tv.prev).toFixed(1)}%</span>` : `<span class="chg ${tv.chg >= 0 ? 'up' : 'down'}">${pts1(tv.chg)} ${tx('pts', '點')}</span><span class="muted">${tx('vs', '上次')} ${(100 * tv.prev).toFixed(1)}%</span>`}</div>
+      <div class="lead">${tv.pre ? `<span class="muted">${tx('last time', '上次', '頂擺')} ${(100 * tv.prev).toFixed(1)}%</span>` : `<span class="chg ${tv.chg >= 0 ? 'up' : 'down'}">${pts1(tv.chg)} ${tx('pts', '點')}</span><span class="muted">${tx('vs', '上次', '頂擺')} ${(100 * tv.prev).toFixed(1)}%</span>`}</div>
     </button>`;
   }
 
@@ -754,18 +772,18 @@ const DATA = /*__DATA__*/null;
       let fill, op = 1, label;
       if (r && st.mode === 'turnout') {
         const tv = tview(r, st.t);
-        if (tv.pre) { fill = 'url(#h-ind)'; op = 0.6; label = `${area}: ${tx('no count yet', '尚未開票')} · ${tx('last time', '上次')} ${(100 * tv.prev).toFixed(1)}%`; }
+        if (tv.pre) { fill = 'url(#h-ind)'; op = 0.6; label = `${area}: ${tx('no count yet', '尚未開票', '猶未開票')} · ${tx('last time', '上次', '頂擺')} ${(100 * tv.prev).toFixed(1)}%`; }
         else { fill = tv.chg >= 0 ? 'var(--up)' : 'var(--down)'; op = Math.min(1, 0.15 + Math.abs(tv.chg) / 0.06 * 0.85);
           label = `${area}: projected ${(100 * tv.proj).toFixed(1)}% (${pts1(tv.chg)} pts)`; }
       } else if (r && r.mode === 'three') {
         const v3 = view3(r, st.t), s3 = status3(v3);
-        if (v3.pre || v3.early) { fill = `url(#h-${r.incumbent ? r.incumbent.tone : 'ind'})`; label = v3.pre ? `${area}: ${tx('no count yet', '尚未開票')}` : `${area}: ${tx('three-way · fewer than 5 stations in', '三強 · 開出不到 5 所')}`; }
+        if (v3.pre || v3.early) { fill = `url(#h-${r.incumbent ? r.incumbent.tone : 'ind'})`; label = v3.pre ? `${area}: ${tx('no count yet', '尚未開票', '猶未開票')}` : `${area}: ${tx('three-way · fewer than 5 stations in', '三強 · 開出不到 5 所', '三強 · 開無到 5 所')}`; }
         else if (v3.pw) { const pp = pair3(r, v3), sq = statusQ(false, v3.cert, pp.q); fill = tone(pp.lead); op = SHADE[sq.label];
           label = `${area}: ${tx('three-way', '三強')} · ${pp.lead.name} ${pctTxt(pp.q)} · ${pp.third.name} ${pctTxt(pp.pt)} · ${L(sq.label)}`; }
-        else { fill = tone(v3.order[0].c); op = s3.op; label = `${area}: ${tx('three-way', '三強')} · ${v3.order[0].c.name} +${(100 * v3.lead).toFixed(1)} ${tx('pts', '個百分點')} · ${L(s3.label)}`; }
+        else { fill = tone(v3.order[0].c); op = s3.op; label = `${area}: ${tx('three-way', '三強')} · ${v3.order[0].c.name} +${(100 * v3.lead).toFixed(1)} ${tx('pts', '個百分點', '个百分點')} · ${L(s3.label)}`; }
       } else if (r) {
         const v = view(r, st.t), stt = status(v);
-        if (v.pre) { fill = `url(#h-${r.incumbent ? r.incumbent.tone : 'ind'})`; label = `${area}: ${tx('no count yet', '尚未開票')} · ${tx('incumbent', '現任')} ${r.incumbent ? r.incumbent.name : ''}`; }
+        if (v.pre) { fill = `url(#h-${r.incumbent ? r.incumbent.tone : 'ind'})`; label = `${area}: ${tx('no count yet', '尚未開票', '猶未開票')} · ${tx('incumbent', '現任')} ${r.incumbent ? r.incumbent.name : ''}`; }
         else { const lead = v.pb >= 0.5 ? r.blue : r.other; fill = tone(lead); op = SHADE[stt.label]; label = `${area}: ${lead.name} ${pctTxt(Math.max(v.pb, 1 - v.pb))} · ${L(stt.label)}`; }
       } else if (k) { fill = `url(#h-${k.incumbent ? k.incumbent.tone : 'ind'})`; op = 0.5; label = `${area}: ${skipWhy(k)}`; }
       else { fill = 'var(--rule)'; label = area; }
@@ -777,22 +795,22 @@ const DATA = /*__DATA__*/null;
     const sel = mapEl.querySelector('path.sel'); if (sel) sel.parentNode.appendChild(sel);
   }
   function renderMapLegend() {
-    if (st.mode === 'legis') { mapLegend.innerHTML = `<div class="row">${tx("Party leading the most districts in the county, from light (few decided) to solid (all decided). Hatched: no stations counted yet. Cards: one per district.", '該縣市領先選區最多的政黨，由淺（確定者少）到深（全部確定）。斜線：尚未開票。卡片：每個選區一張。')}</div>`; return; }
-    if (st.mode === 'council') { mapLegend.innerHTML = `<div class="row">${tx('Party with the most seats in the council at this moment, from light (few seats decided) to solid (all decided). Hatched: no stations counted yet.', '目前在該縣市議會席次最多的政黨；顏色由淺（確定席次少）到深（全部確定）。斜線：尚未開票。')}</div>`; return; }
+    if (st.mode === 'legis') { mapLegend.innerHTML = `<div class="row">${tx("Party leading the most districts in the county, from light (few decided) to solid (all decided). Hatched: no stations counted yet. Cards: one per district.", '該縣市領先選區最多的政黨，由淺（確定者少）到深（全部確定）。斜線：尚未開票。卡片：每個選區一張。', '這个縣市贏上濟選區的政黨，對淺（確定的少）到深（攏確定）。斜線：猶未開票。卡片：一个選區一張。')}</div>`; return; }
+    if (st.mode === 'council') { mapLegend.innerHTML = `<div class="row">${tx('Party with the most seats in the council at this moment, from light (few seats decided) to solid (all decided). Hatched: no stations counted yet.', '目前在該縣市議會席次最多的政黨；顏色由淺（確定席次少）到深（全部確定）。斜線：尚未開票。', '這馬佇彼个縣市議會席次上濟的政黨；色對淺（確定的席次少）到深（攏確定）。斜線：猶未開票。')}</div>`; return; }
     const sw = t => `<svg viewBox="0 0 16 12"><rect width="16" height="12" fill="url(#h-${t})"/></svg>`;
     if (st.mode === 'turnout') {
       const r2 = c => `<span class="ramp">${[0.3, 0.55, 0.8, 1].map(o => `<i style="background:var(--${c});opacity:${o}"></i>`).join('')}</span>`;
-      const prevName = NIGHTS[st.night].previous.includes('president') ? tx('the previous presidential election', '上一屆總統選舉') : tx('the previous mayoral election', '上一屆縣市長選舉');
-      mapLegend.innerHTML = `<div class="row"><span>${sw('ind')}</span>${tx('no count yet', '尚未開票')}</div>
-        <div class="row">${r2('down')} ${tx('lower · higher', '較低 · 較高')} ${r2('up')}</div>
-        <div class="row">${tx(`projected turnout vs ${prevName}; solid = 6 points or more.`, `預估投票率與${prevName}比較；實色 = 相差 6 個百分點以上。`)}</div>`;
+      const prevName = NIGHTS[st.night].previous.includes('president') ? tx('the previous presidential election', '上一屆總統選舉', '頂一屆總統選舉') : tx('the previous mayoral election', '上一屆縣市長選舉', '頂一屆縣市長選舉');
+      mapLegend.innerHTML = `<div class="row"><span>${sw('ind')}</span>${tx('no count yet', '尚未開票', '猶未開票')}</div>
+        <div class="row">${r2('down')} ${tx('lower · higher', '較低 · 較高', '較低 · 較懸')} ${r2('up')}</div>
+        <div class="row">${tx(`projected turnout vs ${prevName}; solid = 6 points or more.`, `預估投票率與${prevName}比較；實色 = 相差 6 個百分點以上。`, `預估投票率佮${prevName}比；實色 = 差 6 个百分點以上。`)}</div>`;
       return;
     }
     const ramp = t => `<span class="ramp">${Object.values(SHADE).map(o => `<i style="background:var(--${t});opacity:${o}"></i>`).join('')}</span>`;
     mapLegend.innerHTML = `
-      <div class="row"><span>${sw('kmt')}${sw('dpp')}${sw('ind')}</span>${NIGHTS[st.night].previous.includes('president') ? tx(`no count yet: party that carried the county in ${NIGHTS[st.night].previous.slice(0, 4)} (hatched)`, `尚未開票：${NIGHTS[st.night].previous.slice(0, 4)} 年在該縣市勝出的政黨（斜線）`) : tx('no count yet: party of the incumbent (hatched)', '尚未開票：現任者的政黨（斜線）')}</div>
+      <div class="row"><span>${sw('kmt')}${sw('dpp')}${sw('ind')}</span>${NIGHTS[st.night].previous.includes('president') ? tx(`no count yet: party that carried the county in ${NIGHTS[st.night].previous.slice(0, 4)} (hatched)`, `尚未開票：${NIGHTS[st.night].previous.slice(0, 4)} 年在該縣市勝出的政黨（斜線）`, `猶未開票：${NIGHTS[st.night].previous.slice(0, 4)} 年佇這个縣市贏的政黨（斜線）`) : tx('no count yet: party of the incumbent (hatched)', '尚未開票：現任者的政黨（斜線）', '猶未開票：現任者的政黨（斜線）')}</div>
       <div class="row">${ramp('kmt')}${ramp('dpp')}</div>
-      <div class="row">${tx("projected leader's party, from toss-up (light) to decided (solid). Gray = independent; teal = TPP.", '預估領先者的政黨，由淺（難分高下）到深（確定）。灰色 = 無黨籍；青綠色 = 民眾黨。')}</div>`;
+      <div class="row">${tx("projected leader's party, from toss-up (light) to decided (solid). Gray = independent; teal = TPP.", '預估領先者的政黨，由淺（難分高下）到深（確定）。灰色 = 無黨籍；青綠色 = 民眾黨。', '預估領先者的政黨，對淺（五五波）到深（確定）。灰色 = 無黨籍；青綠色 = 民眾黨。')}</div>`;
   }
 
   function series(race, col, colD) { return race.pts.map(p => [p[C.t], st.feed === 'district' ? p[colD] : p[col], p]); }
@@ -809,11 +827,11 @@ const DATA = /*__DATA__*/null;
     const S = series(race, C.p, C.pd).filter(r => r[0] <= st.t);
     const d = S.map(([t, p], i) => `${i ? 'L' : 'M'}${x(t).toFixed(1)},${y(1 - p).toFixed(1)}`).join('');
     const ob = race.other, bl = race.blue, half = (H - T - B) / 2;
-    let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${tx('Chance of winning over the night', '整晚勝率變化')}: ${esc(ob.name)} ↑, ${esc(bl.name)} ↓">`;
+    let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${tx('Chance of winning over the night', '整晚勝率變化', '規暗的贏面變化')}: ${esc(ob.name)} ↑, ${esc(bl.name)} ↓">`;
     s += `<rect x="${L}" y="${T}" width="${W - L - Rr}" height="${half}" fill="${tone(ob)}" opacity="0.07"/>`;
     s += `<rect x="${L}" y="${T + half}" width="${W - L - Rr}" height="${half}" fill="${tone(bl)}" opacity="0.07"/>`;
-    const tk = [[1, '100%', short(ob.name) + tx(' wins', ' 勝'), tone(ob)], [0.75, '75%', short(ob.name), tone(ob)], [0.5, '50–50', '', 'var(--muted)'],
-      [0.25, '75%', short(bl.name), tone(bl)], [0, '100%', short(bl.name) + tx(' wins', ' 勝'), tone(bl)]];
+    const tk = [[1, '100%', short(ob.name) + tx(' wins', ' 勝', ' 贏'), tone(ob)], [0.75, '75%', short(ob.name), tone(ob)], [0.5, '50–50', '', 'var(--muted)'],
+      [0.25, '75%', short(bl.name), tone(bl)], [0, '100%', short(bl.name) + tx(' wins', ' 勝', ' 贏'), tone(bl)]];
     s += `<g class="grid">${tk.map(([q]) => `<line x1="${L}" x2="${W - Rr}" y1="${y(q)}" y2="${y(q)}"/>`).join('')}</g>`;
     s += tk.map(([q, a, b, c]) => ylab(L - 6, y(q) + (q === 1 ? 6 : q === 0 ? -6 : 3), a, b, c)).join('');
     s += ticks(t0, t1, x, H - B);
@@ -851,7 +869,7 @@ const DATA = /*__DATA__*/null;
     }
     const x = t => L + (t - t0) / (t1 - t0) * (W - L - Rr), y = v => T + (hi - Math.max(lo, Math.min(hi, v))) / (hi - lo) * (H - T - B);
     const lead = v => v > 0 ? [short(ob.name), tone(ob)] : [short(bl.name), tone(bl)];
-    let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${tx('Margin over the night', '整晚差距變化')}: ${esc(ob.name)} ↑, ${esc(bl.name)} ↓">`;
+    let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${tx('Margin over the night', '整晚差距變化', '規暗的差距變化')}: ${esc(ob.name)} ↑, ${esc(bl.name)} ↓">`;
     s += `<rect x="${L}" y="${T}" width="${W - L - Rr}" height="${Math.max(0, y(0) - T)}" fill="${tone(ob)}" opacity="0.06"/>`;
     s += `<rect x="${L}" y="${y(0)}" width="${W - L - Rr}" height="${Math.max(0, H - B - y(0))}" fill="${tone(bl)}" opacity="0.06"/>`;
     const dec = Math.max(0, -Math.floor(Math.log10(step) + 1e-9));
@@ -896,44 +914,44 @@ const DATA = /*__DATA__*/null;
       const votes = v.pre ? 0 : (c === race.blue ? v.p[C.b] : v.p[C.o]);
       const pw = v.pre ? null : (c === race.blue ? v.pb : 1 - v.pb);
       return `<div class="side b-${c.tone} ${right ? 'right' : ''}"><span class="nm">${esc(c.name)}</span><span class="pt">${esc(c.party)} · ${tx('No.', '')} ${c.no}${tx('', ' 號')}</span>
-        <span class="v num">${v.pre ? '—' : comma(votes)}</span><span class="p">${pw == null ? tx('chance —', '勝率 —') : tx('chance to win ', '勝率 ') + pctTxt(pw)}</span></div>`;
+        <span class="v num">${v.pre ? '—' : comma(votes)}</span><span class="p">${pw == null ? tx('chance —', '勝率 —', '贏面 —') : tx('chance to win ', '勝率 ', '贏面 ') + pctTxt(pw)}</span></div>`;
     };
     if (st.mode === 'turnout') { renderTurnoutDetail(race); return; }
     if (race.mode === 'three') { renderThreeDetail(race); return; }
     const tvw = tview(race, st.t);
     const ptsOf = (m, two) => two > 0 ? (100 * Math.abs(m) / two).toFixed(1) + ' pts' : '—';
     let reads = '';
-    if (v.pre) reads = `<div class="read"><span class="k">${tx('Status', '狀態')}</span><span class="v">${tx('No polling stations have reported yet.', '尚無投開票所回報。')}</span></div>`;
+    if (v.pre) reads = `<div class="read"><span class="k">${tx('Status', '狀態')}</span><span class="v">${tx('No polling stations have reported yet.', '尚無投開票所回報。', '猶無投開票所回報。')}</span></div>`;
     else {
       const lo = v.mean - 1.2816 * v.sd, hi = v.mean + 1.2816 * v.sd;
       const who = m => m >= 0 ? race.blue.name : race.other.name;
-      const needTxt = v.cert ? tx(`Can't be overturned: the lead (${comma(Math.abs(v.margin))}) is larger than all ${comma(v.remE)} electors at stations still out.`, `已無法翻盤：領先票數（${comma(Math.abs(v.margin))}）大於尚未開票的全部 ${comma(v.remE)} 名選舉人。`)
-        : v.needs > 1 ? tx(`${esc(v.trail.name)} can't catch up even with every remaining vote, if turnout is as assumed.`, `依目前的投票率假設，${esc(v.trail.name)} 即使拿下所有剩餘選票也追不上。`)
-        : tx(`${esc(v.trail.name)} needs <b class="num">${(100 * v.needs).toFixed(v.needs < 0.6 ? 1 : 0)}%</b> of the remaining two-way vote to catch up.`, `${esc(v.trail.name)} 需拿下剩餘兩人票數的 <b class="num">${(100 * v.needs).toFixed(v.needs < 0.6 ? 1 : 0)}%</b> 才能追上。`);
+      const needTxt = v.cert ? tx(`Can't be overturned: the lead (${comma(Math.abs(v.margin))}) is larger than all ${comma(v.remE)} electors at stations still out.`, `已無法翻盤：領先票數（${comma(Math.abs(v.margin))}）大於尚未開票的全部 ${comma(v.remE)} 名選舉人。`, `已經翻袂過來矣：贏的票數（${comma(Math.abs(v.margin))}）比猶未開票的 ${comma(v.remE)} 名選舉人閣較濟。`)
+        : v.needs > 1 ? tx(`${esc(v.trail.name)} can't catch up even with every remaining vote, if turnout is as assumed.`, `依目前的投票率假設，${esc(v.trail.name)} 即使拿下所有剩餘選票也追不上。`, `照這馬的投票率假設，${esc(v.trail.name)} 就算賰的票攏提去嘛追袂著。`)
+        : tx(`${esc(v.trail.name)} needs <b class="num">${(100 * v.needs).toFixed(v.needs < 0.6 ? 1 : 0)}%</b> of the remaining two-way vote to catch up.`, `${esc(v.trail.name)} 需拿下剩餘兩人票數的 <b class="num">${(100 * v.needs).toFixed(v.needs < 0.6 ? 1 : 0)}%</b> 才能追上。`, `${esc(v.trail.name)} 愛提著賰的兩人票數的 <b class="num">${(100 * v.needs).toFixed(v.needs < 0.6 ? 1 : 0)}%</b> 才追會著。`);
       reads = `
-        <div class="read"><span class="k">${tx('Counted', '已開')}</span><span class="v">${tx(`<b class="num">${comma(v.n)}</b> of ${comma(race.stations)} stations (${(100 * v.frac).toFixed(1)}%) · ${esc(v.lead.name)} leads by <b class="num">${comma(Math.abs(v.margin))}</b>`, `${comma(race.stations)} 所中已開 <b class="num">${comma(v.n)}</b> 所（${(100 * v.frac).toFixed(1)}%）· ${esc(v.lead.name)} 領先 <b class="num">${comma(Math.abs(v.margin))}</b> 票`)}</span></div>
+        <div class="read"><span class="k">${tx('Counted', '已開')}</span><span class="v">${tx(`<b class="num">${comma(v.n)}</b> of ${comma(race.stations)} stations (${(100 * v.frac).toFixed(1)}%) · ${esc(v.lead.name)} leads by <b class="num">${comma(Math.abs(v.margin))}</b>`, `${comma(race.stations)} 所中已開 <b class="num">${comma(v.n)}</b> 所（${(100 * v.frac).toFixed(1)}%）· ${esc(v.lead.name)} 領先 <b class="num">${comma(Math.abs(v.margin))}</b> 票`, `${comma(race.stations)} 所內底已開 <b class="num">${comma(v.n)}</b> 所（${(100 * v.frac).toFixed(1)}%）· ${esc(v.lead.name)} 贏 <b class="num">${comma(Math.abs(v.margin))}</b> 票`)}</span></div>
         <div class="read"><span class="k">${tx('Projected final', '預估結果')}</span><span class="v">${(() => { const f2 = v.p[C.b] + v.p[C.o] + v.twoLeft, u = m => st.unit === 'pts' ? ptsOf(m, f2) : comma(Math.abs(m)) + tx('', ' 票');
-          return v.cert ? tx(`${esc(who(v.mean))} by ${u(v.mean)}`, `${esc(who(v.mean))} 勝 ${u(v.mean)}`) : tx(`${esc(who(v.mean))} by <b class="num">${u(v.mean)}</b>; 80% range ${esc(who(lo))} ${u(lo)} to ${esc(who(hi))} ${u(hi)}`, `${esc(who(v.mean))} 勝 <b class="num">${u(v.mean)}</b>；80% 區間：${esc(who(lo))} ${u(lo)} 至 ${esc(who(hi))} ${u(hi)}`); })()}</span></div>
-        ${race.third ? (() => { const v3 = view3(race, st.t); const r = v3.rows[2]; return `<div class="read"><span class="k">${esc(race.third.name)}</span><span class="v">${tx(`projected ${(100 * r.share).toFixed(1)}% (80% range ${(100 * (r.share - 1.2816 * r.sd)).toFixed(1)}–${(100 * (r.share + 1.2816 * r.sd)).toFixed(1)}%), set aside in the dial; counted so far ${(100 * r.counted).toFixed(1)}%`, `預估 ${(100 * r.share).toFixed(1)}%（80% 區間 ${(100 * (r.share - 1.2816 * r.sd)).toFixed(1)}–${(100 * (r.share + 1.2816 * r.sd)).toFixed(1)}%），指針不計；目前已開 ${(100 * r.counted).toFixed(1)}%`)}</span></div>`; })() : ''}
+          return v.cert ? tx(`${esc(who(v.mean))} by ${u(v.mean)}`, `${esc(who(v.mean))} 勝 ${u(v.mean)}`, `${esc(who(v.mean))} 贏 ${u(v.mean)}`) : tx(`${esc(who(v.mean))} by <b class="num">${u(v.mean)}</b>; 80% range ${esc(who(lo))} ${u(lo)} to ${esc(who(hi))} ${u(hi)}`, `${esc(who(v.mean))} 勝 <b class="num">${u(v.mean)}</b>；80% 區間：${esc(who(lo))} ${u(lo)} 至 ${esc(who(hi))} ${u(hi)}`, `${esc(who(v.mean))} 贏 <b class="num">${u(v.mean)}</b>；80% 區間：${esc(who(lo))} ${u(lo)} 到 ${esc(who(hi))} ${u(hi)}`); })()}</span></div>
+        ${race.third ? (() => { const v3 = view3(race, st.t); const r = v3.rows[2]; return `<div class="read"><span class="k">${esc(race.third.name)}</span><span class="v">${tx(`projected ${(100 * r.share).toFixed(1)}% (80% range ${(100 * (r.share - 1.2816 * r.sd)).toFixed(1)}–${(100 * (r.share + 1.2816 * r.sd)).toFixed(1)}%), set aside in the dial; counted so far ${(100 * r.counted).toFixed(1)}%`, `預估 ${(100 * r.share).toFixed(1)}%（80% 區間 ${(100 * (r.share - 1.2816 * r.sd)).toFixed(1)}–${(100 * (r.share + 1.2816 * r.sd)).toFixed(1)}%），指針不計；目前已開 ${(100 * r.counted).toFixed(1)}%`, `預估 ${(100 * r.share).toFixed(1)}%（80% 區間 ${(100 * (r.share - 1.2816 * r.sd)).toFixed(1)}–${(100 * (r.share + 1.2816 * r.sd)).toFixed(1)}%），指針無算伊；這馬已開 ${(100 * r.counted).toFixed(1)}%`)}</span></div>`; })() : ''}
         <div class="read"><span class="k">${tx('To catch up', '追趕')}</span><span class="v">${needTxt}</span></div>
-        <div class="read"><span class="k">${tx('Ballots counted', '已開票數')}</span><span class="v">${tx(`an estimated <b class="num">${Math.min(100, 100 * tvw.shareCounted).toFixed(0)}%</b> of the expected ${comma(tvw.expect)} (projected turnout ${(100 * tvw.proj).toFixed(1)}%)`, `估計已開預期 ${comma(tvw.expect)} 票的 <b class="num">${Math.min(100, 100 * tvw.shareCounted).toFixed(0)}%</b>（預估投票率 ${(100 * tvw.proj).toFixed(1)}%）`)}</span></div>
-        <div class="read"><span class="k">${tx('Votes left', '剩餘票數')}</span><span class="v">${tx(`about <b class="num">${comma(v.ballotsLeft)}</b> ballots (${st.k == null ? 'live turnout estimate' : 'turnout scenario'}), ${comma(v.twoLeft)} for these two`, `約 <b class="num">${comma(v.ballotsLeft)}</b> 票（${st.k == null ? '即時投票率估計' : '投票率情境'}），其中 ${comma(v.twoLeft)} 票屬於這兩人`)}</span></div>`;
+        <div class="read"><span class="k">${tx('Ballots counted', '已開票數')}</span><span class="v">${tx(`an estimated <b class="num">${Math.min(100, 100 * tvw.shareCounted).toFixed(0)}%</b> of the expected ${comma(tvw.expect)} (projected turnout ${(100 * tvw.proj).toFixed(1)}%)`, `估計已開預期 ${comma(tvw.expect)} 票的 <b class="num">${Math.min(100, 100 * tvw.shareCounted).toFixed(0)}%</b>（預估投票率 ${(100 * tvw.proj).toFixed(1)}%）`, `估計預期的 ${comma(tvw.expect)} 票已經開 <b class="num">${Math.min(100, 100 * tvw.shareCounted).toFixed(0)}%</b>（預估投票率 ${(100 * tvw.proj).toFixed(1)}%）`)}</span></div>
+        <div class="read"><span class="k">${tx('Votes left', '剩餘票數', '賰的票數')}</span><span class="v">${tx(`about <b class="num">${comma(v.ballotsLeft)}</b> ballots (${st.k == null ? 'live turnout estimate' : 'turnout scenario'}), ${comma(v.twoLeft)} for these two`, `約 <b class="num">${comma(v.ballotsLeft)}</b> 票（${st.k == null ? '即時投票率估計' : '投票率情境'}），其中 ${comma(v.twoLeft)} 票屬於這兩人`, `大約 <b class="num">${comma(v.ballotsLeft)}</b> 票（${st.k == null ? '即時投票率估計' : '投票率情境'}），其中 ${comma(v.twoLeft)} 票是這兩人的`)}</span></div>`;
     }
     detail.innerHTML = `
-      <div class="dhead"><h3>${esc(race.label || race.area + '長')}</h3><span class="sub">${esc(race.blue.name)} vs ${esc(race.other.name)}${race.others_final ? tx(' · other candidates set aside', ' · 其他候選人不計') : ''}</span></div>
+      <div class="dhead"><h3>${esc(race.label || race.area + '長')}</h3><span class="sub">${esc(race.blue.name)} vs ${esc(race.other.name)}${race.others_final ? tx(' · other candidates set aside', ' · 其他候選人不計', ' · 其他候選人無算') : ''}</span></div>
       <div class="detail">
         <div class="panel" style="padding:12px">
           <div class="bigdial" id="bigdial">${dial(race, v, true, jstate.cur != null && jstate.raceId === race.area + st.night ? jstate.cur : null)}</div>
-          <div class="verdict"><span class="big">${v.pre ? tx('Waiting for the first station', '等待第一個投開票所') : v.cert ? `${esc(v.lead.name)} — ${tx('decided', '確定')}` : `${esc((v.pb >= 0.5 ? race.blue : race.other).name)} ${pctTxt(Math.max(v.pb, 1 - v.pb))} · ${Ll(stt.label)}`}</span>
-            <span class="small">${v.pre ? '' : `${clockTxt(st.t)} · ${st.feed === 'district' ? tx('district totals only', '僅鄉鎮市區合計') : tx('per-station feed', '逐所資料')}`}</span></div>
+          <div class="verdict"><span class="big">${v.pre ? tx('Waiting for the first station', '等待第一個投開票所', '等第一个投開票所') : v.cert ? `${esc(v.lead.name)} — ${tx('decided', '確定')}` : `${esc((v.pb >= 0.5 ? race.blue : race.other).name)} ${pctTxt(Math.max(v.pb, 1 - v.pb))} · ${Ll(stt.label)}`}</span>
+            <span class="small">${v.pre ? '' : `${clockTxt(st.t)} · ${st.feed === 'district' ? tx('district totals only', '僅鄉鎮市區合計', '干焦鄉鎮市區合計') : tx('per-station feed', '逐所資料')}`}</span></div>
           <div class="duo">${sideHtml(race.other, false)}${sideHtml(race.blue, true)}</div>
           <div class="reads" style="margin-top:6px">${reads}</div>
         </div>
         <div class="panel">
-          <h2>${tx('Chance to win over the night', '整晚勝率變化')}</h2>${chartP(race)}
+          <h2>${tx('Chance to win over the night', '整晚勝率變化', '規暗的贏面變化')}</h2>${chartP(race)}
           ${unitSwitch()}
           ${chartM(race)}
-          ${st.unit === 'pts' ? `<p class="note muted" style="margin:0;font-size:12px">${tx("Points: the lead as a share of the two contenders' votes (counted so far, or projected for the final), not of all valid votes.", '百分點：領先票數占兩位主要候選人票數（已開或預估最終）的比例，而非占全部有效票。')}</p>` : ''}
+          ${st.unit === 'pts' ? `<p class="note muted" style="margin:0;font-size:12px">${tx("Points: the lead as a share of the two contenders' votes (counted so far, or projected for the final), not of all valid votes.", '百分點：領先票數占兩位主要候選人票數（已開或預估最終）的比例，而非占全部有效票。', '百分點：贏的票數佔兩位主要候選人票數（已開抑是預估上尾）的比例，毋是佔全部的有效票。')}</p>` : ''}
           ${marginLegend()}
           ${watch(race)}
         </div>
@@ -974,26 +992,26 @@ const DATA = /*__DATA__*/null;
     const pp = pair3(race, v), sq = statusQ(v.pre, v.cert, pp.q), wait = v.pre || v.early;
     const side = (k, right) => { const c = pp.cs[k]; const votes = v.pre ? null : v.rows[k].votes;
       return `<div class="side b-${c.tone} ${right ? 'right' : ''}"><span class="nm">${esc(c.name)}</span><span class="pt">${esc(c.party)} · ${tx('No.', '')} ${c.no}${tx('', ' 號')}</span>
-        <span class="v num">${votes == null ? '—' : comma(votes)}</span><span class="p">${wait ? tx('chance —', '勝率 —') : tx('chance to win ', '勝率 ') + pctTxt(v.pw[k])}</span></div>`; };
-    const reads = v.pre ? `<div class="read"><span class="k">${tx('Status', '狀態')}</span><span class="v">${tx('No polling stations have reported yet.', '尚無投開票所回報。')}</span></div>` : `
-      <div class="read"><span class="k">${tx('Counted', '已開')}</span><span class="v">${tx(`<b class="num">${comma(v.n)}</b> of ${comma(race.stations)} stations (${(100 * v.frac).toFixed(1)}%) · so far`, `${comma(race.stations)} 所中已開 <b class="num">${comma(v.n)}</b> 所（${(100 * v.frac).toFixed(1)}%）· 目前`)} ${v.rows.map(r => `${esc(r.c.name)} ${(100 * r.counted).toFixed(1)}%`).join(' · ')}</span></div>
-      <div class="read"><span class="k">${tx('Projected lead', '預估領先')}</span><span class="v">${tx(`${esc(v.order[0].c.name)} over ${esc(v.order[1].c.name)} by <b class="num">${(100 * v.lead).toFixed(1)} pts</b> (± ${(128.16 * v.lsd).toFixed(1)} at 80%)`, `${esc(v.order[0].c.name)} 領先 ${esc(v.order[1].c.name)} <b class="num">${(100 * v.lead).toFixed(1)}</b> 個百分點（80% 區間 ± ${(128.16 * v.lsd).toFixed(1)}）`)}${v.cert ? tx(' — decided: the lead is larger than every elector still out', ' — 確定：領先票數大於所有尚未開票的選舉人') : ''}</span></div>`;
+        <span class="v num">${votes == null ? '—' : comma(votes)}</span><span class="p">${wait ? tx('chance —', '勝率 —', '贏面 —') : tx('chance to win ', '勝率 ', '贏面 ') + pctTxt(v.pw[k])}</span></div>`; };
+    const reads = v.pre ? `<div class="read"><span class="k">${tx('Status', '狀態')}</span><span class="v">${tx('No polling stations have reported yet.', '尚無投開票所回報。', '猶無投開票所回報。')}</span></div>` : `
+      <div class="read"><span class="k">${tx('Counted', '已開')}</span><span class="v">${tx(`<b class="num">${comma(v.n)}</b> of ${comma(race.stations)} stations (${(100 * v.frac).toFixed(1)}%) · so far`, `${comma(race.stations)} 所中已開 <b class="num">${comma(v.n)}</b> 所（${(100 * v.frac).toFixed(1)}%）· 目前`, `${comma(race.stations)} 所內底已開 <b class="num">${comma(v.n)}</b> 所（${(100 * v.frac).toFixed(1)}%）· 這馬`)} ${v.rows.map(r => `${esc(r.c.name)} ${(100 * r.counted).toFixed(1)}%`).join(' · ')}</span></div>
+      <div class="read"><span class="k">${tx('Projected lead', '預估領先')}</span><span class="v">${tx(`${esc(v.order[0].c.name)} over ${esc(v.order[1].c.name)} by <b class="num">${(100 * v.lead).toFixed(1)} pts</b> (± ${(128.16 * v.lsd).toFixed(1)} at 80%)`, `${esc(v.order[0].c.name)} 領先 ${esc(v.order[1].c.name)} <b class="num">${(100 * v.lead).toFixed(1)}</b> 個百分點（80% 區間 ± ${(128.16 * v.lsd).toFixed(1)}）`, `${esc(v.order[0].c.name)} 贏 ${esc(v.order[1].c.name)} <b class="num">${(100 * v.lead).toFixed(1)}</b> 个百分點（80% 區間 ± ${(128.16 * v.lsd).toFixed(1)}）`)}${v.cert ? tx(' — decided: the lead is larger than every elector still out', ' — 確定：領先票數大於所有尚未開票的選舉人', ' — 確定：贏的票數比所有猶未開票的選舉人閣較濟') : ''}</span></div>`;
     detail.innerHTML = `
-      <div class="dhead"><h3>${esc(race.label || race.area)}</h3><span class="sub">${tx('three-way race · the dial shows the two likeliest winners', '三強鼎立 · 指針顯示最可能勝選的兩人')}</span></div>
+      <div class="dhead"><h3>${esc(race.label || race.area)}</h3><span class="sub">${tx('three-way race · the dial shows the two likeliest winners', '三強鼎立 · 指針顯示最可能勝選的兩人', '三強鼎立 · 指針顯示上有可能當選的兩人')}</span></div>
       <div class="detail">
         <div class="panel" style="padding:12px">
           <div class="bigdial">${dial(pp.pr, { pre: wait, pb: pp.p }, true, null)}</div>
-          <div class="verdict"><span class="big">${v.pre ? tx('Waiting for the first station', '等待第一個投開票所') : v.early ? tx(`${v.n} station${v.n > 1 ? 's' : ''} in: too few for a win chance`, `已開 ${v.n} 所：票數太少，暫不估勝率`) : v.cert ? `${esc(pp.lead.name)} — ${tx('decided', '確定')}` : `${esc(pp.lead.name)} ${pctTxt(pp.q)} · ${Ll(sq.label)}`}</span>
-            <span class="small">${v.pre ? tx(`three-way race with ${esc(pp.third.name)}`, `三強鼎立，另有 ${esc(pp.third.name)}`) : v.early ? tx(`In a three-way race the dial starts at the 5th station: one or two stations say little about ${esc(pp.third.name)}'s level, which has no earlier election to compare with.`, `三強選舉的指針從第 5 所開出後才啟動：${esc(pp.third.name)} 沒有過去的選舉可比較，一兩所的票數說明不了什麼。`) : tx(`<b style="color:${tone(pp.third)}">${esc(pp.third.name)}</b>, third most likely: ${pctTxt(pp.pt)} to win. The dial splits the other ${pctTxt(1 - pp.pt)} between the two.`, `<b style="color:${tone(pp.third)}">${esc(pp.third.name)}</b> 為第三可能：勝率 ${pctTxt(pp.pt)}。指針把其餘 ${pctTxt(1 - pp.pt)} 分給這兩人。`)}</span></div>
+          <div class="verdict"><span class="big">${v.pre ? tx('Waiting for the first station', '等待第一個投開票所', '等第一个投開票所') : v.early ? tx(`${v.n} station${v.n > 1 ? 's' : ''} in: too few for a win chance`, `已開 ${v.n} 所：票數太少，暫不估勝率`, `已開 ${v.n} 所：票傷少，先無估贏面`) : v.cert ? `${esc(pp.lead.name)} — ${tx('decided', '確定')}` : `${esc(pp.lead.name)} ${pctTxt(pp.q)} · ${Ll(sq.label)}`}</span>
+            <span class="small">${v.pre ? tx(`three-way race with ${esc(pp.third.name)}`, `三強鼎立，另有 ${esc(pp.third.name)}`, `三強鼎立，猶有 ${esc(pp.third.name)}`) : v.early ? tx(`In a three-way race the dial starts at the 5th station: one or two stations say little about ${esc(pp.third.name)}'s level, which has no earlier election to compare with.`, `三強選舉的指針從第 5 所開出後才啟動：${esc(pp.third.name)} 沒有過去的選舉可比較，一兩所的票數說明不了什麼。`, `三強選舉的指針愛等第 5 所開出來才會振動：${esc(pp.third.name)} 無過去的選舉通比，一兩所的票數講無啥。`) : tx(`<b style="color:${tone(pp.third)}">${esc(pp.third.name)}</b>, third most likely: ${pctTxt(pp.pt)} to win. The dial splits the other ${pctTxt(1 - pp.pt)} between the two.`, `<b style="color:${tone(pp.third)}">${esc(pp.third.name)}</b> 為第三可能：勝率 ${pctTxt(pp.pt)}。指針把其餘 ${pctTxt(1 - pp.pt)} 分給這兩人。`, `<b style="color:${tone(pp.third)}">${esc(pp.third.name)}</b> 是第三有可能的：贏面 ${pctTxt(pp.pt)}。指針共賰的 ${pctTxt(1 - pp.pt)} 分予這兩人。`)}</span></div>
           <div class="duo">${side(pp.li, false)}${side(pp.ri, true)}</div>
           <div class="tsub" style="margin-top:10px">${tx('Projected share of the vote', '預估得票率')}</div>
           ${v.pre ? '<div class="muted">—</div>' : bars3(v, true)}
           <div class="reads" style="margin-top:6px">${reads}</div>
         </div>
         <div class="panel">
-          <h2>${tx('Chance to win over the night', '整晚勝率變化')}</h2>${chartP3(race)}
-          <h2>${tx('Projected shares over the night', '整晚預估得票率變化')}</h2>${chart3(race)}
-          <p class="note muted" style="margin:0;font-size:12px">${tx(`${esc(race.third.name)} has no earlier election to compare with, so their share is projected from the counted stations in each district, adjusted for station size (larger stations leaned more to them in 2024); the other two from the swing since 2020. Win chances come from the same projection and its uncertainty. They can't be checked well: eight three-way counties on one night.`, `${esc(race.third.name)} 沒有過去的選舉可比較，其得票率依各區已開投開票所推估，並依投開票所規模調整（2024 年規模較大的投開票所較支持他）；另外兩人依 2020 年以來的擺盪推估。勝率來自同一推估及其不確定性，但無法充分驗證：只有一晚、八個三強縣市。`)}</p>
+          <h2>${tx('Chance to win over the night', '整晚勝率變化', '規暗的贏面變化')}</h2>${chartP3(race)}
+          <h2>${tx('Projected shares over the night', '整晚預估得票率變化', '規暗的預估得票率變化')}</h2>${chart3(race)}
+          <p class="note muted" style="margin:0;font-size:12px">${tx(`${esc(race.third.name)} has no earlier election to compare with, so their share is projected from the counted stations in each district, adjusted for station size (larger stations leaned more to them in 2024); the other two from the swing since 2020. Win chances come from the same projection and its uncertainty. They can't be checked well: eight three-way counties on one night.`, `${esc(race.third.name)} 沒有過去的選舉可比較，其得票率依各區已開投開票所推估，並依投開票所規模調整（2024 年規模較大的投開票所較支持他）；另外兩人依 2020 年以來的擺盪推估。勝率來自同一推估及其不確定性，但無法充分驗證：只有一晚、八個三強縣市。`, `${esc(race.third.name)} 無過去的選舉通比，伊的得票率是照各區已開的投開票所推算，閣照投開票所的大細調整（2024 年較大的投開票所較支持伊）；另外兩人照 2020 年以來的擺盪推算。贏面是對仝一个推算佮伊的無確定性來的，毋過無法度好好仔驗證：干焦一暗、八个三強縣市。`)}</p>
           ${watch(race)}
         </div>
       </div>`;
@@ -1005,7 +1023,7 @@ const DATA = /*__DATA__*/null;
     const t0 = pts[0][C.t] - 5, t1 = Math.max(pts[pts.length - 1][C.t], t0 + 10), cs = [race.blue, race.other, race.third];
     const x = t => L + (t - t0) / (t1 - t0) * (W - L - Rr), y = q => T + (1 - q) * (H - T - B);
     const rows = pts.filter(p => p[C.t] <= st.t && p.length > C.p3d && p[d ? C.p3d : C.p3] != null);
-    let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${tx("Each candidate's chance to win over the night", '各候選人整晚勝率變化')}">`;
+    let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${tx("Each candidate's chance to win over the night", '各候選人整晚勝率變化', '逐个候選人規暗的贏面變化')}">`;
     s += `<g class="grid">${[0, 0.25, 0.5, 0.75, 1].map(q => `<line x1="${L}" x2="${W - Rr}" y1="${y(q)}" y2="${y(q)}"/>`).join('')}</g>`;
     s += [0, 0.5, 1].map(q => `<text x="${L - 6}" y="${y(q) + (q === 1 ? 8 : q === 0 ? -2 : 4)}" text-anchor="end" style="fill:var(--muted)">${100 * q}%</text>`).join('');
     s += ticks(t0, t1, x, H - B);
@@ -1034,7 +1052,7 @@ const DATA = /*__DATA__*/null;
     if (cec) { rows.push({ label: '中選會', en: 'CEC count', cohort: 'reliable', v: cec, age: 0 }); reliable.push({ v: cec, label: '中選會' }); }
     for (const src of race.sources || []) {
       const r = srcAt(src, st.t);
-      if (!r || r.age > (src.stale || 10)) { rows.push({ label: src.label, en: src.en, cohort: src.cohort, v: null, why: r ? tx(`last reading ${Math.round(r.age)} min ago`, `最後讀數 ${Math.round(r.age)} 分鐘前`) : (src.ends != null && st.t > src.ends ? tx('switched to the CEC feed', '已改用中選會資料') : tx('no reading yet', '尚無讀數')) }); continue; }
+      if (!r || r.age > (src.stale || 10)) { rows.push({ label: src.label, en: src.en, cohort: src.cohort, v: null, why: r ? tx(`last reading ${Math.round(r.age)} min ago`, `最後讀數 ${Math.round(r.age)} 分鐘前`, `上尾的讀數 ${Math.round(r.age)} 分鐘前`) : (src.ends != null && st.t > src.ends ? tx('switched to the CEC feed', '已改用中選會資料', '已經改用中選會的資料') : tx('no reading yet', '尚無讀數', '猶無讀數')) }); continue; }
       rows.push({ label: src.label, en: src.en, cohort: src.cohort, v: r.v, age: r.age });
       (src.cohort === 'reliable' ? reliable : field).push({ v: r.v, label: src.label });
     }
@@ -1047,7 +1065,7 @@ const DATA = /*__DATA__*/null;
   function watch(race) {
     if (race.third == null || !cur().races.some(r => r.sources)) return ''; // 2024 only: no channel counts read for other nights
     const W = watchData(race);
-    if (!W.p) return `<div class="watch"><h2>${tx('Count watch', '開票數字監看')}</h2><p class="muted" style="margin:0;font-size:13px">${tx('No counts yet.', '尚無票數。')}</p></div>`;
+    if (!W.p) return `<div class="watch"><h2>${tx('Count watch', '開票數字監看')}</h2><p class="muted" style="margin:0;font-size:13px">${tx('No counts yet.', '尚無票數。', '猶無票數。')}</p></div>`;
     const order = [1, 0, 2].filter(i => W.cands[i]); // 賴, 侯, 柯 (ballot order would be 柯, 賴, 侯)
     const scale = Math.max(1, ...order.map(i => Math.max(W.proj ? W.proj[i].hi : 0, W.floor[i] ? W.floor[i].v : 0, W.fld[i] ? W.fld[i].max : 0))) * 1.04;
     const pc = v => `${Math.max(0, Math.min(100, 100 * v / scale)).toFixed(2)}%`;
@@ -1056,8 +1074,8 @@ const DATA = /*__DATA__*/null;
       return `<div class="wrow">
         <div class="whead"><span class="nm" style="color:${tone(c)}">${esc(c.name)}</span>
           <span class="wf"><label>${tx('Floor', '下限')}</label><b class="num${over(f && f.v, i) ? ' over' : ''}">${f ? comma(f.v) : '—'}</b><small>${f ? esc(f.src) : ''}</small></span>
-          ${race.sources && race.sources.some(s => s.cohort === 'field') ? `<span class="wf"><label>${tx('Field', '其他頻道')}</label><b class="num${over(fd && fd.mean, i) ? ' over' : ''}">${fd ? comma(fd.mean) : '—'}</b><small>${fd ? (fd.n > 1 ? `${comma(fd.min)}–${comma(fd.max)}` : tx('1 channel', '1 台')) : tx('no reading', '無讀數')}</small></span>` : ''}
-          <span class="wf"><label>${tx('Projected final', '預估最終')}</label><b class="num">${pr ? comma(pr.m) : '—'}</b><small>${pr ? `${comma(pr.lo)}–${comma(pr.hi)}` : ''}</small></span></div>
+          ${race.sources && race.sources.some(s => s.cohort === 'field') ? `<span class="wf"><label>${tx('Field', '其他頻道', '其他電視台')}</label><b class="num${over(fd && fd.mean, i) ? ' over' : ''}">${fd ? comma(fd.mean) : '—'}</b><small>${fd ? (fd.n > 1 ? `${comma(fd.min)}–${comma(fd.max)}` : tx('1 channel', '1 台')) : tx('no reading', '無讀數')}</small></span>` : ''}
+          <span class="wf"><label>${tx('Projected final', '預估最終', '預估上尾')}</label><b class="num">${pr ? comma(pr.m) : '—'}</b><small>${pr ? `${comma(pr.lo)}–${comma(pr.hi)}` : ''}</small></span></div>
         <div class="wbar" role="img" aria-label="${esc(c.name)}: floor ${f ? comma(f.v) : 'none'}${fd ? ', field ' + comma(fd.mean) : ''}${pr ? ', projected final ' + comma(pr.m) : ''}">
           ${pr ? `<div class="prj" style="left:${pc(pr.lo)};width:calc(${pc(pr.hi)} - ${pc(pr.lo)})"></div><div class="prm" style="left:${pc(pr.m)}"></div>` : ''}
           <div class="fl" style="width:${f ? pc(f.v) : '0%'};background:${tone(c)}"></div>
@@ -1070,10 +1088,10 @@ const DATA = /*__DATA__*/null;
     const nat = race.area === '全國';
     return `<div class="watch">
       <h2>${tx('Count watch at', '開票數字監看')} ${clockTxt(st.t)}</h2>
-      <div class="wkey"><span><i class="k-fl"></i>${tx('floor: highest reliable count', '下限：可靠來源中的最高票數')}</span>${race.sources && race.sources.some(s => s.cohort === 'field') ? `<span><i class="k-band"></i>${tx('field: other channels, range and mean', '其他頻道：範圍與平均')}</span>` : ''}<span><i class="k-prj"></i>${tx('projected final, 80% range', '預估最終票數，80% 區間')}</span></div>
+      <div class="wkey"><span><i class="k-fl"></i>${tx('floor: highest reliable count', '下限：可靠來源中的最高票數', '下限：可靠來源內底上懸的票數')}</span>${race.sources && race.sources.some(s => s.cohort === 'field') ? `<span><i class="k-band"></i>${tx('field: other channels, range and mean', '其他頻道：範圍與平均', '其他電視台：範圍佮平均')}</span>` : ''}<span><i class="k-prj"></i>${tx('projected final, 80% range', '預估最終票數，80% 區間', '預估上尾的票數，80% 區間')}</span></div>
       ${bars}
-      <details><summary>${tx('Readings by source', '各來源讀數')}</summary><div class="tbl">${table}</div></details>
-      <p class="note muted" style="margin:0;font-size:12px">${nat ? tx('Reliable: 中選會, 公視 (own count), 華視. Field: 三立, TVBS. ', '可靠來源：中選會、公視（自行計票）、華視。其他頻道：三立、TVBS。') : race.sources ? tx("County counts: 中選會 and 華視's rotating county panel (read off the recording; a reading can be up to 15 minutes old, and some misreads were dropped). From about 18:15 華視 showed the CEC's numbers. ", '縣市票數：中選會與華視輪播的縣市面板（從錄影辨識；讀數最多可能晚 15 分鐘，部分誤讀已剔除）。約 18:15 起華視改播中選會數字。') : tx("No channel's county numbers were read for this county; the floor is the CEC count. ", '此縣市沒有讀取到電視台的票數；下限即中選會票數。')}<span style="color:var(--stamp);font-weight:700">${tx('Red', '紅字')}</span>${tx(': above the top of the projected 80% range, more than the count can plausibly reach.', '：高於預估 80% 區間上限，超出票數合理可能達到的範圍。')}</p>
+      <details><summary>${tx('Readings by source', '各來源讀數', '逐个來源的讀數')}</summary><div class="tbl">${table}</div></details>
+      <p class="note muted" style="margin:0;font-size:12px">${nat ? tx('Reliable: 中選會, 公視 (own count), 華視. Field: 三立, TVBS. ', '可靠來源：中選會、公視（自行計票）、華視。其他頻道：三立、TVBS。', '可靠來源：中選會、公視（家己算票）、華視。其他電視台：三立、TVBS。') : race.sources ? tx("County counts: 中選會 and 華視's rotating county panel (read off the recording; a reading can be up to 15 minutes old, and some misreads were dropped). From about 18:15 華視 showed the CEC's numbers. ", '縣市票數：中選會與華視輪播的縣市面板（從錄影辨識；讀數最多可能晚 15 分鐘，部分誤讀已剔除）。約 18:15 起華視改播中選會數字。', '縣市票數：中選會佮華視輪流播的縣市面板（對錄影辨識；讀數上濟可能慢 15 分鐘，有一寡看毋著的已經提掉）。差不多 18:15 起，華視改播中選會的數字。') : tx("No channel's county numbers were read for this county; the floor is the CEC count. ", '此縣市沒有讀取到電視台的票數；下限即中選會票數。', '這个縣市無讀著電視台的票數；下限就是中選會的票數。')}<span style="color:var(--stamp);font-weight:700">${tx('Red', '紅字')}</span>${tx(': above the top of the projected 80% range, more than the count can plausibly reach.', '：高於預估 80% 區間上限，超出票數合理可能達到的範圍。', '：比預估 80% 區間的上限閣較懸，超過票數合理會當到的範圍。')}</p>
     </div>`;
   }
   function chartT(race) {
@@ -1088,7 +1106,7 @@ const DATA = /*__DATA__*/null;
     let lo = Math.min(...vals) - 1, hi = Math.max(...vals) + 1;
     const step = tickStep(lo, hi, 4); lo = Math.floor(lo / step) * step; hi = Math.ceil(hi / step) * step;
     const x = t => L + (t - t0) / (t1 - t0) * (W - L - Rr), y = v => T + (hi - Math.max(lo, Math.min(hi, v))) / (hi - lo) * (H - T - B);
-    let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${tx('Projected turnout over the night', '整晚預估投票率變化')}">`;
+    let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${tx('Projected turnout over the night', '整晚預估投票率變化', '規暗的預估投票率變化')}">`;
     const gy = []; for (let v = lo; v <= hi + step / 2; v += step) gy.push(+v.toFixed(1));
     s += `<g class="grid">${gy.map(v => `<line x1="${L}" x2="${W - Rr}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${v}%</text>`).join('')}</g>`;
     s += `<line class="prev" x1="${L}" x2="${W - Rr}" y1="${y(prev)}" y2="${y(prev)}"/><text x="${W - Rr - 4}" y="${y(prev) - 5}" text-anchor="end">last time ${prev.toFixed(1)}%</text>`;
@@ -1105,25 +1123,25 @@ const DATA = /*__DATA__*/null;
   }
   function renderTurnoutDetail(race) {
     const tv = tview(race, st.t), night = NIGHTS[st.night], prevYear = night.previous.slice(0, 4), prevPres = night.previous.includes('president');
-    const reads = tv.pre ? `<div class="read"><span class="k">${tx('Status', '狀態')}</span><span class="v">${tx(`No polling stations have reported yet. Last time: ${(100 * tv.prev).toFixed(1)}%.`, `尚無投開票所回報。上次：${(100 * tv.prev).toFixed(1)}%。`)}</span></div>` : `
-      <div class="read"><span class="k">${tx('Counted', '已開')}</span><span class="v">${tx(`<b class="num">${comma(tv.n)}</b> of ${comma(race.stations)} stations (${(100 * tv.frac).toFixed(1)}%) · ${comma(tv.counted)} ballots`, `${comma(race.stations)} 所中已開 <b class="num">${comma(tv.n)}</b> 所（${(100 * tv.frac).toFixed(1)}%）· ${comma(tv.counted)} 票`)}</span></div>
-      <div class="read"><span class="k">${tx('At those stations', '這些投開票所')}</span><span class="v">${tv.inTurnout == null ? '—' : tx((100 * tv.inTurnout).toFixed(1) + '% of their electors voted', '投票率 ' + (100 * tv.inTurnout).toFixed(1) + '%')}</span></div>
-      <div class="read"><span class="k">${tx('Ballots counted', '已開票數')}</span><span class="v">${tx(`an estimated <b class="num">${Math.min(100, 100 * tv.shareCounted).toFixed(0)}%</b> of the expected ${comma(tv.expect)}`, `估計已開預期 ${comma(tv.expect)} 票的 <b class="num">${Math.min(100, 100 * tv.shareCounted).toFixed(0)}%</b>`)}</span></div>
+    const reads = tv.pre ? `<div class="read"><span class="k">${tx('Status', '狀態')}</span><span class="v">${tx(`No polling stations have reported yet. Last time: ${(100 * tv.prev).toFixed(1)}%.`, `尚無投開票所回報。上次：${(100 * tv.prev).toFixed(1)}%。`, `猶無投開票所回報。頂擺：${(100 * tv.prev).toFixed(1)}%。`)}</span></div>` : `
+      <div class="read"><span class="k">${tx('Counted', '已開')}</span><span class="v">${tx(`<b class="num">${comma(tv.n)}</b> of ${comma(race.stations)} stations (${(100 * tv.frac).toFixed(1)}%) · ${comma(tv.counted)} ballots`, `${comma(race.stations)} 所中已開 <b class="num">${comma(tv.n)}</b> 所（${(100 * tv.frac).toFixed(1)}%）· ${comma(tv.counted)} 票`, `${comma(race.stations)} 所內底已開 <b class="num">${comma(tv.n)}</b> 所（${(100 * tv.frac).toFixed(1)}%）· ${comma(tv.counted)} 票`)}</span></div>
+      <div class="read"><span class="k">${tx('At those stations', '這些投開票所', '這寡投開票所')}</span><span class="v">${tv.inTurnout == null ? '—' : tx((100 * tv.inTurnout).toFixed(1) + '% of their electors voted', '投票率 ' + (100 * tv.inTurnout).toFixed(1) + '%')}</span></div>
+      <div class="read"><span class="k">${tx('Ballots counted', '已開票數')}</span><span class="v">${tx(`an estimated <b class="num">${Math.min(100, 100 * tv.shareCounted).toFixed(0)}%</b> of the expected ${comma(tv.expect)}`, `估計已開預期 ${comma(tv.expect)} 票的 <b class="num">${Math.min(100, 100 * tv.shareCounted).toFixed(0)}%</b>`, `估計預期的 ${comma(tv.expect)} 票已經開 <b class="num">${Math.min(100, 100 * tv.shareCounted).toFixed(0)}%</b>`)}</span></div>
       <div class="read"><span class="k">${prevYear}</span><span class="v">${tx(`${(100 * tv.prev).toFixed(1)}% turnout in the ${prevPres ? 'presidential' : 'mayoral'} race`, `${prevPres ? '總統' : '縣市長'}選舉投票率 ${(100 * tv.prev).toFixed(1)}%`)}</span></div>`;
     detail.innerHTML = `
       <div class="dhead"><h3>${esc(race.area)} · ${tx('turnout', '投票率')}</h3><span class="sub">${tx(`${comma(race.electors)} electors`, `選舉人 ${comma(race.electors)}`)}</span></div>
       <div class="detail">
         <div class="panel" style="padding:16px">
-          <div class="tsub">${tx('Projected final turnout', '預估最終投票率')}</div>
+          <div class="tsub">${tx('Projected final turnout', '預估最終投票率', '預估上尾的投票率')}</div>
           <div class="tbig">${tv.pre ? '—' : (100 * tv.proj).toFixed(1) + '%'}</div>
-          <div class="tsub">${tv.pre ? tx('waiting for the first station', '等待第一個投開票所') : `${tx('80% range', '80% 區間')} ${(100 * tv.lo).toFixed(1)}–${(100 * tv.hi).toFixed(1)}% · <span class="chg ${tv.chg >= 0 ? 'up' : 'down'}">${pts1(tv.chg)} ${tx('pts', '點')}</span> ${tx('vs', '相較')} ${prevYear}`}</div>
+          <div class="tsub">${tv.pre ? tx('waiting for the first station', '等待第一個投開票所', '等第一个投開票所') : `${tx('80% range', '80% 區間')} ${(100 * tv.lo).toFixed(1)}–${(100 * tv.hi).toFixed(1)}% · <span class="chg ${tv.chg >= 0 ? 'up' : 'down'}">${pts1(tv.chg)} ${tx('pts', '點')}</span> ${tx('vs', '相較', '比')} ${prevYear}`}</div>
           ${tbar(tv)}
           <div class="reads" style="margin-top:6px">${reads}</div>
         </div>
         <div class="panel">
-          <h2>${tx('Projected turnout over the night', '整晚預估投票率變化')}</h2>${chartT(race)}
-          <div class="legend"><span><i></i>${tx('projected final turnout', '預估最終投票率')}</span><span><i class="band"></i>${tx('80% range', '80% 區間')}</span><span><i class="cnt"></i>${tx('turnout at stations counted so far', '已開投開票所的投票率')}</span><span><i style="border-top:2px dashed var(--muted)"></i>${tx(`${prevYear} turnout`, `${prevYear} 年投票率`)}</span></div>
-          <p class="note muted" style="margin:0;font-size:12px">${tx('Stations that report early can differ from the rest (in 2022 they had noticeably lower turnout), so turnout at the stations counted so far isn\'t the projection: the projection compares each counted station with its own past turnout and applies that to the stations still out.', '較早回報的投開票所可能與其他所不同（2022 年明顯較低），所以已開投開票所的投票率不等於預估：預估是把每個已開投開票所與它自己過去的投票率比較，再套用到尚未開出的投開票所。')}</p>
+          <h2>${tx('Projected turnout over the night', '整晚預估投票率變化', '規暗的預估投票率變化')}</h2>${chartT(race)}
+          <div class="legend"><span><i></i>${tx('projected final turnout', '預估最終投票率', '預估上尾的投票率')}</span><span><i class="band"></i>${tx('80% range', '80% 區間')}</span><span><i class="cnt"></i>${tx('turnout at stations counted so far', '已開投開票所的投票率')}</span><span><i style="border-top:2px dashed var(--muted)"></i>${tx(`${prevYear} turnout`, `${prevYear} 年投票率`)}</span></div>
+          <p class="note muted" style="margin:0;font-size:12px">${tx('Stations that report early can differ from the rest (in 2022 they had noticeably lower turnout), so turnout at the stations counted so far isn\'t the projection: the projection compares each counted station with its own past turnout and applies that to the stations still out.', '較早回報的投開票所可能與其他所不同（2022 年明顯較低），所以已開投開票所的投票率不等於預估：預估是把每個已開投開票所與它自己過去的投票率比較，再套用到尚未開出的投開票所。', '較早回報的投開票所可能佮其他的無仝（2022 年明顯較低），所以已開投開票所的投票率毋是預估：預估是共逐个已開的投開票所佮伊家己過去的投票率比，才閣套用到猶未開的投開票所。')}</p>
         </div>
       </div>`;
     jstate.v = null;
@@ -1251,21 +1269,21 @@ const DATA = /*__DATA__*/null;
   function cTally(cs) {
     return `<div class="tally">${CGROUPS.filter(([g]) => cs.seats[g].won + cs.seats[g].lead > 0).sort((a, b) => (cs.seats[b[0]].won + cs.seats[b[0]].lead) - (cs.seats[a[0]].won + cs.seats[a[0]].lead)).map(([g, nm]) => {
       const x = cs.seats[g]; return `<div class="p"><span class="k"><i style="background:var(--${g})"></i>${nm}</span><span class="v">${x.won + x.lead}</span><span class="s">${tx(`${x.won} decided`, `${x.won} 席確定`)}</span></div>`; }).join('')}
-      ${cs.wait ? `<div class="p"><span class="k"><i style="background:${hatchBg}"></i>${tx('not counting yet', '尚未開票')}</span><span class="v">${cs.wait}</span><span class="s">${tx('seats', '席')}</span></div>` : ''}</div>`;
+      ${cs.wait ? `<div class="p"><span class="k"><i style="background:${hatchBg}"></i>${tx('not counting yet', '尚未開票', '猶未開票')}</span><span class="v">${cs.wait}</span><span class="s">${tx('seats', '席')}</span></div>` : ''}</div>`;
   }
-  const cKey = () => `<div class="nkey"><span><i></i>${tx('decided', '確定')}</span><span><i style="opacity:.42"></i>${tx('leading, not decided', '暫時領先')}</span><span><i style="background:${hatchBg}"></i>${tx('no stations counted yet', '尚未開票')}</span></div>`;
+  const cKey = () => `<div class="nkey"><span><i></i>${tx('decided', '確定')}</span><span><i style="opacity:.42"></i>${tx('leading, not decided', '暫時領先', '暫時贏')}</span><span><i style="background:${hatchBg}"></i>${tx('no stations counted yet', '尚未開票', '猶未開票')}</span></div>`;
   function councilWait() {
     if (COUNCIL[st.night]) return false;
-    nation.innerHTML = `<div class="loading">${tx('Loading the council count…', '載入議員開票資料…')}</div>`; cards.innerHTML = ''; detail.innerHTML = ''; mapEl.innerHTML = '';
-    loadCouncil(st.night).then(render).catch(e => { nation.innerHTML = `<div class="loading">${tx(`Couldn't load the council data (${esc(e.message)}). The page reads it from files published next to it, so open it from the site, not as a saved file.`, `無法載入議員資料（${esc(e.message)}）。資料檔與本頁一起發布，請從網站開啟，而非存檔後開啟。`)}</div>`; });
+    nation.innerHTML = `<div class="loading">${tx('Loading the council count…', '載入議員開票資料…', '咧載入議員開票資料…')}</div>`; cards.innerHTML = ''; detail.innerHTML = ''; mapEl.innerHTML = '';
+    loadCouncil(st.night).then(render).catch(e => { nation.innerHTML = `<div class="loading">${tx(`Couldn't load the council data (${esc(e.message)}). The page reads it from files published next to it, so open it from the site, not as a saved file.`, `無法載入議員資料（${esc(e.message)}）。資料檔與本頁一起發布，請從網站開啟，而非存檔後開啟。`, `議員資料載入袂起來（${esc(e.message)}）。資料檔佮這頁做伙發佈，請對網站拍開，毋通存檔了後才開。`)}</div>`; });
     return true;
   }
   function renderCouncilNation() {
     if (councilWait()) return;
     const all = cstate()[''];
-    nation.innerHTML = `<div style="display:grid;gap:10px;min-width:0"><h2>${tx(`Council seats if counting stopped at ${clockTxt(st.t)} · all ${all.total} seats in 22 councils`, `${clockTxt(st.t)} 若停止開票的議員席次 · 22 縣市共 ${all.total} 席`)}</h2>
+    nation.innerHTML = `<div style="display:grid;gap:10px;min-width:0"><h2>${tx(`Council seats if counting stopped at ${clockTxt(st.t)} · all ${all.total} seats in 22 councils`, `${clockTxt(st.t)} 若停止開票的議員席次 · 22 縣市共 ${all.total} 席`, `${clockTxt(st.t)} 若停止開票的議員席次 · 22 縣市總共 ${all.total} 席`)}</h2>
       ${cBar(all, false, false)}${cKey()}${cTally(all)}
-      <p class="note muted" style="margin:0;font-size:12px">${tx('A seat is decided once no split of the votes still out could change who holds it; the women\'s quota is applied throughout.', '剩餘票數無論如何分配都無法改變當選人時，該席即為確定；全程計入婦女保障名額。')}</p></div>`;
+      <p class="note muted" style="margin:0;font-size:12px">${tx('A seat is decided once no split of the votes still out could change who holds it; the women\'s quota is applied throughout.', '剩餘票數無論如何分配都無法改變當選人時，該席即為確定；全程計入婦女保障名額。', '賰的票按怎分攏改變袂著當選人的時，彼席就算確定；規个過程攏有算婦女保障名額。')}</p></div>`;
   }
   function renderCouncilCards() {
     if (!COUNCIL[st.night]) return;
@@ -1276,7 +1294,7 @@ const DATA = /*__DATA__*/null;
       return `<button class="card" data-area="${esc(c.area)}" aria-pressed="${c.area === st.area}">
         <span class="top"><span class="area">${esc(c.area)}</span><span class="pct">${cs.frac > 0 ? (100 * cs.frac).toFixed(0) + '%' : '—'}</span></span>
         ${cBar(cs, true, false)}
-        <span class="clead">${cs.counting ? lead : `<span class="muted">${tx(`${cs.total} seats · not counting yet`, `${cs.total} 席 · 尚未開票`)}</span>`}</span></button>`; }).join('');
+        <span class="clead">${cs.counting ? lead : `<span class="muted">${tx(`${cs.total} seats · not counting yet`, `${cs.total} 席 · 尚未開票`, `${cs.total} 席 · 猶未開票`)}</span>`}</span></button>`; }).join('');
   }
   function renderCouncilMap() {
     if (!COUNCIL[st.night]) return;
@@ -1284,7 +1302,7 @@ const DATA = /*__DATA__*/null;
     const hatch = `<pattern id="h-wait" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="var(--ind)" fill-opacity="0.12"/><line x1="0" y1="0" x2="0" y2="5" stroke="var(--ind)" stroke-width="2" stroke-opacity="0.6"/></pattern>`;
     for (const [area, d] of Object.entries(M.counties)) {
       const cs = C2[area]; let fill = 'var(--rule)', op = 1, label = area;
-      if (cs && !cs.counting) { fill = 'url(#h-wait)'; label = `${area}: ${tx('not counting yet', '尚未開票')}`; }
+      if (cs && !cs.counting) { fill = 'url(#h-wait)'; label = `${area}: ${tx('not counting yet', '尚未開票', '猶未開票')}`; }
       else if (cs) { const g = cs.rank[0], n = cs.seats[g].won + cs.seats[g].lead; fill = `var(--${g})`; op = 0.22 + 0.78 * cs.decided / cs.total;
         label = `${area}: ${cname(g)} ${n} / ${cs.total} · ${tx(`${cs.decided} decided`, `${cs.decided} 席確定`)}`; }
       paths += `<path class="c${area === st.area ? ' sel' : ''}" data-area="${esc(area)}" d="${d}" fill="${fill}" fill-opacity="${op}"><title>${esc(label)}</title></path>`;
@@ -1294,8 +1312,8 @@ const DATA = /*__DATA__*/null;
   }
   function distBlock(d, s, i) {
     const towns = d.towns.length > 4 ? d.towns.slice(0, 3).join('、') + ` +${d.towns.length - 3}` : d.towns.join('、');
-    const prog = s.pre ? tx('no stations yet', '尚未開票') : tx(`${(100 * s.frac).toFixed(0)}% of ${comma(d.stations)} stations · ${s.decided ? 'all decided' : `${s.safe.size} of ${d.seats} decided`}`,
-      `${comma(d.stations)} 所已開 ${(100 * s.frac).toFixed(0)}% · ${s.decided ? '全部確定' : `${s.safe.size}/${d.seats} 席確定`}`);
+    const prog = s.pre ? tx('no stations yet', '尚未開票', '猶未開票') : tx(`${(100 * s.frac).toFixed(0)}% of ${comma(d.stations)} stations · ${s.decided ? 'all decided' : `${s.safe.size} of ${d.seats} decided`}`,
+      `${comma(d.stations)} 所已開 ${(100 * s.frac).toFixed(0)}% · ${s.decided ? '全部確定' : `${s.safe.size}/${d.seats} 席確定`}`, `${comma(d.stations)} 所已開 ${(100 * s.frac).toFixed(0)}% · ${s.decided ? '攏確定' : `${s.safe.size}/${d.seats} 席確定`}`);
     const head = `<div class="dh"><b>${esc(d.name)}${d.seat_type && d.seat_type !== '區域' && d.seat_type !== d.name ? ' · ' + esc(d.seat_type) : ''}</b><span>${esc(towns)}</span>
       <span>${tx(`${d.seats} seat${d.seats > 1 ? 's' : ''}${d.women ? ` · ${d.women} for women` : ''}`, `應選 ${d.seats} 席${d.women ? `（婦女保障 ${d.women}）` : ''}`)} · ${prog}</span></div>`;
     if (s.pre) return `<div class="dist" id="d-${i}">${head}<div class="more">${tx(`${d.cands.length} candidates · ${comma(d.electors)} electors`, `${d.cands.length} 位候選人 · 選舉人 ${comma(d.electors)}`)}</div></div>`;
@@ -1304,8 +1322,8 @@ const DATA = /*__DATA__*/null;
     let rows = '';
     show.forEach((k, r) => {
       const c = d.cands[k], w = s.wonSet.has(k);
-      const tag = w ? (s.safe.has(k) ? `<span class="st won">${tx('elected', '當選')}</span>` : `<span class="st in">${tx('in', '暫列')}</span>`) + (s.quota.has(k) ? ` <span class="st q">${tx("women's seat", '婦女保障')}</span>` : '')
-        : s.displaced.has(k) ? `<span class="st q">${tx('displaced', '被排擠')}</span>` : '';
+      const tag = w ? (s.safe.has(k) ? `<span class="st won">${tx('elected', '當選')}</span>` : `<span class="st in">${tx('in', '暫列', '暫時排入')}</span>`) + (s.quota.has(k) ? ` <span class="st q">${tx("women's seat", '婦女保障')}</span>` : '')
+        : s.displaced.has(k) ? `<span class="st q">${tx('displaced', '被排擠', '予人擠掉')}</span>` : '';
       rows += `<tr class="${w ? '' : 'out'}"><td class="nm"><i style="background:var(--${c.tone})"></i>${esc(c.name)}</td><td class="pt">${esc(CSHORT[c.party] || c.party)}</td>
         <td class="v">${comma(s.v[k])}</td><td class="v">${s.tot ? (100 * s.v[k] / s.tot).toFixed(1) + '%' : '—'}</td><td>${tag}</td></tr>`;
       if (r === d.seats - 1 && r < show.length - 1) rows += '<tr class="line"><td colspan="5"></td></tr>';
@@ -1313,9 +1331,9 @@ const DATA = /*__DATA__*/null;
     const restV = rest.reduce((a, k) => a + s.v[k], 0);
     return `<div class="dist" id="d-${i}">${head}
       <table>${rows}</table>
-      ${rest.length ? `<div class="more">${tx(`+ ${rest.length} more candidate${rest.length > 1 ? 's' : ''}, ${comma(restV)} votes together`, `另有 ${rest.length} 位候選人，合計 ${comma(restV)} 票`)}</div>` : ''}
+      ${rest.length ? `<div class="more">${tx(`+ ${rest.length} more candidate${rest.length > 1 ? 's' : ''}, ${comma(restV)} votes together`, `另有 ${rest.length} 位候選人，合計 ${comma(restV)} 票`, `猶有 ${rest.length} 位候選人，總共 ${comma(restV)} 票`)}</div>` : ''}
       ${s.gap != null && !s.decided ? `<div class="gapline">${tx(`Seat line: <b>${comma(s.gap)}</b> votes between ${esc(d.cands[s.lastIn].name)} and ${esc(d.cands[s.firstOut].name)}; up to ${comma(s.R)} electors still out.`,
-        `當選邊緣：${esc(d.cands[s.lastIn].name)} 領先 ${esc(d.cands[s.firstOut].name)} <b>${comma(s.gap)}</b> 票；尚有至多 ${comma(s.R)} 名選舉人未開。`)}</div>` : ''}</div>`;
+        `當選邊緣：${esc(d.cands[s.lastIn].name)} 領先 ${esc(d.cands[s.firstOut].name)} <b>${comma(s.gap)}</b> 票；尚有至多 ${comma(s.R)} 名選舉人未開。`, `當選邊仔：${esc(d.cands[s.lastIn].name)} 贏 ${esc(d.cands[s.firstOut].name)} <b>${comma(s.gap)}</b> 票；猶有上濟 ${comma(s.R)} 名選舉人未開。`)}</div>` : ''}</div>`;
   }
   function renderCouncilDetail() {
     if (!COUNCIL[st.night]) return;
@@ -1323,9 +1341,9 @@ const DATA = /*__DATA__*/null;
     st.area = c.area; const cs = cstate()[c.area];
     detail.innerHTML = `
       <div class="dhead"><h3>${esc(c.area)}議會</h3><span class="sub">${tx(`${cs.total} seats in ${c.districts.length} districts · ${cs.decided} decided · ${cs.frac > 0 ? (100 * cs.frac).toFixed(0) + '% of stations counted' : 'not counting yet'}`,
-        `${c.districts.length} 個選區共 ${cs.total} 席 · ${cs.decided} 席確定 · ${cs.frac > 0 ? '投開票所已開 ' + (100 * cs.frac).toFixed(0) + '%' : '尚未開票'}`)}</span></div>
+        `${c.districts.length} 個選區共 ${cs.total} 席 · ${cs.decided} 席確定 · ${cs.frac > 0 ? '投開票所已開 ' + (100 * cs.frac).toFixed(0) + '%' : '尚未開票'}`, `${c.districts.length} 个選區總共 ${cs.total} 席 · ${cs.decided} 席確定 · ${cs.frac > 0 ? '投開票所已開 ' + (100 * cs.frac).toFixed(0) + '%' : '猶未開票'}`)}</span></div>
       ${cBar(cs, false, true)}
-      <div class="nkey"><span>${tx(`Line: half the seats (${Math.floor(cs.total / 2) + 1} for a majority)`, `中線：半數（過半需 ${Math.floor(cs.total / 2) + 1} 席）`)}</span></div>
+      <div class="nkey"><span>${tx(`Line: half the seats (${Math.floor(cs.total / 2) + 1} for a majority)`, `中線：半數（過半需 ${Math.floor(cs.total / 2) + 1} 席）`, `中線：一半（過半愛 ${Math.floor(cs.total / 2) + 1} 席）`)}</span></div>
       ${cTally(cs)}
       <h2>${tx('Districts', '選區')}</h2>
       <div class="dists">${c.districts.map((d, i) => distBlock(d, cs.ds[i], i)).join('')}</div>`;
@@ -1339,9 +1357,9 @@ const DATA = /*__DATA__*/null;
   }
   function legisWait() {
     if (LEGIS[st.night]) return false;
-    nation.innerHTML = `<div class="loading">${tx('Loading the legislative count…', '載入立委開票資料…')}</div>`; cards.innerHTML = ''; detail.innerHTML = ''; mapEl.innerHTML = '';
+    nation.innerHTML = `<div class="loading">${tx('Loading the legislative count…', '載入立委開票資料…', '咧載入立委開票資料…')}</div>`; cards.innerHTML = ''; detail.innerHTML = ''; mapEl.innerHTML = '';
     loadLegis(st.night).then(() => { const L2 = LEGIS[st.night]; if (!L2.races.some(r => r.area === st.area)) st.area = L2.races[0].area; render(); })
-      .catch(e => { nation.innerHTML = `<div class="loading">${tx(`Couldn't load the legislative data (${esc(e.message)}). Open the page from the site, not as a saved file.`, `無法載入立委資料（${esc(e.message)}）。請從網站開啟，而非存檔後開啟。`)}</div>`; });
+      .catch(e => { nation.innerHTML = `<div class="loading">${tx(`Couldn't load the legislative data (${esc(e.message)}). Open the page from the site, not as a saved file.`, `無法載入立委資料（${esc(e.message)}）。請從網站開啟，而非存檔後開啟。`, `立委資料載入袂起來（${esc(e.message)}）。請對網站拍開，毋通存檔了後才開。`)}</div>`; });
     return true;
   }
   const PTONE = { '民主進步黨': 'dpp', '中國國民黨': 'kmt', '台灣民眾黨': 'tpp', '時代力量': 'npp' };
@@ -1368,23 +1386,23 @@ const DATA = /*__DATA__*/null;
     if (waiting) bar += `<i class="wait" style="width:${100 * waiting / total}%"></i>`;
     const tally = names.filter(nm => X.out[nm].d + X.out[nm].l + X.out[nm].i > 0).map(nm => { const o = X.out[nm];
       return `<div class="p"><span class="k"><i style="background:var(--${o.tone})"></i>${esc(pshort(nm))}</span><span class="v">${o.d + o.l + o.i}</span><span class="s">${tx(`${o.d} districts · ${o.l} list · ${o.i} indigenous`, `區域 ${o.d} · 不分區 ${o.l} · 原住民 ${o.i}`)}</span></div>`; }).join('')
-      + (waiting ? `<div class="p"><span class="k"><i style="background:${hatchBg}"></i>${tx('not counting yet', '尚未開票')}</span><span class="v">${waiting}</span><span class="s">&nbsp;</span></div>` : '');
+      + (waiting ? `<div class="p"><span class="k"><i style="background:${hatchBg}"></i>${tx('not counting yet', '尚未開票', '猶未開票')}</span><span class="v">${waiting}</span><span class="s">&nbsp;</span></div>` : '');
     // districts: one block per district, as on the mayoral nights
     const rank = { dec: 0, likely: 1, lean: 2, toss: 3 }, S = L2.races.map(r => ({ r, s: standing(r) }));
     const tones = [...new Set(S.filter(x => !x.s.pre).map(x => x.s.lead.tone))].sort((a, b) => S.filter(x => !x.s.pre && x.s.lead.tone === b).length - S.filter(x => !x.s.pre && x.s.lead.tone === a).length);
     const blk = (area, style) => `<button class="blk${area === st.area ? ' sel' : ''}" data-area="${esc(area)}" style="${style}" aria-label="${esc(area)}"></button>`;
     let blocks = tones.map(t => S.filter(x => !x.s.pre && x.s.lead.tone === t).sort((a, b) => rank[a.s.tier] - rank[b.s.tier]).map(({ r, s: sd }) => blk(r.area, `background:var(--${t});opacity:${TIER[sd.tier][0]}`)).join('')).join('');
     blocks += S.filter(x => x.s.pre).map(({ r }) => blk(r.area, `background:${hatchBg}`)).join('');
-    const key = `<div class="nkey"><span><i></i>${tierTxt('dec')}</span><span><i style="opacity:.7"></i>${tierTxt('likely')}</span><span><i style="opacity:.45"></i>${tierTxt('lean')}</span><span><i style="opacity:.22"></i>${tierTxt('toss')}</span><span><i style="background:${hatchBg}"></i>${tx('no stations yet', '尚未開票')}</span></div>`;
+    const key = `<div class="nkey"><span><i></i>${tierTxt('dec')}</span><span><i style="opacity:.7"></i>${tierTxt('likely')}</span><span><i style="opacity:.45"></i>${tierTxt('lean')}</span><span><i style="opacity:.22"></i>${tierTxt('toss')}</span><span><i style="background:${hatchBg}"></i>${tx('no stations yet', '尚未開票', '猶未開票')}</span></div>`;
     nation.innerHTML = `<div style="display:grid;gap:12px;min-width:0">
-      <h2>${tx(`Legislative Yuan at ${clockTxt(st.t)}: ${total} seats, ${maj} for a majority`, `${clockTxt(st.t)} 立法院：共 ${total} 席，過半需 ${maj} 席`)}</h2>
+      <h2>${tx(`Legislative Yuan at ${clockTxt(st.t)}: ${total} seats, ${maj} for a majority`, `${clockTxt(st.t)} 立法院：共 ${total} 席，過半需 ${maj} 席`, `${clockTxt(st.t)} 立法院：總共 ${total} 席，過半愛 ${maj} 席`)}</h2>
       <div class="cbar half">${bar}</div>
       <div class="tally">${tally}</div>
-      <p class="note muted" style="margin:0;font-size:12px">${tx("Districts: the projected leader in each; party list: the most likely split; indigenous: the top three so far. Line: half the seats.", '區域：各選區預估領先者；不分區：最可能的席次分配；原住民：目前前三名。中線：半數。')}</p>
+      <p class="note muted" style="margin:0;font-size:12px">${tx("Districts: the projected leader in each; party list: the most likely split; indigenous: the top three so far. Line: half the seats.", '區域：各選區預估領先者；不分區：最可能的席次分配；原住民：目前前三名。中線：半數。', '區域：逐選區預估領先的人；不分區：上有可能的席次分配；原住民：這馬的頭前三名。中線：一半。')}</p>
       <div class="lgrid">
         <div style="display:grid;gap:8px;align-content:start;min-width:0"><h2>${tx(`Districts · ${L2.races.length} seats`, `區域立委 · ${L2.races.length} 席`)}</h2>
           <div class="sbar blocks">${blocks}</div>${key}
-          <p class="note muted" style="margin:0;font-size:12px">${tx('One block per district, by the projected leader\'s party. Hover for the race, click to open its needle below.', '每個選區一格，顏色為預估領先者的政黨。滑鼠移上可看選情，點一下在下方打開指針。')}</p></div>
+          <p class="note muted" style="margin:0;font-size:12px">${tx('One block per district, by the projected leader\'s party. Hover for the race, click to open its needle below.', '每個選區一格，顏色為預估領先者的政黨。滑鼠移上可看選情，點一下在下方打開指針。', '一个選區一格，色是預估領先者的政黨。滑鼠囥頂懸看選情，揤一下佇下跤拍開指針。')}</p></div>
         <div style="display:grid;gap:8px;align-content:start;min-width:0">${partyListHtml(L2)}</div>
       </div>
       <h2>${tx('Indigenous seats · 3 + 3', '原住民立委 · 3 + 3 席')}</h2>
@@ -1394,20 +1412,20 @@ const DATA = /*__DATA__*/null;
   function partyListHtml(L2) {
     const P = L2.party, pt = partyAt(st.t);
     const head = `<h2>${tx(`Party list · ${P.seats} seats`, `不分區 · ${P.seats} 席`)}</h2>`;
-    if (!pt) return head + `<p class="muted" style="margin:0;font-size:13px">${tx('Projection from the 50th station counted.', '開出 50 個投開票所後開始推估。')}</p>`;
+    if (!pt) return head + `<p class="muted" style="margin:0;font-size:13px">${tx('Projection from the 50th station counted.', '開出 50 個投開票所後開始推估。', '開出 50 个投開票所了後才開始推算。')}</p>`;
     const [t, nIn, outFrac, sh, sd, cnt, splits, clear] = pt;
     const order = P.parties.map((p, i) => i).sort((a, b) => sh[b] - sh[a]).filter(i => sh[i] >= 0.01 || cnt[i] >= 0.01);
     const max = Math.max(0.4, ...order.map(i => sh[i] + 1.2816 * sd[i])) * 1.05, X = q => (100 * Math.max(0, q) / max).toFixed(2) + '%';
     const modal = splits.length ? splits[0][0] : null;
     const rows = order.map(i => { const p = P.parties[i], tn = PTONE[p.name] || 'oth', near = Math.abs(sh[i] - 0.05) < 0.02;
       return `<div class="prow"><span class="nm" style="color:var(--${tn})">${esc(pshort(p.name))}</span>
-        <span class="trk"><span class="thr" style="left:${X(0.05)}" title="5%"></span><span class="rng" style="left:${X(sh[i] - 1.2816 * sd[i])};width:calc(${X(sh[i] + 1.2816 * sd[i])} - ${X(sh[i] - 1.2816 * sd[i])})"></span><span class="fillc" style="width:${X(sh[i])};background:var(--${tn})"></span><span class="cnt" style="left:${X(cnt[i])}" title="${tx('counted so far', '目前已開')}"></span></span>
+        <span class="trk"><span class="thr" style="left:${X(0.05)}" title="5%"></span><span class="rng" style="left:${X(sh[i] - 1.2816 * sd[i])};width:calc(${X(sh[i] + 1.2816 * sd[i])} - ${X(sh[i] - 1.2816 * sd[i])})"></span><span class="fillc" style="width:${X(sh[i])};background:var(--${tn})"></span><span class="cnt" style="left:${X(cnt[i])}" title="${tx('counted so far', '目前已開', '這馬已開')}"></span></span>
         <span class="v">${(100 * sh[i]).toFixed(1)}%</span><span class="seats">${modal ? modal[i] : '—'}</span>${near ? `<span class="clr">${tx(`≥5%: ${pctTxt(clear[i])}`, `過 5%：${pctTxt(clear[i])}`)}</span>` : '<span class="clr"></span>'}</div>`; }).join('');
     const spl = splits.slice(0, 3).map(([seats, pr]) => `<li><span>${seats.map((k, i) => k ? `<b style="color:var(--${PTONE[P.parties[i].name] || 'oth'})">${esc(pshort(P.parties[i].name))} ${k}</b>` : '').filter(Boolean).join(' · ')}</span><span class="num">${pctTxt(pr)}</span></li>`).join('');
     return head + `<div class="plist">${rows}</div>
-      <div class="nkey"><span><i></i>${tx('projected share', '預估得票率')}</span><span><i style="background:transparent;border-top:2px solid var(--ink);height:0"></i>${tx('80% range', '80% 區間')}</span><span><i style="width:2px;background:var(--muted)"></i>${tx('counted so far', '目前已開')}</span><span><i style="width:2px;background:var(--stamp)"></i>${tx('5% threshold', '5% 門檻')}</span></div>
-      <h3 class="sub3">${tx('Most likely seat splits', '最可能的席次分配')}</h3><ul class="splits">${spl}</ul>
-      <p class="note muted" style="margin:0;font-size:12px">${tx(`Parties that ran last time are projected by their swing since then, village by village; new parties from their count in each district. Seats: parties at 5% or more, largest remainder. The last seat is often decided by a few thousand votes, hence the chances. ${(100 * (1 - outFrac)).toFixed(0)}% of the expected votes counted.`, `上屆有參選的政黨依各村里相對上屆的擺盪推估；新政黨依各區已開得票推估。席次：得票 5% 以上的政黨以最大餘數法分配。最後一席常只差幾千票，因此以機率呈現。預期票數已開 ${(100 * (1 - outFrac)).toFixed(0)}%。`)}</p>`;
+      <div class="nkey"><span><i></i>${tx('projected share', '預估得票率')}</span><span><i style="background:transparent;border-top:2px solid var(--ink);height:0"></i>${tx('80% range', '80% 區間')}</span><span><i style="width:2px;background:var(--muted)"></i>${tx('counted so far', '目前已開', '這馬已開')}</span><span><i style="width:2px;background:var(--stamp)"></i>${tx('5% threshold', '5% 門檻')}</span></div>
+      <h3 class="sub3">${tx('Most likely seat splits', '最可能的席次分配', '上有可能的席次分配')}</h3><ul class="splits">${spl}</ul>
+      <p class="note muted" style="margin:0;font-size:12px">${tx(`Parties that ran last time are projected by their swing since then, village by village; new parties from their count in each district. Seats: parties at 5% or more, largest remainder. The last seat is often decided by a few thousand votes, hence the chances. ${(100 * (1 - outFrac)).toFixed(0)}% of the expected votes counted.`, `上屆有參選的政黨依各村里相對上屆的擺盪推估；新政黨依各區已開得票推估。席次：得票 5% 以上的政黨以最大餘數法分配。最後一席常只差幾千票，因此以機率呈現。預期票數已開 ${(100 * (1 - outFrac)).toFixed(0)}%。`, `頂屆有參選的政黨，照逐村里佮頂屆比的擺盪推算；新政黨照各區已開的得票推算。席次：得票 5% 以上的政黨用最大餘數法分。上尾一席定定干焦差幾千票，所以用機率來呈現。預期的票數已經開 ${(100 * (1 - outFrac)).toFixed(0)}%。`)}</p>`;
   }
   function renderLegisMap() {
     if (!LEGIS[st.night]) return;
@@ -1416,7 +1434,7 @@ const DATA = /*__DATA__*/null;
     const sel = L2.races.find(r => r.area === st.area);
     for (const [area, d] of Object.entries(M.counties)) {
       const rs = L2.races.filter(r => r.county === area), S = rs.map(standing).filter(x => !x.pre);
-      let fill = 'url(#h-wait)', op = 1, label = `${area}: ${tx('no count yet', '尚未開票')}`;
+      let fill = 'url(#h-wait)', op = 1, label = `${area}: ${tx('no count yet', '尚未開票', '猶未開票')}`;
       if (S.length) { const c = {}; S.forEach(x => { c[x.lead.tone] = (c[x.lead.tone] || 0) + 1; });
         const t = Object.keys(c).sort((a, b) => c[b] - c[a])[0]; fill = `var(--${t})`; op = 0.22 + 0.78 * S.filter(x => x.tier === 'dec').length / rs.length;
         label = `${area}: ${Object.entries(c).map(([k, v]) => `${PARTY[k] || k} ${v}`).join(' · ')} / ${rs.length}`; }
@@ -1497,13 +1515,13 @@ const DATA = /*__DATA__*/null;
 
   function openNight(id, t) { // load a night's data if needed, then show it
     const first = !NIGHTS[id];
-    if (first) nation.innerHTML = `<div class="loading">${tx('Loading…', '載入中…')}</div>`;
+    if (first) nation.innerHTML = `<div class="loading">${tx('Loading…', '載入中…', '咧載入…')}</div>`;
     loadNight(id).then(() => { setNight(id); if (t != null) st.t = t; render(); })
-      .catch(e => { nation.innerHTML = `<div class="loading">${tx(`Couldn't load this night's data (${esc(e.message)}). The page reads it from files published next to it, so open it from the site, not as a saved file.`, `無法載入資料（${esc(e.message)}）。資料檔與本頁一起發布，請從網站開啟，而非存檔後開啟。`)}</div>`; });
+      .catch(e => { nation.innerHTML = `<div class="loading">${tx(`Couldn't load this night's data (${esc(e.message)}). The page reads it from files published next to it, so open it from the site, not as a saved file.`, `無法載入資料（${esc(e.message)}）。資料檔與本頁一起發布，請從網站開啟，而非存檔後開啟。`, `資料載入袂起來（${esc(e.message)}）。資料檔佮這頁做伙發佈，請對網站拍開，毋通存檔了後才開。`)}</div>`; });
   }
   function setLang(l) {
     LANG = l; try { localStorage.setItem('twn-lang', l); } catch (e) {}
-    document.documentElement.lang = l === 'zh' ? 'zh-Hant' : 'en';
+    document.documentElement.lang = l === 'zh' ? 'zh-Hant' : l === 'tw' ? 'nan-Hant-TW' : 'en';
     document.querySelectorAll('[data-lang-set]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.langSet === l)));
     if (NIGHTS[st.night]) render();
   }
