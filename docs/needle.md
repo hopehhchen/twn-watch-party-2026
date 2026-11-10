@@ -112,7 +112,7 @@ Added 2026-11-10 (report times: 109全國投開票所完成時間.xls, CEC attac
 
 ## Legislative districts and the party vote (2020, 2024): backtest only
 
-Per-station results for the 73 district races and the party-list vote, parsed by `scripts/stations.py` (`2016/2020/2024-legislator`, `-party`). Not yet on the site.
+Per-station results for the 73 district races and the party-list vote, parsed by `scripts/stations.py` (`2016/2020/2024-legislator`, `-party`, `-plains`, `-mountain`). On the site since 2026-11-10 as "Show: Legislature" on the presidential nights (`scripts/build_legislature_data.py` → `data/legislature/<year>.json`).
 
 **District needles** (`scripts/backtest_legislators.py`). The same model, each district as a race (KMT vs the main opponent). Baseline: the previous presidential race at village level. Margin errors are in points of the two contenders' votes.
 
@@ -133,6 +133,8 @@ Per-station results for the 73 district races and the party-list vote, parsed by
   - 2024: shares off by 1.1 points at 10%, 0.6 at 30%; seats right from 10% counted.
   - 2020: 2.4 points at 10%, 1.2 at 30%, but one seat (DPP 14 / TPP 4 vs final 13 / 5) was still wrong at 70%. The last seat is decided by remainders a few thousand votes apart, so it needs a stated chance, not a single call.
 - Women's half of each party's list seats doesn't change the party seat counts, only who sits.
+- On the site (`scripts/party_vote.py`): votes still out are estimated from electors × the county's valid-vote rate so far, not the final turnout. Each party's share gets an error of 0.025·√(p(1−p)) × the share of votes still out, widened early (×(1 + √(200 / stations in))) and for new parties (×1.5). The page shows the three most likely seat splits from 1,000 draws, starting at the 50th station. Calibration: in 2024 the final split was the most likely one from 10% counted (34% then, 51% at 30%, 89% at 70%). In 2020 it never was: the most likely split kept 民眾黨 one seat short, with the final split at 8% (10% counted) to 38% (70%). The cause is the new-party projection.
+- Indigenous seats (平地, 山地; 3 each): shown like a council district, counted with the decided test. 2020 山地's third seat went to 孔文吉 by 16 votes over 伍麗華.
 
 ## What could break this in 2026
 

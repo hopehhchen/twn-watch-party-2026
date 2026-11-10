@@ -136,7 +136,7 @@ Mayoral (2014, 2018, 2022) and presidential (2016, 2020, 2024) per-station sheet
 
 ## Council (議員) results, 2018 and 2022
 
-- `raw/cec-stations/<2016|2020|2024>-legislator-stations.zip`: per-polling-station votes for the legislative elections held with the presidential ones (district, indigenous and party-list ballots; CEC hashes checked). Parsed by `scripts/stations.py`; backtested in `docs/needle.md`, not yet on the site.
+- `raw/cec-stations/<2016|2020|2024>-legislator-stations.zip`: per-polling-station votes for the legislative elections held with the presidential ones (district, indigenous and party-list ballots; CEC hashes checked). Parsed by `scripts/stations.py`; backtested in `docs/needle.md`; `scripts/build_legislature_data.py` writes `legislature/<year>.json` (73 district needles, the party-list projection with seat-split chances, the indigenous seats) for the results page.
 - `raw/cec-stations/<year>-<municipal|county>-council-stations.zip`: per-polling-station votes for every council candidate, one sheet per electoral district (選舉區), including the indigenous districts. Same layout as the mayoral sheets; report times are the same station-time files as the mayoral races.
 - `raw/cec-council-tickets.tsv` (+ `.sha256`): every candidate's final votes with the CEC's elected flag, from the database's district-level JSON. Columns: election, subject (T1 直轄市議員 / T2 縣市議員), seat_type (T1 區域, T2 平地原住民, T3 山地原住民), county_code, district_code, district, cand_no, name, party, sex (1 male, 2 female), votes, victor. victor: `*` elected, `!` elected through the women's quota, `-` displaced by the quota, blank not elected. 912 seats in 2018 (908 `*` + 4 `!`), 910 in 2022 (906 + 4).
 

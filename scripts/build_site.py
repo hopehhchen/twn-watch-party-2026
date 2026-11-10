@@ -7,8 +7,8 @@
                (site/index-template.html + data/accuracy.json)
   live.html    the results page: needles, turnout and council for every night
                (site/live-template.html; the county map is embedded)
-  needle/<night>.json, council/<year>.json
-               the nights' data, loaded by live.html when a night (or the council view) is opened
+  needle/<night>.json, council/<year>.json, legislature/<year>.json
+               the nights' data, loaded by live.html when a night (or the council or legislature view) is opened
   needle.html, council.html
                redirects to live.html, for links to the earlier prototype pages
 
@@ -23,6 +23,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 NEEDLE_NIGHTS = ["2018-mayors", "2020-president", "2022-mayors", "2024-president"]
 COUNCIL_YEARS = {"2018-mayors": 2018, "2022-mayors": 2022}
+LEGIS_YEARS = {"2020-president": 2020, "2024-president": 2024}
 
 HEAD = """<!doctype html>
 <html lang="en">
@@ -46,7 +47,8 @@ def night_index():
     for nid in NEEDLE_NIGHTS:
         d = json.loads((ROOT / "data" / "needle" / f"{nid}.json").read_text())
         out.append({"id": nid, "title": d["title"], "date": d["date"], "src": f"needle/{nid}.json",
-                    "council": f"council/{COUNCIL_YEARS[nid]}.json" if nid in COUNCIL_YEARS else None})
+                    "council": f"council/{COUNCIL_YEARS[nid]}.json" if nid in COUNCIL_YEARS else None,
+                    "legis": f"legislature/{LEGIS_YEARS[nid]}.json" if nid in LEGIS_YEARS else None})
     return out
 
 
@@ -70,7 +72,8 @@ def main():
     if (ROOT / "site" / "index-template.html").exists():
         render("index-template.html", {"nights": nights, "accuracy": json.loads((ROOT / "data" / "accuracy.json").read_text())},
                out / "index.html")
-    for sub, src in (("needle", ROOT / "data" / "needle"), ("council", ROOT / "data" / "council")):
+    for sub, src in (("needle", ROOT / "data" / "needle"), ("council", ROOT / "data" / "council"),
+                     ("legislature", ROOT / "data" / "legislature")):
         (out / sub).mkdir(exist_ok=True)
         for f in src.glob("*.json"):
             shutil.copy(f, out / sub / f.name)

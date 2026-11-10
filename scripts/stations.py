@@ -44,6 +44,15 @@ ELECTIONS = {
     # party-list vote (不分區政黨票), one sheet per county; "candidates" are parties
     "2020-party": dict(zips=["2020-legislator-stations.zip"], date="2020-01-11", pick="不分區立委-A05-6",
                        times="2020-station-times.xls", parties=True),
+    # indigenous legislators (平地/山地原住民): one national 3-seat race each, counted per county sheet
+    "2020-plains": dict(zips=["2020-legislator-stations.zip"], date="2020-01-11", pick="平地立委-A05-4",
+                        times="2020-station-times.xls"),
+    "2020-mountain": dict(zips=["2020-legislator-stations.zip"], date="2020-01-11", pick="山地立委-A05-4",
+                          times="2020-station-times.xls"),
+    "2024-plains": dict(zips=["2024-legislator-stations.zip"], date="2024-01-13", pick="平地立委-A05-4",
+                        times="2024-station-times.xlsx"),
+    "2024-mountain": dict(zips=["2024-legislator-stations.zip"], date="2024-01-13", pick="山地立委-A05-4",
+                          times="2024-station-times.xlsx"),
     "2024-party": dict(zips=["2024-legislator-stations.zip"], date="2024-01-13", pick="不分區立委-A05-6",
                        times="2024-station-times.xlsx", parties=True),
 }
