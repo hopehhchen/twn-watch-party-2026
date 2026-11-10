@@ -311,7 +311,7 @@ const DATA = /*__DATA__*/null;
       [`${at30.favorite_won} / ${m.n}`, tx('mayoral races where the model\'s favourite at 30% of stations counted went on to win (2018, 2022)', '縣市長選舉中，開出 30% 投開票所時模型看好者最後勝選的場數（2018、2022）', '縣市長選舉內底，開出 30% 投開票所的時，模型看好的人上尾當選的場數（2018、2022）')],
       [`${presFav} / ${presN}`, tx('county races in the 2020 and 2024 presidential elections, same test', '2020、2024 總統選舉的縣市層級，同樣標準', '2020、2024 總統選舉的縣市層級，仝款的標準')],
       [String(wrong), tx('races where the eventual loser was ever given 90% or more after 5% of stations were in (all four nights)', '開出 5% 後，最終落敗者曾被給到 90% 以上勝率的場數（四個晚上）', '開出 5% 了後，上尾落選的人捌予人估 90% 以上贏面的場數（四暗）')],
-      [`${at30.margin_err_pts} ${tx('pts', '點')}`, tx('average error of the projected margin at 30% counted, mayoral races (share of the two contenders\' votes)', '開出 30% 時預估差距的平均誤差，縣市長選舉（以兩人票數的百分比計）', '開出 30% 的時，預估差距的平均誤差，縣市長選舉（用兩人票數的百分比算）')],
+      [`${at30.margin_err_pts} ${tx('pts', '百分點')}`, tx('average error of the projected margin at 30% counted, mayoral races (share of the two contenders\' votes)', '開出 30% 時預估差距的平均誤差，縣市長選舉（以兩人票數的百分比計）', '開出 30% 的時，預估差距的平均誤差，縣市長選舉（用兩人票數的百分比算）')],
     ].map(([v, k]) => `<div class="kpi"><span class="v">${v}</span><span class="k">${k}</span></div>`).join('');
   }
   function table() {
@@ -326,14 +326,14 @@ const DATA = /*__DATA__*/null;
     let html = `<table><thead><tr><th>${tx(`Stations counted (${S.n} races)`, `已開投開票所（${S.n} 場）`)}</th>${cps.map(c => `<th>${Math.round(100 * c)}%</th>`).join('')}</tr></thead><tbody>
       ${timeRow}
       ${row(tx('Favourite went on to win', '看好者最後勝選', '看好的人上尾當選'), x => `${x.favorite_won} / ${S.n}`)}
-      ${row(tx('Average error, projected margin (pts)', '預估差距平均誤差（點）'), x => x.margin_err_pts.toFixed(1))}
-      ${row(tx('Average error, projected turnout (pts)', '預估投票率平均誤差（點）'), x => x.turnout_err_pts.toFixed(1))}
+      ${row(tx('Average error, projected margin (pts)', '預估差距平均誤差（百分點）'), x => x.margin_err_pts.toFixed(1))}
+      ${row(tx('Average error, projected turnout (pts)', '預估投票率平均誤差（百分點）'), x => x.turnout_err_pts.toFixed(1))}
     </tbody></table>`;
     document.getElementById('acctable').innerHTML = html;
     const notes = [];
     if (night !== 'mayors') { const n = A.nights[night];
       if (n.national) notes.push(tx(`National race: the needle passed 95% for ${n.national.winner} at ${n.national.stays_95_from} and stayed there; the race was mathematically decided at ${n.national.decided_at}. At 30% of stations the projected margin was off by ${n.national.at['0.3'].margin_err_pts} points of the two contenders' votes, ${n.national.at['0.3'].in_80 ? 'inside' : 'outside'} its stated 80% range.`,
-        `全國：指針在 ${n.national.stays_95_from} 超過 95% 看好${n.national.winner}並維持；${n.national.decided_at} 數學上確定。開出 30% 時預估差距誤差 ${n.national.at['0.3'].margin_err_pts} 點，${n.national.at['0.3'].in_80 ? '在' : '落在'}所示 80% 區間${n.national.at['0.3'].in_80 ? '內' : '之外'}。`, `全國：指針佇 ${n.national.stays_95_from} 超過 95% 看好${n.national.winner}，了後一直維持；${n.national.decided_at} 數學上確定。開出 30% 的時預估差距誤差 ${n.national.at['0.3'].margin_err_pts} 點，${n.national.at['0.3'].in_80 ? '佇' : '落佇'}所示 80% 區間${n.national.at['0.3'].in_80 ? '內' : '外口'}。`));
+        `全國：指針在 ${n.national.stays_95_from} 超過 95% 看好${n.national.winner}並維持；${n.national.decided_at} 數學上確定。開出 30% 時預估差距誤差 ${n.national.at['0.3'].margin_err_pts} 個百分點，${n.national.at['0.3'].in_80 ? '在' : '落在'}所示 80% 區間${n.national.at['0.3'].in_80 ? '內' : '之外'}。`, `全國：指針佇 ${n.national.stays_95_from} 超過 95% 看好${n.national.winner}，了後一直維持；${n.national.decided_at} 數學上確定。開出 30% 的時預估差距誤差 ${n.national.at['0.3'].margin_err_pts} 个百分點，${n.national.at['0.3'].in_80 ? '佇' : '落佇'}所示 80% 區間${n.national.at['0.3'].in_80 ? '內' : '外口'}。`));
       if (n.three_way.length) notes.push(tx(`Three-way counties on this night (scored here on the two-way needle): ${n.three_way.join('、')}.`, `本晚的三強縣市（此處以兩人指針計分）：${n.three_way.join('、')}。`, `這暗的三強縣市（遮用兩人指針來算分）：${n.three_way.join('、')}。`));
       if (night === '2018-mayors') notes.push(tx('Counting ran past midnight in many places because ten referendums were counted the same night.', '因同晚開十項公投票，許多地方開票到午夜以後。', '因為仝暗閣開十項公投，真濟所在開票開到半暝以後。'));
       if (night === '2022-mayors') notes.push(tx('嘉義市 voted on 18 December (rerun) and is not part of this night.', '嘉義市延至 12 月 18 日投票，不在本晚。', '嘉義市延到 12 月 18 日投票，無佇這暗。'));
