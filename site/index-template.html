@@ -212,19 +212,19 @@ const DATA = /*__DATA__*/null;
   let LANG = root.lang === 'zh-Hant' ? 'zh' : 'en', night = 'mayors';
   const tx = (en, zh) => LANG === 'zh' ? zh : en;
   const pct = x => Math.round(100 * x) + '%';
-  const NIGHTS = [['mayors', '2018 + 2022', '2018 + 2022'], ['2018-mayors', '2018 mayors', '2018 縣市長'], ['2022-mayors', '2022 mayors', '2022 縣市長'],
-    ['2020-president', '2020 president', '2020 總統'], ['2024-president', '2024 president', '2024 總統']];
+  const NIGHTS = [['mayors', '2018 + 2022', '2018 + 2022'], ['2018-mayors', '2018 mayors', '2018 縣市長'], ['2020-president', '2020 president', '2020 總統'],
+    ['2022-mayors', '2022 mayors', '2022 縣市長'], ['2024-president', '2024 president', '2024 總統']];
   const pick = id => id === 'mayors' ? A.mayors_both : A.nights[id].counties;
   function kpis() {
-    const m = A.mayors_both, at10 = m.at['0.1'], p20 = A.nights['2020-president'], p24 = A.nights['2024-president'];
+    const m = A.mayors_both, at30 = m.at['0.3'], p20 = A.nights['2020-president'], p24 = A.nights['2024-president'];
     const prs = [p20, p24].map(n => n.counties);
-    const presFav = prs.reduce((a, c) => a + c.at['0.1'].favorite_won, 0), presN = prs.reduce((a, c) => a + c.n, 0);
+    const presFav = prs.reduce((a, c) => a + c.at['0.3'].favorite_won, 0), presN = prs.reduce((a, c) => a + c.n, 0);
     const wrong = [m, ...prs].reduce((a, c) => a + c.wrong_way_90.length, 0);
     document.getElementById('kpis').innerHTML = [
-      [`${at10.favorite_won} / ${m.n}`, tx('mayoral races where the model\'s favourite at 10% of stations counted went on to win (2018, 2022)', '縣市長選舉中，開出 10% 投開票所時模型看好者最後勝選的場數（2018、2022）')],
+      [`${at30.favorite_won} / ${m.n}`, tx('mayoral races where the model\'s favourite at 30% of stations counted went on to win (2018, 2022)', '縣市長選舉中，開出 30% 投開票所時模型看好者最後勝選的場數（2018、2022）')],
       [`${presFav} / ${presN}`, tx('county races in the 2020 and 2024 presidential elections, same test', '2020、2024 總統選舉的縣市層級，同樣標準')],
       [String(wrong), tx('races where the eventual loser was ever given 90% or more after 5% of stations were in (all four nights)', '開出 5% 後，最終落敗者曾被給到 90% 以上勝率的場數（四個晚上）')],
-      [`${at10.margin_err_pts} ${tx('pts', '點')}`, tx('average error of the projected margin at 10% counted, mayoral races (share of the two contenders\' votes)', '開出 10% 時預估差距的平均誤差，縣市長選舉（以兩人票數的百分比計）')],
+      [`${at30.margin_err_pts} ${tx('pts', '點')}`, tx('average error of the projected margin at 30% counted, mayoral races (share of the two contenders\' votes)', '開出 30% 時預估差距的平均誤差，縣市長選舉（以兩人票數的百分比計）')],
     ].map(([v, k]) => `<div class="kpi"><span class="v">${v}</span><span class="k">${k}</span></div>`).join('');
   }
   function table() {
@@ -247,8 +247,8 @@ const DATA = /*__DATA__*/null;
     document.getElementById('acctable').innerHTML = html;
     const notes = [];
     if (night !== 'mayors') { const n = A.nights[night];
-      if (n.national) notes.push(tx(`National race: the needle passed 95% for ${n.national.winner} at ${n.national.stays_95_from} and stayed there; the race was mathematically decided at ${n.national.decided_at}. At 10% of stations the projected margin was off by ${n.national.at['0.1'].margin_err_pts} points of the two contenders' votes, ${n.national.at['0.1'].in_80 ? 'inside' : 'outside'} its stated 80% range.`,
-        `全國：指針在 ${n.national.stays_95_from} 超過 95% 看好${n.national.winner}並維持；${n.national.decided_at} 數學上確定。開出 10% 時預估差距誤差 ${n.national.at['0.1'].margin_err_pts} 點，${n.national.at['0.1'].in_80 ? '在' : '落在'}所示 80% 區間${n.national.at['0.1'].in_80 ? '內' : '之外'}。`));
+      if (n.national) notes.push(tx(`National race: the needle passed 95% for ${n.national.winner} at ${n.national.stays_95_from} and stayed there; the race was mathematically decided at ${n.national.decided_at}. At 30% of stations the projected margin was off by ${n.national.at['0.3'].margin_err_pts} points of the two contenders' votes, ${n.national.at['0.3'].in_80 ? 'inside' : 'outside'} its stated 80% range.`,
+        `全國：指針在 ${n.national.stays_95_from} 超過 95% 看好${n.national.winner}並維持；${n.national.decided_at} 數學上確定。開出 30% 時預估差距誤差 ${n.national.at['0.3'].margin_err_pts} 點，${n.national.at['0.3'].in_80 ? '在' : '落在'}所示 80% 區間${n.national.at['0.3'].in_80 ? '內' : '之外'}。`));
       if (n.three_way.length) notes.push(tx(`Three-way counties on this night (scored here on the two-way needle): ${n.three_way.join('、')}.`, `本晚的三強縣市（此處以兩人指針計分）：${n.three_way.join('、')}。`));
       if (night === '2018-mayors') notes.push(tx('Counting ran past midnight in many places because ten referendums were counted the same night.', '因同晚開十項公投票，許多地方開票到午夜以後。'));
       if (night === '2022-mayors') notes.push(tx('嘉義市 voted on 18 December (rerun) and is not part of this night.', '嘉義市延至 12 月 18 日投票，不在本晚。'));
@@ -257,8 +257,8 @@ const DATA = /*__DATA__*/null;
       '達到時間：中位數場次的已開投開票所達到該比例的時刻，依中選會回報紀錄（滑鼠移上可看最早與最晚的場次）。中選會的登錄時間比電視顯示的票數晚，因此當晚實際可能早一些。'));
     const lead = S.median_lead_minutes;
     if (lead != null) notes.push(tx(`Typical lead: the needle settled above 95% for the eventual winner about ${Math.round(lead / 60 * 10) / 10} hours before the race was mathematically decided (median).`, `一般而言，指針在數學上確定前約 ${Math.round(lead / 60 * 10) / 10} 小時就穩定在 95% 以上看好最終勝選者（中位數）。`));
-    notes.push(tx('Orange: the final fell inside the stated 80% range less than 70% of the time. The ranges were too narrow in the 2024 county races once a third of the stations were in, and very early on most nights, so treat those ranges with caution. The win chances held up better: no favourite at 10% counted lost on either presidential night.',
-      '橘色：最終結果落在所示 80% 區間內的比例低於 70%。2024 年各縣市在開出三成投開票所後，以及多數晚上的最初階段，區間都偏窄，請保守看待。勝率表現較穩：兩個總統選舉夜中，開出 10% 時被看好者無一落敗。'));
+    notes.push(tx('Orange: the final fell inside the stated 80% range less than 70% of the time. The ranges were too narrow in the 2024 county races once a third of the stations were in, and very early on most nights, so treat those ranges with caution. The win chances held up better: no favourite at 30% counted lost on either presidential night.',
+      '橘色：最終結果落在所示 80% 區間內的比例低於 70%。2024 年各縣市在開出三成投開票所後，以及多數晚上的最初階段，區間都偏窄，請保守看待。勝率表現較穩：兩個總統選舉夜中，開出 30% 時被看好者無一落敗。'));
     document.getElementById('accnotes').innerHTML = notes.map(n => `<p style="margin:0 0 6px">${n}</p>`).join('');
   }
   function render() { kpis(); table(); }
