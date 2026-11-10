@@ -33,12 +33,14 @@
   --font-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
   --font-num: "IBM Plex Sans Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
   --radius: 10px;
+  --tint: #FFFFFF;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0D121A; --surface: #151C27; --ink: #E7ECF3; --muted: #9AA5B7; --rule: #283242;
     --accent: #F09A44; --stamp: #FF6B5F; --up: #F09A44; --down: #A98BEB;
     --dpp: #4FC06C; --kmt: #87A2F0; --tpp: #45CBC6; --npp: #E6C13D; --tsp: #E07A68; --pfp: #FF9A52; --oth: #C49AE0; --ind: #A3ABBA;
+    --tint: #5E6878;
     color-scheme: dark;
   }
 }
@@ -46,6 +48,7 @@
   --bg: #0D121A; --surface: #151C27; --ink: #E7ECF3; --muted: #9AA5B7; --rule: #283242;
   --accent: #F09A44; --stamp: #FF6B5F; --up: #F09A44; --down: #A98BEB;
   --dpp: #4FC06C; --kmt: #87A2F0; --tpp: #45CBC6; --npp: #E6C13D; --tsp: #E07A68; --pfp: #FF9A52; --oth: #C49AE0; --ind: #A3ABBA;
+  --tint: #5E6878;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -141,6 +144,8 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
 .tally .p .s { font-size: 12px; color: var(--muted); }
 .nkey { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--muted); align-items: center; }
 .nkey i { display: inline-block; width: 16px; height: 10px; border-radius: 2px; vertical-align: middle; margin-right: 5px; background: var(--ink); }
+.nkey.before { font-size: 13px; color: var(--ink); gap: 4px 18px; }
+.nkey.before b { font-size: 15px; margin-left: 2px; }
 .sbar.blocks .blk { flex: 1 1 0; min-width: 0; height: 100%; border: 0; padding: 0; margin: 0; cursor: pointer; border-radius: 0; }
 .sbar.blocks .blk.skip { background: var(--rule); opacity: 0.5; cursor: default; }
 .sbar.blocks .blk:hover, .sbar.blocks .blk:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
@@ -175,7 +180,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
 /* council view */
 .cbar { display: flex; height: 26px; border-radius: 4px; overflow: hidden; background: var(--bg); border: 1px solid var(--rule); }
 .cbar i { display: block; height: 100%; flex: none; }
-.cbar i.lead { opacity: 0.42; }
+
 .cbar i.wait { background: repeating-linear-gradient(45deg, var(--rule) 0 3px, transparent 3px 7px); }
 .cbar.mini { height: 10px; border-radius: 3px; margin: 8px 0 6px; }
 .cbar.half { position: relative; overflow: visible; }
@@ -316,7 +321,18 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
   .panel { padding: 12px; }
   .turnout { min-width: 0; flex-basis: 100%; max-width: none; }
 }
-@media (max-width: 699px) { .desk { position: static; border-radius: var(--radius); } }
+.more { display: none; border: 0; background: none; padding: 2px 0; color: var(--ink); font-size: 13px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+#deskSentinel { height: 1px; margin-bottom: -19px; }
+@media (max-width: 699px) {
+  /* phones: the intro folds to two lines; once the controls scroll away, a slim clock-and-slider bar stays on top */
+  .intro:not(.open) .proto { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .intro:not(.open) .more { display: inline-block; }
+  .desk { border-radius: var(--radius); }
+  .desk.compact { grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 4px 12px; padding: 8px 12px; border-radius: 0 0 var(--radius) var(--radius); }
+  .desk.compact > .desk-row:first-child > :not(.clock), .desk.compact > :not(.desk-row:first-child):not(.scrub) { display: none; }
+  .desk.compact .clock { font-size: 24px; min-width: 0; }
+  .desk.compact .play { width: 32px; height: 32px; }
+}
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 .mast-right { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
 .themes { display: inline-flex; gap: 2px; padding: 3px; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); }
@@ -351,9 +367,13 @@ html[lang="nan-Hant-TW"] [data-l="en"], html[lang="nan-Hant-TW"] [data-l="zh"] {
       <div class="themes" role="group" aria-label="Color theme"><button data-theme-set="auto">Auto</button><button data-theme-set="light">Light</button><button data-theme-set="dark">Dark</button></div>
     </div>
   </header>
+  <div class="intro" id="intro">
   <p class="proto" data-l="en">On election night, 28 November 2026, this page follows the count live. Until then it shows the 2026 races as they stand before the count, and replays real past nights from the CEC's own records with the model run as if live: pick a year, press play, open any race. Nothing in a replay is simulated, and nothing from later in the night leaks in.</p>
   <p class="proto" data-l="zh">2026 年 11 月 28 日開票當晚，本頁即時追蹤開票。在那之前，這裡顯示 2026 年各場選舉開票前的狀態，並以中選會原始紀錄重播真實的過去開票夜，模型如同現場即時運算：選一個年份、按下播放、點開任何一場選舉。重播沒有模擬數據，也不會用到之後才開出的結果。</p>
   <p class="proto" data-l="tw">2026 年 11 月 28 日開票彼暗，這頁會即時綴開票。佇彼進前，遮顯示 2026 年逐場選舉開票進前的狀態，閣用中選會的原始紀錄重播真正的過去開票暗，模型親像現場咧算：揀一个年份、揤播放、拍開任何一場選舉。重播無模擬的數字，嘛袂用著較晏才開出來的結果。</p>
+    <button class="more" id="introMore" type="button"><span data-l="en">More</span><span data-l="zh">更多</span><span data-l="tw">閣較濟</span></button>
+  </div>
+  <div id="deskSentinel" aria-hidden="true"></div>
   <section class="desk" id="desk" aria-label="Replay controls"></section>
   <section class="panel" id="nation" aria-live="polite"></section>
   <section class="panel overview" aria-labelledby="h-cards">
@@ -462,6 +482,9 @@ const DATA = /*__DATA__*/null;
     return String(Math.floor(mm / 60)).padStart(2, '0') + ':' + String(mm % 60).padStart(2, '0') + (d ? '<sup>+1</sup>' : ''); };
   const clockTxt = t => clock(t).replace(/<sup>\+1<\/sup>/, ' (+1)');
   const tone = c => `var(--${c.tone})`;
+  // a color at a given certainty: blended toward --tint (not made see-through), so a toss-up reads paler than a sure thing in dark mode too
+  const mix = (color, op) => op >= 0.999 ? color : `color-mix(in srgb, ${color} ${Math.round(op * 100)}%, var(--tint))`;
+  const mapFill = (fill, op) => fill.startsWith('url(') ? `fill="${fill}" fill-opacity="${op}"` : `style="fill:${mix(fill, op)}"`;
   const phi = z => 0.5 * (1 + erf(z / Math.SQRT2));
   function erf(x) { const s = Math.sign(x); x = Math.abs(x); const t = 1 / (1 + 0.3275911 * x);
     return s * (1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x)); }
@@ -559,7 +582,7 @@ const DATA = /*__DATA__*/null;
     const zones = [[0, 0.01, 'other', 1], [0.01, 0.1, 'other', 0.75], [0.1, 0.3, 'other', 0.5], [0.3, 0.5, 'other', 0.22],
       [0.5, 0.7, 'blue', 0.22], [0.7, 0.9, 'blue', 0.5], [0.9, 0.99, 'blue', 0.75], [0.99, 1, 'blue', 1]];
     let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(dialLabel(race, v))}">`;
-    for (const [a, b, who, op] of zones) s += `<path d="${arc(a, b, R)}" stroke="${tone(race[who])}" stroke-opacity="${op}" stroke-width="${sw}" fill="none"/>`;
+    for (const [a, b, who, op] of zones) s += `<path d="${arc(a, b, R)}" style="stroke:${mix(tone(race[who]), op)}" stroke-width="${sw}" fill="none"/>`;
     s += `<line x1="${cx}" y1="${cy - R - sw / 2 - 2}" x2="${cx}" y2="${cy - R + sw / 2 + 2}" stroke="var(--surface)" stroke-width="2"/>`;
     if (big) {
       const lab = [[0.035, tx('Very likely', '極可能', '足有可能')], [0.2, tx('Likely', '可能')], [0.37, tx('Lean', '略佔', '略贏')], [0.63, tx('Lean', '略佔', '略贏')], [0.8, tx('Likely', '可能')], [0.965, tx('Very likely', '極可能', '足有可能')]];
@@ -580,6 +603,8 @@ const DATA = /*__DATA__*/null;
     if (v.pre) return `${race.area}: no stations in yet`;
     return `${race.area}: ${race.blue.name} ${Math.round(100 * v.pb)}%, ${race.other.name} ${Math.round(100 * (1 - v.pb))}%`;
   }
+  // share of the expected ballots counted: one decimal under 10% (early stations are small, so 1% of stations can be 0.4% of ballots)
+  const shareTxt = x => { const v = Math.min(100, 100 * x); return v <= 0 ? '0%' : v < 0.1 ? '<0.1%' : v < 10 ? v.toFixed(1) + '%' : Math.round(v) + '%'; };
   const pctTxt = p => p >= 0.995 ? '>99%' : p <= 0.005 ? '<1%' : Math.round(100 * p) + '%';
 
   function summaryHtml() {
@@ -654,6 +679,7 @@ const DATA = /*__DATA__*/null;
     if (nat) { renderNationalRace(nat); return; }
     const counties = night.races, skipped = night.skipped || [], prevYear = night.previous.slice(0, 4), total = counties.length + skipped.length;
     const S = counties.map(r => ({ r, s: standing(r) }));
+    if (night.live && S.every(x => x.s.pre)) { renderNationBefore(night, counties); return; }
     const groups = {};
     for (const { s } of S) { if (s.pre) continue;
       const g = groups[s.lead.tone] || (groups[s.lead.tone] = { tone: s.lead.tone, label: PARTYN(s.lead.tone), n: 0, dec: 0, likely: 0 });
@@ -666,18 +692,33 @@ const DATA = /*__DATA__*/null;
     const rank = { dec: 0, likely: 1, lean: 2, toss: 3 }, waiting = S.filter(x => x.s.pre);
     const blk = (area, style, cls) => `<button class="blk${cls ? ' ' + cls : ''}${area === st.area ? ' sel' : ''}" data-area="${esc(area)}" style="${style}" aria-label="${esc(area)}"></button>`;
     let bar = order.map(g => S.filter(x => !x.s.pre && x.s.lead.tone === g.tone).sort((a, b) => rank[a.s.tier] - rank[b.s.tier])
-      .map(({ r, s }) => blk(r.area, `background:var(--${s.lead.tone});opacity:${TIER[s.tier][0]}`)).join('')).join('');
+      .map(({ r, s }) => blk(r.area, `background:${mix(`var(--${s.lead.tone})`, TIER[s.tier][0])}`)).join('')).join('');
     bar += waiting.map(({ r }) => blk(r.area, `background:${hatchBg}`)).join('');
     bar += skipped.map(k => blk(k.area, '', 'skip')).join('');
     const tally = order.map(g => `<div class="p"><span class="k"><i style="background:var(--${g.tone})"></i>${esc(g.label)}</span><span class="v">${g.n}</span>
       <span class="s">${tx(`${g.dec} decided · ${g.likely} likely`, `${g.dec} 確定 · ${g.likely} 可能`)}</span><span class="s">${tx(`${prev[g.tone] || 0} in ${prevYear}`, `${prevYear} 年 ${prev[g.tone] || 0} 席`)}</span></div>`).join('')
       + (waiting.length ? `<div class="p"><span class="k"><i style="background:${hatchBg}"></i>${tx('no stations yet', '尚未開票', '猶未開票')}</span><span class="v">${waiting.length}</span><span class="s">&nbsp;</span></div>` : '')
       + (skipped.length ? `<div class="p"><span class="k"><i style="background:var(--rule)"></i>${tx('not tonight', '不在今晚', '無佇今暗')}</span><span class="v">${skipped.length}</span><span class="s">${skipped.map(k => esc(k.area)).join('、')}</span></div>` : '');
-    const key = `<div class="nkey"><span><i></i>${tierTxt('dec')}</span><span><i style="opacity:.7"></i>${tierTxt('likely')}</span><span><i style="opacity:.45"></i>${tierTxt('lean')}</span><span><i style="opacity:.22"></i>${tierTxt('toss')}</span><span><i style="background:${hatchBg}"></i>${tx('no stations yet', '尚未開票', '猶未開票')}</span></div>`;
+    const key = `<div class="nkey"><span><i></i>${tierTxt('dec')}</span><span><i style="background:${mix('var(--ink)', .7)}"></i>${tierTxt('likely')}</span><span><i style="background:${mix('var(--ink)', .45)}"></i>${tierTxt('lean')}</span><span><i style="background:${mix('var(--ink)', .22)}"></i>${tierTxt('toss')}</span><span><i style="background:${hatchBg}"></i>${tx('no stations yet', '尚未開票', '猶未開票')}</span></div>`;
     nation.innerHTML = `<div style="display:grid;gap:10px;min-width:0">
       <h2>${tx(`All ${total} mayors at ${clockTxt(st.t)}: who leads, and how sure`, `${clockTxt(st.t)} 全部 ${total} 席縣市長：誰領先、多有把握`, `${clockTxt(st.t)} 全部 ${total} 席縣市長：啥人咧贏、有偌把握`)}</h2>
       <div class="sbar blocks">${bar}</div>${key}<div class="tally">${tally}</div>
       <p class="note muted" style="margin:0;font-size:12px">${tx(`One block per race, by the projected leader's party; shading as on the map. Hover a block for the race, click to open it. Within a party, blocks run from most to least certain, then in the county order of the cards. "In ${prevYear}": mayors each party won last time.`, `每場選舉一格，顏色為預估領先者的政黨，深淺同地圖。滑鼠移到格子上可看該場選舉，點一下即打開。同一政黨內依把握由高到低排列，再依卡片的縣市順序。「${prevYear} 年」：各黨上屆當選席次。`, `一場選舉一格，色是預估領先者的政黨，深淺佮地圖仝款。滑鼠囥佇格仔頂懸就看會著彼場選舉，揤一下就拍開。仝一个政黨內底照把握對懸排到低，閣照卡片的縣市順序。「${prevYear} 年」：各黨頂屆當選的席次。`)}</p></div>`;
+  }
+  // the live night before the first station: when counting starts, and who won each race last time (hatched)
+  function renderNationBefore(night, counties) {
+    const prevYear = night.previous.slice(0, 4), prev = {};
+    for (const r of counties) if (r.incumbent) prev[r.incumbent.tone] = (prev[r.incumbent.tone] || 0) + 1;
+    const order = Object.keys(prev).sort((a, b) => prev[b] - prev[a]);
+    const hatch = t => `repeating-linear-gradient(45deg,${mix(`var(--${t})`, 0.75)} 0 3px,${mix(`var(--${t})`, 0.18)} 3px 7px)`;
+    const bar = order.map(t => counties.filter(r => r.incumbent && r.incumbent.tone === t)
+      .map(r => `<button class="blk${r.area === st.area ? ' sel' : ''}" data-area="${esc(r.area)}" style="background:${hatch(t)}" aria-label="${esc(r.area)}"></button>`).join('')).join('');
+    const tally = order.map(t => `<span><i style="background:${hatch(t)}"></i>${esc(PARTYN(t))} <b class="num">${prev[t]}</b></span>`).join('');
+    nation.innerHTML = `<div style="display:grid;gap:10px;min-width:0">
+      <h2>${tx(`All ${counties.length} mayors · counting starts at 16:00 on 28 November`, `全部 ${counties.length} 席縣市長 · 11 月 28 日 16:00 開票`, `全部 ${counties.length} 席縣市長 · 11 月 28 日 16:00 開票`)}</h2>
+      <div class="sbar blocks">${bar}</div>
+      <div class="nkey before"><span class="muted">${tx(`Won in ${prevYear}:`, `${prevYear} 年當選：`, `${prevYear} 年當選：`)}</span>${tally}</div>
+      <p class="note muted" style="margin:0;font-size:12px">${tx(`Hatched: the party that won each race in ${prevYear}. Once counting starts, each block takes the projected leader's color. Hover a block for the race, click to open it.`, `斜線：${prevYear} 年在各場勝選的政黨。開票後，每格改為預估領先者的顏色。滑鼠移到格子上可看該場選舉，點一下即打開。`, `斜線：${prevYear} 年逐場當選的政黨。開票了後，逐格改做預估領先者的色。滑鼠囥佇格仔頂懸就看會著彼場選舉，揤一下就拍開。`)}</p></div>`;
   }
   function renderNationalRace(nat) {
     const v = view(nat, st.t), stt = status(v), lead = v.pre ? null : (v.pb >= 0.5 ? nat.blue : nat.other), q = v.pre ? 0 : Math.max(v.pb, 1 - v.pb);
@@ -692,7 +733,7 @@ const DATA = /*__DATA__*/null;
         <div class="read"><span class="k">${tx('Counted', '已開')}</span><span class="v">${tx(`<b class="num">${(100 * v.frac).toFixed(1)}%</b> of stations · ${esc(v.lead.name)} leads by <b class="num">${comma(Math.abs(v.margin))}</b>`, `投開票所 <b class="num">${(100 * v.frac).toFixed(1)}%</b> · ${esc(v.lead.name)} 領先 <b class="num">${comma(Math.abs(v.margin))}</b> 票`, `投開票所 <b class="num">${(100 * v.frac).toFixed(1)}%</b> · ${esc(v.lead.name)} 贏 <b class="num">${comma(Math.abs(v.margin))}</b> 票`)}</span></div>
         <div class="read"><span class="k">${tx('Projected', '預估')}</span><span class="v">${v.cert ? tx(`${esc(who(v.mean))} by ${u(v.mean)}`, `${esc(who(v.mean))} 勝 ${u(v.mean)}`, `${esc(who(v.mean))} 贏 ${u(v.mean)}`) : tx(`${esc(who(v.mean))} by <b class="num">${u(v.mean)}</b>; 80% range ${esc(who(lo))} ${u(lo)} to ${esc(who(hi))} ${u(hi)}`, `${esc(who(v.mean))} 勝 <b class="num">${u(v.mean)}</b>；80% 區間：${esc(who(lo))} ${u(lo)} 至 ${esc(who(hi))} ${u(hi)}`, `${esc(who(v.mean))} 贏 <b class="num">${u(v.mean)}</b>；80% 區間：${esc(who(lo))} ${u(lo)} 到 ${esc(who(hi))} ${u(hi)}`)}</span></div>
         ${third ? `<div class="read"><span class="k">${esc(nat.third.name)}</span><span class="v">${tx(`projected ${(100 * third.share).toFixed(1)}% of the vote (80% range ${(100 * (third.share - 1.2816 * third.sd)).toFixed(1)}–${(100 * (third.share + 1.2816 * third.sd)).toFixed(1)}%); set aside in the dial`, `預估得票率 ${(100 * third.share).toFixed(1)}%（80% 區間 ${(100 * (third.share - 1.2816 * third.sd)).toFixed(1)}–${(100 * (third.share + 1.2816 * third.sd)).toFixed(1)}%）；指針不計`, `預估得票率 ${(100 * third.share).toFixed(1)}%（80% 區間 ${(100 * (third.share - 1.2816 * third.sd)).toFixed(1)}–${(100 * (third.share + 1.2816 * third.sd)).toFixed(1)}%）；指針無算伊`)}</span></div>` : ''}
-        <div class="read"><span class="k">${tx('Ballots', '選票')}</span><span class="v">${tx(`an estimated <b class="num">${Math.min(100, 100 * tvw.shareCounted).toFixed(0)}%</b> counted · projected turnout ${(100 * tvw.proj).toFixed(1)}%`, `估計已開 <b class="num">${Math.min(100, 100 * tvw.shareCounted).toFixed(0)}%</b> · 預估投票率 ${(100 * tvw.proj).toFixed(1)}%`, `估計已經開 <b class="num">${Math.min(100, 100 * tvw.shareCounted).toFixed(0)}%</b> · 預估投票率 ${(100 * tvw.proj).toFixed(1)}%`)}</span></div>`;
+        <div class="read"><span class="k">${tx('Ballots', '選票')}</span><span class="v">${tx(`an estimated <b class="num">${shareTxt(tvw.shareCounted)}</b> counted (${comma(tvw.counted)} ballots) · projected turnout ${(100 * tvw.proj).toFixed(1)}%`, `估計已開 <b class="num">${shareTxt(tvw.shareCounted)}</b>（${comma(tvw.counted)} 票）· 預估投票率 ${(100 * tvw.proj).toFixed(1)}%`, `估計已經開 <b class="num">${shareTxt(tvw.shareCounted)}</b>（${comma(tvw.counted)} 票）· 預估投票率 ${(100 * tvw.proj).toFixed(1)}%`)}</span></div>`;
     }
     nation.innerHTML = `
       <div class="dhead"><h3>全國 · 總統</h3><span class="sub">${esc(nat.blue.name)} vs ${esc(nat.other.name)} · ${tx(`${esc(nat.third.name)} set aside in the dial`, `指針不計 ${esc(nat.third.name)}`, `指針無算 ${esc(nat.third.name)}`)}</span></div>
@@ -857,7 +898,7 @@ const DATA = /*__DATA__*/null;
         else { const lead = v.pb >= 0.5 ? r.blue : r.other; fill = tone(lead); op = SHADE[stt.label]; label = `${area}: ${lead.name} ${pctTxt(Math.max(v.pb, 1 - v.pb))} · ${L(stt.label)}`; }
       } else if (k) { fill = `url(#h-${k.incumbent ? k.incumbent.tone : 'ind'})`; op = 0.5; label = `${area}: ${skipWhy(k)}`; }
       else { fill = 'var(--rule)'; label = area; }
-      paths += `<path class="c${area === st.area ? ' sel' : ''}" data-area="${esc(area)}" d="${d}" fill="${fill}" fill-opacity="${op}" data-tip="${esc(label)}" aria-label="${esc(label)}"></path>`;
+      paths += `<path class="c${area === st.area ? ' sel' : ''}" data-area="${esc(area)}" d="${d}" ${mapFill(fill, op)} data-tip="${esc(label)}" aria-label="${esc(label)}"></path>`;
     }
     // draw the selected county last so its outline sits on top
     mapEl.innerHTML = `<svg viewBox="${M.viewBox.join(' ')}" role="img" aria-label="${tx('Map of races', '選情地圖')} ${clockTxt(st.t)}"><defs>${defs}</defs>
@@ -869,14 +910,14 @@ const DATA = /*__DATA__*/null;
     if (st.mode === 'council') { mapLegend.innerHTML = `<div class="row">${tx('Party with the most seats in the council at this moment, from light (few seats decided) to solid (all decided). Hatched: no stations counted yet.', '目前在該縣市議會席次最多的政黨；顏色由淺（確定席次少）到深（全部確定）。斜線：尚未開票。', '這馬佇彼个縣市議會席次上濟的政黨；色對淺（確定的席次少）到深（攏確定）。斜線：猶未開票。')}</div>`; return; }
     const sw = t => `<svg viewBox="0 0 16 12"><rect width="16" height="12" fill="url(#h-${t})"/></svg>`;
     if (st.mode === 'turnout') {
-      const r2 = c => `<span class="ramp">${[0.3, 0.55, 0.8, 1].map(o => `<i style="background:var(--${c});opacity:${o}"></i>`).join('')}</span>`;
+      const r2 = c => `<span class="ramp">${[0.3, 0.55, 0.8, 1].map(o => `<i style="background:${mix(`var(--${c})`, o)}"></i>`).join('')}</span>`;
       const prevName = NIGHTS[st.night].previous.includes('president') ? tx('the previous presidential election', '上一屆總統選舉', '頂一屆總統選舉') : tx('the previous mayoral election', '上一屆縣市長選舉', '頂一屆縣市長選舉');
       mapLegend.innerHTML = `<div class="row"><span>${sw('ind')}</span>${tx('no count yet', '尚未開票', '猶未開票')}</div>
         <div class="row">${r2('down')} ${tx('lower · higher', '較低 · 較高', '較低 · 較懸')} ${r2('up')}</div>
         <div class="row">${tx(`projected turnout vs ${prevName}; solid = 6 points or more.`, `預估投票率與${prevName}比較；實色 = 相差 6 個百分點以上。`, `預估投票率佮${prevName}比；實色 = 差 6 个百分點以上。`)}</div>`;
       return;
     }
-    const ramp = t => `<span class="ramp">${Object.values(SHADE).map(o => `<i style="background:var(--${t});opacity:${o}"></i>`).join('')}</span>`;
+    const ramp = t => `<span class="ramp">${Object.values(SHADE).map(o => `<i style="background:${mix(`var(--${t})`, o)}"></i>`).join('')}</span>`;
     mapLegend.innerHTML = `
       <div class="row"><span>${sw('kmt')}${sw('dpp')}${sw('ind')}</span>${NIGHTS[st.night].previous.includes('president') ? tx(`no count yet: party that carried the county in ${NIGHTS[st.night].previous.slice(0, 4)} (hatched)`, `尚未開票：${NIGHTS[st.night].previous.slice(0, 4)} 年在該縣市勝出的政黨（斜線）`, `猶未開票：${NIGHTS[st.night].previous.slice(0, 4)} 年佇這个縣市贏的政黨（斜線）`) : NIGHTS[st.night].live ? tx('no count yet: party that won in 2022 (hatched)', '尚未開票：2022 年勝選者的政黨（斜線）', '猶未開票：2022 年當選者的政黨（斜線）') : tx('no count yet: party of the incumbent (hatched)', '尚未開票：現任者的政黨（斜線）', '猶未開票：現任者的政黨（斜線）')}</div>
       <div class="row">${ramp('kmt')}${ramp('dpp')}</div>
@@ -1015,7 +1056,7 @@ const DATA = /*__DATA__*/null;
           return v.cert ? tx(`${esc(who(v.mean))} by ${u(v.mean)}`, `${esc(who(v.mean))} 勝 ${u(v.mean)}`, `${esc(who(v.mean))} 贏 ${u(v.mean)}`) : tx(`${esc(who(v.mean))} by <b class="num">${u(v.mean)}</b>; 80% range ${esc(who(lo))} ${u(lo)} to ${esc(who(hi))} ${u(hi)}`, `${esc(who(v.mean))} 勝 <b class="num">${u(v.mean)}</b>；80% 區間：${esc(who(lo))} ${u(lo)} 至 ${esc(who(hi))} ${u(hi)}`, `${esc(who(v.mean))} 贏 <b class="num">${u(v.mean)}</b>；80% 區間：${esc(who(lo))} ${u(lo)} 到 ${esc(who(hi))} ${u(hi)}`); })()}</span></div>
         ${race.third ? (() => { const v3 = view3(race, st.t); const r = v3.rows[2]; return `<div class="read"><span class="k">${esc(race.third.name)}</span><span class="v">${tx(`projected ${(100 * r.share).toFixed(1)}% (80% range ${(100 * (r.share - 1.2816 * r.sd)).toFixed(1)}–${(100 * (r.share + 1.2816 * r.sd)).toFixed(1)}%), set aside in the dial; counted so far ${(100 * r.counted).toFixed(1)}%`, `預估 ${(100 * r.share).toFixed(1)}%（80% 區間 ${(100 * (r.share - 1.2816 * r.sd)).toFixed(1)}–${(100 * (r.share + 1.2816 * r.sd)).toFixed(1)}%），指針不計；目前已開 ${(100 * r.counted).toFixed(1)}%`, `預估 ${(100 * r.share).toFixed(1)}%（80% 區間 ${(100 * (r.share - 1.2816 * r.sd)).toFixed(1)}–${(100 * (r.share + 1.2816 * r.sd)).toFixed(1)}%），指針無算伊；這馬已開 ${(100 * r.counted).toFixed(1)}%`)}</span></div>`; })() : ''}
         <div class="read"><span class="k">${tx('To catch up', '追趕')}</span><span class="v">${needTxt}</span></div>
-        <div class="read"><span class="k">${tx('Ballots counted', '已開票數')}</span><span class="v">${tx(`an estimated <b class="num">${Math.min(100, 100 * tvw.shareCounted).toFixed(0)}%</b> of the expected ${comma(tvw.expect)} (projected turnout ${(100 * tvw.proj).toFixed(1)}%)`, `估計已開預期 ${comma(tvw.expect)} 票的 <b class="num">${Math.min(100, 100 * tvw.shareCounted).toFixed(0)}%</b>（預估投票率 ${(100 * tvw.proj).toFixed(1)}%）`, `估計預期的 ${comma(tvw.expect)} 票已經開 <b class="num">${Math.min(100, 100 * tvw.shareCounted).toFixed(0)}%</b>（預估投票率 ${(100 * tvw.proj).toFixed(1)}%）`)}</span></div>
+        <div class="read"><span class="k">${tx('Ballots counted', '已開票數')}</span><span class="v">${tx(`an estimated <b class="num">${shareTxt(tvw.shareCounted)}</b> of the expected ${comma(tvw.expect)} (projected turnout ${(100 * tvw.proj).toFixed(1)}%)`, `估計已開預期 ${comma(tvw.expect)} 票的 <b class="num">${shareTxt(tvw.shareCounted)}</b>（預估投票率 ${(100 * tvw.proj).toFixed(1)}%）`, `估計預期的 ${comma(tvw.expect)} 票已經開 <b class="num">${shareTxt(tvw.shareCounted)}</b>（預估投票率 ${(100 * tvw.proj).toFixed(1)}%）`)}</span></div>
         <div class="read"><span class="k">${tx('Votes left', '剩餘票數', '賰的票數')}</span><span class="v">${tx(`about <b class="num">${comma(v.ballotsLeft)}</b> ballots (live turnout estimate), ${comma(v.twoLeft)} for these two`, `約 <b class="num">${comma(v.ballotsLeft)}</b> 票（即時投票率估計），其中 ${comma(v.twoLeft)} 票屬於這兩人`, `大約 <b class="num">${comma(v.ballotsLeft)}</b> 票（即時投票率估計），其中 ${comma(v.twoLeft)} 票是這兩人的`)}</span></div>`;
     }
     detail.innerHTML = `
@@ -1208,7 +1249,7 @@ const DATA = /*__DATA__*/null;
     const reads = tv.pre ? `<div class="read"><span class="k">${tx('Status', '狀態')}</span><span class="v">${tx(`No polling stations have reported yet. Last time: ${(100 * tv.prev).toFixed(1)}%.`, `尚無投開票所回報。上次：${(100 * tv.prev).toFixed(1)}%。`, `猶無投開票所回報。頂擺：${(100 * tv.prev).toFixed(1)}%。`)}</span></div>` : `
       <div class="read"><span class="k">${tx('Counted', '已開')}</span><span class="v">${tx(`<b class="num">${comma(tv.n)}</b> of ${comma(race.stations)} stations (${(100 * tv.frac).toFixed(1)}%) · ${comma(tv.counted)} ballots`, `${comma(race.stations)} 所中已開 <b class="num">${comma(tv.n)}</b> 所（${(100 * tv.frac).toFixed(1)}%）· ${comma(tv.counted)} 票`, `${comma(race.stations)} 所內底已開 <b class="num">${comma(tv.n)}</b> 所（${(100 * tv.frac).toFixed(1)}%）· ${comma(tv.counted)} 票`)}</span></div>
       <div class="read"><span class="k">${tx('At those stations', '這些投開票所', '這寡投開票所')}</span><span class="v">${tv.inTurnout == null ? '—' : tx((100 * tv.inTurnout).toFixed(1) + '% of their electors voted', '投票率 ' + (100 * tv.inTurnout).toFixed(1) + '%')}</span></div>
-      <div class="read"><span class="k">${tx('Ballots counted', '已開票數')}</span><span class="v">${tx(`an estimated <b class="num">${Math.min(100, 100 * tv.shareCounted).toFixed(0)}%</b> of the expected ${comma(tv.expect)}`, `估計已開預期 ${comma(tv.expect)} 票的 <b class="num">${Math.min(100, 100 * tv.shareCounted).toFixed(0)}%</b>`, `估計預期的 ${comma(tv.expect)} 票已經開 <b class="num">${Math.min(100, 100 * tv.shareCounted).toFixed(0)}%</b>`)}</span></div>
+      <div class="read"><span class="k">${tx('Ballots counted', '已開票數')}</span><span class="v">${tx(`an estimated <b class="num">${shareTxt(tv.shareCounted)}</b> of the expected ${comma(tv.expect)}`, `估計已開預期 ${comma(tv.expect)} 票的 <b class="num">${shareTxt(tv.shareCounted)}</b>`, `估計預期的 ${comma(tv.expect)} 票已經開 <b class="num">${shareTxt(tv.shareCounted)}</b>`)}</span></div>
       <div class="read"><span class="k">${prevYear}</span><span class="v">${tx(`${(100 * tv.prev).toFixed(1)}% turnout in the ${prevPres ? 'presidential' : 'mayoral'} race`, `${prevPres ? '總統' : '縣市長'}選舉投票率 ${(100 * tv.prev).toFixed(1)}%`)}</span></div>`;
     detail.innerHTML = `
       <div class="dhead"><h3>${esc(race.area)} · ${tx('turnout', '投票率')}</h3><span class="sub">${tx(`${comma(race.electors)} electors`, `選舉人 ${comma(race.electors)}`)}</span></div>
@@ -1348,7 +1389,7 @@ const DATA = /*__DATA__*/null;
     const W = cs.total; let out = '';
     for (const [g] of CGROUPS) { const x = cs.seats[g];
       if (x.won) out += `<i style="width:${100 * x.won / W}%;background:var(--${g})"></i>`;
-      if (x.lead) out += `<i class="lead" style="width:${100 * x.lead / W}%;background:var(--${g})"></i>`; }
+      if (x.lead) out += `<i class="lead" style="width:${100 * x.lead / W}%;background:${mix(`var(--${g})`, 0.42)}"></i>`; }
     if (cs.wait) out += `<i class="wait" style="width:${100 * cs.wait / W}%"></i>`;
     return `<div class="cbar${mini ? ' mini' : ''}${half ? ' half' : ''}" role="img" aria-label="${esc(cs.rank.map(g => `${cname(g)} ${cs.seats[g].won + cs.seats[g].lead}`).join(', '))}">${out}</div>`;
   }
@@ -1357,7 +1398,7 @@ const DATA = /*__DATA__*/null;
       const x = cs.seats[g]; return `<div class="p"><span class="k"><i style="background:var(--${g})"></i>${cname(g)}</span><span class="v">${x.won + x.lead}</span><span class="s">${tx(`${x.won} decided`, `${x.won} 席確定`)}</span></div>`; }).join('')}
       ${cs.wait ? `<div class="p"><span class="k"><i style="background:${hatchBg}"></i>${tx('not counting yet', '尚未開票', '猶未開票')}</span><span class="v">${cs.wait}</span><span class="s">${tx('seats', '席')}</span></div>` : ''}</div>`;
   }
-  const cKey = () => `<div class="nkey"><span><i></i>${tx('decided', '確定')}</span><span><i style="opacity:.42"></i>${tx('leading, not decided', '暫時領先', '暫時贏')}</span><span><i style="background:${hatchBg}"></i>${tx('no stations counted yet', '尚未開票', '猶未開票')}</span></div>`;
+  const cKey = () => `<div class="nkey"><span><i></i>${tx('decided', '確定')}</span><span><i style="background:${mix('var(--ink)', .42)}"></i>${tx('leading, not decided', '暫時領先', '暫時贏')}</span><span><i style="background:${hatchBg}"></i>${tx('no stations counted yet', '尚未開票', '猶未開票')}</span></div>`;
   function councilWait() {
     if (COUNCIL[st.night]) return false;
     nation.innerHTML = `<div class="loading">${tx('Loading the council count…', '載入議員開票資料…', '咧載入議員開票資料…')}</div>`; cards.innerHTML = ''; detail.innerHTML = ''; mapEl.innerHTML = '';
@@ -1391,7 +1432,7 @@ const DATA = /*__DATA__*/null;
       if (cs && !cs.counting) { fill = 'url(#h-wait)'; label = `${area}: ${tx('not counting yet', '尚未開票', '猶未開票')}`; }
       else if (cs) { const g = cs.rank[0], n = cs.seats[g].won + cs.seats[g].lead; fill = `var(--${g})`; op = 0.22 + 0.78 * cs.decided / cs.total;
         label = `${area}: ${cname(g)} ${n} / ${cs.total} · ${tx(`${cs.decided} decided`, `${cs.decided} 席確定`)}`; }
-      paths += `<path class="c${area === st.area ? ' sel' : ''}" data-area="${esc(area)}" d="${d}" fill="${fill}" fill-opacity="${op}" data-tip="${esc(label)}" aria-label="${esc(label)}"></path>`;
+      paths += `<path class="c${area === st.area ? ' sel' : ''}" data-area="${esc(area)}" d="${d}" ${mapFill(fill, op)} data-tip="${esc(label)}" aria-label="${esc(label)}"></path>`;
     }
     mapEl.innerHTML = `<svg viewBox="${M.viewBox.join(' ')}" role="img" aria-label="${tx('Map of council seats', '議員席次地圖')}"><defs>${hatch}</defs><path class="inset" d="${M.insets}"/>${paths}</svg>`;
     const sel = mapEl.querySelector('path.sel'); if (sel) sel.parentNode.appendChild(sel);
@@ -1480,9 +1521,9 @@ const DATA = /*__DATA__*/null;
     const rank = { dec: 0, likely: 1, lean: 2, toss: 3 }, S = L2.races.map(r => ({ r, s: standing(r) }));
     const tones = [...new Set(S.filter(x => !x.s.pre).map(x => x.s.lead.tone))].sort((a, b) => S.filter(x => !x.s.pre && x.s.lead.tone === b).length - S.filter(x => !x.s.pre && x.s.lead.tone === a).length);
     const blk = (area, style) => `<button class="blk${area === st.area ? ' sel' : ''}" data-area="${esc(area)}" style="${style}" aria-label="${esc(area)}"></button>`;
-    let blocks = tones.map(t => S.filter(x => !x.s.pre && x.s.lead.tone === t).sort((a, b) => rank[a.s.tier] - rank[b.s.tier]).map(({ r, s: sd }) => blk(r.area, `background:var(--${t});opacity:${TIER[sd.tier][0]}`)).join('')).join('');
+    let blocks = tones.map(t => S.filter(x => !x.s.pre && x.s.lead.tone === t).sort((a, b) => rank[a.s.tier] - rank[b.s.tier]).map(({ r, s: sd }) => blk(r.area, `background:${mix(`var(--${t})`, TIER[sd.tier][0])}`)).join('')).join('');
     blocks += S.filter(x => x.s.pre).map(({ r }) => blk(r.area, `background:${hatchBg}`)).join('');
-    const key = `<div class="nkey"><span><i></i>${tierTxt('dec')}</span><span><i style="opacity:.7"></i>${tierTxt('likely')}</span><span><i style="opacity:.45"></i>${tierTxt('lean')}</span><span><i style="opacity:.22"></i>${tierTxt('toss')}</span><span><i style="background:${hatchBg}"></i>${tx('no stations yet', '尚未開票', '猶未開票')}</span></div>`;
+    const key = `<div class="nkey"><span><i></i>${tierTxt('dec')}</span><span><i style="background:${mix('var(--ink)', .7)}"></i>${tierTxt('likely')}</span><span><i style="background:${mix('var(--ink)', .45)}"></i>${tierTxt('lean')}</span><span><i style="background:${mix('var(--ink)', .22)}"></i>${tierTxt('toss')}</span><span><i style="background:${hatchBg}"></i>${tx('no stations yet', '尚未開票', '猶未開票')}</span></div>`;
     nation.innerHTML = `<div style="display:grid;gap:12px;min-width:0">
       <h2>${tx(`Legislative Yuan at ${clockTxt(st.t)}: ${total} seats, ${maj} for a majority`, `${clockTxt(st.t)} 立法院：共 ${total} 席，過半需 ${maj} 席`, `${clockTxt(st.t)} 立法院：總共 ${total} 席，過半愛 ${maj} 席`)}</h2>
       <div class="cbar half">${bar}</div>
@@ -1526,7 +1567,7 @@ const DATA = /*__DATA__*/null;
       if (S.length) { const c = {}; S.forEach(x => { c[x.lead.tone] = (c[x.lead.tone] || 0) + 1; });
         const t = Object.keys(c).sort((a, b) => c[b] - c[a])[0]; fill = `var(--${t})`; op = 0.22 + 0.78 * S.filter(x => x.tier === 'dec').length / rs.length;
         label = `${area}: ${Object.entries(c).map(([k, v]) => `${PARTYN(k)} ${v}`).join(' · ')} / ${rs.length}`; }
-      paths += `<path class="c${sel && sel.county === area ? ' sel' : ''}" data-area="${esc(area)}" d="${d}" fill="${fill}" fill-opacity="${op}" data-tip="${esc(label)}" aria-label="${esc(label)}"></path>`;
+      paths += `<path class="c${sel && sel.county === area ? ' sel' : ''}" data-area="${esc(area)}" d="${d}" ${mapFill(fill, op)} data-tip="${esc(label)}" aria-label="${esc(label)}"></path>`;
     }
     mapEl.innerHTML = `<svg viewBox="${M.viewBox.join(' ')}" role="img" aria-label="${tx('Map of legislative districts by county', '各縣市立委選區地圖')}"><defs>${hatch}</defs><path class="inset" d="${M.insets}"/>${paths}</svg>`;
     const sp = mapEl.querySelector('path.sel'); if (sp) sp.parentNode.appendChild(sp);
@@ -1591,7 +1632,7 @@ const DATA = /*__DATA__*/null;
     if (scroll || matchMedia('(max-width: 899px)').matches) scrollToEl(detail); };
   // scroll a panel to just below the sticky control bar (the bar is only sticky on wider screens)
   function scrollToEl(el) {
-    const bar = getComputedStyle(desk).position === 'sticky' ? desk.getBoundingClientRect().height : 0;
+    const bar = getComputedStyle(desk).position !== 'sticky' ? 0 : matchMedia('(max-width: 699px)').matches ? 60 : desk.getBoundingClientRect().height; // phones: the compact bar
     window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - bar - 12, behavior: 'smooth' });
   }
   nation.addEventListener('click', e => { const u = e.target.closest('[data-unit]'); if (u) { st.unit = u.dataset.unit; renderNation(); renderDetail(); return; }
@@ -1614,6 +1655,16 @@ const DATA = /*__DATA__*/null;
   }
   document.addEventListener('click', e => { const b = e.target.closest('[data-lang-set]'); if (b) setLang(b.dataset.langSet); });
 
+  // phones: fold the intro; compact sticky control bar once the full one has scrolled past
+  document.getElementById('introMore').addEventListener('click', () => document.getElementById('intro').classList.add('open'));
+  const phone = matchMedia('(max-width: 699px)');
+  function setCompact(on) {
+    if (on === desk.classList.contains('compact')) return;
+    if (on) { const full = desk.offsetHeight; desk.classList.add('compact'); desk.style.marginBottom = (full - desk.offsetHeight) + 'px'; } // keep the page from jumping
+    else { desk.classList.remove('compact'); desk.style.marginBottom = ''; }
+  }
+  new IntersectionObserver(([e]) => setCompact(phone.matches && !e.isIntersecting && e.boundingClientRect.top < 0)).observe(document.getElementById('deskSentinel'));
+  phone.addEventListener('change', () => { if (!phone.matches) setCompact(false); });
   readHash(); setLang(LANG);
   // open at a moment where things are happening
   openNight(st.night, nightInfoOf(st.night).live ? null : st.night === '2022-mayors' ? 150 : 180);
