@@ -21,7 +21,7 @@
 2. **Baseline per village.** The blue side's share of the top two in an earlier election. For Taipei 2022 that is 丁守中's share of 丁 + 柯文哲 in 2018, and 韓國瑜's share of 韓 + 蔡英文 in 2020: the other side stands in for this year's non-blue contender, whoever they are. The previous mayoral and presidential races are averaged (in logit), which beat either alone.
 3. **Swing from reported stations.** The difference between tonight's share and the baseline share at stations already in, citywide plus district deviations. It is applied to every station still out.
 4. **What's left.** Each station still out: electors × its village's baseline turnout × a live turnout ratio (reported stations vs their own baseline turnout) × the share of ballots going to the top two.
-5. **Uncertainty.** Shared error in the citywide swing, district-level error where a district has little reporting, station noise; estimated from the residuals at reported stations, with priors early on (picked by cross-validation: tune on 2018, test on 2022, and the reverse). The probability comes from a Student-t on the predicted final margin.
+5. **Uncertainty.** Shared error in the citywide swing, district-level error where a district has little reporting, station noise, and turnout (the votes still out, and the net margin they carry, scale together if turnout runs above or below its projection; from `Night.turnout`, added 2026-11-10); estimated from the residuals at reported stations, with priors early on (picked by cross-validation: tune on 2018, test on 2022, and the reverse). The probability comes from a Student-t on the predicted final margin.
 6. **Certainty.** Once the margin exceeds every elector at stations still out, P is 0 or 1.
 
 ## Backtest (blend baseline; 43 races; checkpoints = share of stations in)
@@ -90,7 +90,7 @@ Added 2026-11-10 (report times: 109全國投開票所完成時間.xls, CEC attac
 `scripts/accuracy.py` scores every race in the replays at 1/5/10/30/70% of its stations against its own final count (`data/accuracy.json`, shown on the site's entry page). Margin errors there are in points of the two contenders' votes, not of all valid votes as in the backtest table above.
 - At 10% counted, the favourite went on to win 40 of 43 mayoral races (2018, 2022) and 44 of 44 county races on the two presidential nights.
 - No race gave the eventual loser 90% or more after 5% of stations were in.
-- The stated 80% margin ranges were too narrow in the 2024 county races once a third of the stations were in (59–64% held), and early on most nights.
+- The stated 80% margin ranges were too narrow in the 2024 county races once a third of the stations were in (64–68% held; 59–64% before turnout uncertainty was added to the range on 2026-11-10), and early on most nights.
 
 ## 2024 presidential night and three-way races
 
@@ -114,17 +114,17 @@ Added 2026-11-10 (report times: 109全國投開票所完成時間.xls, CEC attac
 
 Per-station results for the 73 district races and the party-list vote, parsed by `scripts/stations.py` (`2016/2020/2024-legislator`, `-party`, `-plains`, `-mountain`). On the site since 2026-11-10 as "Show: Legislature" on the presidential nights (`scripts/build_legislature_data.py` → `data/legislature/<year>.json`).
 
-**District needles** (`scripts/backtest_legislators.py`). The same model, each district as a race (KMT vs the main opponent). Baseline: the previous presidential race at village level. Margin errors are in points of the two contenders' votes.
+**District needles** (`scripts/backtest_legislators.py`). The same model, each district as a race (KMT vs the main opponent). Baseline: the previous presidential race and the previous legislative race, averaged in logit at village level (the legislative part pools all of the county's districts, since lines are redrawn; turnout comes from the presidential part). Margin errors are in points of the two contenders' votes.
 
 | Stations in | 1% | 5% | 10% | 20% | 30% | 70% |
 |---|---|---|---|---|---|---|
-| 2020: favourite won | 59/73 | 66/73 | 69/73 | 71/73 | 73/73 | 73/73 |
-| 2020: margin error / 80% range held | 8.2 / 73% | 4.1 / 82% | 2.7 / 88% | 1.6 / 93% | 1.2 / 93% | 0.5 / 95% |
-| 2024: favourite won | 59/73 | 67/73 | 69/73 | 69/73 | 69/73 | 73/73 |
-| 2024: margin error / 80% range held | 13.5 / 71% | 5.1 / 86% | 3.5 / 92% | 2.4 / 90% | 1.6 / 92% | 0.5 / 97% |
+| 2020: favourite won | 60/73 | 67/73 | 69/73 | 72/73 | 73/73 | 73/73 |
+| 2020: margin error / 80% range held | 8.5 / 74% | 4.4 / 82% | 2.8 / 85% | 1.7 / 92% | 1.2 / 93% | 0.5 / 97% |
+| 2024: favourite won | 59/73 | 68/73 | 69/73 | 70/73 | 69/73 | 73/73 |
+| 2024: margin error / 80% range held | 12.3 / 75% | 4.9 / 88% | 3.7 / 90% | 2.5 / 86% | 1.6 / 90% | 0.5 / 99% |
 
-- Blending in the previous legislative race (villages pooled across the county's districts, since lines are redrawn) or the previous mayoral race changed little: log loss within ±15%, no consistent winner.
-- Misses at 30% in 2024: 雲林縣1 (丁學忠 won by 1.8; the model gave him 11%), 新北市12 (廖先翔 won by 6.0; 35%), 新北市7 (葉元之 by 1.5; 42%), 南投縣2 (游顥 by 2.5; 39%). 新北市12 and 雲林縣1 each gave the eventual loser 90% or more at some point after 5% counted.
+- Baseline choice (log loss of the eventual winner's chance, 2020 / 2024 at 30% counted): presidential race only 0.072 / 0.107; with the previous legislative race 0.058 / 0.090; with the previous mayoral race 0.067 / 0.096. The legislative blend scored better in both years at every checkpoint (by 5–24%), which local candidate strength would explain. Until 2026-11-10 the site used the presidential race only; an earlier reading of this comparison called it a wash.
+- Misses at 30% in 2024: 雲林縣1 (丁學忠 won by 1.8; the model gave him 18%), 新北市12 (廖先翔 won by 6.0; 44%), 新北市7 (葉元之 by 1.5; 43%), 南投縣2 (游顥 by 2.5; 46%). 新北市12 gave the eventual loser 92% at one point after 5% counted, 雲林縣1 85% (with the presidential baseline alone: 90%+ in both).
 - Districts are smaller than counties and swing more on candidates, so the needle is less sure-footed than for mayors at the same share counted.
 
 **Party vote** (`scripts/backtest_party_vote.py`; 34 seats, 5% threshold, largest remainder):
@@ -135,6 +135,26 @@ Per-station results for the 73 district races and the party-list vote, parsed by
 - Women's half of each party's list seats doesn't change the party seat counts, only who sits.
 - On the site (`scripts/party_vote.py`): votes still out are estimated from electors × the county's valid-vote rate so far, not the final turnout. Each party's share gets an error of 0.025·√(p(1−p)) × the share of votes still out, widened early (×(1 + √(200 / stations in))) and for new parties (×1.5). The page shows the three most likely seat splits from 1,000 draws, starting at the 50th station. Calibration: in 2024 the final split was the most likely one from 10% counted (34% then, 51% at 30%, 89% at 70%). In 2020 it never was: the most likely split kept 民眾黨 one seat short, with the final split at 8% (10% counted) to 38% (70%). The cause is the new-party projection.
 - Indigenous seats (平地, 山地; 3 each): shown like a council district, counted with the decided test. 2020 山地's third seat went to 孔文吉 by 16 votes over 伍麗華.
+
+## Model review (2026-11-10)
+
+`scripts/model_review.py` scores candidate changes on every replayed race: 44 mayoral (2018, 2022), 44 presidential county races (2020, 2024) and 146 legislative districts (2020, 2024), at 1/5/10/20/30/70% of stations, by log loss of the eventual winner's chance, share of finals inside the 80% range, and margin error.
+
+Adopted:
+- **Turnout uncertainty in the margin's range** (`TURNOUT_IN_MARGIN`). The votes still out scale together with turnout, and so does the net margin they carry; the turnout projection's sd is now part of the margin's sd. Mayoral log loss at 1% counted fell from 0.46 to 0.37 and the 80% ranges held more often (1%: 59% → 64%; presidential counties at 30%: 75% → 82%), with no checkpoint worse.
+- **Legislative baseline blend** (above).
+
+Tried and not adopted (no gain, or gains at one stage paid for at another):
+- A swing slope on station size (log electors), estimated live: better presidential margins early, worse log loss after 20%.
+- Shrinking the early swing toward zero (a prior on the countywide shift): worse everywhere at prior sds of 0.15–0.25 logit, neutral at 0.4. Real swings between elections are large, so the shift shouldn't be pulled toward "no change".
+- Down-weighting outlying stations (Huber weights at 1.5–2 sds): log loss within ±0.005; 80% ranges held slightly less often on presidential nights.
+- Wider priors (station noise 0.35–0.45, district 0.12, global floor 0.10): the 80% ranges hold more often early, log loss no better or worse. The early misses are mostly swings in the wrong direction from unusual first stations (2018 金門 at 1 station, 2024 臺東 legislative), which a wider range only partly covers.
+- Blending the intervening mayoral race into presidential county baselines: better at 1%, mixed after.
+
+Still open:
+- **Early stations aren't a random sample.** The first stations to report are small (rural, often indigenous townships) and swing differently. Nothing tried fixed this without hurting later; the site's notes say early numbers are rough.
+- **Presidential county ranges** still run narrow after 10% counted (73–82% held). Log loss there is already low (nearly every county is lopsided), so this mostly affects the margin chart's band.
+- **New parties in the party-list projection** (TPP 2020): the counted share in the district, shrunk toward the county, ran low all night. A size slope like the three-way model's might help; only one case to test it on.
 
 ## What could break this in 2026
 

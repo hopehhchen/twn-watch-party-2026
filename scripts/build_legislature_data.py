@@ -4,7 +4,8 @@
   python3 scripts/build_legislature_data.py [2020 2024]
 
 - districts: the 73 single-seat districts, each as a needle race (same model and point columns as the
-  mayoral races; baseline: the previous presidential race, village by village). A district where a third
+  mayoral races; baseline: the previous presidential race blended with the previous legislative race, village by
+  village; the legislative part pools all of the county's districts, since lines are redrawn). A district where a third
   candidate finished in the top two or within 10 points of the winner also gets three-way columns.
 - party: the party-list vote over the night (scripts/party_vote.py): projected shares with sds, counted
   shares, the most likely seat splits with their chances, and each party's chance of clearing 5%.
@@ -28,9 +29,9 @@ from build_needle_data import ORDER, TONE, TURNOUT_SIGMA, cand, race_entry, thre
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "data" / "legislature"
-YEARS = {2020: dict(baseline="2016-president", prev_leg="2016-legislator", prev_party="2016-party", date="2020-01-11",
+YEARS = {2020: dict(baseline="2016-president+2016-legislator", prev_leg="2016-legislator", prev_party="2016-party", date="2020-01-11",
                     title="2020 立法委員選舉"),
-         2024: dict(baseline="2020-president", prev_leg="2020-legislator", prev_party="2020-party", date="2024-01-13",
+         2024: dict(baseline="2020-president+2020-legislator", prev_leg="2020-legislator", prev_party="2020-party", date="2024-01-13",
                     title="2024 立法委員選舉")}
 INDEPENDENT = ("無", "無黨籍", "無黨籍及未經政黨推薦", "")
 
@@ -148,9 +149,9 @@ def build(year):
     ind = indigenous(year, t0)
     end = max([r["pts"][-1][0] for r in ds] + [pv["pts"][-1][0]] + [d["pts"][-1][0] for d in ind])
     return {"id": f"{year}-legislature", "title": cfg["title"], "date": cfg["date"], "baseline": cfg["baseline"],
-            "previous": cfg["baseline"], "start": 0, "end": end, "turnout_sigma": TURNOUT_SIGMA["president"],
+            "previous": cfg["baseline"].split("+")[0], "start": 0, "end": end, "turnout_sigma": TURNOUT_SIGMA["president"],
             "races": ds, "party": pv, "indigenous": ind,
-            "note": "District needles: previous presidential race as the baseline. Incumbent = winner of the same-"
+            "note": "District needles: previous presidential race blended with the previous legislative race as the baseline. Incumbent = winner of the same-"
                     "numbered district last time (district lines may have changed)."}
 
 

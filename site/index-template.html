@@ -126,10 +126,10 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; }
       <p>The Central Election Commission (CEC) reports results polling station by polling station. Each station covers a few villages (村里), and every village has voted before. The model leans on that.</p>
       <ol class="steps">
         <li><b>Two sides.</b> Each mayoral race is scored as one number: the KMT contender's share of the top two (or, where the KMT fields no one, the share of whoever faces the DPP). Other candidates are set aside; races where a third candidate is close get a three-way treatment (below).</li>
-        <li><b>A baseline for every village.</b> How the same village split last time: for mayors, the previous mayoral and presidential races averaged; for president, the previous presidential race. Stations are matched by village, so renumbered, split or merged stations don't matter (98–100% of electors match).</li>
+        <li><b>A baseline for every village.</b> How the same village split last time: for mayors, the previous mayoral and presidential races averaged; for president, the previous presidential race; for legislative districts, the previous presidential and legislative races averaged. Stations are matched by village, so renumbered, split or merged stations don't matter (98–100% of electors match).</li>
         <li><b>The swing so far.</b> At the stations already counted, how far tonight's share has moved from the baseline, city-wide and district by district. That swing is applied to every station still out.</li>
         <li><b>What's left.</b> Each station still out has a known number of electors; the model estimates how many will have voted from the turnout at counted stations compared with their own past turnout.</li>
-        <li><b>Uncertainty.</b> The projected margin has a range that allows for the whole city swinging differently, for districts differing, and for station-to-station noise. The win chance comes from that range. It starts wide and narrows as stations report.</li>
+        <li><b>Uncertainty.</b> The projected margin has a range that allows for the whole city swinging differently, for districts differing, for station-to-station noise, and for turnout running above or below its projection. The win chance comes from that range. It starts wide and narrows as stations report.</li>
         <li><b>Decided.</b> When a lead is bigger than every elector at the stations still out, the race is decided, whatever the turnout.</li>
       </ol>
       <h3>Three-way races</h3>
@@ -141,10 +141,10 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; }
       <p>中央選舉委員會（中選會）以投開票所為單位公布結果。每個投開票所涵蓋幾個村里，而每個村里過去都投過票。模型就是利用這一點。</p>
       <ol class="steps">
         <li><b>兩方。</b>每場縣市長選舉化為一個數字：國民黨候選人在前兩名中的得票比例（國民黨未提名時，則為與民進黨對決者的比例）。其他候選人先不計；第三人票數接近的選舉另以三強方式處理（見下）。</li>
-        <li><b>每個村里的基準。</b>同一村里上次怎麼投：縣市長選舉取上一屆縣市長與總統選舉的平均；總統選舉取上一屆總統選舉。投開票所以村里對應，所以投開票所重新編號、拆分或合併都不影響（98–100% 的選舉人可直接對應）。</li>
+        <li><b>每個村里的基準。</b>同一村里上次怎麼投：縣市長選舉取上一屆縣市長與總統選舉的平均；總統選舉取上一屆總統選舉；立委選區取上一屆總統與立委選舉的平均。投開票所以村里對應，所以投開票所重新編號、拆分或合併都不影響（98–100% 的選舉人可直接對應）。</li>
         <li><b>目前的擺盪。</b>在已開出的投開票所，比較今晚的比例與基準差了多少，分全市與各區計算，再把這個擺盪套用到每個尚未開出的投開票所。</li>
         <li><b>剩下多少。</b>每個尚未開出的投開票所，選舉人數是已知的；投票人數則依已開投開票所與其過去投票率的比較來估計。</li>
-        <li><b>不確定性。</b>預估差距有一個區間，涵蓋全市整體擺盪不同、各區不同，以及投開票所之間的雜訊。勝率就從這個區間算出：一開始很寬，隨投開票所回報而收斂。</li>
+        <li><b>不確定性。</b>預估差距有一個區間，涵蓋全市整體擺盪不同、各區不同、投開票所之間的雜訊，以及投票率高於或低於推估。勝率就從這個區間算出：一開始很寬，隨投開票所回報而收斂。</li>
         <li><b>確定。</b>當領先票數大於所有尚未開票投開票所的選舉人數，不論投票率如何，勝負已定。</li>
       </ol>
       <h3>三強鼎立</h3>
@@ -156,10 +156,10 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; }
       <p>中央選舉委員會（中選會）用投開票所做單位公佈結果。逐个投開票所包含幾若个村里，逐个村里過去攏投過票。模型就是靠這點。</p>
       <ol class="steps">
         <li><b>兩爿。</b>逐場縣市長選舉化做一个數字：國民黨候選人佇頭前兩名內底的得票比例（國民黨無提名的時，就是佮民進黨對決彼个人的比例）。其他候選人先無算；第三人票數相倚的選舉，另外用三強的方式處理（看下跤）。</li>
-        <li><b>逐个村里的基準。</b>仝一个村里頂擺按怎投：縣市長選舉用頂一屆縣市長佮總統選舉的平均；總統選舉用頂一屆總統選舉。投開票所是用村里來對，所以投開票所重新編號、拆開抑是合併攏無影響（98–100% 的選舉人會使直接對著）。</li>
+        <li><b>逐个村里的基準。</b>仝一个村里頂擺按怎投：縣市長選舉用頂一屆縣市長佮總統選舉的平均；總統選舉用頂一屆總統選舉；立委選區用頂一屆總統佮立委選舉的平均。投開票所是用村里來對，所以投開票所重新編號、拆開抑是合併攏無影響（98–100% 的選舉人會使直接對著）。</li>
         <li><b>這馬的擺盪。</b>佇已經開出來的投開票所，比今暗的比例佮基準差偌濟，分全市佮各區來算，才閣共這个擺盪套用到逐个猶未開出來的投開票所。</li>
         <li><b>賰偌濟。</b>逐个猶未開出來的投開票所，選舉人數是知影的；會有偌濟人投票，就照已開的投開票所佮伊過去的投票率比較來估。</li>
-        <li><b>無確定性。</b>預估差距有一个區間，包含全市規个擺盪無仝、各區無仝，佮投開票所之間的雜訊。贏面就是對這个區間算出來的：起頭真闊，投開票所愈回報就愈收縮。</li>
+        <li><b>無確定性。</b>預估差距有一个區間，包含全市規个擺盪無仝、各區無仝、投開票所之間的雜訊，佮投票率比推估較懸抑是較低。贏面就是對這个區間算出來的：起頭真闊，投開票所愈回報就愈收縮。</li>
         <li><b>確定。</b>贏的票數比所有猶未開票的投開票所的選舉人閣較濟的時，毋管投票率按怎，輸贏已經定矣。</li>
       </ol>
       <h3>三強鼎立</h3>

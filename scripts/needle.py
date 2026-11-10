@@ -35,6 +35,7 @@ from build_cec_night import minute_ceiling  # noqa: E402
 KMT, DPP = "中國國民黨", "民主進步黨"
 TURNOUT_PRIOR = dict(tau=0.05, sigma=0.08, k0=8, n0=10, glob=0.12, sys=0.02)  # log-ratio scale
 PRIOR = dict(tau=0.08, sigma=0.25, k0=8, n0=10, glob=0.05)  # logit-scale priors; chosen by cross-validation 2018<->2022
+TURNOUT_IN_MARGIN = True  # add turnout uncertainty to the margin's sd (see estimate)
 
 
 def logit(p):
@@ -341,7 +342,14 @@ class Night:
             dn = dmean.get(d, (0, 0))[1]
             var_d += gk * gk * tau2 * (pr["n0"] / 3) / (dn + pr["n0"] / 3)
         var_g = sum(G.values()) ** 2 * g2
-        sd = math.sqrt(var_g + var_d + var_station)
+        # turnout: the votes still out all scale together if turnout runs above or below its projection, and
+        # so does the net margin they carry (scripts/model_review.py: mayoral log loss at 1% counted 0.46 -> 0.37)
+        var_t = 0.0
+        if TURNOUT_IN_MARGIN:
+            tr = self.turnout(n)
+            left = max(tr["mean"] - tr["counted"], 1.0)
+            var_t = ((mean - margin) * tr["sd"] / left) ** 2
+        sd = math.sqrt(var_g + var_d + var_station + var_t)
         df = max(3, K - 1) if K < 30 else 200
         p = t_cdf(mean / sd, df) if sd > 0 else (1.0 if mean > 0 else 0.0)
         return dict(p=p, mean=mean, sd=sd, certain=False, delta=delta, rho=rho, K=K, vrem=vrem, **extra)
