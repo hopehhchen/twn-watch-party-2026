@@ -312,6 +312,9 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
 .notes { font-size: 14px; color: var(--muted); display: grid; gap: 10px; max-width: 80ch; }
 .notes h2 { margin: 0; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
 .notes p { margin: 0; }
+.notes details { border-top: 1px solid var(--rule); padding: 6px 0; }
+.notes summary { cursor: pointer; color: var(--ink); font-weight: 700; }
+.notes details p { margin: 4px 0 2px; }
 .notes b { color: var(--ink); }
 @media (max-width: 520px) {
   .clock { font-size: 32px; } .dhead h3 { font-size: 24px; }
@@ -327,8 +330,8 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
   /* phones: the intro folds to two lines; once the controls scroll away, a slim clock-and-slider bar stays on top */
   .intro:not(.open) .proto { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .intro:not(.open) .more { display: inline-block; }
-  .desk { border-radius: var(--radius); }
-  .desk.compact { grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 4px 12px; padding: 8px 12px; border-radius: 0 0 var(--radius) var(--radius); }
+  .desk { border-radius: var(--radius); position: static; }
+  .desk.compact { position: sticky; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 4px 12px; padding: 8px 12px; border-radius: 0 0 var(--radius) var(--radius); }
   .desk.compact > .desk-row:first-child > :not(.clock), .desk.compact > :not(.desk-row:first-child):not(.scrub) { display: none; }
   .desk.compact .clock { font-size: 24px; min-width: 0; }
   .desk.compact .play { width: 32px; height: 32px; }
@@ -368,9 +371,9 @@ html[lang="nan-Hant-TW"] [data-l="en"], html[lang="nan-Hant-TW"] [data-l="zh"] {
     </div>
   </header>
   <div class="intro" id="intro">
-  <p class="proto" data-l="en">On election night, 28 November 2026, this page follows the count live. Until then it shows the 2026 races as they stand before the count, and replays real past nights from the CEC's own records with the model run as if live: pick a year, press play, open any race. Nothing in a replay is simulated, and nothing from later in the night leaks in.</p>
-  <p class="proto" data-l="zh">2026 年 11 月 28 日開票當晚，本頁即時追蹤開票。在那之前，這裡顯示 2026 年各場選舉開票前的狀態，並以中選會原始紀錄重播真實的過去開票夜，模型如同現場即時運算：選一個年份、按下播放、點開任何一場選舉。重播沒有模擬數據，也不會用到之後才開出的結果。</p>
-  <p class="proto" data-l="tw">2026 年 11 月 28 日開票彼暗，這頁會即時綴開票。佇彼進前，遮顯示 2026 年逐場選舉開票進前的狀態，閣用中選會的原始紀錄重播真正的過去開票暗，模型親像現場咧算：揀一个年份、揤播放、拍開任何一場選舉。重播無模擬的數字，嘛袂用著較晏才開出來的結果。</p>
+  <p class="proto" data-l="en">Live results on election night, 28 November 2026. Until then: the 2026 races before the count, and real past nights replayed as the model would have run them.</p>
+  <p class="proto" data-l="zh">2026 年 11 月 28 日開票當晚即時更新。在那之前：2026 年各場選舉開票前的狀態，以及用模型重播的真實過去開票夜。</p>
+  <p class="proto" data-l="tw">2026 年 11 月 28 日開票彼暗即時更新。佇彼進前：2026 年逐場選舉開票前的狀態，佮用模型重播的真正過去開票暗。</p>
     <button class="more" id="introMore" type="button"><span data-l="en">More</span><span data-l="zh">更多</span><span data-l="tw">閣較濟</span></button>
   </div>
   <div id="deskSentinel" aria-hidden="true"></div>
@@ -384,44 +387,37 @@ html[lang="nan-Hant-TW"] [data-l="en"], html[lang="nan-Hant-TW"] [data-l="zh"] {
   <section class="notes" aria-labelledby="h-notes">
     <h2 id="h-notes">How to read this · 怎麼看</h2>
     <div data-l="en">
-    <p><b>The dial</b> is the chance each of a race's two main contenders wins, from the votes counted so far. Everyone else's votes are set aside. It starts wide and narrows as stations report. <b>Decided</b> means the lead is larger than every remaining elector could overturn, with no assumption about turnout.</p>
-    <p><b>How it is worked out.</b> The stations already counted are compared with how the same villages voted before (for mayors, the previous mayoral and presidential races, averaged; for president, the previous presidential race). That swing is applied to the stations still out, with room for districts to move differently. See the <a href="index.html">About page</a> for how well it did.</p>
-    <p><b>Top panel.</b> Mayoral nights: one block per race, colored by the projected leader and shaded by how sure the model is (as on the map), with counts by party and how many each won last time; hover a block for the race, click it to open it below. Presidential nights: the national race itself, with its chance and margin charts (and, for 2024, the count watch).</p>
-    <p><b>Three-way races</b> (2024: eight counties where 柯文哲 was close): the dial shows the two candidates likeliest to win, and the third candidate's chance is given beside it. The chances come from the projected shares and their uncertainty, and start at the 5th station counted. <b>Count watch</b> (2024): per candidate, the floor (highest count among the CEC and the reliable channels), the other channels' range, and the model's projected final with its 80% range.</p>
-    <p><b>Map.</b> Before a race has any counted stations, its county is hatched in the party color of the incumbent. Once counting starts, it takes the color of the projected leader's own party (gray for independents, teal for 台灣民眾黨), shaded from light (toss-up) to solid (decided). 金門, 連江 and 澎湖 are drawn in insets.</p>
-    <p><b>Turnout view.</b> "Show: Turnout" switches the cards, map and race panel to the projected final turnout, worked out the same way as the vote swing. On the 2018 and 2022 nights it was within about 2 points by the time 5–10% of stations were in. The "Ballots counted" line uses it to estimate what share of all ballots has been counted, a better progress measure than stations, since stations differ in size.</p>
-    <p><b>Council view</b> (2018, 2022). Who would hold each council seat if counting stopped now. Each district elects several members; the candidates with the most votes win. A district electing 4 reserves a seat for a woman, plus one per 4 more seats (地方制度法 §33); "women's seat" marks a woman elected this way, "displaced" the man who loses his place. A seat is <b>decided</b> once even the most damaging split of the votes still out (every remaining elector voting, all for the closest challengers) couldn't change who holds it. Nothing is projected here.</p>
-    <p><b>Needle motion.</b> The big needles move like a gauge: when the estimate changes they swing to it, and for a few seconds they wander across the chances that go with the middle half of the projected margin, then settle on the estimate. The wandering shows how uncertain the estimate is; it isn't new data. Off if your device asks for reduced motion.</p>
-    <p><b>Legislature view</b> (2020, 2024). The 73 districts each get a needle, from the swing since the previous presidential and legislative races (averaged). The 34 party-list seats are shown as the most likely splits with their chances (parties at 5% or more, largest remainder). The six indigenous seats are shown like a council district. District needles are less sure-footed than the mayoral ones: districts are small and swing on candidates.</p>
-    <p><b>Feed.</b> The model uses polling-station results whenever the CEC's live feed has them. If the feed only gives district (行政區) totals, it falls back to those: the same model, noticeably less certain early on, and a box at the top says so. The replays all use station results.</p>
-    <p><b>Names in English.</b> Candidates appear under the English name they are commonly known by where one exists (Puma Shen, Johnny Chiang, George Hsieh, Ann Kao), and otherwise under the romanization used by the Central News Agency (Focus Taiwan), the Legislative Yuan, the CEC or English Wikipedia, checked against a second source where possible. Where sources disagree, one spelling was picked and kept (for example Hou Yu-ih, not Hou You-yi; Chang Chia-chun, as on her Legislative Yuan page, not Alice Chang). A name with no English source is written in Hanyu Pinyin with a hyphen between the given-name syllables, as is common in Taiwan. Council and legislative candidates are shown in Chinese, and each race panel shows the Chinese name under the English one.</p>
-    <p><b>Caveats.</b> The two contenders are taken from the final result here; for 2026 they are set in advance. Times are when the CEC logged each station's report (all contests at a station at once), which can trail what TV showed. 2018 counting ran past midnight in many places because referendums were counted the same night.</p>
+    <details open><summary>The dial</summary><p>Each main contender's chance to win, from the votes counted so far; other candidates' votes are set aside. <b>Decided</b> means the lead is larger than every elector still out.</p></details>
+    <details><summary>Map</summary><p>Hatched: no count yet, in the color of the incumbent's party. After that, the projected leader's party, from light (toss-up) to solid (decided).</p></details>
+    <details><summary>Three-way races</summary><p>The dial shows the two likeliest winners; the third candidate's chance is beside it, from the 5th station counted.</p></details>
+    <details><summary>Turnout view</summary><p>Projected final turnout, worked out the same way as the vote.</p></details>
+    <details><summary>Council view</summary><p>Who would hold each seat if counting stopped now, with the women's quota. A seat is <b>decided</b> once no split of the votes still out could change it. Nothing is projected here.</p></details>
+    <details><summary>Legislature view</summary><p>A needle for each of the 73 districts; the 34 party-list seats as the likeliest splits with their chances; the six indigenous seats as counted.</p></details>
+    <details><summary>Needle motion</summary><p>After each update the big needles wander for a few seconds to show the uncertainty, then settle on the estimate.</p></details>
+    <details><summary>Feed</summary><p>If the CEC's live feed only gives district totals, the page uses them and says so.</p></details>
+    <p>How the model works, how accurate it has been, its limits and how names are written in English: see the <a href="index.html">About page</a>.</p>
     </div>
     <div data-l="zh">
-    <p><b>指針</b>是每場選舉兩位主要候選人各自勝選的機率，依目前已開出的票計算，其他候選人的票先不計。一開始範圍很寬，隨著投開票所回報逐漸收斂。<b>確定</b>表示領先票數已超過所有尚未開票的選舉人數，不需要任何投票率假設。</p>
-    <p><b>怎麼算的。</b>把已開出的投開票所，和同一村里過去的投票結果比較（縣市長：上一屆縣市長與總統選舉的平均；總統：上一屆總統選舉），把這個「擺盪」套用到尚未開出的投開票所，並允許各區有不同的變化。模型過去的準確度請見<a href="index.html">說明頁</a>。</p>
-    <p><b>上方面板。</b>縣市長選舉夜：每場選舉一格，顏色為預估領先者的政黨，深淺代表模型的把握（與地圖相同），並列出各黨領先數與上屆當選數；滑鼠移到格子上可看該場選舉，點一下即在下方打開。總統選舉夜：全國選情本身，附勝率與差距走勢圖（2024 年另有開票數字監看）。</p>
-    <p><b>三強鼎立</b>（2024 年柯文哲票數接近的八個縣市）：指針顯示最可能勝選的兩人，第三人的勝率另外標示。勝率來自預估得票率及其不確定性，從第 5 個投開票所開出後才顯示。<b>開票數字監看</b>（2024）：每位候選人的「下限」（中選會與可靠頻道中的最高票數）、其他頻道的範圍，以及模型預估的最終票數與 80% 區間。</p>
-    <p><b>地圖。</b>尚未開出任何投開票所時，以斜線標示現任者的政黨顏色。開票後改為預估領先者本人的政黨顏色（無黨籍為灰色、台灣民眾黨為青綠色），由淺（難分高下）到深（確定）。金門、連江與澎湖畫在小框內。</p>
-    <p><b>投票率檢視。</b>「顯示：投票率」會把卡片、地圖與選舉面板換成預估的最終投票率，算法與得票擺盪相同。在 2018 與 2022 年，開出 5–10% 投開票所時誤差約 2 個百分點以內。「已開票數」一行用它來估計全部選票已開出的比例；由於各投開票所大小不同，這比投開票所數更能反映進度。</p>
-    <p><b>議員檢視</b>（2018、2022）。如果此刻停止開票，每個議員席次會由誰拿下。每個選區應選數名，得票最高者當選。應選 4 名的選區保障 1 席婦女名額，每增 4 名再增 1 席（地方制度法第 33 條）；「婦女保障」標示依此當選的女性，「被排擠」標示因此落選的男性。即使剩餘票數以最不利的方式分配（所有未開票的選舉人都投票，且全投給最接近的挑戰者）也無法改變當選人時，該席為<b>確定</b>。這裡不做任何預測。</p>
-    <p><b>指針擺動。</b>大指針像儀表一樣移動：估計改變時會擺向新值，接下來幾秒在預估差距中間一半範圍所對應的勝率之間游移，再停在估計值上。游移呈現的是估計的不確定性，不是新資料。裝置設定減少動態效果時不擺動。</p>
-    <p><b>立委檢視</b>（2020、2024）。73 個區域選區各有一支指針，依上一屆總統及立委選舉（兩者平均）以來的擺盪推估。34 席不分區以最可能的席次分配及其機率呈現（得票 5% 以上的政黨，最大餘數法）。6 席原住民立委以議員選區的方式呈現。區域選區較小、受候選人影響較大，指針沒有縣市長的穩。</p>
-    <p><b>資料。</b>中選會即時資料有投開票所層級結果時，模型就用逐所結果；若只有鄉鎮市區合計，就改用合計：同一個模型，但早期明顯較不確定，頁面上方會有提示。所有重播都使用逐所結果。</p>
-    <p><b>限制。</b>這裡的兩位主要候選人取自最終結果；2026 年會事先設定。時間是中選會登錄各投開票所回報的時間（同一所的所有選舉一起登錄），可能比電視畫面晚。2018 年因同晚開公投票，許多地方開票到午夜以後。</p>
+    <details open><summary>指針</summary><p>每場兩位主要候選人各自勝選的機率，依目前已開出的票計算；其他候選人的票先不計。<b>確定</b>表示領先票數已超過所有尚未開票的選舉人。</p></details>
+    <details><summary>地圖</summary><p>斜線：尚未開票，顏色為現任者的政黨。開票後為預估領先者的政黨，由淺（難分高下）到深（確定）。</p></details>
+    <details><summary>三強鼎立</summary><p>指針顯示最可能勝選的兩人，第三人的勝率標示在旁，第 5 所開出後才顯示。</p></details>
+    <details><summary>投票率檢視</summary><p>預估的最終投票率，算法與得票相同。</p></details>
+    <details><summary>議員檢視</summary><p>若此刻停止開票，各席由誰拿下，含婦女保障名額。剩餘選票無論如何分配都無法改變當選人時，該席即為<b>確定</b>。這裡不做預測。</p></details>
+    <details><summary>立委檢視</summary><p>73 個區域選區各有一支指針；34 席不分區以最可能的席次分配及其機率呈現；6 席原住民立委以開票結果呈現。</p></details>
+    <details><summary>指針擺動</summary><p>每次更新後，大指針會擺動幾秒以呈現不確定性，再停在估計值。</p></details>
+    <details><summary>資料</summary><p>若中選會即時資料只有鄉鎮市區合計，頁面會改用合計並加以標示。</p></details>
+    <p>模型怎麼算、過去的準確度、限制，以及英文姓名的寫法：請見<a href="index.html">說明頁</a>。</p>
     </div>
     <div data-l="tw">
-    <p><b>指針</b>是逐場選舉兩位主要候選人個別當選的機率，照這馬已經開出來的票算，其他候選人的票先無算。起頭的範圍真闊，投開票所愈回報就愈收縮。<b>確定</b>的意思是贏的票數已經超過所有猶未開票的選舉人，免任何投票率的假設。</p>
-    <p><b>按怎算的。</b>共已經開出來的投開票所，佮仝一个村里過去的投票結果比（縣市長：頂一屆縣市長佮總統選舉的平均；總統：頂一屆總統選舉），共這个「擺盪」套用到猶未開出來的投開票所，嘛予各區有無仝的變化。模型過去準無準，請看<a href="index.html">說明頁</a>。</p>
-    <p><b>頂懸的面板。</b>縣市長選舉暗：一場選舉一格，色是預估領先者的政黨，深淺代表模型的把握（佮地圖仝款），閣列出各黨領先的數佮頂屆當選的數；滑鼠囥佇格仔頂懸看會著彼場選舉，揤一下就佇下跤拍開。總統選舉暗：全國的選情本身，有贏面佮差距的走勢圖（2024 年閣有開票數字監看）。</p>
-    <p><b>三強鼎立</b>（2024 年柯文哲票數相倚的八个縣市）：指針顯示上有可能當選的兩人，第三人的贏面另外標。贏面是對預估得票率佮伊的無確定性來的，愛等第 5 个投開票所開出來才顯示。<b>開票數字監看</b>（2024）：逐位候選人的「下限」（中選會佮可靠電視台內底上懸的票數）、其他電視台的範圍，佮模型預估上尾的票數佮 80% 區間。</p>
-    <p><b>地圖。</b>猶未開出任何投開票所的時，用斜線標現任者的政黨色。開票了後改做預估領先者本人的政黨色（無黨籍是灰色、台灣民眾黨是青綠色），對淺（五五波）到深（確定）。金門、連江佮澎湖畫佇細框仔內。</p>
-    <p><b>投票率檢視。</b>「顯示：投票率」會共卡片、地圖佮選舉面板換做預估上尾的投票率，算法佮得票擺盪仝款。2018 佮 2022 年，開出 5–10% 投開票所的時，誤差大約 2 个百分點以內。「已開票數」這逝用伊來估全部選票已經開出來偌濟；因為逐个投開票所大細無仝，這比投開票所的數較會反映進度。</p>
-    <p><b>議員檢視</b>（2018、2022）。若這馬停止開票，逐席議員會予啥人提去。逐个選區應選幾若名，得票上懸的當選。應選 4 名的選區保障 1 席婦女名額，逐加 4 名閣加 1 席（地方制度法第 33 條）；「婦女保障」標按呢當選的查某人，「予人擠掉」標因按呢落選的查埔人。就算賰的票用上僫的方式分（所有猶未開票的選舉人攏去投，閣攏投予上倚的挑戰者）嘛改變袂著當選人的時，彼席就是<b>確定</b>。遮無做任何預測。</p>
-    <p><b>立委檢視</b>（2020、2024）。73 个區域選區逐个有一支指針，照頂一屆總統佮立委選舉（兩个平均）以來的擺盪推算。34 席不分區用上有可能的席次分配佮伊的機率呈現（得票 5% 以上的政黨，最大餘數法）。6 席原住民立委用議員選區的方式呈現。區域選區較細、受候選人影響較大，指針無縣市長的遐爾穩。</p>
-    <p><b>指針搖擺。</b>大支指針親像儀表咧振動：估計改變的時會搖向新的值，紲落來幾秒鐘佇預估差距中間一半範圍對應的贏面之間游來游去，才停佇估計值頂懸。游來游去是咧表現估計的無確定性，毋是新的資料。裝置有設定減少動態效果的時袂搖。</p>
-    <p><b>資料。</b>中選會的即時資料若有投開票所層級的結果，模型就用逐所的結果；若干焦有鄉鎮市區的合計，就改用合計：仝一个模型，毋過早期明顯較無確定，頁面頂懸會有提示。所有的重播攏用逐所的結果。</p>
-    <p><b>限制。</b>遮的兩位主要候選人是對上尾的結果揀的；2026 年會事先設定。時間是中選會登錄逐个投開票所回報的時間（仝一所的所有選舉做伙登錄），可能比電視畫面較晏。2018 年因為仝暗開公投票，真濟所在開票開到半暝以後。</p>
+    <details open><summary>指針</summary><p>逐場兩位主要候選人個別當選的機率，照這馬已經開出來的票算；其他候選人的票先無算。<b>確定</b>的意思是贏的票數已經超過所有猶未開票的選舉人。</p></details>
+    <details><summary>地圖</summary><p>斜線：猶未開票，色是現任者的政黨。開票了後是預估領先者的政黨，對淺（五五波）到深（確定）。</p></details>
+    <details><summary>三強鼎立</summary><p>指針顯示上有可能當選的兩人，第三人的贏面標佇邊仔，第 5 所開出來了後才顯示。</p></details>
+    <details><summary>投票率檢視</summary><p>預估上尾的投票率，算法佮得票仝款。</p></details>
+    <details><summary>議員檢視</summary><p>若這馬停止開票，逐席會予啥人提去，有算婦女保障名額。賰的票按怎分攏改變袂著當選人的時，彼席就是<b>確定</b>。遮無做預測。</p></details>
+    <details><summary>立委檢視</summary><p>73 个區域選區逐个有一支指針；34 席不分區用上有可能的席次分配佮伊的機率呈現；6 席原住民立委用開票結果呈現。</p></details>
+    <details><summary>指針搖擺</summary><p>逐擺更新了後，大支指針會搖幾秒鐘來表現無確定性，才停佇估計值。</p></details>
+    <details><summary>資料</summary><p>若中選會的即時資料干焦有鄉鎮市區的合計，頁面會改用合計，閣會標示出來。</p></details>
+    <p>模型按怎算、過去準無準、限制，佮英文名的寫法：請看<a href="index.html">說明頁</a>。</p>
     </div>
   </section>
 </div>
@@ -634,6 +630,7 @@ const DATA = /*__DATA__*/null;
         <div class="ctl"><span>${tx('Night', '選舉')}</span><div class="seg" role="group" aria-label="${tx('Night', '選舉')}">
           ${DATA.nights.map(n => `<button data-night="${n.id}" aria-pressed="${n.id === st.night}" title="${esc(n.legis ? n.title.replace('總統選舉', '總統、立委選舉') : n.title)}">${n.id.slice(0, 4)}</button>`).join('')}</div></div>
       </div>
+      ${night.live ? '' : `
       <div class="scrub">
         <button class="play" id="play" aria-label="${st.playing ? tx('Pause', '暫停') : tx('Play', '播放')}">${st.playing ? '<svg viewBox="0 0 16 16"><rect x="3" y="2" width="3.5" height="12"/><rect x="9.5" y="2" width="3.5" height="12"/></svg>' : '<svg viewBox="0 0 16 16"><path d="M4 2l10 6-10 6z"/></svg>'}</button>
         <input type="range" id="t" min="${night.start}" max="${playEnd()}" step="1" value="${st.t}" aria-label="${tx('Time', '時間')}">
@@ -641,10 +638,11 @@ const DATA = /*__DATA__*/null;
       <div class="desk-row">
         <div class="ctl"><span>${tx('Speed', '速度')}</span><div class="seg" role="group" aria-label="${tx('Speed', '速度')}">
           ${[2, 5, 15].map(v => `<button data-speed="${v}" aria-pressed="${v === st.speed}">${tx(`${v} min/s`, `${v} 分/秒`)}</button>`).join('')}</div></div>
-        ${night.live ? `<div class="summary">${tx('Polls close at 16:00; counting starts right after.', '16:00 投票結束，隨即開票。', '16:00 投票結束，隨後開票。')}</div>` : ''}
+
       </div>
+      `}
       ${!council && isDist() ? `<div class="flag">${tx("District totals only: the CEC's live feed isn't giving per-station results, so the projection can't see which stations within a district have reported and stays less certain for longer.", '僅有鄉鎮市區合計：中選會即時資料沒有逐所結果，模型看不到區內哪些投開票所已回報，因此較久才能確定。', '干焦有鄉鎮市區的合計：中選會的即時資料無逐所的結果，模型看袂著區內佗幾所已經回報，所以愛較久才會確定。')}</div>` : ''}
-      ${st.mode === 'turnout' ? `<div class="summary">${tx(`Turnout view: each county's projected final turnout, from the stations already in compared with how many of their electors voted in ${baseYear}; the change is against ${baseYear}'s turnout.`, `投票率檢視：各縣市預估的最終投票率，依已開出投開票所與其 ${baseYear} 年投票率比較推算；增減以 ${baseYear} 年為準。`, `投票率檢視：各縣市預估的上尾投票率，是用已經開出來的投開票所，佮各所 ${baseYear} 年的投票率比較推算出來的；加減是佮 ${baseYear} 年比。`)}</div>` : ''}
+
 `;
   }
 
@@ -703,7 +701,7 @@ const DATA = /*__DATA__*/null;
     nation.innerHTML = `<div style="display:grid;gap:10px;min-width:0">
       <h2>${tx(`All ${total} mayors at ${clockTxt(st.t)}: who leads, and how sure`, `${clockTxt(st.t)} 全部 ${total} 席縣市長：誰領先、多有把握`, `${clockTxt(st.t)} 全部 ${total} 席縣市長：啥人咧贏、有偌把握`)}</h2>
       <div class="sbar blocks">${bar}</div>${key}<div class="tally">${tally}</div>
-      <p class="note muted" style="margin:0;font-size:12px">${tx(`One block per race, by the projected leader's party; shading as on the map. Hover a block for the race, click to open it. Within a party, blocks run from most to least certain, then in the county order of the cards. "In ${prevYear}": mayors each party won last time.`, `每場選舉一格，顏色為預估領先者的政黨，深淺同地圖。滑鼠移到格子上可看該場選舉，點一下即打開。同一政黨內依把握由高到低排列，再依卡片的縣市順序。「${prevYear} 年」：各黨上屆當選席次。`, `一場選舉一格，色是預估領先者的政黨，深淺佮地圖仝款。滑鼠囥佇格仔頂懸就看會著彼場選舉，揤一下就拍開。仝一个政黨內底照把握對懸排到低，閣照卡片的縣市順序。「${prevYear} 年」：各黨頂屆當選的席次。`)}</p></div>`;
+      <p class="note muted" style="margin:0;font-size:12px">${tx('Shading as on the map.', '深淺同地圖。', '深淺佮地圖仝款。')}</p></div>`;
   }
   // the live night before the first station: when counting starts, and who won each race last time (hatched)
   function renderNationBefore(night, counties) {
@@ -741,7 +739,7 @@ const DATA = /*__DATA__*/null;
         <div class="panel" style="padding:12px">
           <div class="bigdial" data-ndl="nat">${dial(nat, v, true, ndlPos('nat', 'nat' + st.night, v))}</div>
           <div class="verdict"><span class="big">${v.pre ? tx('Waiting for the first station', '等待第一個投開票所', '等第一个投開票所') : v.cert ? `${esc(v.lead.name)} — ${tx('decided', '確定')}` : `${esc(lead.name)} ${pctTxt(q)} · ${Ll(stt.label)}`}</span>
-            <span class="small">${v.pre ? '' : `${clockTxt(st.t)} · ${isDist() ? tx('district totals only', '僅鄉鎮市區合計', '干焦鄉鎮市區合計') : tx('per-station feed', '逐所資料')}`}</span></div>
+            <span class="small">${v.pre ? '' : `${clockTxt(st.t)}${isDist() ? ' · ' + tx('district totals only', '僅鄉鎮市區合計', '干焦鄉鎮市區合計') : ''}`}</span></div>
           <div class="reads" style="margin-top:6px">${reads}</div>
         </div>
         <div class="panel">
@@ -921,7 +919,7 @@ const DATA = /*__DATA__*/null;
     mapLegend.innerHTML = `
       <div class="row"><span>${sw('kmt')}${sw('dpp')}${sw('ind')}</span>${NIGHTS[st.night].previous.includes('president') ? tx(`no count yet: party that carried the county in ${NIGHTS[st.night].previous.slice(0, 4)} (hatched)`, `尚未開票：${NIGHTS[st.night].previous.slice(0, 4)} 年在該縣市勝出的政黨（斜線）`, `猶未開票：${NIGHTS[st.night].previous.slice(0, 4)} 年佇這个縣市贏的政黨（斜線）`) : NIGHTS[st.night].live ? tx('no count yet: party that won in 2022 (hatched)', '尚未開票：2022 年勝選者的政黨（斜線）', '猶未開票：2022 年當選者的政黨（斜線）') : tx('no count yet: party of the incumbent (hatched)', '尚未開票：現任者的政黨（斜線）', '猶未開票：現任者的政黨（斜線）')}</div>
       <div class="row">${ramp('kmt')}${ramp('dpp')}</div>
-      <div class="row">${tx("projected leader's party, from toss-up (light) to decided (solid). Gray = independent; teal = TPP.", '預估領先者的政黨，由淺（難分高下）到深（確定）。灰色 = 無黨籍；青綠色 = 民眾黨。', '預估領先者的政黨，對淺（五五波）到深（確定）。灰色 = 無黨籍；青綠色 = 民眾黨。')}</div>`;
+      <div class="row">${tx('Light → solid: toss-up → decided. Gray: independent · teal: TPP.', '由淺到深：難分高下 → 確定。灰色：無黨籍 · 青綠色：民眾黨。', '對淺到深：五五波 → 確定。灰色：無黨籍 · 青綠色：民眾黨。')}</div>`;
   }
 
   function series(race, col, colD) { return race.pts.map(p => [p[C.t], isDist() ? p[colD] : p[col], p]); }
@@ -1057,7 +1055,7 @@ const DATA = /*__DATA__*/null;
         ${race.third ? (() => { const v3 = view3(race, st.t); const r = v3.rows[2]; return `<div class="read"><span class="k">${esc(race.third.name)}</span><span class="v">${tx(`projected ${(100 * r.share).toFixed(1)}% (80% range ${(100 * (r.share - 1.2816 * r.sd)).toFixed(1)}–${(100 * (r.share + 1.2816 * r.sd)).toFixed(1)}%), set aside in the dial; counted so far ${(100 * r.counted).toFixed(1)}%`, `預估 ${(100 * r.share).toFixed(1)}%（80% 區間 ${(100 * (r.share - 1.2816 * r.sd)).toFixed(1)}–${(100 * (r.share + 1.2816 * r.sd)).toFixed(1)}%），指針不計；目前已開 ${(100 * r.counted).toFixed(1)}%`, `預估 ${(100 * r.share).toFixed(1)}%（80% 區間 ${(100 * (r.share - 1.2816 * r.sd)).toFixed(1)}–${(100 * (r.share + 1.2816 * r.sd)).toFixed(1)}%），指針無算伊；這馬已開 ${(100 * r.counted).toFixed(1)}%`)}</span></div>`; })() : ''}
         <div class="read"><span class="k">${tx('To catch up', '追趕')}</span><span class="v">${needTxt}</span></div>
         <div class="read"><span class="k">${tx('Ballots counted', '已開票數')}</span><span class="v">${tx(`an estimated <b class="num">${shareTxt(tvw.shareCounted)}</b> of the expected ${comma(tvw.expect)} (projected turnout ${(100 * tvw.proj).toFixed(1)}%)`, `估計已開預期 ${comma(tvw.expect)} 票的 <b class="num">${shareTxt(tvw.shareCounted)}</b>（預估投票率 ${(100 * tvw.proj).toFixed(1)}%）`, `估計預期的 ${comma(tvw.expect)} 票已經開 <b class="num">${shareTxt(tvw.shareCounted)}</b>（預估投票率 ${(100 * tvw.proj).toFixed(1)}%）`)}</span></div>
-        <div class="read"><span class="k">${tx('Votes left', '剩餘票數', '賰的票數')}</span><span class="v">${tx(`about <b class="num">${comma(v.ballotsLeft)}</b> ballots (live turnout estimate), ${comma(v.twoLeft)} for these two`, `約 <b class="num">${comma(v.ballotsLeft)}</b> 票（即時投票率估計），其中 ${comma(v.twoLeft)} 票屬於這兩人`, `大約 <b class="num">${comma(v.ballotsLeft)}</b> 票（即時投票率估計），其中 ${comma(v.twoLeft)} 票是這兩人的`)}</span></div>`;
+        `;
     }
     detail.innerHTML = `
       <div class="dhead"><h3>${esc(race.label || race.area + '長')}</h3><span class="sub">${esc(race.blue.name)} vs ${esc(race.other.name)}${race.others_final ? tx(' · other candidates set aside', ' · 其他候選人不計', ' · 其他候選人無算') : ''}</span></div>
@@ -1065,7 +1063,7 @@ const DATA = /*__DATA__*/null;
         <div class="panel" style="padding:12px">
           <div class="bigdial" data-ndl="det">${dial(race, v, true, ndlPos('det', race.area + st.night, v))}</div>
           <div class="verdict"><span class="big">${v.pre ? tx('Waiting for the first station', '等待第一個投開票所', '等第一个投開票所') : v.cert ? `${esc(v.lead.name)} — ${tx('decided', '確定')}` : `${esc((v.pb >= 0.5 ? race.blue : race.other).name)} ${pctTxt(Math.max(v.pb, 1 - v.pb))} · ${Ll(stt.label)}`}</span>
-            <span class="small">${v.pre ? '' : `${clockTxt(st.t)} · ${isDist() ? tx('district totals only', '僅鄉鎮市區合計', '干焦鄉鎮市區合計') : tx('per-station feed', '逐所資料')}`}</span></div>
+            <span class="small">${v.pre ? '' : `${clockTxt(st.t)}${isDist() ? ' · ' + tx('district totals only', '僅鄉鎮市區合計', '干焦鄉鎮市區合計') : ''}`}</span></div>
           <div class="duo">${sideHtml(race.other, false)}${sideHtml(race.blue, true)}</div>
           <div class="reads" style="margin-top:6px">${reads}</div>
         </div>
@@ -1073,7 +1071,7 @@ const DATA = /*__DATA__*/null;
           <h2>${tx('Chance to win over the night', '整晚勝率變化', '規暗的贏面變化')}</h2>${chartP(race)}
           ${unitSwitch()}
           ${chartM(race)}
-          ${st.unit === 'pts' ? `<p class="note muted" style="margin:0;font-size:12px">${tx("Points: the lead as a share of the two contenders' votes (counted so far, or projected for the final), not of all valid votes.", '百分點：領先票數占兩位主要候選人票數（已開或預估最終）的比例，而非占全部有效票。', '百分點：贏的票數佔兩位主要候選人票數（已開抑是預估上尾）的比例，毋是佔全部的有效票。')}</p>` : ''}
+          ${st.unit === 'pts' ? `<p class="note muted" style="margin:0;font-size:12px">${tx("Points: share of the two contenders' votes.", '百分點：占兩位主要候選人票數的比例。', '百分點：佔兩位主要候選人票數的比例。')}</p>` : ''}
           ${marginLegend()}
           ${watch(race)}
         </div>
@@ -1132,7 +1130,7 @@ const DATA = /*__DATA__*/null;
         <div class="panel">
           <h2>${tx('Chance to win over the night', '整晚勝率變化', '規暗的贏面變化')}</h2>${chartP3(race)}
           <h2>${tx('Projected shares over the night', '整晚預估得票率變化', '規暗的預估得票率變化')}</h2>${chart3(race)}
-          <p class="note muted" style="margin:0;font-size:12px">${cur().live ? tx(`The third candidate's share is projected from the counted stations in each district, adjusted for station size; the other two are split by the swing since the previous elections. Win chances come from the same projection and its uncertainty. They have been checked on one night only (2024, eight three-way counties).`, `第三位候選人的得票率依各區已開投開票所推估，並依投開票所規模調整；另外兩人依上屆以來的擺盪分配。勝率來自同一推估及其不確定性，目前只在一個晚上驗證過（2024 年，八個三強縣市）。`, `第三位候選人的得票率照各區已開的投開票所推算，閣照投開票所的大細調整；另外兩人照頂屆以來的擺盪來分。贏面是對仝一个推算佮伊的無確定性來的，這馬干焦佇一暗驗證過（2024 年，八个三強縣市）。`) : tx(`${esc(race.third.name)} has no earlier election to compare with, so their share is projected from the counted stations in each district, adjusted for station size (larger stations leaned more to them in 2024); the other two from the swing since 2020. Win chances come from the same projection and its uncertainty. They can't be checked well: eight three-way counties on one night.`, `${esc(race.third.name)} 沒有過去的選舉可比較，其得票率依各區已開投開票所推估，並依投開票所規模調整（2024 年規模較大的投開票所較支持他）；另外兩人依 2020 年以來的擺盪推估。勝率來自同一推估及其不確定性，但無法充分驗證：只有一晚、八個三強縣市。`, `${esc(race.third.name)} 無過去的選舉通比，伊的得票率是照各區已開的投開票所推算，閣照投開票所的大細調整（2024 年較大的投開票所較支持伊）；另外兩人照 2020 年以來的擺盪推算。贏面是對仝一个推算佮伊的無確定性來的，毋過無法度好好仔驗證：干焦一暗、八个三強縣市。`)}</p>
+          <p class="note muted" style="margin:0;font-size:12px">${tx(`${esc(race.third.name)}'s share is projected from the counted stations; three-way win chances have been checked on one night only (2024).`, `${esc(race.third.name)} 的得票率依已開投開票所推估；三強勝率目前只在一個晚上驗證過（2024 年）。`, `${esc(race.third.name)} 的得票率照已開的投開票所推算；三強贏面這馬干焦佇一暗驗證過（2024 年）。`)}</p>
           ${watch(race)}
         </div>
       </div>`;
@@ -1214,7 +1212,7 @@ const DATA = /*__DATA__*/null;
       <div class="wkey"><span><i class="k-fl"></i>${tx('floor: highest reliable count', '下限：可靠來源中的最高票數', '下限：可靠來源內底上懸的票數')}</span>${race.sources && race.sources.some(s => s.cohort === 'field') ? `<span><i class="k-band"></i>${tx('field: other channels, range and mean', '其他頻道：範圍與平均', '其他電視台：範圍佮平均')}</span>` : ''}<span><i class="k-prj"></i>${tx('projected final, 80% range', '預估最終票數，80% 區間', '預估上尾的票數，80% 區間')}</span></div>
       ${bars}
       <details><summary>${tx('Readings by source', '各來源讀數', '逐个來源的讀數')}</summary><div class="tbl">${table}</div></details>
-      <p class="note muted" style="margin:0;font-size:12px">${nat ? tx('Reliable: 中選會, 公視 (own count), 華視. Field: 三立, TVBS. ', '可靠來源：中選會、公視（自行計票）、華視。其他頻道：三立、TVBS。', '可靠來源：中選會、公視（家己算票）、華視。其他電視台：三立、TVBS。') : race.sources ? tx("County counts: 中選會 and 華視's rotating county panel (read off the recording; a reading can be up to 15 minutes old, and some misreads were dropped). From about 18:15 華視 showed the CEC's numbers. ", '縣市票數：中選會與華視輪播的縣市面板（從錄影辨識；讀數最多可能晚 15 分鐘，部分誤讀已剔除）。約 18:15 起華視改播中選會數字。', '縣市票數：中選會佮華視輪流播的縣市面板（對錄影辨識；讀數上濟可能慢 15 分鐘，有一寡看毋著的已經提掉）。差不多 18:15 起，華視改播中選會的數字。') : tx("No channel's county numbers were read for this county; the floor is the CEC count. ", '此縣市沒有讀取到電視台的票數；下限即中選會票數。', '這个縣市無讀著電視台的票數；下限就是中選會的票數。')}<span style="color:var(--stamp);font-weight:700">${tx('Red', '紅字')}</span>${tx(': above the top of the projected 80% range, more than the count can plausibly reach.', '：高於預估 80% 區間上限，超出票數合理可能達到的範圍。', '：比預估 80% 區間的上限閣較懸，超過票數合理會當到的範圍。')}</p>
+      <p class="note muted" style="margin:0;font-size:12px">${nat ? tx('Reliable: 中選會, 公視 (own count), 華視. Field: 三立, TVBS. ', '可靠來源：中選會、公視（自行計票）、華視。其他頻道：三立、TVBS。', '可靠來源：中選會、公視（家己算票）、華視。其他電視台：三立、TVBS。') : race.sources ? tx("County counts: 中選會 and 華視's county panel, read off the recording. ", '縣市票數：中選會與華視的縣市面板（從錄影辨識）。', '縣市票數：中選會佮華視的縣市面板（對錄影辨識）。') : tx('Floor: the CEC count. ', '下限：中選會票數。', '下限：中選會的票數。')}<span style="color:var(--stamp);font-weight:700">${tx('Red', '紅字')}</span>${tx(': above the top of the projected 80% range.', '：高於預估 80% 區間上限。', '：比預估 80% 區間的上限閣較懸。')}</p>
     </div>`;
   }
   function chartT(race) {
@@ -1264,7 +1262,7 @@ const DATA = /*__DATA__*/null;
         <div class="panel">
           <h2>${tx('Projected turnout over the night', '整晚預估投票率變化', '規暗的預估投票率變化')}</h2>${chartT(race)}
           <div class="legend"><span><i></i>${tx('projected final turnout', '預估最終投票率', '預估上尾的投票率')}</span><span><i class="band"></i>${tx('80% range', '80% 區間')}</span><span><i class="cnt"></i>${tx('turnout at stations counted so far', '已開投開票所的投票率')}</span><span><i style="border-top:2px dashed var(--muted)"></i>${tx(`${prevYear} turnout`, `${prevYear} 年投票率`)}</span></div>
-          <p class="note muted" style="margin:0;font-size:12px">${tx('Stations that report early can differ from the rest (in 2022 they had noticeably lower turnout), so turnout at the stations counted so far isn\'t the projection: the projection compares each counted station with its own past turnout and applies that to the stations still out.', '較早回報的投開票所可能與其他所不同（2022 年明顯較低），所以已開投開票所的投票率不等於預估：預估是把每個已開投開票所與它自己過去的投票率比較，再套用到尚未開出的投開票所。', '較早回報的投開票所可能佮其他的無仝（2022 年明顯較低），所以已開投開票所的投票率毋是預估：預估是共逐个已開的投開票所佮伊家己過去的投票率比，才閣套用到猶未開的投開票所。')}</p>
+          <p class="note muted" style="margin:0;font-size:12px">${tx("Early stations can differ from the rest, so the projection compares each counted station with its own past turnout.", '較早開出的投開票所可能與其他所不同，所以預估是把每個已開投開票所與它自己過去的投票率比較。', '較早開出來的投開票所可能佮其他的無仝，所以預估是共逐个已開的投開票所佮伊家己過去的投票率比。')}</p>
         </div>
       </div>`;
   }
@@ -1532,7 +1530,7 @@ const DATA = /*__DATA__*/null;
       <div class="lgrid">
         <div style="display:grid;gap:8px;align-content:start;min-width:0"><h2>${tx(`Districts · ${L2.races.length} seats`, `區域立委 · ${L2.races.length} 席`)}</h2>
           <div class="sbar blocks">${blocks}</div>${key}
-          <p class="note muted" style="margin:0;font-size:12px">${tx('One block per district, by the projected leader\'s party. Hover for the race, click to open its needle below.', '每個選區一格，顏色為預估領先者的政黨。滑鼠移上可看選情，點一下在下方打開指針。', '一个選區一格，色是預估領先者的政黨。滑鼠囥頂懸看選情，揤一下佇下跤拍開指針。')}</p></div>
+          <p class="note muted" style="margin:0;font-size:12px">${tx('Shading as on the map.', '深淺同地圖。', '深淺佮地圖仝款。')}</p></div>
         <div style="display:grid;gap:8px;align-content:start;min-width:0">${partyListHtml(L2)}</div>
       </div>
       <h2>${tx('Indigenous seats · 3 + 3', '原住民立委 · 3 + 3 席')}</h2>
@@ -1554,7 +1552,7 @@ const DATA = /*__DATA__*/null;
     return head + `<div class="plist">${rows}</div>
       <div class="nkey"><span><i></i>${tx('projected share', '預估得票率')}</span><span><i style="background:transparent;border-top:2px solid var(--ink);height:0"></i>${tx('80% range', '80% 區間')}</span><span><i style="width:2px;background:var(--muted)"></i>${tx('counted so far', '目前已開', '這馬已開')}</span><span><i style="width:2px;background:var(--stamp)"></i>${tx('5% threshold', '5% 門檻')}</span></div>
       <h3 class="sub3">${tx('Most likely seat splits', '最可能的席次分配', '上有可能的席次分配')}</h3><ul class="splits">${spl}</ul>
-      <p class="note muted" style="margin:0;font-size:12px">${tx(`Parties that ran last time are projected by their swing since then, village by village; new parties from their count in each district. Seats: parties at 5% or more, largest remainder. The last seat is often decided by a few thousand votes, hence the chances. ${(100 * (1 - outFrac)).toFixed(0)}% of the expected votes counted.`, `上屆有參選的政黨依各村里相對上屆的擺盪推估；新政黨依各區已開得票推估。席次：得票 5% 以上的政黨以最大餘數法分配。最後一席常只差幾千票，因此以機率呈現。預期票數已開 ${(100 * (1 - outFrac)).toFixed(0)}%。`, `頂屆有參選的政黨，照逐村里佮頂屆比的擺盪推算；新政黨照各區已開的得票推算。席次：得票 5% 以上的政黨用最大餘數法分。上尾一席定定干焦差幾千票，所以用機率來呈現。預期的票數已經開 ${(100 * (1 - outFrac)).toFixed(0)}%。`)}</p>`;
+      <p class="note muted" style="margin:0;font-size:12px">${tx(`Seats go to parties at 5% or more; the last seat often hinges on a few thousand votes, hence the chances. ${(100 * (1 - outFrac)).toFixed(0)}% of the expected votes counted.`, `得票 5% 以上的政黨才分配席次；最後一席常只差幾千票，因此以機率呈現。預期票數已開 ${(100 * (1 - outFrac)).toFixed(0)}%。`, `得票 5% 以上的政黨才分席次；上尾一席定定干焦差幾千票，所以用機率呈現。預期的票數已經開 ${(100 * (1 - outFrac)).toFixed(0)}%。`)}</p>`;
   }
   function renderLegisMap() {
     if (!LEGIS[st.night]) return;
@@ -1596,7 +1594,7 @@ const DATA = /*__DATA__*/null;
   const playEnd = () => Math.max(NIGHTS[st.night].end, ...NIGHTS[st.night].races.map(r => r.pts.length ? r.pts[r.pts.length - 1][C.t] : 0), st.mode === 'council' && COUNCIL[st.night] ? COUNCIL[st.night].end : 0,
     st.mode === 'legis' && LEGIS[st.night] ? LEGIS[st.night].end : 0);
   function tick(ts) {
-    if (!st.playing) return;
+    if (!st.playing || NIGHTS[st.night].live) { st.playing = false; return; } // the live night never plays
     if (ts - lastTick >= 250) {
       const end = playEnd();
       st.t = Math.min(end, st.t + st.speed / 4); lastTick = ts;
@@ -1663,7 +1661,7 @@ const DATA = /*__DATA__*/null;
     if (on) { const full = desk.offsetHeight; desk.classList.add('compact'); desk.style.marginBottom = (full - desk.offsetHeight) + 'px'; } // keep the page from jumping
     else { desk.classList.remove('compact'); desk.style.marginBottom = ''; }
   }
-  new IntersectionObserver(([e]) => setCompact(phone.matches && !e.isIntersecting && e.boundingClientRect.top < 0)).observe(document.getElementById('deskSentinel'));
+  new IntersectionObserver(([e]) => setCompact(phone.matches && !!desk.querySelector('.scrub') && !e.isIntersecting && e.boundingClientRect.top < 0)).observe(document.getElementById('deskSentinel'));
   phone.addEventListener('change', () => { if (!phone.matches) setCompact(false); });
   readHash(); setLang(LANG);
   // open at a moment where things are happening
