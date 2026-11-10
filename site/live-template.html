@@ -331,10 +331,14 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
   .intro:not(.open) .proto { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .intro:not(.open) .more { display: inline-block; }
   .desk { border-radius: var(--radius); position: static; }
-  .desk.compact { position: sticky; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 4px 12px; padding: 8px 12px; border-radius: 0 0 var(--radius) var(--radius); }
-  .desk.compact > .desk-row:first-child > :not(.clock), .desk.compact > :not(.desk-row:first-child):not(.scrub) { display: none; }
+  /* compact bar: clock and what-to-show on one row, then play + slider, then speed; the year picker and summary stay in the full bar */
+  .desk.compact { position: sticky; gap: 6px; padding: 8px 12px; border-radius: 0 0 var(--radius) var(--radius); }
+  .desk.compact > .desk-row:first-child { flex-wrap: nowrap; gap: 10px; }
+  .desk.compact > .desk-row:first-child > .summary, .desk.compact > .desk-row:first-child > span[style], .desk.compact .ctl:has([data-night]),
+  .desk.compact .ctl > span, .desk.compact > .flag, .desk.compact > .summary, .desk.compact > .desk-row:not(:first-child) > .summary { display: none; }
   .desk.compact .clock { font-size: 24px; min-width: 0; }
   .desk.compact .play { width: 32px; height: 32px; }
+  .desk.compact .seg button { padding: 3px 8px; font-size: 12.5px; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 .mast-right { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
