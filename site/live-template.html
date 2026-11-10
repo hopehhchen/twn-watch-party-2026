@@ -48,7 +48,7 @@ button, select { font: inherit; color: inherit; }
 .brand h1 { margin: 0; font-family: var(--font-display); font-weight: 900; font-size: 26px; letter-spacing: 0.02em; line-height: 1.1; }
 .brand h1 small { display: block; margin-top: 6px; font-family: var(--font-body); font-weight: 500; font-size: 12px; line-height: 1.35; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 a.brand { text-decoration: none; color: inherit; }
-a.brand:hover h1, a.brand:focus-visible h1 { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; }
+a.brand:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
 .tabs { display: flex; gap: 4px; padding: 4px; background: var(--surface); border: 1px solid var(--rule); border-radius: 999px; }
 .tabs a { text-decoration: none; padding: 6px 14px; border-radius: 999px; font-weight: 500; font-size: 14px; color: var(--muted); }
 .tabs a[aria-current="page"] { background: var(--ink); color: var(--bg); }
@@ -99,7 +99,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
 .mapcol, .cardcol { display: grid; gap: 10px; align-content: start; min-width: 0; }
 #map svg { width: 100%; max-width: 360px; height: auto; display: block; margin: 0 auto; }
 #map path.c { stroke: var(--surface); stroke-width: 0.7; cursor: pointer; }
-#map path.c:hover { stroke: var(--ink); stroke-width: 1.2; }
+#map path.c:hover, #map path.c.tipon { stroke: var(--ink); stroke-width: 1.2; }
 #map path.c.sel { stroke: var(--ink); stroke-width: 2; }
 #map path.inset { fill: none; stroke: var(--rule); stroke-width: 0.8; }
 /* national panel */
@@ -605,9 +605,10 @@ const DATA = /*__DATA__*/null;
     const night = cur(), r = night.races.find(x => x.area === area), k = (night.skipped || []).find(x => x.area === area);
     if (k) return `<b>${esc(area)}</b><br>${esc(skipWhy(k))}`;
     if (!r) return '';
+    const hint = `<br><span class="muted">${openHint()}</span>`;
     const s = standing(r);
-    if (s.pre) return `<b>${esc(area)}</b><br>${tx('No stations in yet', '尚未開票', '猶未開票')}${r.mode === 'three' || r.other ? `<br>${esc(r.blue.name)} · ${esc(r.other.name)}${r.third ? ' · ' + esc(r.third.name) : ''}` : ''}${r.incumbent ? `<br><span class="muted">${isLive() ? tx('won in 2022:', '2022 年當選：', '2022 年當選：') : tx('incumbent', '現任')} ${esc(r.incumbent.name)} (${esc(pname(r.incumbent.party))})</span>` : ''}`;
-    return `<b>${esc(area)}</b> · ${tx(`${(100 * s.frac).toFixed(0)}% of stations`, `投開票所已開 ${(100 * s.frac).toFixed(0)}%`, `投開票所開 ${(100 * s.frac).toFixed(0)}% 矣`)}<br><span style="color:${tone(s.lead)};font-weight:700">${esc(s.lead.name)}</span> ${esc(pname(s.lead.party))}<br>${s.tier === 'dec' ? tierTxt('dec') : `${tx(`${pctTxt(s.q)} to win`, `勝率 ${pctTxt(s.q)}`, `贏面 ${pctTxt(s.q)}`)} · ${tierTxt(s.tier)}`}<br><span class="muted">${tx('click to open', '點一下打開', '揤一下拍開')}</span>`;
+    if (s.pre) return `<b>${esc(area)}</b><br>${tx('No stations in yet', '尚未開票', '猶未開票')}${r.mode === 'three' || r.other ? `<br>${esc(r.blue.name)} · ${esc(r.other.name)}${r.third ? ' · ' + esc(r.third.name) : ''}` : ''}${r.incumbent ? `<br><span class="muted">${isLive() ? tx('won in 2022:', '2022 年當選：', '2022 年當選：') : tx('incumbent', '現任')} ${esc(r.incumbent.name)} (${esc(pname(r.incumbent.party))})</span>` : ''}${hint}`;
+    return `<b>${esc(area)}</b> · ${tx(`${(100 * s.frac).toFixed(0)}% of stations`, `投開票所已開 ${(100 * s.frac).toFixed(0)}%`, `投開票所開 ${(100 * s.frac).toFixed(0)}% 矣`)}<br><span style="color:${tone(s.lead)};font-weight:700">${esc(s.lead.name)}</span> ${esc(pname(s.lead.party))}<br>${s.tier === 'dec' ? tierTxt('dec') : `${tx(`${pctTxt(s.q)} to win`, `勝率 ${pctTxt(s.q)}`, `贏面 ${pctTxt(s.q)}`)} · ${tierTxt(s.tier)}`}${hint}`;
   }
   function renderNation() {
     if (st.mode === 'council') return renderCouncilNation();
@@ -641,7 +642,6 @@ const DATA = /*__DATA__*/null;
       <h2>${tx(`All ${total} mayors at ${clockTxt(st.t)}: who leads, and how sure`, `${clockTxt(st.t)} 全部 ${total} 席縣市長：誰領先、多有把握`, `${clockTxt(st.t)} 全部 ${total} 席縣市長：啥人咧贏、有偌把握`)}</h2>
       <div class="sbar blocks">${bar}</div>${key}<div class="tally">${tally}</div>
       <p class="note muted" style="margin:0;font-size:12px">${tx(`One block per race, by the projected leader's party; shading as on the map. Hover a block for the race, click to open it. Within a party, blocks run from most to least certain, then in the county order of the cards. "In ${prevYear}": mayors each party won last time.`, `每場選舉一格，顏色為預估領先者的政黨，深淺同地圖。滑鼠移到格子上可看該場選舉，點一下即打開。同一政黨內依把握由高到低排列，再依卡片的縣市順序。「${prevYear} 年」：各黨上屆當選席次。`, `一場選舉一格，色是預估領先者的政黨，深淺佮地圖仝款。滑鼠囥佇格仔頂懸就看會著彼場選舉，揤一下就拍開。仝一个政黨內底照把握對懸排到低，閣照卡片的縣市順序。「${prevYear} 年」：各黨頂屆當選的席次。`)}</p></div>`;
-    refreshTip();
   }
   function renderNationalRace(nat) {
     const v = view(nat, st.t), stt = status(v), lead = v.pre ? null : (v.pb >= 0.5 ? nat.blue : nat.other), q = v.pre ? 0 : Math.max(v.pb, 1 - v.pb);
@@ -678,17 +678,44 @@ const DATA = /*__DATA__*/null;
   const unitSwitch = () => `<div class="unitsw"><h2>${tx('Margin: counted and projected', '差距：已開與預估', '差距：已開佮預估')}</h2><div class="seg" role="group" aria-label="${tx('Margin unit', '差距單位')}">
     <button data-unit="votes" aria-pressed="${st.unit === 'votes'}">${tx('Votes', '票數')}</button><button data-unit="pts" aria-pressed="${st.unit === 'pts'}">${tx('Points', '百分點')}</button></div></div>`;
   const marginLegend = () => `<div class="legend"><span><i></i>${tx('projected final (as estimated at each moment)', '預估最終差距（各時點的估計）', '預估上尾的差距（逐个時間點的估計）')}</span><span><i class="band"></i>${tx('80% range', '80% 區間')}</span><span><i class="cnt"></i>${tx('counted so far', '目前已開', '這馬已開')}</span></div>`;
-  // block tooltip: one floating element, kept in step with the replay while the pointer rests on a block
+  // Bubbles on the national blocks and the map: one floating element, kept in step with the replay while the
+  // pointer rests on an area. Mouse: hover shows it, click opens the race. Touch (no hover): the first tap shows
+  // the bubble, a second tap on the same area opens the race, a tap anywhere else closes it.
   const tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; document.body.appendChild(tip);
-  let tipArea = null;
-  function placeTip(el) { const b = el.getBoundingClientRect(); tip.innerHTML = tipFor(el.dataset.area); tip.hidden = false;
+  let tipArea = null, tipSrc = null, lastPointer = 'mouse';
+  document.addEventListener('pointerdown', e => { lastPointer = e.pointerType || 'mouse'; }, true);
+  const openHint = () => lastPointer === 'touch' ? tx('tap again to open', '再點一下打開', '閣揤一下拍開') : tx('click to open', '點一下打開', '揤一下拍開');
+  function tipHtml(el, src) {
+    if (src === 'map' && st.mode !== 'winner') { // turnout, council and legislature maps: the county's one-line summary
+      const lab = el.dataset.tip || el.dataset.area, i = lab.indexOf(': ');
+      return `<b>${esc(el.dataset.area)}</b>${i >= 0 ? '<br>' + esc(lab.slice(i + 2)) : ''}<br><span class="muted">${openHint()}</span>`;
+    }
+    return tipFor(el.dataset.area) || `<b>${esc(el.dataset.area)}</b>`;
+  }
+  function placeTip(el, src) {
+    const b = el.getBoundingClientRect(); tip.innerHTML = tipHtml(el, src); tip.hidden = false;
     const w = tip.offsetWidth; tip.style.left = Math.max(8, Math.min(innerWidth - w - 8, b.left + b.width / 2 - w / 2)) + 'px';
-    tip.style.top = (b.bottom + 8 + scrollY) + 'px'; }
-  function refreshTip() { if (!tipArea) return; const el = nation.querySelector(`.blk[data-area="${tipArea}"]`); if (el) placeTip(el); else { tip.hidden = true; tipArea = null; } }
-  nation.addEventListener('mouseover', e => { const b = e.target.closest('.blk'); if (!b) return; tipArea = b.dataset.area; placeTip(b); });
-  nation.addEventListener('mouseout', e => { const b = e.target.closest('.blk'); if (b && !b.contains(e.relatedTarget)) { tip.hidden = true; tipArea = null; } });
-  nation.addEventListener('focusin', e => { const b = e.target.closest('.blk'); if (b) { tipArea = b.dataset.area; placeTip(b); } });
-  nation.addEventListener('focusout', () => { tip.hidden = true; tipArea = null; });
+    tip.style.top = ((src === 'map' ? b.top + Math.min(b.height / 2, 40) + 10 : b.bottom + 8) + scrollY) + 'px';
+    mapEl.querySelectorAll('path.tipon').forEach(x => x.classList.remove('tipon'));
+    if (src === 'map') el.classList.add('tipon');
+  }
+  function hideTip() { tip.hidden = true; tipArea = tipSrc = null; mapEl.querySelectorAll('path.tipon').forEach(x => x.classList.remove('tipon')); }
+  const tipEl = () => tipSrc === 'map' ? mapEl.querySelector(`path[data-area="${CSS.escape(tipArea)}"]`) : nation.querySelector(`.blk[data-area="${CSS.escape(tipArea)}"]`);
+  function refreshTip() { if (!tipArea) return; const el = tipEl(); if (el) placeTip(el, tipSrc); else hideTip(); }
+  function showTip(el, src) { tipArea = el.dataset.area; tipSrc = src; placeTip(el, src); }
+  // a click: on touch, the first tap on an area only shows its bubble
+  function tapOrOpen(el, src, scroll) {
+    if (lastPointer === 'touch' && !(tipArea === el.dataset.area && tipSrc === src)) { showTip(el, src); return; }
+    hideTip(); pick(el.dataset.area, scroll);
+  }
+  nation.addEventListener('mouseover', e => { if (lastPointer === 'touch') return; const b = e.target.closest('.blk'); if (b) showTip(b, 'nation'); });
+  nation.addEventListener('mouseout', e => { if (lastPointer === 'touch') return; const b = e.target.closest('.blk'); if (b && !b.contains(e.relatedTarget)) hideTip(); });
+  nation.addEventListener('focusin', e => { if (lastPointer === 'touch') return; const b = e.target.closest('.blk'); if (b) showTip(b, 'nation'); }); // keyboard focus
+  nation.addEventListener('focusout', () => { if (tipSrc === 'nation') hideTip(); });
+  mapEl.addEventListener('mouseover', e => { if (lastPointer === 'touch') return; const c = e.target.closest('path[data-area]'); if (c) showTip(c, 'map'); });
+  mapEl.addEventListener('mouseout', e => { if (lastPointer === 'touch') return; const c = e.target.closest('path[data-area]'); if (c && !(e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest('path[data-area]') === c)) hideTip(); });
+  document.addEventListener('click', e => { if (tipArea && !e.target.closest('.blk, #map path[data-area]')) hideTip(); });
+  addEventListener('scroll', () => { if (tipArea && lastPointer !== 'touch') hideTip(); }, { passive: true });
   function nationTurnout(night, nat, counties) {
     const one = (label, tv, extra) => tv.pre ? `<h2>${label}</h2><p class="muted" style="margin:0">${tx(`No stations in yet. Last time: ${(100 * tv.prev).toFixed(1)}%.`, `尚未開票。上次：${(100 * tv.prev).toFixed(1)}%。`, `猶未開票。頂擺：${(100 * tv.prev).toFixed(1)}%。`)}</p>` :
       `<h2>${label}</h2><div class="tnum">${(100 * tv.proj).toFixed(1)}% <small>${tx(`projected turnout · 80% range ${(100 * tv.lo).toFixed(1)}–${(100 * tv.hi).toFixed(1)}%`, `預估投票率 · 80% 區間 ${(100 * tv.lo).toFixed(1)}–${(100 * tv.hi).toFixed(1)}%`)}</small></div>
@@ -792,7 +819,7 @@ const DATA = /*__DATA__*/null;
         else { const lead = v.pb >= 0.5 ? r.blue : r.other; fill = tone(lead); op = SHADE[stt.label]; label = `${area}: ${lead.name} ${pctTxt(Math.max(v.pb, 1 - v.pb))} · ${L(stt.label)}`; }
       } else if (k) { fill = `url(#h-${k.incumbent ? k.incumbent.tone : 'ind'})`; op = 0.5; label = `${area}: ${skipWhy(k)}`; }
       else { fill = 'var(--rule)'; label = area; }
-      paths += `<path class="c${area === st.area ? ' sel' : ''}" data-area="${esc(area)}" d="${d}" fill="${fill}" fill-opacity="${op}"><title>${esc(label)}</title></path>`;
+      paths += `<path class="c${area === st.area ? ' sel' : ''}" data-area="${esc(area)}" d="${d}" fill="${fill}" fill-opacity="${op}" data-tip="${esc(label)}" aria-label="${esc(label)}"></path>`;
     }
     // draw the selected county last so its outline sits on top
     mapEl.innerHTML = `<svg viewBox="${M.viewBox.join(' ')}" role="img" aria-label="${tx('Map of races', '選情地圖')} ${clockTxt(st.t)}"><defs>${defs}</defs>
@@ -1325,7 +1352,7 @@ const DATA = /*__DATA__*/null;
       if (cs && !cs.counting) { fill = 'url(#h-wait)'; label = `${area}: ${tx('not counting yet', '尚未開票', '猶未開票')}`; }
       else if (cs) { const g = cs.rank[0], n = cs.seats[g].won + cs.seats[g].lead; fill = `var(--${g})`; op = 0.22 + 0.78 * cs.decided / cs.total;
         label = `${area}: ${cname(g)} ${n} / ${cs.total} · ${tx(`${cs.decided} decided`, `${cs.decided} 席確定`)}`; }
-      paths += `<path class="c${area === st.area ? ' sel' : ''}" data-area="${esc(area)}" d="${d}" fill="${fill}" fill-opacity="${op}"><title>${esc(label)}</title></path>`;
+      paths += `<path class="c${area === st.area ? ' sel' : ''}" data-area="${esc(area)}" d="${d}" fill="${fill}" fill-opacity="${op}" data-tip="${esc(label)}" aria-label="${esc(label)}"></path>`;
     }
     mapEl.innerHTML = `<svg viewBox="${M.viewBox.join(' ')}" role="img" aria-label="${tx('Map of council seats', '議員席次地圖')}"><defs>${hatch}</defs><path class="inset" d="${M.insets}"/>${paths}</svg>`;
     const sel = mapEl.querySelector('path.sel'); if (sel) sel.parentNode.appendChild(sel);
@@ -1430,7 +1457,6 @@ const DATA = /*__DATA__*/null;
       </div>
       <h2>${tx('Indigenous seats · 3 + 3', '原住民立委 · 3 + 3 席')}</h2>
       <div class="dists">${L2.indigenous.map((d, i) => distBlock(d, dstate(d, st.t), 'ind' + i)).join('')}</div></div>`;
-    refreshTip();
   }
   function partyListHtml(L2) {
     const P = L2.party, pt = partyAt(st.t);
@@ -1461,17 +1487,17 @@ const DATA = /*__DATA__*/null;
       if (S.length) { const c = {}; S.forEach(x => { c[x.lead.tone] = (c[x.lead.tone] || 0) + 1; });
         const t = Object.keys(c).sort((a, b) => c[b] - c[a])[0]; fill = `var(--${t})`; op = 0.22 + 0.78 * S.filter(x => x.tier === 'dec').length / rs.length;
         label = `${area}: ${Object.entries(c).map(([k, v]) => `${PARTYN(k)} ${v}`).join(' · ')} / ${rs.length}`; }
-      paths += `<path class="c${sel && sel.county === area ? ' sel' : ''}" data-area="${esc(area)}" d="${d}" fill="${fill}" fill-opacity="${op}"><title>${esc(label)}</title></path>`;
+      paths += `<path class="c${sel && sel.county === area ? ' sel' : ''}" data-area="${esc(area)}" d="${d}" fill="${fill}" fill-opacity="${op}" data-tip="${esc(label)}" aria-label="${esc(label)}"></path>`;
     }
     mapEl.innerHTML = `<svg viewBox="${M.viewBox.join(' ')}" role="img" aria-label="${tx('Map of legislative districts by county', '各縣市立委選區地圖')}"><defs>${hatch}</defs><path class="inset" d="${M.insets}"/>${paths}</svg>`;
     const sp = mapEl.querySelector('path.sel'); if (sp) sp.parentNode.appendChild(sp);
   }
-  function render() { renderDesk(); renderNation(); renderMap(); renderMapLegend(); renderCards(); renderDetail(); writeHash(); }
+  function render() { renderDesk(); renderNation(); renderMap(); renderMapLegend(); renderCards(); renderDetail(); writeHash(); refreshTip(); }
   function light() { // during playback: avoid re-rendering the desk controls
     document.getElementById('clk').innerHTML = clock(st.t);
     const ds = document.getElementById('dsum'); if (ds) ds.innerHTML = summaryHtml();
     const r = document.getElementById('t'); if (r) r.value = st.t;
-    renderNation(); renderMap(); renderCards(); renderDetail();
+    renderNation(); renderMap(); renderCards(); renderDetail(); refreshTip();
   }
   function writeHash() {
     const y = st.night.slice(0, 4), a = encodeURIComponent(st.area);
@@ -1530,9 +1556,9 @@ const DATA = /*__DATA__*/null;
     window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - bar - 12, behavior: 'smooth' });
   }
   nation.addEventListener('click', e => { const u = e.target.closest('[data-unit]'); if (u) { st.unit = u.dataset.unit; renderNation(); renderDetail(); return; }
-    const b = e.target.closest('[data-area]'); if (b) { tip.hidden = true; tipArea = null; pick(b.dataset.area, true); } });
+    const b = e.target.closest('.blk[data-area]'); if (b) tapOrOpen(b, 'nation', true); });
   cards.addEventListener('click', e => { const c = e.target.closest('.card[data-area]'); if (c) pick(c.dataset.area); });
-  mapEl.addEventListener('click', e => { const c = e.target.closest('path[data-area]'); if (c) pick(c.dataset.area); });
+  mapEl.addEventListener('click', e => { const c = e.target.closest('path[data-area]'); if (c) tapOrOpen(c, 'map'); });
 
   function openNight(id, t) { // load a night's data if needed, then show it
     const first = !NIGHTS[id];

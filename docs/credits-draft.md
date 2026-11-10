@@ -1,6 +1,6 @@
-# Credits (draft, not on the site yet)
+# Credits
 
-Placeholders in [brackets] need filling in before this goes on the entry page (footer or its own section).
+Published 2026-11-10 as the entry page's footer (`site/index-template.html`), with early testers Molly Chen and Yen-Ting Kuo; names stay in English in all three languages. The text below is the earlier draft; the page is the current version.
 
 ## English
 
