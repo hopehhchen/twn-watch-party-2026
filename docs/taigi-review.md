@@ -292,3 +292,8 @@ The 台語 text on the site is a first draft by Claude (MOE 臺灣台語常用�
 
 ---
 
+
+## Checked 2026-11-10: 个 and 百分點
+
+- **个 (ê)**: the measure word is written 个 in the MOE dictionary (詞目 个, ê, 量詞, 例：兩个人 nn̄g ê lâng; https://sutian.moe.edu.tw/zh-hant/su/171/). The page uses 个 for ê and 個 only in literary compounds such as 個別, as the dictionary does.
+- **百分點** (percentage point, used since 2026-11-10 in place of 點): not a headword in the MOE dictionary. 百分比 pah-hun-pí and 百分之百 pah-hun-tsi-pah are (both marked 臺華共同詞), so 百分點 would read pah-hun-tiám by the same pattern. Ask reviewers whether it reads naturally, or whether a gloss with 台羅 is needed.
