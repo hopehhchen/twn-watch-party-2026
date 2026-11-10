@@ -65,7 +65,7 @@ Every case could be placed, so no longer lookback was needed. Swapping sides in 
 
 ## Turnout
 
-Win probability barely depends on the turnout assumption (log loss moves in the third decimal across a ±11-point scenario range), because turnout scales both sides. It matters for the projected margin in votes and for the "certain" line. Live turnout (reported stations vs their own baseline turnout) beats holding the baseline turnout fixed once ~5% of stations are in. The slider is a what-if around last time's turnout. One step is the typical county turnout change between consecutive elections of the same level: the root mean square over counties, both pairs pooled, including the nationwide shift. From the station files that is 5.8 points for mayors (2014→18: 3.0; 2018→22: 7.6) and 6.8 for presidents (2016→20: 9.1; 2020→24: 3.4). Until 2026-11-10 every night used 3.75, a mayoral figure that couldn't be reproduced from these files. The live estimate takes over as stations report.
+Win probability barely depends on the turnout assumption (log loss moves in the third decimal across a ±11-point scenario range), because turnout scales both sides. It matters for the projected margin in votes and for the "certain" line. Live turnout (reported stations vs their own baseline turnout) beats holding the baseline turnout fixed once ~5% of stations are in. The page used to offer a turnout slider, a what-if around last time's turnout; it was removed on 2026-11-10 in favour of the live estimate alone (`turnout_sigma` stays in the data, unused). One step on it was the typical county turnout change between consecutive elections of the same level: the root mean square over counties, both pairs pooled, including the nationwide shift. From the station files that is 5.8 points for mayors (2014→18: 3.0; 2018→22: 7.6) and 6.8 for presidents (2016→20: 9.1; 2020→24: 3.4). Until 2026-11-10 every night used 3.75, a mayoral figure that couldn't be reproduced from these files. The live estimate takes over as stations report.
 
 **Same-level comparison.** Every turnout figure compares with the previous election of the same level: mayoral nights with the previous mayoral race, presidential nights with the previous presidential race. This covers the projection, the change shown, the map and the "last time" numbers. The win-probability baseline for mayors blends in the previous presidential race, but only for the vote split; the turnout part always comes from the mayoral race, the first part of the blend (`Night._baseline`). The 2026 night must keep the order `2022-mayors+2024-president`.
 
@@ -144,6 +144,8 @@ Adopted:
 - **Turnout uncertainty in the margin's range** (`TURNOUT_IN_MARGIN`). The votes still out scale together with turnout, and so does the net margin they carry; the turnout projection's sd is now part of the margin's sd. Mayoral log loss at 1% counted fell from 0.46 to 0.37 and the 80% ranges held more often (1%: 59% → 64%; presidential counties at 30%: 75% → 82%), with no checkpoint worse.
 - **Legislative baseline blend** (above).
 
+Asked afterwards (2026-11-10): **a station-size slope with a prior that fades as stations come in.** The slope's prior mean was taken from the other night of the same kind (2018 for 2022 and the reverse; likewise for the presidential and legislative pairs), with a prior worth 12, 40 or 160 stations, so its weight shrinks as counted stations accumulate. Not adopted: the slope isn't stable from one election to the next. At the final count the average within-county slope was +0.065 (2018 mayors), +0.018 (2022), −0.080 (2020 presidential), +0.067 (2024 presidential, 柯文哲's urban vote), +0.018 and +0.070 (2020 and 2024 legislative). Borrowing last time's slope made presidential county log loss worse at 5–10% counted (0.070 → 0.113 at 5%) and left the others within noise.
+
 Tried and not adopted (no gain, or gains at one stage paid for at another):
 - A swing slope on station size (log electors), estimated live: better presidential margins early, worse log loss after 20%.
 - Shrinking the early swing toward zero (a prior on the countywide shift): worse everywhere at prior sds of 0.15–0.25 logit, neutral at 0.4. Real swings between elections are large, so the shift shouldn't be pulled toward "no change".
@@ -155,6 +157,12 @@ Still open:
 - **Early stations aren't a random sample.** The first stations to report are small (rural, often indigenous townships) and swing differently. Nothing tried fixed this without hurting later; the site's notes say early numbers are rough.
 - **Presidential county ranges** still run narrow after 10% counted (73–82% held). Log loss there is already low (nearly every county is lopsided), so this mostly affects the margin chart's band.
 - **New parties in the party-list projection** (TPP 2020): the counted share in the district, shrunk toward the county, ran low all night. A size slope like the three-way model's might help; only one case to test it on.
+
+## The 2026 night before the count (`scripts/build_2026_night.py`)
+
+`data/needle/2026-mayors.json`: every race with its contenders (`data/2026-contenders.json`), ballot numbers (中央社 2026-10-27, transcribed 2026-11-10 from an automated reading of the page; **check against the CEC's ballot before the night**), and no points. Electors, stations and "last time" turnout are 2022's; the incumbent shown is the 2022 winner, under the party they won with. The results page opens on this night by default: 16:00 to 00:00 on the time axis (extended if counting runs later), empty chart frames, and space kept for the count watch in each county panel. 花蓮縣 is set up as three-way (游淑貞 / 張峻 / 魏嘉賢).
+
+Feed policy on the page: per-station results whenever the feed has them; district totals only when it doesn't (`"feed": "district"` in the night's data), with a notice. The replays always use per-station results; the district-total columns stay in the data.
 
 ## What could break this in 2026
 

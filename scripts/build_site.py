@@ -21,7 +21,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-NEEDLE_NIGHTS = ["2018-mayors", "2020-president", "2022-mayors", "2024-president"]
+NEEDLE_NIGHTS = ["2018-mayors", "2020-president", "2022-mayors", "2024-president", "2026-mayors"]  # 2026: before the count (scripts/build_2026_night.py)
 COUNCIL_YEARS = {"2018-mayors": 2018, "2022-mayors": 2022}
 LEGIS_YEARS = {"2020-president": 2020, "2024-president": 2024}
 
@@ -48,7 +48,8 @@ def night_index():
         d = json.loads((ROOT / "data" / "needle" / f"{nid}.json").read_text())
         out.append({"id": nid, "title": d["title"], "date": d["date"], "src": f"needle/{nid}.json",
                     "council": f"council/{COUNCIL_YEARS[nid]}.json" if nid in COUNCIL_YEARS else None,
-                    "legis": f"legislature/{LEGIS_YEARS[nid]}.json" if nid in LEGIS_YEARS else None})
+                    "legis": f"legislature/{LEGIS_YEARS[nid]}.json" if nid in LEGIS_YEARS else None,
+                    "live": bool(d.get("live"))})
     return out
 
 
@@ -58,7 +59,7 @@ def render(template, data, out_path):
     assert marker in tpl, template
     body = tpl.replace(marker, json.dumps(data, ensure_ascii=False, separators=(",", ":")))
     # templates start with <title>, <meta> and <link>/<style>/<script> tags: they belong in <head>
-    split = body.index('<div class="wrap">')
+    split = body.index('<div class="wrap"')
     out_path.write_text(HEAD + body[:split] + "</head>\n<body>\n" + body[split:] + "\n</body>\n</html>\n")
     print(f"{out_path}: {out_path.stat().st_size / 1024:.0f} KB")
 

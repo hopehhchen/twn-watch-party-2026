@@ -38,6 +38,8 @@ class Variant(N.Night):
     size = turnout_sd = False
     glob = None
     s0 = None      # prior sd (logit) of the county-wide swing: shrinks the early swing toward the baseline
+    beta0 = 0.0    # size slope prior mean (logit swing per unit log electors); with `size`, the ridge pulls toward it
+    lam = 12.0     # prior weight of the slope, in stations' worth of data: decays in effect as stations come in
     huber = None   # Huber cut (in station sds) for down-weighting outlying stations
 
     def estimate(self, n):
@@ -85,7 +87,8 @@ class Variant(N.Night):
             xbar = sum(x * w for *_, w, x in [(a, b_, w, x) for a, b_, w, x in res]) / W
             sxy = sum(w * (x - xbar) * (r - delta) for _, r, w, x in res)
             sxx = sum(w * (x - xbar) ** 2 for _, r, w, x in res)
-            beta = sxy / (sxx + 40 * 0.3 * (W / len(res)))
+            lam = self.lam * (W / len(res))
+            beta = (sxy + lam * self.beta0) / (sxx + lam)
             res = [(d, r - beta * (x - xbar), w, x) for d, r, w, x in res]
             delta = sum(r * w for _, r, w, _ in res) / W
         dsum = defaultdict(lambda: [0.0, 0.0, 0])

@@ -153,3 +153,8 @@ Checks (run on every build):
 Five ballot numbers (2018 屏東縣 ×3, 2022 新北市 ×2) appear on the station sheets with 0 votes but not in the CEC's results list. They are left out.
 
 The results page (`site/live-template.html`, "Show: Council") loads these files at runtime; `scripts/build_site.py` copies them, and the needle nights (`needle/<night>.json`), next to the page.
+
+## `needle/2026-mayors.json` — the 2026 night before the count
+
+Built by `scripts/build_2026_night.py` from `2026-contenders.json` and ballot numbers listed in the script (中央社 2026-10-27; verify against the CEC ballot). Same layout as the replayed nights, with `"live": true`, `"feed": "station"` (set to `"district"` if the live feed has no per-station results) and empty `pts`. Electors, stations and `prev_turnout` are 2022's; `incumbent` is the 2022 winner.
+

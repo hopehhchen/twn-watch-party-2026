@@ -22,7 +22,7 @@ from build_cec_night import minute_ceiling  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "data" / "council"
-TONE = {"中國國民黨": "kmt", "民主進步黨": "dpp", "台灣民眾黨": "tpp", "時代力量": "npp", "無黨籍": "ind"}
+TONE = {"中國國民黨": "kmt", "民主進步黨": "dpp", "台灣民眾黨": "tpp", "時代力量": "npp", "台灣基進": "tsp", "親民黨": "pfp", "無黨籍": "ind"}
 INDEPENDENT = ("無黨籍及未經政黨推薦", "無", "無黨籍", "")
 
 
