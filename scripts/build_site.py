@@ -13,6 +13,8 @@
                redirects to live.html, for links to the earlier prototype pages
   favicon.svg, favicon.ico, favicon-32.png, apple-touch-icon.png, icon-512.png
                tab and home-screen icons (the vote stamp), from site/icons/
+  og-image.png the preview picture for links shared on social sites (Open Graph / Twitter Card tags in both
+               templates); drawn from site/og-src/og-image.html, rendered at 1200x630 with Playwright
 
 Templates hold the marker /*__DATA__*/null, replaced by one JSON object. The night files come from
 scripts/build_needle_data.py and scripts/build_council_data.py, which need the raw CEC files.
