@@ -50,6 +50,9 @@ BALLOT = {
 }
 # Incumbents not on the 2026 ballot whose party has changed since 2022 (none found as of 2026-11-10; the ones running
 # again take their ballot party: 新竹市 高虹安 台灣民眾黨 -> 無黨籍, 苗栗縣 鍾東錦 無黨籍 -> 中國國民黨).
+# Checked 2026-11-10: 宜蘭 林姿妙 still KMT (suspended since her 2024 conviction; appeal verdict 2027-03-24);
+# 澎湖 陳光復 still DPP (in hospital since 2026-02; vice magistrate 林皆興 acting; his wife 吳淑瑾 runs for the DPP).
+# Both stay the incumbent: neither has left office.
 INCUMBENT_PARTY = {}
 END = 8 * 60  # 00:00; extended live if the count runs later
 

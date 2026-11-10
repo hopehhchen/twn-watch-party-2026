@@ -324,12 +324,9 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
   .panel { padding: 12px; }
   .turnout { min-width: 0; flex-basis: 100%; max-width: none; }
 }
-.more { display: none; border: 0; background: none; padding: 2px 0; color: var(--ink); font-size: 13px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 #deskSentinel { height: 1px; margin-bottom: -19px; }
 @media (max-width: 699px) {
-  /* phones: the intro folds to two lines; once the controls scroll away, a slim clock-and-slider bar stays on top */
-  .intro:not(.open) .proto { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .intro:not(.open) .more { display: inline-block; }
+  /* phones: once the controls scroll away, a slim clock-and-slider bar stays on top */
   .desk { border-radius: var(--radius); position: static; }
   /* compact bar: clock and what-to-show on one row, then play + slider, then speed; the year picker and summary stay in the full bar */
   .desk.compact { position: sticky; gap: 6px; padding: 8px 12px; border-radius: 0 0 var(--radius) var(--radius); }
@@ -378,7 +375,6 @@ html[lang="nan-Hant-TW"] [data-l="en"], html[lang="nan-Hant-TW"] [data-l="zh"] {
   <p class="proto" data-l="en">Live results on election night, 28 November 2026. Until then: the 2026 races before the count, and real past nights replayed as the model would have run them.</p>
   <p class="proto" data-l="zh">2026 年 11 月 28 日開票當晚即時更新。在那之前：2026 年各場選舉開票前的狀態，以及用模型重播的真實過去開票夜。</p>
   <p class="proto" data-l="tw">2026 年 11 月 28 日開票彼暗即時更新。佇彼進前：2026 年逐場選舉開票前的狀態，佮用模型重播的真正過去開票暗。</p>
-    <button class="more" id="introMore" type="button"><span data-l="en">More</span><span data-l="zh">更多</span><span data-l="tw">閣較濟</span></button>
   </div>
   <div id="deskSentinel" aria-hidden="true"></div>
   <section class="desk" id="desk" aria-label="Replay controls"></section>
@@ -719,7 +715,9 @@ const DATA = /*__DATA__*/null;
       <h2>${tx(`All ${counties.length} mayors · counting starts at 16:00 on 28 November`, `全部 ${counties.length} 席縣市長 · 11 月 28 日 16:00 開票`, `全部 ${counties.length} 席縣市長 · 11 月 28 日 16:00 開票`)}</h2>
       <div class="sbar blocks">${bar}</div>
       <div class="nkey before"><span class="muted">${tx('Held now by:', '現任：', '現任：')}</span>${tally}</div>
-      <p class="note muted" style="margin:0;font-size:12px">${tx(`Hatched: the incumbent's party now. Once counting starts, each block takes the projected leader's color. Hover a block for the race, click to open it.`, `斜線：現任者目前的政黨。開票後，每格改為預估領先者的顏色。滑鼠移到格子上可看該場選舉，點一下即打開。`, `斜線：現任者這馬的政黨。開票了後，逐格改做預估領先者的色。滑鼠囥佇格仔頂懸就看會著彼場選舉，揤一下就拍開。`)}</p></div>`;
+      <p class="note muted" style="margin:0;font-size:12px">${tx(`Hatched: the incumbent's party now. Once counting starts, each block takes the projected leader's color.`, `斜線：現任者目前的政黨。開票後，每格改為預估領先者的顏色。`, `斜線：現任者這馬的政黨。開票了後，逐格改做預估領先者的色。`)}${tx(' ', '', '')}${matchMedia('(hover: none)').matches
+        ? tx('Tap a block for the race, tap again to open it.', '點一下格子可看該場選舉，再點一下即打開。', '揤一下格仔看彼場選舉，閣揤一下就拍開。')
+        : tx('Hover a block for the race, click to open it.', '滑鼠移到格子上可看該場選舉，點一下即打開。', '滑鼠囥佇格仔頂懸就看會著彼場選舉，揤一下就拍開。')}</p></div>`;
   }
   function renderNationalRace(nat) {
     const v = view(nat, st.t), stt = status(v), lead = v.pre ? null : (v.pb >= 0.5 ? nat.blue : nat.other), q = v.pre ? 0 : Math.max(v.pb, 1 - v.pb);
@@ -1655,8 +1653,7 @@ const DATA = /*__DATA__*/null;
   }
   document.addEventListener('click', e => { const b = e.target.closest('[data-lang-set]'); if (b) setLang(b.dataset.langSet); });
 
-  // phones: fold the intro; compact sticky control bar once the full one has scrolled past
-  document.getElementById('introMore').addEventListener('click', () => document.getElementById('intro').classList.add('open'));
+  // phones: compact sticky control bar once the full one has scrolled past
   const phone = matchMedia('(max-width: 699px)');
   function setCompact(on) {
     if (on === desk.classList.contains('compact')) return;

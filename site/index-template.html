@@ -85,6 +85,7 @@ html[lang="nan-Hant-TW"] [data-l="en"], html[lang="nan-Hant-TW"] [data-l="zh"] {
 .panel h2 { margin: 0; font-family: var(--font-display); font-weight: 900; font-size: 24px; }
 .panel h3 { margin: 6px 0 0; font-size: 16px; }
 .panel p { margin: 0; max-width: 72ch; }
+.feat { display: grid; gap: 8px; }
 .steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 72ch; }
 .kpis { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
 .kpi { border: 1px solid var(--rule); border-radius: 9px; padding: 12px 14px; background: var(--bg); display: grid; gap: 2px; }
@@ -145,6 +146,25 @@ footer b { color: var(--ink); }
     <p data-l="zh">2026 年 11 月 28 日，台灣將選出 22 位縣市長，以及各縣市議員。本站在開票過程中即時追蹤：每場縣市長選舉有一支指針，顯示各候選人的勝選機率、預估差距與投票率；議員則顯示若此刻停止開票、各席會由誰拿下。在那之前，本站以真實的過去開票夜（2018、2022 地方選舉，2020、2024 總統選舉）逐分鐘重播，完全照模型當時能看到的資料運算。</p>
     <p data-l="tw">2026 年 11 月 28 日，台灣欲選出 22 位縣市長，佮各縣市的議員。本站佇開票的時陣即時追蹤：逐場縣市長選舉有一支指針，顯示逐位候選人的當選機率、預估差距佮投票率；議員就顯示若這馬停止開票，逐席會予啥人提去。佇彼進前，本站用真正的過去開票暗（2018、2022 地方選舉，2020、2024 總統選舉）一分鐘一分鐘重播，完全照模型當時看會著的資料來算。</p>
     <div class="cta"><a class="btn" href="live.html"><span data-l="en">Open the results</span><span data-l="zh">打開開票頁</span><span data-l="tw">拍開開票頁</span> →</a><a class="btn ghost" href="#accuracy"><span data-l="en">How accurate is it?</span><span data-l="zh">準不準？</span><span data-l="tw">準無準？</span></a></div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-feat">
+    <h2 id="h-feat">What's on the site · 網站內容</h2>
+    <div data-l="en" class="feat">
+      <p><b>Live results.</b> On election night the results page shows the CEC's official count alongside live counts from other sources and the model's projections. We'll name the other sources on the night, once we're sure they work.</p>
+      <p><b>More than mayors.</b> Turnout for every race, and who would hold each city and county council seat. The 2020 and 2024 replays add the Legislative Yuan: district seats, the party list and the indigenous seats.</p>
+      <p><b>Three languages.</b> The site is in English, Mandarin (華語) and Taiwanese (台文).</p>
+    </div>
+    <div data-l="zh" class="feat">
+      <p><b>即時開票。</b>開票當晚，開票頁會同時呈現中選會的官方票數、其他來源的即時票數，以及模型的預測。其他來源將在當晚確認可用後公布。</p>
+      <p><b>不只縣市長。</b>每場選舉的投票率，以及各縣市議會每一席會由誰拿下。2020 與 2024 年的重播另有立法院：區域、不分區與原住民席次。</p>
+      <p><b>三種語言。</b>本站提供華語、英文與台文版本。</p>
+    </div>
+    <div data-l="tw" class="feat">
+      <p><b>即時開票。</b>開票彼暗，開票頁會仝時呈現中選會的官方票數、其他來源的即時票數，佮模型的預測。其他來源會佇當暗確認無問題了後才公佈。</p>
+      <p><b>毋但縣市長。</b>逐場選舉的投票率，佮各縣市議會逐席會予啥人提去。2020 佮 2024 年的重播閣有立法院：區域、不分區佮原住民席次。</p>
+      <p><b>三種語言。</b>本站有台文、英文佮華語版本。</p>
+    </div>
   </section>
 
   <section class="panel" aria-labelledby="h-method">
@@ -237,9 +257,6 @@ footer b { color: var(--ink); }
     <p data-l="en">Why these races matter, from news coverage and analysts' previews as of 10 November. This is not a forecast: on the night, the count decides. It is the first nationwide vote since the 2025 recall votes, and the midpoint of 賴清德's presidency.</p>
     <p data-l="zh">這些選戰為何重要，整理自截至 11 月 10 日的新聞報導與分析者的選前評估。這不是預測：當晚以開票為準。這是 2025 年大罷免投票後第一次全國性投票，也是賴清德總統任期的期中考。</p>
     <p data-l="tw">這寡選戰是按怎重要，整理自到 11 月 10 日為止的新聞報導佮分析者的選前評估。這毋是預測：當暗以開票為準。這是 2025 年大罷免投票了後頭一擺全國性的投票，嘛是賴清德總統任期的期中考。</p>
-    <p class="note" data-l="en"><span style="display:inline-block;width:4px;height:12px;background:var(--accent);vertical-align:-1px;margin-right:6px"></span>Orange: the races most worth watching on the night.</p>
-    <p class="note" data-l="zh"><span style="display:inline-block;width:4px;height:12px;background:var(--accent);vertical-align:-1px;margin-right:6px"></span>橘色：當晚最值得關注的選戰。</p>
-    <p class="note" data-l="tw"><span style="display:inline-block;width:4px;height:12px;background:var(--accent);vertical-align:-1px;margin-right:6px"></span>柑仔色：當暗上值得注意的選戰。</p>
     <ul class="watch" data-l="en">
       <li class="hot"><b>新北市</b> — The largest electorate (3.3 million in 2022), and an open seat: 侯友宜 (KMT) is term-limited. 李四川 (KMT, backed by the TPP) vs 蘇巧慧 (DPP). The DPP last won here in 2001, when it was still Taipei County. Latest mainstream poll: 蘇 42%, 李 39%, undecided 19% (聯合報, 1–7 Nov, n = 1,114, ±3 points).</li>
       <li class="hot"><b>臺北市</b> — 蔣萬安 (KMT, incumbent) vs 沈伯洋 (DPP). Taipei mayors often go on to run for president, so the race is read as an early round of 2028. Only three of the city's elections since 1994 went to a non-KMT mayor (1994, 2014, 2018).</li>
@@ -339,8 +356,8 @@ const DATA = /*__DATA__*/null;
     // when the races passed each share of their stations (CEC report log): median race, with the range on hover
     const timeCell = (n, c) => { const x = A.nights[n].counties.at[String(c)]; return `<span title="${tx(`earliest ${x.time_first}, latest ${x.time_last}`, `最早 ${x.time_first}，最晚 ${x.time_last}`, `上早 ${x.time_first}，上晏 ${x.time_last}`)}">${x.time_median}</span>`; };
     const timeRow = night === 'mayors'
-      ? `<tr><td>${tx('Time reached (median race): 2018 / 2022', '達到時間（中位數）：2018 / 2022', '到位的時間（中位數）：2018 / 2022')}</td>${cps.map(c => `<td>${timeCell('2018-mayors', c)} / ${timeCell('2022-mayors', c)}</td>`).join('')}</tr>`
-      : `<tr><td>${tx('Time reached (median race)', '達到時間（中位數）', '到位的時間（中位數）')}</td>${cps.map(c => `<td>${timeCell(night, c)}</td>`).join('')}</tr>`;
+      ? `<tr><td>${tx('Time reached: 2018 / 2022', '達到時間：2018 / 2022', '到位的時間：2018 / 2022')}</td>${cps.map(c => `<td>${timeCell('2018-mayors', c)} / ${timeCell('2022-mayors', c)}</td>`).join('')}</tr>`
+      : `<tr><td>${tx('Time reached', '達到時間', '到位的時間')}</td>${cps.map(c => `<td>${timeCell(night, c)}</td>`).join('')}</tr>`;
     let html = `<table><thead><tr><th>${tx(`Stations counted (${S.n} races)`, `已開投開票所（${S.n} 場）`)}</th>${cps.map(c => `<th>${Math.round(100 * c)}%</th>`).join('')}</tr></thead><tbody>
       ${timeRow}
       ${row(tx('Favourite went on to win', '看好者最後勝選', '看好的人上尾當選'), x => `${x.favorite_won} / ${S.n}`)}
@@ -356,8 +373,9 @@ const DATA = /*__DATA__*/null;
       if (night === '2018-mayors') notes.push(tx('Counting ran past midnight in many places because ten referendums were counted the same night.', '因同晚開十項公投票，許多地方開票到午夜以後。', '因為仝暗閣開十項公投，真濟所在開票開到半暝以後。'));
       if (night === '2022-mayors') notes.push(tx('嘉義市 voted on 18 December (rerun) and is not part of this night.', '嘉義市延至 12 月 18 日投票，不在本晚。', '嘉義市延到 12 月 18 日投票，無佇這暗。'));
     }
-    notes.push(tx('Time reached: the clock time at which the median race passed that share of its stations, from the CEC\'s report log (hover for the earliest and latest race). The CEC logged stations later than TV showed counts, so on the night these moments may come somewhat sooner.',
-      '達到時間：中位數場次的已開投開票所達到該比例的時刻，依中選會回報紀錄（滑鼠移上可看最早與最晚的場次）。中選會的登錄時間比電視顯示的票數晚，因此當晚實際可能早一些。', '到位的時間：中位數彼場的已開投開票所到彼个比例的時刻，照中選會的回報紀錄（滑鼠囥頂懸看上早佮上晏的場次）。中選會登錄的時間比電視顯示的票數較晏，所以當暗實際上可能較早。'));
+    const hov = !matchMedia('(hover: none)').matches;
+    notes.push(tx(`Time reached: the clock time at which each share of stations was counted, from the CEC's report log. Each time is the median across the races: half the races got there sooner, half later${hov ? ' (hover for the earliest and latest)' : ''}. The CEC logged stations later than TV showed counts, so on the night these moments may come somewhat sooner.`,
+      `達到時間：已開投開票所達到各比例的時刻，依中選會回報紀錄。每個時間都是各場選舉的中位數：一半的場次比這早、一半比這晚${hov ? '（滑鼠移上可看最早與最晚）' : ''}。中選會的登錄時間比電視顯示的票數晚，因此當晚實際可能早一些。`, `到位的時間：已開投開票所到逐个比例的時刻，照中選會的回報紀錄。逐个時間攏是各場選舉的中位數：一半的場次比這較早、一半比這較晏${hov ? '（滑鼠囥頂懸看上早佮上晏）' : ''}。中選會登錄的時間比電視顯示的票數較晏，所以當暗實際上可能較早。`));
     const lead = S.median_lead_minutes;
     if (lead != null) notes.push(tx(`Typical lead: the needle settled above 95% for the eventual winner about ${Math.round(lead / 60 * 10) / 10} hours before the race was mathematically decided (median).`, `一般而言，指針在數學上確定前約 ${Math.round(lead / 60 * 10) / 10} 小時就穩定在 95% 以上看好最終勝選者（中位數）。`, `一般來講，指針佇數學上確定進前大約 ${Math.round(lead / 60 * 10) / 10} 點鐘，就穩定佇 95% 以上看好上尾的當選人（中位數）。`));
     // how often the final margin landed inside the page's 80% range, mayoral races 2018 + 2022
