@@ -107,7 +107,12 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
 .card .pct { font-family: var(--font-num); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .card svg { width: 100%; height: auto; display: block; }
 .card .lead { font-size: 12.5px; display: flex; justify-content: space-between; gap: 6px; align-items: baseline; min-height: 1.4em; }
-.card .lead b { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.card .lead b { font-weight: 700; display: inline-flex; gap: 0.3em; min-width: 0; white-space: nowrap; }
+.card .lead b .cn { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.card .lead b .cp { flex: none; }
+.card .lead .chip { flex: none; }
+/* the card's one column never grows past the card (long English names used to widen it and spill into the next card) */
+.card { grid-template-columns: minmax(0, 1fr); }
 .chip { font-size: 11px; padding: 0 7px; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap; line-height: 1.6; }
 .chip.decided { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .card.skip { cursor: default; opacity: 0.6; }
@@ -776,6 +781,8 @@ const DATA = /*__DATA__*/null;
   }
   // legislative district cards: "臺北 1" for 臺北市第1選舉區; one-seat counties keep the county name
   const areaLabel = r => { if (!r.county) return r.area; const m = r.area.match(/第(\d+)選舉區$/); return m ? r.county.slice(0, 2) + ' ' + m[1] : r.county; };
+  // a card's leader line: the name (surname only for English names, which are long) and the number, which always shows
+  const cardLead = (c, num) => `<b style="color:${tone(c)}"><span class="cn">${esc(c.zh && c.zh !== c.name ? short(c.name) : c.name)}</span><span class="cp">${num}</span></b>`;
   function card(r) {
     {
       if (st.mode === 'turnout') return turnoutCard(r);
@@ -786,7 +793,7 @@ const DATA = /*__DATA__*/null;
           return `<button class="card" data-area="${esc(r.area)}" aria-pressed="${r.area === st.area}">
             <div class="top"><span class="area">${esc(areaLabel(r))}</span><span class="pct">${v3.pre ? '—' : Math.round(100 * v3.frac) + tx('% in', '% 已開')}</span></div>
             ${dial(pp.pr, { pre: v3.pre || v3.early, pb: pp.p }, false)}
-            <div class="lead">${v3.pre ? `<span class="muted">${tx('waiting · three-way', '等待開票 · 三強', '等開票 · 三強')}</span>` : v3.early ? `<span class="muted">${tx(`${v3.n} station${v3.n > 1 ? 's' : ''} in`, `已開 ${v3.n} 所`)}</span>` : `<b style="color:${tone(pp.lead)}">${esc(pp.lead.name)} ${pctTxt(pp.q)}</b>`}<span class="chip ${sq.cls}">${L(sq.label)}</span></div>
+            <div class="lead">${v3.pre ? `<span class="muted">${tx('waiting · three-way', '等待開票 · 三強', '等開票 · 三強')}</span>` : v3.early ? `<span class="muted">${tx(`${v3.n} station${v3.n > 1 ? 's' : ''} in`, `已開 ${v3.n} 所`)}</span>` : cardLead(pp.lead, pctTxt(pp.q))}<span class="chip ${sq.cls}">${L(sq.label)}</span></div>
             <div class="third3">${v3.pre ? tx(`three-way: ${esc(pp.third.name)} too`, `三強：另有 ${esc(pp.third.name)}`, `三強：猶有 ${esc(pp.third.name)}`) : v3.early ? tx('win chances from the 5th station', '第 5 所開出後估勝率', '第 5 所開出來了後才估贏面') : tx(`${esc(pp.third.name)}: ${pctTxt(pp.pt)} to win`, `${esc(pp.third.name)}：勝率 ${pctTxt(pp.pt)}`, `${esc(pp.third.name)}：贏面 ${pctTxt(pp.pt)}`)}</div>
           </button>`;
         }
@@ -794,7 +801,7 @@ const DATA = /*__DATA__*/null;
         return `<button class="card" data-area="${esc(r.area)}" aria-pressed="${r.area === st.area}">
           <div class="top"><span class="area">${esc(areaLabel(r))}</span><span class="pct">${v3.pre ? '—' : Math.round(100 * v3.frac) + tx('% in', '% 已開')}</span></div>
           <div style="padding:8px 0 6px">${v3.pre ? `<span class="muted" style="font-size:12px">${tx('three-way race · waiting', '三強 · 等待開票', '三強 · 等開票')}</span>` : bars3(v3, false)}</div>
-          <div class="lead">${v3.pre ? '' : `<b style="color:${tone(v3.order[0].c)}">${esc(v3.order[0].c.name)} +${(100 * v3.lead).toFixed(1)}</b>`}<span class="chip ${s3.cls}">${v3.pre ? tx('three-way', '三強') : L(s3.label)}</span></div>
+          <div class="lead">${v3.pre ? '' : cardLead(v3.order[0].c, '+' + (100 * v3.lead).toFixed(1))}<span class="chip ${s3.cls}">${v3.pre ? tx('three-way', '三強') : L(s3.label)}</span></div>
         </button>`;
       }
       const v = view(r, st.t), stt = status(v);
@@ -802,7 +809,7 @@ const DATA = /*__DATA__*/null;
       return `<button class="card" data-area="${esc(r.area)}" aria-pressed="${r.area === st.area}">
         <div class="top"><span class="area">${esc(areaLabel(r))}</span><span class="pct">${v.pre ? '—' : Math.round(100 * v.frac) + tx('% in', '% 已開')}</span></div>
         ${dial(r, v, false)}
-        <div class="lead">${leader ? `<b style="color:${tone(leader)}">${esc(leader.name)} ${pctTxt(q)}</b>` : `<span class="muted">${tx('waiting', '等待開票', '等開票')}</span>`}<span class="chip ${stt.cls}">${L(stt.label)}</span></div>
+        <div class="lead">${leader ? cardLead(leader, pctTxt(q)) : `<span class="muted">${tx('waiting', '等待開票', '等開票')}</span>`}<span class="chip ${stt.cls}">${L(stt.label)}</span></div>
       </button>`;
     }
   }
