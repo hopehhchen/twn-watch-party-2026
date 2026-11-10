@@ -4,6 +4,9 @@ Things set aside on purpose, to look at again before 2026-11-28. Newest first.
 
 ## Before the night: official CEC releases to check
 
+The full plan with dates is in `docs/election-night.md`.
+
+
 - **Candidate list and ballot numbers.** `scripts/build_2026_night.py` has them from 中央社 (2026-10-27), read off the page automatically. Check every name and number against the CEC's own announcement of the candidate list (and the 選舉公報) when it comes out, then rebuild. My understanding is that the CEC announces the list the day before the campaign period starts (選罷法 §34; the mayoral campaign period is 10 days, so around 11/17), but I haven't confirmed the article or the date.
 - **Elector totals.** Announced three days before the vote (選罷法 §38), so by 11/25: city- and county-wide totals, not per station. Replace the 2022 electors in `data/needle/2026-mayors.json` with them.
 - **Model:** keep as is (decided 2026-11-10) until there's a better idea than the ones tested in `docs/needle.md` "Model review".
@@ -36,7 +39,8 @@ Things set aside on purpose, to look at again before 2026-11-28. Newest first.
 ## Entry page
 
 - **Races to watch** (rewritten 2026-11-10 from news and analysts' previews): refresh the polls cited before the night. Polls by TVBS are not cited anywhere on the site (strong house effect, per the user); TVBS's on-screen vote counts stay in the count watch.
-- **Credits**: draft in `docs/credits-draft.md`, not published.
+- **Credits**: published 2026-11-10 as the entry-page footer (earlier draft in `docs/credits-draft.md`).
+- **Poll ban**: every poll number must be off the site by 11/17 23:59 (選罷法 §53; see `docs/election-night.md`).
 
 ## Language
 
