@@ -14,7 +14,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 NIGHTS = ["2018-mayors", "2022-mayors", "2020-president", "2024-president"]
-CHECKPOINTS = [0.01, 0.05, 0.10, 0.30, 0.70]
+CHECKPOINTS = [0.01, 0.05, 0.10, 0.20, 0.30, 0.70]
 Z80 = 1.2816
 # point columns (see build_needle_data.py)
 T, N, B, O, P, M, SD, CERT, REME = 0, 1, 2, 3, 4, 5, 6, 7, 8

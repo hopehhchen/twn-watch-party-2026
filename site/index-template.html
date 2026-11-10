@@ -237,12 +237,12 @@ const DATA = /*__DATA__*/null;
       ? `<tr><td>${tx('Time reached (median race): 2018 / 2022', '達到時間（中位數）：2018 / 2022')}</td>${cps.map(c => `<td>${timeCell('2018-mayors', c)} / ${timeCell('2022-mayors', c)}</td>`).join('')}</tr>`
       : `<tr><td>${tx('Time reached (median race)', '達到時間（中位數）')}</td>${cps.map(c => `<td>${timeCell(night, c)}</td>`).join('')}</tr>`;
     let html = `<table><thead><tr><th>${tx(`Stations counted (${S.n} races)`, `已開投開票所（${S.n} 場）`)}</th>${cps.map(c => `<th>${Math.round(100 * c)}%</th>`).join('')}</tr></thead><tbody>
+      ${timeRow}
       ${row(tx('Favourite went on to win', '看好者最後勝選'), x => `${x.favorite_won} / ${S.n}`)}
       ${row(tx('Average error, projected margin (pts)', '預估差距平均誤差（點）'), x => x.margin_err_pts.toFixed(1))}
       ${row(tx('Final inside the stated 80% range', '最終結果落在 80% 區間內'), x => pct(x.in_80), x => x.in_80 < 0.7)}
       ${row(tx('Average error, projected turnout (pts)', '預估投票率平均誤差（點）'), x => x.turnout_err_pts.toFixed(1))}
       ${row(tx('Log loss of the winner\'s chance (lower is better)', '勝選者機率的對數損失（越低越好）'), x => x.log_loss.toFixed(3))}
-      ${timeRow}
     </tbody></table>`;
     document.getElementById('acctable').innerHTML = html;
     const notes = [];

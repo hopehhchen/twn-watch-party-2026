@@ -206,10 +206,10 @@ class Night:
         self.ia, self.ib, self.target_how = bp
         self.axis = "blue"
         self.base, self.how = self._baseline(baseline, county)
-        tm = ST.times(target)
+        tm, cty = ST.times(target), ST.county_of(county)  # legislative districts: times are keyed by county
         # copies: the loaded stations are shared (cached), and each Night attaches its own baseline
-        self.st = sorted((dict(s) for s in self.race["stations"]), key=lambda s: tm[(county, s["district"], s["no"])])
-        self.t = [tm[(county, s["district"], s["no"])] for s in self.st]
+        self.st = sorted((dict(s) for s in self.race["stations"]), key=lambda s: tm[(cty, s["district"], s["no"])])
+        self.t = [tm[(cty, s["district"], s["no"])] for s in self.st]
         for s in self.st:
             s["_b"] = base_for(self.base, s) if self.base else None
             if self.base and granularity == "district":  # the feed only gives district totals
@@ -221,10 +221,28 @@ class Night:
         parts, why = [], []
         for b in baseline.split("+"):
             races = ST.load(b)
-            if county not in races:
+            # a legislative district's baseline: the same district in an earlier legislative race if the key
+            # exists there, else the whole county's race (villages outside the district are simply never used)
+            cty = ST.county_of(county)
+            if "legislator" in b:  # districts are redrawn: pool every district of the county, village by village
+                d, how = {}, f"{b} districts of {cty}"
+                for k in sorted(k for k in races if ST.county_of(k) == cty):
+                    dk, hk = baseline_shares(races[k], (b, k))
+                    if dk is None:
+                        continue
+                    for kk, vv in dk.items():
+                        if kk[1] is not None or kk not in d:  # villages from their own district; areas first seen
+                            d.setdefault(kk, vv)
+                if not d:
+                    why.append(f"{b}: no usable district in {cty}")
+                    continue
+                parts.append((d, how))
+                continue
+            key = county if county in races else cty
+            if key not in races:
                 why.append(f"no {b} race")
                 continue
-            d, how = baseline_shares(races[county], (b, county))
+            d, how = baseline_shares(races[key], (b, key))
             if d is None:
                 why.append(f"{b}: {how}")
                 continue

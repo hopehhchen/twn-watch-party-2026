@@ -33,7 +33,25 @@ ELECTIONS = {
                            times="2020-station-times.xls"),
     "2024-president": dict(zips=["2024-president-stations.zip"], date="2024-01-13", pick="A05-4",
                            times="2024-station-times.xlsx"),
+    # district legislators (區域立委): one sheet per electoral district; races keyed "臺北市第1選舉區"
+    "2016-legislator": dict(zips=["2016-legislator-stations.zip"], date="2016-01-16", pick="立委-A05-2-",
+                            per_sheet=True),
+    "2016-party": dict(zips=["2016-legislator-stations.zip"], date="2016-01-16", pick="立委-A05-6-", parties=True),
+    "2020-legislator": dict(zips=["2020-legislator-stations.zip"], date="2020-01-11", pick="區域立委-A05-2-",
+                            times="2020-station-times.xls", per_sheet=True),
+    "2024-legislator": dict(zips=["2024-legislator-stations.zip"], date="2024-01-13", pick="區域立委-A05-2-",
+                            times="2024-station-times.xlsx", per_sheet=True),
+    # party-list vote (不分區政黨票), one sheet per county; "candidates" are parties
+    "2020-party": dict(zips=["2020-legislator-stations.zip"], date="2020-01-11", pick="不分區立委-A05-6",
+                       times="2020-station-times.xls", parties=True),
+    "2024-party": dict(zips=["2024-legislator-stations.zip"], date="2024-01-13", pick="不分區立委-A05-6",
+                       times="2024-station-times.xlsx", parties=True),
 }
+
+
+def county_of(key):
+    """'臺北市第1選舉區' or '基隆市選舉區' (one-seat counties) -> the county; a county name is returned as is."""
+    return re.sub(r"(第\d+)?選舉區$", "", key)
 
 # presidential sheets name the tickets but not their parties
 PRESIDENT_PARTY = {"朱立倫": "中國國民黨", "韓國瑜": "中國國民黨", "侯友宜": "中國國民黨",
@@ -71,7 +89,21 @@ def _col(header, *keys, exclude=()):
     raise KeyError(keys)
 
 
-def parse_sheet(rows, president):
+def _sheets(name, data):
+    """(sheet title, rows) for every sheet of a workbook."""
+    import io
+    if name.endswith(".xls"):
+        import xlrd
+        for sh in xlrd.open_workbook(file_contents=data).sheets():
+            yield sh.name, [sh.row_values(r) for r in range(sh.nrows)]
+    else:
+        import openpyxl
+        wb = openpyxl.load_workbook(io.BytesIO(data), read_only=True)
+        for ws in wb.worksheets:
+            yield ws.title, [list(r) for r in ws.iter_rows(values_only=True)]
+
+
+def parse_sheet(rows, president, parties=False):
     rows = list(rows)
     hdr = next(i for i, r in enumerate(rows) if any(clean(c) in ("投開票所別", "投票所別") for c in r[:4]))
     H = [clean(c) for c in rows[hdr]]
@@ -88,7 +120,10 @@ def parse_sheet(rows, president):
         if not parts and not president:  # 2022 嘉義市 rerun: number, name and party on three rows
             parts = [clean(rows[hdr + 2][j]), clean(rows[hdr + 3][j])]
         parts = [fix(p) for p in parts]
-        if president:
+        if parties:  # party-list sheets: the "candidate" is the party
+            name = fix(re.sub(r"\s", "", m.group(2)))
+            party = name
+        elif president:
             name = fix(re.sub(r"\s", "", m.group(2)))[:3]
             party = PRESIDENT_PARTY.get(name, "")
         else:
@@ -125,8 +160,13 @@ def load(election):
             county = _county(name)
             if not county:
                 continue
+            if cfg.get("per_sheet"):
+                for title, rows in _sheets(name, data):
+                    m = re.search(r"第(\d+)選(?:舉)?區", title)  # 2016 sheets: "第01選區"
+                    out[f"{county}第{int(m.group(1))}選舉區" if m else f"{county}選舉區"] = parse_sheet(rows, False)
+                continue
             rows = rows_xls(data) if name.endswith(".xls") else rows_xlsx(data)
-            out[county] = parse_sheet(rows, president)
+            out[county] = parse_sheet(rows, president, parties=cfg.get("parties", False))
     for county, fname in cfg.get("extra", {}).items():
         data = (RAW / fname).read_bytes()
         out[county] = parse_sheet(rows_xls(data) if fname.endswith(".xls") else rows_xlsx(data), president)

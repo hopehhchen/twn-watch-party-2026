@@ -110,6 +110,30 @@ Added 2026-11-10 (report times: 109全國投開票所完成時間.xls, CEC attac
 - **County channel watch:** 華視's side panel rotated through county counts; `scripts/ocr_cts_county/` reads it off the recording's storyboard frames (party-color blocks, county-label templates, grayscale digit templates) and `scripts/clean_cts_county.py` drops misreads (a block whose shares jump more than 2 points from the same county's neighbouring blocks, then any value that breaks a non-decreasing run). Kept: 12 counties, 8–105 readings each (基隆市's 3 blocks dropped: values under 10,000 are misread). Eye check of 16 random blocks: 基隆 wrong, 1 of 39 other values wrong (dropped by the filter), 2 uncertain in the last digits. What the series shows: before ~18:15 華視's county counts ran far ahead of the CEC's logged station times (新北市 ~100,000 votes on 華視 before the CEC had logged a station); after that 華視 showed the CEC's numbers. The county race views carry it as a reliable source (floor = max of CEC and 華視).
 - **Channel watch:** the national panel at the top of the page (and every county view, below its margin chart) carries the channels' on-screen counts at the clock time (公視 own count, 華視, 三立, TVBS), with the floor (max of reliable), the field (mean and range), and the model's projected final from the CEC count. A channel above the top of the model's 80% range is marked red, the live counterpart of "above the final".
 
+## Legislative districts and the party vote (2020, 2024): backtest only
+
+Per-station results for the 73 district races and the party-list vote, parsed by `scripts/stations.py` (`2016/2020/2024-legislator`, `-party`). Not yet on the site.
+
+**District needles** (`scripts/backtest_legislators.py`). The same model, each district as a race (KMT vs the main opponent). Baseline: the previous presidential race at village level. Margin errors are in points of the two contenders' votes.
+
+| Stations in | 1% | 5% | 10% | 20% | 30% | 70% |
+|---|---|---|---|---|---|---|
+| 2020: favourite won | 59/73 | 66/73 | 69/73 | 71/73 | 73/73 | 73/73 |
+| 2020: margin error / 80% range held | 8.2 / 73% | 4.1 / 82% | 2.7 / 88% | 1.6 / 93% | 1.2 / 93% | 0.5 / 95% |
+| 2024: favourite won | 59/73 | 67/73 | 69/73 | 69/73 | 69/73 | 73/73 |
+| 2024: margin error / 80% range held | 13.5 / 71% | 5.1 / 86% | 3.5 / 92% | 2.4 / 90% | 1.6 / 92% | 0.5 / 97% |
+
+- Blending in the previous legislative race (villages pooled across the county's districts, since lines are redrawn) or the previous mayoral race changed little: log loss within ±15%, no consistent winner.
+- Misses at 30% in 2024: 雲林縣1 (丁學忠 won by 1.8; the model gave him 11%), 新北市12 (廖先翔 won by 6.0; 35%), 新北市7 (葉元之 by 1.5; 42%), 南投縣2 (游顥 by 2.5; 39%). 新北市12 and 雲林縣1 each gave the eventual loser 90% or more at some point after 5% counted.
+- Districts are smaller than counties and swing more on candidates, so the needle is less sure-footed than for mayors at the same share counted.
+
+**Party vote** (`scripts/backtest_party_vote.py`; 34 seats, 5% threshold, largest remainder):
+- The counted shares are a poor guide: early stations lean toward the big two. In 2024 the counted shares were 3 points off at 30% counted, and the seats from them were still wrong at 70% (TPP short).
+- A proportional swing against the previous party-list vote, village by village, did much better. New parties without a previous vote (TPP in 2020) use their counted share in the district, shrunk toward the county.
+  - 2024: shares off by 1.1 points at 10%, 0.6 at 30%; seats right from 10% counted.
+  - 2020: 2.4 points at 10%, 1.2 at 30%, but one seat (DPP 14 / TPP 4 vs final 13 / 5) was still wrong at 70%. The last seat is decided by remainders a few thousand votes apart, so it needs a stated chance, not a single call.
+- Women's half of each party's list seats doesn't change the party seat counts, only who sits.
+
 ## What could break this in 2026
 
 - **Feed granularity.** The backtest uses station-level results. If the CEC's live feed only gives district totals, the same model still runs and stays calibrated but is weaker (log loss 1.1–1.8× the station-level figure through half the count). Not yet verified what the 2026 feed provides.
