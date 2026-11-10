@@ -41,4 +41,4 @@ Things set aside on purpose, to look at again before 2026-11-28. Newest first.
 ## Language
 
 - **Taiwanese (台文)** as a third language: built as a draft (selector label 台文 since 2026-11-10); review list in `docs/taigi-review.md`.
-- **Candidate names in English mode**: proposal in the 2026-11-10 conversation (curated official romanizations for mayoral and presidential candidates; council names stay in Chinese). Not built yet.
+- **Candidate names in English mode** (built 2026-11-10): `data/names-en.json`, mayoral and presidential nights only; council and legislative candidates stay in Chinese. Wikipedia's candidate and results tables cite no sources, so names were checked against Focus Taiwan (CNA), Taipei Times and Legislative Yuan pages: all 2026 contenders are confirmed by CNA; 37 names from earlier nights (mostly 2018/2022 runners-up) rest on Wikipedia tables only. Open decisions are listed in the file (`decisions_open`). Shown in Chinese for lack of a source: 劉曉玫, 朱秀珍, 林聰賢.

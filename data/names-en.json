@@ -1,0 +1,795 @@
+{
+ "note": "English names for the needle pages (mayoral and presidential nights). Order of preference: the name the person uses officially (their office's English pages), CEC English materials, English Wikipedia, Focus Taiwan / Taipei Times usage. Checked 2026-11-10. Council and legislative candidates stay in Chinese. Names without an entry are shown in Chinese. Wikipedia's candidate and results tables cite no sources, so names taken from them were checked against Focus Taiwan (CNA), Taipei Times and Legislative Yuan pages where possible: see confirmed_by.",
+ "names": [
+  {
+   "zh": "沈伯洋",
+   "en": "Puma Shen",
+   "source": "Focus Taiwan 2026-10-27 ballot story (focustaiwan.tw/politics/202610275001)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "蔣萬安",
+   "en": "Chiang Wan-an",
+   "source": "Focus Taiwan 2026-10-27 ballot story (focustaiwan.tw/politics/202610275001)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)",
+    "Taipei Times 2022-11-27 'DPP routed across the board'"
+   ]
+  },
+  {
+   "zh": "蘇巧慧",
+   "en": "Su Chiao-hui",
+   "source": "Focus Taiwan 2026-10-27 ballot story (focustaiwan.tw/politics/202610275001)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "李四川",
+   "en": "Lee Shu-chuan",
+   "source": "Focus Taiwan 2026-10-27 ballot story (focustaiwan.tw/politics/202610275001); also Wikipedia",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "張善政",
+   "en": "Chang San-cheng",
+   "source": "Focus Taiwan 2026-10-27 ballot story (focustaiwan.tw/politics/202610275001)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "黃世杰",
+   "en": "Huang Shih-chieh",
+   "source": "Focus Taiwan 2026-10-27 ballot story (focustaiwan.tw/politics/202610275001)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "何欣純",
+   "en": "Ho Hsin-chun",
+   "source": "Focus Taiwan 2026-10-27 ballot story (focustaiwan.tw/politics/202610275001)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "江啟臣",
+   "en": "Johnny Chiang",
+   "source": "Focus Taiwan 2026-10-27 ballot story (focustaiwan.tw/politics/202610275001); Wikipedia's 2026 table has Chiang Chi-chen",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "謝龍介",
+   "en": "Hsieh Lung-chieh",
+   "source": "Focus Taiwan 2026-10-27 ballot story (focustaiwan.tw/politics/202610275001)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)",
+    "Taipei Times 2022-11-27 'DPP routed across the board'"
+   ]
+  },
+  {
+   "zh": "陳亭妃",
+   "en": "Chen Ting-fei",
+   "source": "Focus Taiwan 2026-10-27 ballot story (focustaiwan.tw/politics/202610275001)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "賴瑞隆",
+   "en": "Lai Jui-lung",
+   "source": "Focus Taiwan 2026-10-27 ballot story (focustaiwan.tw/politics/202610275001)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "柯志恩",
+   "en": "Ko Chih-en",
+   "source": "Focus Taiwan 2026-10-27 ballot story (focustaiwan.tw/politics/202610275001)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)",
+    "Taipei Times 2022-11-27 'DPP routed across the board'"
+   ]
+  },
+  {
+   "zh": "童子瑋",
+   "en": "Tung Tzu-wei",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "謝國樑",
+   "en": "George Hsieh",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table); also W22; Focus Taiwan's roundup has Hsieh Kuo-liang (his formal name)",
+   "confirmed_by": [
+    "English Wikipedia article title"
+   ]
+  },
+  {
+   "zh": "莊競程",
+   "en": "Chuang Ching-cheng",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "高虹安",
+   "en": "Ann Kao",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table); also W22; Focus Taiwan's roundup has Kao Hung-an (her formal name); Taipei Times has Ann Kao",
+   "confirmed_by": [
+    "Taipei Times 2022-11-27 'DPP routed across the board'",
+    "English Wikipedia article title"
+   ]
+  },
+  {
+   "zh": "鄭朝方",
+   "en": "Cheng Chao-fang",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table); also W18",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "徐欣瑩",
+   "en": "Hsu Hsin-ying",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table); also W18",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "陳品安",
+   "en": "Chen Pin-an",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "鍾東錦",
+   "en": "Chung Tung-chin",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table); also W22",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "陳素月",
+   "en": "Chen Su-yueh",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "魏平政",
+   "en": "Wei Ping-cheng",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "邱建富",
+   "en": "Chiu Chien-fu",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "温世政",
+   "en": "Wen Shih-cheng",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "許淑華",
+   "en": "Hsu Shu-hua",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table); also W22",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "劉建國",
+   "en": "Liu Chien-kuo",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table); also W22",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "張嘉郡",
+   "en": "Chang Chia-chun",
+   "source": "Legislative Yuan profile page (英文姓名 CHANG, CHIA-CHUN); also Wikipedia. Focus Taiwan's roundup has Alice Chang",
+   "confirmed_by": []
+  },
+  {
+   "zh": "王美惠",
+   "en": "Wang Mei-hui",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "張啓楷",
+   "en": "Chang Chi-kai",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "蔡易餘",
+   "en": "Tsai Yi-yu",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "吳品叡",
+   "en": "Wu Pin-jui",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "周春米",
+   "en": "Chou Chun-mi",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table); also W22",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "蘇清泉",
+   "en": "Su Ching-chuan",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table); also W22, W18",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "林國漳",
+   "en": "Lin Kuo-chang",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "吳宗憲",
+   "en": "Wu Tsung-hsien",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "游淑貞",
+   "en": "Yu Shu-chen",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "張峻",
+   "en": "Chang Chun",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "魏嘉賢",
+   "en": "Wei Chia-hsien",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "陳瑩",
+   "en": "Chen Ying",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "吳秀華",
+   "en": "Wu Hsiu-hua",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "吳淑瑾",
+   "en": "Wu Shu-chin",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "陳振中",
+   "en": "Chen Chen-chung",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "周倪安",
+   "en": "Chou Ni-an",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "陳玉珍",
+   "en": "Chen Yu-jen",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "李文良",
+   "en": "Lee Wen-liang",
+   "source": "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001) (Wikipedia's uncited table has Li Wen-liang)",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "王忠銘",
+   "en": "Wang Chung-ming",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table); also W22",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "曹爾元",
+   "en": "Tsao Erh-yuan",
+   "source": "English Wikipedia, 2026 Taiwanese local elections (candidate table); also W22",
+   "confirmed_by": [
+    "Focus Taiwan 2026-09-07 candidate roundup (focustaiwan.tw/politics/202609075001)"
+   ]
+  },
+  {
+   "zh": "蔡英文",
+   "en": "Tsai Ing-wen",
+   "source": "English Wikipedia article title",
+   "confirmed_by": [
+    "Taipei Times 2022-11-27 'DPP routed across the board'",
+    "Taipei Times 2018-11-25 front page"
+   ]
+  },
+  {
+   "zh": "韓國瑜",
+   "en": "Han Kuo-yu",
+   "source": "English Wikipedia article title; also W18",
+   "confirmed_by": [
+    "Taipei Times 2018-11-25 front page"
+   ]
+  },
+  {
+   "zh": "宋楚瑜",
+   "en": "James Soong",
+   "source": "English Wikipedia article title",
+   "confirmed_by": []
+  },
+  {
+   "zh": "賴清德",
+   "en": "Lai Ching-te",
+   "source": "English Wikipedia article title; the name he uses as president (Taipei Times wrote William Lai in 2018)",
+   "confirmed_by": []
+  },
+  {
+   "zh": "柯文哲",
+   "en": "Ko Wen-je",
+   "source": "English Wikipedia article title; also W18",
+   "confirmed_by": [
+    "Taipei Times 2022-11-27 'DPP routed across the board'",
+    "Taipei Times 2018-11-25 front page"
+   ]
+  },
+  {
+   "zh": "侯友宜",
+   "en": "Hou Yu-ih",
+   "source": "English Wikipedia article title (Wikipedia's 2018 and 2022 tables have Hou You-yi); Focus Taiwan uses Hou Yu-ih; Taipei Times uses Hou You-yi",
+   "confirmed_by": []
+  },
+  {
+   "zh": "朱立倫",
+   "en": "Eric Chu",
+   "source": "English Wikipedia article title",
+   "confirmed_by": [
+    "Taipei Times 2022-11-27 'DPP routed across the board'"
+   ]
+  },
+  {
+   "zh": "黃偉哲",
+   "en": "Huang Wei-che",
+   "source": "English Wikipedia article title (the 2018 and 2022 tables have Huang Wei-cher)",
+   "confirmed_by": [
+    "Taipei Times 2022-11-27 'DPP routed across the board'"
+   ]
+  },
+  {
+   "zh": "盧秀燕",
+   "en": "Lu Shiow-yen",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table); also W18, Focus Taiwan",
+   "confirmed_by": [
+    "Taipei Times 2018-11-25 front page"
+   ]
+  },
+  {
+   "zh": "陳其邁",
+   "en": "Chen Chi-mai",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table); also W18",
+   "confirmed_by": [
+    "Taipei Times 2022-11-27 'DPP routed across the board'",
+    "Taipei Times 2018-11-25 front page"
+   ]
+  },
+  {
+   "zh": "陳時中",
+   "en": "Chen Shih-chung",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table)",
+   "confirmed_by": [
+    "Taipei Times 2022-11-27 'DPP routed across the board'"
+   ]
+  },
+  {
+   "zh": "林佳龍",
+   "en": "Lin Chia-lung",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table); also W18",
+   "confirmed_by": [
+    "Taipei Times 2018-11-25 front page"
+   ]
+  },
+  {
+   "zh": "鄭運鵬",
+   "en": "Cheng Yun-peng",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table)",
+   "confirmed_by": []
+  },
+  {
+   "zh": "蔡其昌",
+   "en": "Tsai Chi-chang",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table)",
+   "confirmed_by": []
+  },
+  {
+   "zh": "林姿妙",
+   "en": "Lin Zi-miao",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table); also W18",
+   "confirmed_by": [
+    "Taipei Times 2018-11-25 front page"
+   ]
+  },
+  {
+   "zh": "江聰淵",
+   "en": "Chiang Tsung-yuan",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table)",
+   "confirmed_by": []
+  },
+  {
+   "zh": "楊文科",
+   "en": "Yang Wen-ke",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table); also W18",
+   "confirmed_by": []
+  },
+  {
+   "zh": "周江杰",
+   "en": "Chou Chiang-chieh",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table)",
+   "confirmed_by": []
+  },
+  {
+   "zh": "徐定禎",
+   "en": "Hsu Ting-chen",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table) (W18 has Hsu Ting-zhen)",
+   "confirmed_by": []
+  },
+  {
+   "zh": "王惠美",
+   "en": "Wang Huei-mei",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table); also W18; Taipei Times 2018 has Wang Hui-mei",
+   "confirmed_by": []
+  },
+  {
+   "zh": "黃秀芳",
+   "en": "Huang Hsiu-fang",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table)",
+   "confirmed_by": []
+  },
+  {
+   "zh": "蔡培慧",
+   "en": "Frida Tsai",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table)",
+   "confirmed_by": []
+  },
+  {
+   "zh": "張麗善",
+   "en": "Chang Li-shan",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table); also W18",
+   "confirmed_by": [
+    "Taipei Times 2018-11-25 front page"
+   ]
+  },
+  {
+   "zh": "翁章梁",
+   "en": "Weng Chang-liang",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table); also W18",
+   "confirmed_by": []
+  },
+  {
+   "zh": "王育敏",
+   "en": "Wang Yu-min",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table)",
+   "confirmed_by": []
+  },
+  {
+   "zh": "饒慶鈴",
+   "en": "Rao Ching-ling",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table)",
+   "confirmed_by": [
+    "Taipei Times 2018-11-25 front page"
+   ]
+  },
+  {
+   "zh": "劉櫂豪",
+   "en": "Liu Chao-hao",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table)",
+   "confirmed_by": []
+  },
+  {
+   "zh": "徐榛蔚",
+   "en": "Hsu Chen-wei",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table)",
+   "confirmed_by": [
+    "Taipei Times 2018-11-25 front page"
+   ]
+  },
+  {
+   "zh": "谷辣斯．尤達卡",
+   "en": "Kolas Yotaka",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table)",
+   "confirmed_by": []
+  },
+  {
+   "zh": "Kolas Yotaka",
+   "en": "Kolas Yotaka",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table)",
+   "confirmed_by": []
+  },
+  {
+   "zh": "陳光復",
+   "en": "Chen Kuang-fu",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table)",
+   "confirmed_by": []
+  },
+  {
+   "zh": "賴峰偉",
+   "en": "Lai Feng-wei",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table)",
+   "confirmed_by": []
+  },
+  {
+   "zh": "蔡適應",
+   "en": "Tsai Shih-ying",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table)",
+   "confirmed_by": []
+  },
+  {
+   "zh": "沈慧虹",
+   "en": "Shen Hui-hung",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table)",
+   "confirmed_by": [
+    "Taipei Times 2022-11-27 'DPP routed across the board'"
+   ]
+  },
+  {
+   "zh": "黃敏惠",
+   "en": "Huang Min-hui",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table); also W18",
+   "confirmed_by": [
+    "Taipei Times 2018-11-25 front page"
+   ]
+  },
+  {
+   "zh": "陳福海",
+   "en": "Chen Fu-hai",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table)",
+   "confirmed_by": []
+  },
+  {
+   "zh": "楊鎮浯",
+   "en": "Yang Cheng-wu",
+   "source": "English Wikipedia, 2022 Taiwanese local elections (results table)",
+   "confirmed_by": []
+  },
+  {
+   "zh": "丁守中",
+   "en": "Ting Shou-chung",
+   "source": "English Wikipedia, Results of the 2018 Taiwanese magistrate/mayor elections",
+   "confirmed_by": [
+    "Taipei Times 2018-11-25 front page"
+   ]
+  },
+  {
+   "zh": "蘇貞昌",
+   "en": "Su Tseng-chang",
+   "source": "English Wikipedia, Results of the 2018 Taiwanese magistrate/mayor elections",
+   "confirmed_by": [
+    "Taipei Times 2022-11-27 'DPP routed across the board'"
+   ]
+  },
+  {
+   "zh": "鄭文燦",
+   "en": "Cheng Wen-tsan",
+   "source": "English Wikipedia, Results of the 2018 Taiwanese magistrate/mayor elections",
+   "confirmed_by": []
+  },
+  {
+   "zh": "陳學聖",
+   "en": "Apollo Chen",
+   "source": "English Wikipedia, Results of the 2018 Taiwanese magistrate/mayor elections",
+   "confirmed_by": []
+  },
+  {
+   "zh": "高思博",
+   "en": "Kao Su-po",
+   "source": "English Wikipedia, Results of the 2018 Taiwanese magistrate/mayor elections",
+   "confirmed_by": []
+  },
+  {
+   "zh": "林右昌",
+   "en": "Lin Yu-chang",
+   "source": "English Wikipedia, Results of the 2018 Taiwanese magistrate/mayor elections",
+   "confirmed_by": []
+  },
+  {
+   "zh": "謝立功",
+   "en": "Hsieh Li-kung",
+   "source": "English Wikipedia, Results of the 2018 Taiwanese magistrate/mayor elections",
+   "confirmed_by": []
+  },
+  {
+   "zh": "陳歐珀",
+   "en": "Chen Ou-po",
+   "source": "English Wikipedia, Results of the 2018 Taiwanese magistrate/mayor elections",
+   "confirmed_by": []
+  },
+  {
+   "zh": "林智堅",
+   "en": "Lin Chih-chien",
+   "source": "English Wikipedia, Results of the 2018 Taiwanese magistrate/mayor elections",
+   "confirmed_by": [
+    "Taipei Times 2022-11-27 'DPP routed across the board'"
+   ]
+  },
+  {
+   "zh": "許明財",
+   "en": "Hsu Ming-tsai",
+   "source": "English Wikipedia, Results of the 2018 Taiwanese magistrate/mayor elections",
+   "confirmed_by": []
+  },
+  {
+   "zh": "徐耀昌",
+   "en": "Hsu Yao-chang",
+   "source": "English Wikipedia, Results of the 2018 Taiwanese magistrate/mayor elections",
+   "confirmed_by": []
+  },
+  {
+   "zh": "魏明谷",
+   "en": "Wei Ming-ku",
+   "source": "English Wikipedia, Results of the 2018 Taiwanese magistrate/mayor elections",
+   "confirmed_by": []
+  },
+  {
+   "zh": "林明溱",
+   "en": "Lin Ming-chen",
+   "source": "English Wikipedia, Results of the 2018 Taiwanese magistrate/mayor elections",
+   "confirmed_by": []
+  },
+  {
+   "zh": "洪國浩",
+   "en": "Hung Kuo-hao",
+   "source": "English Wikipedia, Results of the 2018 Taiwanese magistrate/mayor elections (its primary table has Hung Kuo-haw)",
+   "confirmed_by": []
+  },
+  {
+   "zh": "李進勇",
+   "en": "Lee Chin-yung",
+   "source": "English Wikipedia, Results of the 2018 Taiwanese magistrate/mayor elections",
+   "confirmed_by": []
+  },
+  {
+   "zh": "吳育仁",
+   "en": "Wu Yu-jen",
+   "source": "English Wikipedia, Results of the 2018 Taiwanese magistrate/mayor elections",
+   "confirmed_by": []
+  },
+  {
+   "zh": "涂醒哲",
+   "en": "Twu Shiing-jer",
+   "source": "English Wikipedia, Results of the 2018 Taiwanese magistrate/mayor elections",
+   "confirmed_by": []
+  },
+  {
+   "zh": "潘孟安",
+   "en": "Pan Men-an",
+   "source": "English Wikipedia, Results of the 2018 Taiwanese magistrate/mayor elections",
+   "confirmed_by": []
+  },
+  {
+   "zh": "劉增應",
+   "en": "Liu Cheng-ying",
+   "source": "English Wikipedia, Results of the 2018 Taiwanese magistrate/mayor elections (winners list); Taipei Times 2018 has Liu Tseng-ying",
+   "confirmed_by": []
+  },
+  {
+   "zh": "傅崐萁",
+   "en": "Fu Kun-chi",
+   "source": "English Wikipedia article title",
+   "confirmed_by": []
+  },
+  {
+   "zh": "黃健庭",
+   "en": "Justin Huang",
+   "source": "English Wikipedia article title",
+   "confirmed_by": []
+  },
+  {
+   "zh": "張花冠",
+   "en": "Helen Chang",
+   "source": "English Wikipedia article title",
+   "confirmed_by": []
+  },
+  {
+   "zh": "陳菊",
+   "en": "Chen Chu",
+   "source": "Taipei Times 2018-11-25 front page",
+   "confirmed_by": [
+    "Taipei Times 2018-11-25 front page"
+   ]
+  }
+ ],
+ "not_found": {
+  "劉曉玫": "2018 花蓮縣 DPP candidate: no English source found; shown in Chinese",
+  "朱秀珍": "2018 連江縣 independent: no English source found; shown in Chinese",
+  "林聰賢": "incumbent (tooltips only): not checked this session; shown in Chinese"
+ },
+ "decisions_open": [
+  "English given names vs formal names: the site uses the English name a person is commonly known by (Puma Shen, Johnny Chiang, George Hsieh, Ann Kao, Eric Chu, James Soong, Apollo Chen, Frida Tsai, Justin Huang, Helen Chang) and the formal romanization otherwise. CNA's roundup mixes the two (Hsieh Kuo-liang and Kao Hung-an, but Johnny Chiang and Alice Chang).",
+  "張嘉郡: Chang Chia-chun (Legislative Yuan) or Alice Chang (Focus Taiwan).",
+  "侯友宜: Hou Yu-ih (Wikipedia article, Focus Taiwan) or Hou You-yi (Taipei Times, Wikipedia's results tables).",
+  "劉增應 Liu Cheng-ying / Liu Tseng-ying; 王惠美 Wang Huei-mei / Wang Hui-mei: Wikipedia vs Taipei Times."
+ ]
+}

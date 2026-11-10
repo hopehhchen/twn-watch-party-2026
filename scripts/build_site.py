@@ -69,7 +69,8 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     nights = night_index()
     mapd = json.loads((ROOT / "data" / "map" / "taiwan-counties.json").read_text())
-    render("live-template.html", {"nights": nights, "map": mapd}, out / "live.html")
+    names = {n["zh"]: n["en"] for n in json.loads((ROOT / "data" / "names-en.json").read_text())["names"]}
+    render("live-template.html", {"nights": nights, "map": mapd, "names": names}, out / "live.html")
     if (ROOT / "site" / "index-template.html").exists():
         render("index-template.html", {"nights": nights, "accuracy": json.loads((ROOT / "data" / "accuracy.json").read_text())},
                out / "index.html")

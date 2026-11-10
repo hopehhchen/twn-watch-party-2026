@@ -221,6 +221,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
 .side { border-top: 4px solid var(--ind); padding-top: 8px; display: grid; gap: 2px; min-width: 0; }
 .side.right { text-align: right; }
 .side .nm { font-weight: 700; font-size: 17px; }
+.side .zh { font-size: 13px; color: var(--muted); font-weight: 500; }
 .side .pt { font-size: 12px; color: var(--muted); }
 .side .v { font-size: 24px; }
 .side .p { font-size: 13px; color: var(--muted); }
@@ -389,7 +390,17 @@ const DATA = /*__DATA__*/null;
   async function loadNight(id) {
     if (NIGHTS[id]) return NIGHTS[id];
     const r = await fetch(nightInfoOf(id).src); if (!r.ok) throw new Error(r.status);
-    return (NIGHTS[id] = await r.json());
+    NIGHTS[id] = await r.json(); nameNight(NIGHTS[id]);
+    return NIGHTS[id];
+  }
+  // candidate names: the checked English form (data/names-en.json) in English, the Chinese name otherwise.
+  // Each candidate keeps its Chinese name in .zh; .name is what the page shows. Council and legislative
+  // candidates stay in Chinese.
+  const EN_NAMES = DATA.names || {};
+  function nameNight(night) {
+    const one = c => { if (!c) return; if (c.zh == null) c.zh = c.name; c.name = LANG === 'en' && EN_NAMES[c.zh] ? EN_NAMES[c.zh] : c.zh; };
+    for (const r of night.races || []) ['blue', 'other', 'third', 'incumbent'].forEach(k => one(r[k]));
+    for (const k of night.skipped || []) one(k.incumbent);
   }
   const nightInfoOf = id => DATA.nights.find(n => n.id === id);
   const LEGIS = {}; // night id -> legislative data (presidential nights), loaded on first use
@@ -848,7 +859,8 @@ const DATA = /*__DATA__*/null;
   function series(race, col, colD) { return race.pts.map(p => [p[C.t], isDist() ? p[colD] : p[col], p]); }
   // Both charts: the non-KMT ("other") contender toward the top, the KMT-side ("blue") contender toward
   // the bottom; the axis names who is ahead instead of using signs.
-  const short = n => n.split(/[\s．]/)[0].slice(0, 4);
+  // short name for chart labels: the surname ("Chiang Wan-an" -> Chiang, "George Hsieh" -> Hsieh), or the first 4 characters in Chinese
+  const short = n => { if (/[A-Za-z]/.test(n) && !/[\u4e00-\u9fff]/.test(n)) { const t = n.split(' '); return t.length > 1 && t[1].includes('-') ? t[0] : t[t.length - 1]; } return n.split(/[\s．]/)[0].slice(0, 4); };
   const ylab = (x, y, top, bottom, color) => `<text x="${x}" y="${y - 1}" text-anchor="end" style="fill:${color}">${esc(top)}</text>` +
     (bottom ? `<text x="${x}" y="${y + 11}" text-anchor="end" style="fill:${color};font-size:10px">${esc(bottom)}</text>` : '');
   function chartP(race) {
@@ -955,7 +967,7 @@ const DATA = /*__DATA__*/null;
     const sideHtml = (c, right) => {
       const votes = v.pre ? 0 : (c === race.blue ? v.p[C.b] : v.p[C.o]);
       const pw = v.pre ? null : (c === race.blue ? v.pb : 1 - v.pb);
-      return `<div class="side b-${c.tone} ${right ? 'right' : ''}"><span class="nm">${esc(c.name)}</span><span class="pt">${esc(pname(c.party))}${c.no ? ` · ${tx('No.', '')} ${c.no}${tx('', ' 號')}` : ''}</span>
+      return `<div class="side b-${c.tone} ${right ? 'right' : ''}"><span class="nm">${esc(c.name)}</span>${c.zh && c.zh !== c.name ? `<span class="zh">${esc(c.zh)}</span>` : ''}<span class="pt">${esc(pname(c.party))}${c.no ? ` · ${tx('No.', '')} ${c.no}${tx('', ' 號')}` : ''}</span>
         <span class="v num">${v.pre ? '—' : comma(votes)}</span><span class="p">${pw == null ? tx('chance —', '勝率 —', '贏面 —') : tx('chance to win ', '勝率 ', '贏面 ') + pctTxt(pw)}</span></div>`;
     };
     if (st.mode === 'turnout') { renderTurnoutDetail(race); return; }
@@ -1032,7 +1044,7 @@ const DATA = /*__DATA__*/null;
     const v = view3(race, st.t);
     const pp = pair3(race, v), sq = statusQ(v.pre, v.cert, pp.q), wait = v.pre || v.early;
     const side = (k, right) => { const c = pp.cs[k]; const votes = v.pre ? null : v.rows[k].votes;
-      return `<div class="side b-${c.tone} ${right ? 'right' : ''}"><span class="nm">${esc(c.name)}</span><span class="pt">${esc(pname(c.party))}${c.no ? ` · ${tx('No.', '')} ${c.no}${tx('', ' 號')}` : ''}</span>
+      return `<div class="side b-${c.tone} ${right ? 'right' : ''}"><span class="nm">${esc(c.name)}</span>${c.zh && c.zh !== c.name ? `<span class="zh">${esc(c.zh)}</span>` : ''}<span class="pt">${esc(pname(c.party))}${c.no ? ` · ${tx('No.', '')} ${c.no}${tx('', ' 號')}` : ''}</span>
         <span class="v num">${votes == null ? '—' : comma(votes)}</span><span class="p">${wait ? tx('chance —', '勝率 —', '贏面 —') : tx('chance to win ', '勝率 ', '贏面 ') + pctTxt(v.pw[k])}</span></div>`; };
     const reads = v.pre ? `<div class="read"><span class="k">${tx('Status', '狀態')}</span><span class="v">${tx('No polling stations have reported yet.', '尚無投開票所回報。', '猶無投開票所回報。')}</span></div>` : `
       <div class="read"><span class="k">${tx('Counted', '已開')}</span><span class="v">${tx(`<b class="num">${comma(v.n)}</b> of ${comma(race.stations)} stations (${(100 * v.frac).toFixed(1)}%) · so far`, `${comma(race.stations)} 所中已開 <b class="num">${comma(v.n)}</b> 所（${(100 * v.frac).toFixed(1)}%）· 目前`, `${comma(race.stations)} 所內底已開 <b class="num">${comma(v.n)}</b> 所（${(100 * v.frac).toFixed(1)}%）· 這馬`)} ${v.rows.map(r => `${esc(r.c.name)} ${(100 * r.counted).toFixed(1)}%`).join(' · ')}</span></div>
@@ -1557,8 +1569,8 @@ const DATA = /*__DATA__*/null;
   }
   nation.addEventListener('click', e => { const u = e.target.closest('[data-unit]'); if (u) { st.unit = u.dataset.unit; renderNation(); renderDetail(); return; }
     const b = e.target.closest('.blk[data-area]'); if (b) tapOrOpen(b, 'nation', true); });
-  cards.addEventListener('click', e => { const c = e.target.closest('.card[data-area]'); if (c) pick(c.dataset.area); });
-  mapEl.addEventListener('click', e => { const c = e.target.closest('path[data-area]'); if (c) tapOrOpen(c, 'map'); });
+  cards.addEventListener('click', e => { const c = e.target.closest('.card[data-area]'); if (c) pick(c.dataset.area, true); });
+  mapEl.addEventListener('click', e => { const c = e.target.closest('path[data-area]'); if (c) tapOrOpen(c, 'map', true); });
 
   function openNight(id, t) { // load a night's data if needed, then show it
     const first = !NIGHTS[id];
@@ -1570,6 +1582,7 @@ const DATA = /*__DATA__*/null;
     LANG = l; try { localStorage.setItem('twn-lang', l); } catch (e) {}
     document.documentElement.lang = l === 'zh' ? 'zh-Hant' : l === 'tw' ? 'nan-Hant-TW' : 'en';
     document.querySelectorAll('[data-lang-set]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.langSet === l)));
+    Object.values(NIGHTS).forEach(nameNight);
     if (NIGHTS[st.night]) render();
   }
   document.addEventListener('click', e => { const b = e.target.closest('[data-lang-set]'); if (b) setLang(b.dataset.langSet); });
