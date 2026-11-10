@@ -11,6 +11,8 @@
                the nights' data, loaded by live.html when a night (or the council or legislature view) is opened
   needle.html, council.html
                redirects to live.html, for links to the earlier prototype pages
+  favicon.svg, favicon.ico, favicon-32.png, apple-touch-icon.png, icon-512.png
+               tab and home-screen icons (the vote stamp), from site/icons/
 
 Templates hold the marker /*__DATA__*/null, replaced by one JSON object. The night files come from
 scripts/build_needle_data.py and scripts/build_council_data.py, which need the raw CEC files.
@@ -79,6 +81,8 @@ def main():
         (out / sub).mkdir(exist_ok=True)
         for f in src.glob("*.json"):
             shutil.copy(f, out / sub / f.name)
+    for f in (ROOT / "site" / "icons").glob("*"):  # tab icons (the vote stamp): favicon.svg/.ico/-32.png, apple-touch-icon.png
+        shutil.copy(f, out / f.name)
     (out / "needle.html").write_text(REDIRECT.replace("{hash}", ""))
     (out / "council.html").write_text(REDIRECT.replace("{hash}", "#2022/council"))
     print(f"{out}: needle/, council/ data and redirects")
