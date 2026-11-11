@@ -24,6 +24,10 @@
 .rp-bar i { display: block; height: 100%; width: 0; background: var(--ink); }
 .rp-sub { font-size: 12px; color: var(--muted); }
 .rp-cap { font-size: 13.5px; line-height: 1.5; min-height: 3em; transition: opacity .3s; }
+.rp-line { width: 100%; height: auto; display: block; overflow: visible; }
+.rp-line text { font-size: 10.5px; fill: var(--muted); font-family: var(--font-body, inherit); }
+.rp-line text.k { font-weight: 700; fill: var(--ink); }
+.rp-line .m { transition: opacity .25s; }
 .rp-nav { display: flex; align-items: center; gap: 6px; }
 .rp-nav button { border: 1px solid var(--rule); background: none; border-radius: 999px; padding: 2px 10px; font-size: 12px; cursor: pointer; color: var(--muted); }
 .rp-nav button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
@@ -37,6 +41,7 @@
     <div class="rp-sides"><div id="rpL"></div><div id="rpR"></div></div>
     <div class="rp-bar"><i id="rpBar"></i></div>
     <div class="rp-sub" id="rpSub"></div>
+    <svg class="rp-line" id="rpLine" viewBox="0 0 300 50" aria-hidden="true"></svg>
     <figcaption class="rp-cap" id="rpCap"></figcaption>
   </div>
   <div class="rp-nav" id="rpNav"></div>
@@ -72,12 +77,40 @@
   function label() {
     const r = race();
     document.getElementById('rpTag').textContent = tx('Replay', '重播', '重播');
-    document.getElementById('rpRace').textContent = `${r.year} ${r.area}`;
+    document.getElementById('rpRace').textContent = lang() === 'en' ? `${r.year} ${r.area_en.replace(/ (City|County)$/, '')} ${r.area}` : `${r.year} ${r.area}`;
     fig.setAttribute('aria-label', tx(`Replay of the ${r.year} ${r.area} count`, `${r.year} 年${r.area}開票重播`, `${r.year} 年${r.area}開票重播`));
     const w8 = nm(r.winner), dec = clock(r.decided), t90 = clock(r.t90);
-    document.getElementById('rpCap').textContent = phase === 'run' ? tx('A real count, replayed minute by minute as the model saw it.', '真實的開票夜，照模型當時看到的資料逐分鐘重播。', '真正的開票暗，照模型當時看著的資料一分鐘一分鐘重播。') : tx(`Decided at ${dec}. The needle had ${w8} above 90% from ${t90}.`, `${dec} 數學上確定；指針從 ${t90} 起就以 90% 以上看好${r.winner.name}。`, `${dec} 數學上確定；指針對 ${t90} 起就用 90% 以上看好${r.winner.name}。`);
-    document.getElementById('rpNav').innerHTML = H.races.map((q, k) => `<button type="button" data-rp="${k}" aria-pressed="${k === i}">${q.year} ${q.area}</button>`).join('')
+    document.getElementById('rpCap').textContent = phase === 'run' ? tx('A real count, replayed minute by minute as the model saw it.', '真實的開票夜，照模型當時看到的資料逐分鐘重播。', '真正的開票暗，照模型當時看著的資料一分鐘一分鐘重播。') : story(r);
+    document.getElementById('rpNav').innerHTML = H.races.map((q, k) => `<button type="button" data-rp="${k}" aria-pressed="${k === i}">${q.year} ${lang() === 'en' ? q.area_en.replace(/ (City|County)$/, '') : q.area}</button>`).join('')
       + `<button type="button" class="rp-pause" id="rpPause" aria-label="${paused ? tx('Play', '播放', '播放') : tx('Pause', '暫停', '暫停')}">${paused ? '▶' : '❚❚'}</button>`;
+  }
+  // the night's three moments, in order: the needle passing 90% (and staying), what the candidates said, the count decided
+  function events(r) {
+    const ev = [{ t: r.t90, k: '90', en: `the needle passed 90% for ${nm(r.winner)} and stayed`, zh: `指針超過 90% 看好${r.winner.name}並維持`, tw: `指針超過九成看好${r.winner.name}，閣維持` }];
+    for (const x of r.said) ev.push({ t: x.t, k: x.kind, en: `${nm(x)} ${x.kind === 'conceded' ? 'conceded' : 'declared victory'}`,
+      zh: `${x.name}${x.kind === 'conceded' ? '承認敗選' : '宣布當選'}`, tw: `${x.name}${x.kind === 'conceded' ? '承認落選' : '宣布當選'}` });
+    ev.push({ t: r.decided, k: 'dec', en: 'the count was decided', zh: '開票數學上確定', tw: '開票數學上確定' });
+    return ev.sort((a, b) => a.t - b.t);
+  }
+  const story = r => events(r).map(e => `${clock(e.t)} ${tx(e.en, e.zh, e.tw)}`).join(' · ');
+  const line = document.getElementById('rpLine');
+  function drawLine(r) { // a strip under the count: a mark for each moment, lit as the replay reaches it
+    const X = t => 6 + (t - r.start) / (r.end - r.start) * 288;
+    const said = r.said.length ? r.said.slice().sort((a, b) => a.t - b.t)[0] : null;
+    const marks = [{ t: r.t90, lab: tx('needle 90%', '指針 90%', '指針九成'), col: tone(r.winner) },
+      ...(said ? [{ t: said.t, lab: said.kind === 'conceded' ? tx('conceded', '承認敗選', '承認落選') : tx('declared', '宣布當選', '宣布當選'), col: 'var(--ink)' }] : []),
+      { t: r.decided, lab: tx('decided', '確定', '確定'), col: 'var(--ink)', sq: true }];
+    let s = `<line x1="6" x2="294" y1="14" y2="14" stroke="var(--rule)" stroke-width="2"/><line id="rpNow" x1="6" x2="6" y1="6" y2="22" stroke="var(--muted)" stroke-width="1"/>`;
+    marks.forEach((m, i) => { const x = X(m.t), anc = x < 40 ? 'start' : x > 260 ? 'end' : 'middle';
+      const dy = i % 2 ? 46 : 34; // alternate label rows so close marks don't collide
+      s += `<g class="m" data-t="${m.t}" opacity="0.18">${m.sq ? `<rect x="${x - 5}" y="9" width="10" height="10" fill="${m.col}"/>` : `<circle cx="${x}" cy="14" r="5.5" fill="${m.col}"/>`}
+        <line x1="${x}" x2="${x}" y1="20" y2="${dy - 9}" stroke="var(--rule)"/><text class="k" x="${x}" y="${dy}" text-anchor="${anc}">${m.lab} ${clock(m.t)}</text></g>`; });
+    line.setAttribute('viewBox', '0 0 300 52'); line.innerHTML = s;
+  }
+  function paintLine(r) {
+    const X = t => 6 + (t - r.start) / (r.end - r.start) * 288, now = document.getElementById('rpNow');
+    if (now) { const x = X(Math.min(Math.max(simT, r.start), r.end)); now.setAttribute('x1', x); now.setAttribute('x2', x); }
+    line.querySelectorAll('.m').forEach(g => g.setAttribute('opacity', simT >= +g.dataset.t ? '1' : '0.18'));
   }
   function paint() {
     const r = race(), q = at(simT), p = q ? q[1] : .5;
@@ -91,13 +124,14 @@
       : q[5] ? tx(`Decided · ${comma(q[4])} of ${comma(r.stations)} stations counted`, `確定 · 已開 ${comma(q[4])} / ${comma(r.stations)} 所`, `確定 · 已開 ${comma(q[4])} / ${comma(r.stations)} 所`)
       : tx(`${comma(q[4])} of ${comma(r.stations)} stations counted`, `已開 ${comma(q[4])} / ${comma(r.stations)} 所`, `已開 ${comma(q[4])} / ${comma(r.stations)} 所`);
     svg.setAttribute('aria-label', q ? `${r.blue.name} ${pctTxt(p)}, ${r.other.name} ${pctTxt(1 - p)}` : '');
+    paintLine(r);
     return p;
   }
   function needle() { const [x2, y2] = pt(Math.min(1, Math.max(0, x)), D.R + 4); const n = document.getElementById('rpNdl'); n.setAttribute('x2', x2.toFixed(1)); n.setAttribute('y2', y2.toFixed(1)); }
   function start(k, finalState) {
     i = k; const r = race();
     simT = finalState ? r.end : r.start; phase = finalState ? 'hold' : 'run'; phaseT = 0;
-    drawFace(r); label(); x = finalState ? at(r.end)[1] : .5; vel = 0; w = 0; paint(); needle();
+    drawFace(r); drawLine(r); label(); x = finalState ? at(r.end)[1] : .5; vel = 0; w = 0; paint(); needle();
   }
   function step(ts) {
     raf = 0;
@@ -125,7 +159,7 @@
   });
   new IntersectionObserver(es => { visible = es[0].isIntersecting; go(); }).observe(fig);
   document.addEventListener('visibilitychange', () => { visible = !document.hidden; go(); });
-  new MutationObserver(() => { label(); paint(); }).observe(root, { attributes: true, attributeFilter: ['lang'] });
+  new MutationObserver(() => { drawLine(race()); label(); paint(); }).observe(root, { attributes: true, attributeFilter: ['lang'] });
   start(0, reduce); go();
 })();
 </script>

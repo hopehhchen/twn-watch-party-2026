@@ -57,10 +57,24 @@ def night_index():
     return out
 
 
-# Entry-page hero replay (mock): real races replayed in about ten seconds each. One won by each side, all
-# with a needle that moved: 2022 屏東 swung both ways in its first hour, 2018 嘉義市 was decided at 23:32,
-# 2018 臺北 not until 02:36.
-HERO_RACES = [("2022-mayors", "屏東縣"), ("2018-mayors", "嘉義市"), ("2018-mayors", "臺北市")]
+# Entry-page hero replay (mock): real races replayed in about ten seconds each, where the needle passed 90% (and
+# stayed) before anyone declared victory or conceded, and before the count was decided: 2022 屏東 (DPP won;
+# swung both ways in its first hour), 2018 高雄 (KMT won), 2018 臺北 (independent won; decided at 02:27).
+HERO_RACES = [("2022-mayors", "屏東縣"), ("2018-mayors", "高雄市"), ("2018-mayors", "臺北市")]
+# When the candidates said so, in minutes after 16:00 (kind, who, time, source). 屏東 2022: 周春米 declared at
+# 20:50 (CNA); 蘇清泉 never conceded and asked for a recount. 高雄 2018: 陳其邁 conceded at about 20:50
+# (自由時報, 中時: 20:52), 韓國瑜 declared at 21:17 (風傳媒). 臺北 2018: 柯文哲 spoke at about 03:00, after the
+# count (鏡週刊); 丁守中 announced a lawsuit at 02:25 and didn't concede.
+HERO_SAID = {("2022-mayors", "屏東縣"): [("declared", "周春米", 290)],
+             ("2018-mayors", "高雄市"): [("conceded", "陳其邁", 290), ("declared", "韓國瑜", 317)],
+             ("2018-mayors", "臺北市"): [("declared", "柯文哲", 660)]}
+
+
+PLACE_EN = {"臺北市": "Taipei City", "新北市": "New Taipei City", "基隆市": "Keelung City", "桃園市": "Taoyuan City", "新竹市": "Hsinchu City",
+            "新竹縣": "Hsinchu County", "苗栗縣": "Miaoli County", "臺中市": "Taichung City", "彰化縣": "Changhua County", "南投縣": "Nantou County",
+            "雲林縣": "Yunlin County", "嘉義市": "Chiayi City", "嘉義縣": "Chiayi County", "臺南市": "Tainan City", "高雄市": "Kaohsiung City",
+            "屏東縣": "Pingtung County", "宜蘭縣": "Yilan County", "花蓮縣": "Hualien County", "臺東縣": "Taitung County", "澎湖縣": "Penghu County",
+            "金門縣": "Kinmen County", "連江縣": "Lienchiang County"}
 
 
 def hero_data(names):
@@ -74,9 +88,11 @@ def hero_data(names):
         t90 = pts[below[-1] + 1][0] if below else pts[0][0]
         decided = next(q[0] for q in pts if q[5])
         side = lambda c: {"name": c["name"], "en": names.get(c["name"]), "tone": c["tone"]}
-        races.append({"year": nid[:4], "area": area, "stations": r["stations"], "blue": side(r["blue"]), "other": side(r["other"]),
-                      "winner": side(r["blue"] if blue_won else r["other"]), "t90": t90, "decided": decided,
-                      "start": max(0, pts[0][0] - 12), "end": decided + 4, "pts": pts})
+        said = [{"kind": k, "name": who, "en": names.get(who), "t": t} for k, who, t in HERO_SAID.get((nid, area), [])]
+        last = max([decided] + [x["t"] for x in said])
+        races.append({"year": nid[:4], "area": area, "area_en": PLACE_EN.get(area, area), "stations": r["stations"], "blue": side(r["blue"]), "other": side(r["other"]),
+                      "winner": side(r["blue"] if blue_won else r["other"]), "t90": t90, "decided": decided, "said": said,
+                      "start": max(0, pts[0][0] - 12), "end": last + 6, "pts": pts})
     return {"ms": 9000, "hold": 3200, "races": races}
 
 
