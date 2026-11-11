@@ -15,6 +15,7 @@ in than the last published file (a count never goes backwards). A failed check s
 import argparse
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -29,13 +30,13 @@ WRANGLER = "wrangler@4.149.0"  # pinned: the night doesn't depend on whatever wr
 def deploy(worker):
     """npx wrangler deploy (to `worker`, if given). Returns (ok, the output's last lines)."""
     cmd = ["npx", "--yes", WRANGLER, "deploy"] + (["--name", worker] if worker else [])
-    env = dict(os.environ, WRANGLER_SEND_METRICS="false", CI="1")
+    env = dict(os.environ, WRANGLER_SEND_METRICS="false", CI="1", NO_COLOR="1", FORCE_COLOR="0")
     if os.name == "nt":  # npx is a .cmd file on Windows
         r = subprocess.run(" ".join(cmd), cwd=ROOT, capture_output=True, text=True, timeout=300, shell=True, env=env,
                            encoding="utf-8", errors="replace")
     else:
         r = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, timeout=300, env=env)
-    return r.returncode == 0, (r.stdout + r.stderr).strip()
+    return r.returncode == 0, re.sub(r"\x1b\[[0-9;]*m", "", (r.stdout + r.stderr)).strip()
 
 
 def log(*a):
@@ -94,7 +95,8 @@ def main():
                 ok = True
                 if a.deploy:
                     ok, out = deploy(a.worker)
-                    log("deploy", "ok" if ok else "FAILED: " + " / ".join(out.splitlines()[-3:]))
+                    errs = [ln.strip() for ln in out.splitlines() if "ERROR" in ln or "rror:" in ln]
+                    log("deploy", "ok" if ok else "FAILED: " + (errs[0] if errs else " / ".join(x for x in out.splitlines()[-4:] if x.strip()))[:300])
                 if ok:
                     last_mtime, prev = m, doc
                     log("published", doc.get("updated"), sum(len(r["pts"]) for r in doc["races"]), "points")

@@ -171,9 +171,23 @@ def run(children, banner, out, test_url_from=None):
             pub = next(c for c in children if c.name == "publish")
             poll = next(c for c in children if c.name == "poll")
             cyc = poll.last(r"cycle ")
-            pl = pub.last(r"published|NOT published|FAILED|waiting")
-            ok = "FAILED" not in pl and "NOT" not in pl
-            say(f"{stamp()}  {'OK ' if ok else '!! '} {summary(out)} | reading: {cyc[9:60] if cyc else 'starting'} | site: {pl[9:80] if pl else 'starting'}")
+            pl = pub.last(r"published|NOT published|FAILED")
+            m = re.search(r"\{([^}]*)\}", cyc)
+            got = bad = 0
+            if m:
+                for k, v in re.findall(r"'(\w+)': (\d+)", m.group(1)):
+                    if k in ("200", "304"):
+                        got += int(v)
+                    elif k != "404":  # 404: the CEC hasn't put the page up yet (normal before counting)
+                        bad += int(v)
+            reading = "starting" if not cyc else f"{got} pages read" + (f", {bad} failed (retrying)" if bad else "")
+            if not pl:
+                site, ok = "waiting for the first results", True
+            elif "FAILED" in pl or "NOT" in pl:
+                site, ok = f"update FAILED at {pl[:8]} (tell Hope if this repeats for 5 minutes)", False
+            else:
+                site, ok = f"updated at {pl[:8]}", True
+            say(f"{stamp()}  {'OK' if ok else '!!'}  {summary(out)}  |  CEC: {reading}  |  website: {site}")
             if test_url_from and not url_shown:
                 m = re.search(r"https://\S+workers\.dev", pub.log.read_text(encoding="utf-8", errors="replace"))
                 if m:
