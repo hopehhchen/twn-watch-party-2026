@@ -378,6 +378,8 @@ def main():
     ap.add_argument("--once", action="store_true")
     ap.add_argument("--probe", action="store_true")
     ap.add_argument("--date", default="2026-11-28", help="the night (for page timestamps)")
+    ap.add_argument("--wait-until", help="Taiwan time (e.g. 2026-11-28T15:50) before which only one page is checked every "
+                                         "10 minutes: the night runner can start hours early without hammering the CEC")
     a = ap.parse_args()
     if not a.base:
         a.base = json.loads((ROOT / "data" / "live" / "night-config.json").read_text())["count_base"]
@@ -398,6 +400,14 @@ def main():
         return
     day = datetime.fromisoformat(a.date).replace(tzinfo=TW)
     night.resume()  # no-op on a fresh start; after a restart, picks up where the last run stopped
+    if a.wait_until:
+        until = datetime.fromisoformat(a.wait_until).replace(tzinfo=TW)
+        probe = page_url(a.base, "TC", night.towns["臺北市"]["code"])
+        while datetime.now(TW) < until:
+            fetcher.stats = {}
+            body, _ = fetcher.get(probe)
+            log(f"waiting until {until:%H:%M} (Taiwan time) to start reading; the CEC count site answered: {fetcher.stats}")
+            time.sleep(min(600, max(1, (until - datetime.now(TW)).total_seconds())))
     first, path = True, night.out / "needle" / "2026-mayors.json"
     while True:
         t_start = time.time()

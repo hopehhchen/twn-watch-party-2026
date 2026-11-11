@@ -155,7 +155,14 @@ def summary(out):
         return "no results yet"
     counting = sum(1 for r in d["races"] if r["pts"])
     decided = sum(1 for r in d["races"] if r["pts"] and r["pts"][-1][7])
-    return f"{counting} of 22 races counting, {decided} decided"
+    try:
+        c = json.loads((out / "council" / "2026.json").read_text(encoding="utf-8"))
+        cn = sum(1 for x in c["counties"] for dd in x["districts"] if dd["pts"])
+        ct = sum(len(x["districts"]) for x in c["counties"])
+        council = f", councils {cn} of {ct} districts counting"
+    except Exception:
+        council = ""
+    return f"mayors {counting} of 22 counting, {decided} decided{council}"
 
 
 def run(children, banner, out, test_url_from=None):
@@ -170,7 +177,8 @@ def run(children, banner, out, test_url_from=None):
                 c.keep()
             pub = next(c for c in children if c.name == "publish")
             poll = next(c for c in children if c.name == "poll")
-            cyc = poll.last(r"cycle ")
+            wait = poll.last(r"cycle |waiting until")
+            cyc = poll.last(r"cycle ") if "waiting until" not in wait else ""
             pl = pub.last(r"published|NOT published|FAILED")
             m = re.search(r"\{([^}]*)\}", cyc)
             got = bad = 0
@@ -180,7 +188,8 @@ def run(children, banner, out, test_url_from=None):
                         got += int(v)
                     elif k != "404":  # 404: the CEC hasn't put the page up yet (normal before counting)
                         bad += int(v)
-            reading = "starting" if not cyc else f"{got} pages read" + (f", {bad} failed (retrying)" if bad else "")
+            reading = ("waiting: starts reading at 15:50 (the CEC site is checked every 10 minutes until then)" if "waiting until" in wait
+                       else "starting" if not cyc else f"{got} pages read" + (f", {bad} failed (retrying)" if bad else ""))
             if not pl:
                 site, ok = "waiting for the first results", True
             elif "FAILED" in pl or "NOT" in pl:
@@ -266,7 +275,9 @@ def check():
                 time.sleep(5)
             d = json.loads((out / "needle" / "2026-mayors.json").read_text(encoding="utf-8"))
             n = sum(len(x["pts"]) for x in d["races"])
-            return n > 0, f"practice count read and modelled ({n} points)"
+            c = json.loads((out / "council" / "2026.json").read_text(encoding="utf-8"))
+            cn = sum(1 for x in c["counties"] for dd in x["districts"] if dd["pts"])
+            return n > 0 and cn > 0, f"practice count read: mayors ({n} points) and councils ({cn} districts)"
         finally:
             mock.terminate()
 
@@ -320,12 +331,12 @@ def night():
         sys.exit("The CEC count site's address isn't set yet. Ask Hope; nothing has been started.")
     c = creds()
     build_site()
-    run([Child("poll", ["scripts/live/poll.py", "--base", base, "--out", str(OUT)]),
+    run([Child("poll", ["scripts/live/poll.py", "--base", base, "--out", str(OUT), "--wait-until", CONFIG.get("start_reading", "2026-11-28T15:50")]),
          Child("publish", ["scripts/live/publish.py", "--src", str(OUT / "needle" / "2026-mayors.json"), "--deploy",
                            "--worker", CONFIG["worker"]], env=cf_env(c))],
         f"\nELECTION NIGHT running: reading {base} every minute and publishing to election-2026.tw.\n"
         "Leave this window open and the computer plugged in. A status line appears every 30 seconds.\n"
-        "Before 16:00 it just waits (\"no results yet\"). Press Ctrl+C only when Hope says it's over.\n", OUT)
+        "Until 15:50 it just waits and checks the CEC every 10 minutes. Press Ctrl+C only when Hope says it's over.\n", OUT)
 
 
 def main():

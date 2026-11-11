@@ -2,5 +2,7 @@
  "count_base": null,
  "note": "The CEC count site root (e.g. https://vote.cec.gov.tw/zh-TW/), set once the CEC announces it. The night runner (scripts/live/night.py) reads this.",
  "worker": "twn-watch-party-2026",
- "test_worker": "twn-watch-party-2026-test"
+ "test_worker": "twn-watch-party-2026-test",
+ "start_reading": "2026-11-28T15:50",
+ "note_start": "The night runner can be started any time on the day (or the evening before); until start_reading (Taiwan time) it only checks one CEC page every 10 minutes."
 }
