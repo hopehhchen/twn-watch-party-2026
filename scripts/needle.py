@@ -320,6 +320,12 @@ class Night:
         # chance that unreported areas swing differently from reported ones
         frac_in = sum(s["E"] for s in R) / (sum(s["E"] for s in R) + remE)
         g2 = tau2 / max(K, 1) + sigma2 / max(nst, 1) + (pr["glob"] ** 2) * (1 - frac_in) ** 2 / (1 + K)
+        # the counted votes' own binomial noise: the variance of a logit share from n votes is about 1/(n y (1-y)).
+        # It matters only while a few hundred votes are in (a 9-vote first station says little about the swing);
+        # in the 2018-2024 replays it cut confidently wrong first-station calls and left later checkpoints alone
+        if W:
+            yb = min(max(ka / max(ka + kb, 1), 0.05), 0.95)
+            g2 += 1.0 / (W * yb * (1 - yb))
         # predictions for unreported stations
         mean = margin
         vrem = 0.0
@@ -464,7 +470,7 @@ class Night:
         frac_in = valid_in / max(valid_in + valid_left, 1)
         # uncertainty of the third candidate's remaining votes: a shared part (their overall level isn't
         # known until much is counted) and a district part
-        glob2 = (0.06 * (1 - frac_in)) ** 2 / (1 + K) + tau2 / max(K, 1)
+        glob2 = (0.06 * (1 - frac_in)) ** 2 / (1 + K) + tau2 / max(K, 1) + ybar * (1 - ybar) / W  # + binomial noise
         var_c = (valid_left ** 2) * glob2 + sum(g * g * tau2 * n0 / ((ds[d][2] if d in ds else 0) + n0) for d, g in Gd.items())
         two_left = max(valid_left - third_left, 0.0)
         # blue - other margin from the two-way model, rescaled to the votes left after the third candidate

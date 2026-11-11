@@ -98,9 +98,5 @@ python3 scripts/live/publish.py            # copies into _site; serve _site with
   - A friend's computer in Taiwan.
   - Hope's Mac if he's in Taiwan that night.
   - Whichever is chosen, keep a second machine ready to take over, since the archive lets a new poller pick up where the old one stopped.
-- **Model: sampling noise in tiny first stations** (recommended, not applied). The model treats a 9-vote first station like a 900-vote one. In the replays this sent the needle to 99%+ on the first station a few times (2022 臺東: 2 vs 7 votes → 0.7% for the eventual winner). Adding the votes' own binomial noise to the swing's uncertainty (`model_review.py`, `samp=1`):
-  - Mayoral first-station log loss drops 0.84 → 0.68, and confidently wrong calls (<5% for the winner) at the first station drop 3 → 1.
-  - Presidential counties: 0.95 → 0.80, and 5 → 3.
-  - Legislative districts: 0.53 → 0.50, and stays at 3.
-  - Later checkpoints change by under 0.01.
+- ~~Model: sampling noise in tiny first stations~~ **applied 2026-11-11** (docs/needle.md, "Model review"); replays and the accuracy figures rebuilt.
 - Council live (above). Count-watch sources (above).

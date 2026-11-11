@@ -15,9 +15,9 @@
     "n": 22,
     "at": {
      "0.01": {
-      "log_loss": 0.451,
+      "log_loss": 0.442,
       "margin_err_pts": 14.5,
-      "in_80": 0.5,
+      "in_80": 0.55,
       "turnout_err_pts": 3.9,
       "favorite_won": 19,
       "time_median": "17:52",
@@ -25,7 +25,7 @@
       "time_last": "19:43"
      },
      "0.05": {
-      "log_loss": 0.09,
+      "log_loss": 0.092,
       "margin_err_pts": 6.1,
       "in_80": 0.86,
       "turnout_err_pts": 1.9,
@@ -45,7 +45,7 @@
       "time_last": "20:18"
      },
      "0.2": {
-      "log_loss": 0.075,
+      "log_loss": 0.076,
       "margin_err_pts": 2.5,
       "in_80": 0.91,
       "turnout_err_pts": 1.5,
@@ -55,7 +55,7 @@
       "time_last": "20:58"
      },
      "0.3": {
-      "log_loss": 0.071,
+      "log_loss": 0.072,
       "margin_err_pts": 1.7,
       "in_80": 0.86,
       "turnout_err_pts": 0.9,
@@ -86,48 +86,48 @@
      "at": {
       "0.01": {
        "t": 117,
-       "p_winner": 0.9764,
+       "p_winner": 0.9747,
        "margin_err_pts": 12.75,
        "in_80": false,
        "turnout_err_pts": 2.28
       },
       "0.05": {
        "t": 144,
-       "p_winner": 0.8756,
+       "p_winner": 0.8735,
        "margin_err_pts": 3.27,
        "in_80": true,
        "turnout_err_pts": 1.48
       },
       "0.1": {
        "t": 161,
-       "p_winner": 0.6304,
+       "p_winner": 0.6297,
        "margin_err_pts": 0.63,
        "in_80": true,
        "turnout_err_pts": 1.44
       },
       "0.2": {
        "t": 190,
-       "p_winner": 0.8433,
+       "p_winner": 0.8414,
        "margin_err_pts": 1.1,
        "in_80": true,
        "turnout_err_pts": 0.38
       },
       "0.3": {
        "t": 213,
-       "p_winner": 0.7903,
+       "p_winner": 0.7888,
        "margin_err_pts": 0.59,
        "in_80": true,
        "turnout_err_pts": 0.41
       },
       "0.7": {
        "t": 326,
-       "p_winner": 0.9504,
+       "p_winner": 0.9499,
        "margin_err_pts": 0.43,
        "in_80": true,
        "turnout_err_pts": 0.2
       }
      },
-     "max_p_loser_after_5pct": 0.4124,
+     "max_p_loser_after_5pct": 0.4129,
      "stays_95_from": "22:23",
      "decided_at": "02:27 (+1)",
      "lead_minutes": 244
@@ -139,7 +139,7 @@
      "at": {
       "0.01": {
        "t": 80,
-       "p_winner": 0.9657,
+       "p_winner": 0.958,
        "margin_err_pts": 7.13,
        "in_80": false,
        "turnout_err_pts": 1.12
@@ -180,10 +180,10 @@
        "turnout_err_pts": 0.48
       }
      },
-     "max_p_loser_after_5pct": 0.0001,
-     "stays_95_from": "17:07",
+     "max_p_loser_after_5pct": 0.0002,
+     "stays_95_from": "17:20",
      "decided_at": "23:03",
-     "lead_minutes": 356
+     "lead_minutes": 343
     },
     {
      "area": "基隆市",
@@ -192,35 +192,35 @@
      "at": {
       "0.01": {
        "t": 112,
-       "p_winner": 0.8968,
+       "p_winner": 0.8857,
        "margin_err_pts": 2.9,
        "in_80": true,
        "turnout_err_pts": 1.17
       },
       "0.05": {
        "t": 135,
-       "p_winner": 0.9612,
+       "p_winner": 0.9571,
        "margin_err_pts": 0.81,
        "in_80": true,
        "turnout_err_pts": 0.12
       },
       "0.1": {
        "t": 151,
-       "p_winner": 0.9824,
+       "p_winner": 0.9806,
        "margin_err_pts": 1.18,
        "in_80": true,
        "turnout_err_pts": 0.73
       },
       "0.2": {
        "t": 192,
-       "p_winner": 0.9978,
+       "p_winner": 0.9975,
        "margin_err_pts": 0.82,
        "in_80": true,
        "turnout_err_pts": 0.42
       },
       "0.3": {
        "t": 219,
-       "p_winner": 0.9985,
+       "p_winner": 0.9983,
        "margin_err_pts": 0.45,
        "in_80": true,
        "turnout_err_pts": 0.9
@@ -233,7 +233,7 @@
        "turnout_err_pts": 0.61
       }
      },
-     "max_p_loser_after_5pct": 0.0388,
+     "max_p_loser_after_5pct": 0.0429,
      "stays_95_from": "18:14",
      "decided_at": "23:57",
      "lead_minutes": 343
@@ -245,14 +245,14 @@
      "at": {
       "0.01": {
        "t": 142,
-       "p_winner": 0.9845,
+       "p_winner": 0.9838,
        "margin_err_pts": 6.56,
        "in_80": true,
        "turnout_err_pts": 2.38
       },
       "0.05": {
        "t": 193,
-       "p_winner": 0.9728,
+       "p_winner": 0.9726,
        "margin_err_pts": 0.8,
        "in_80": true,
        "turnout_err_pts": 0.16
@@ -286,7 +286,7 @@
        "turnout_err_pts": 0.53
       }
      },
-     "max_p_loser_after_5pct": 0.0283,
+     "max_p_loser_after_5pct": 0.0285,
      "stays_95_from": "19:08",
      "decided_at": "00:07 (+1)",
      "lead_minutes": 299
@@ -298,28 +298,28 @@
      "at": {
       "0.01": {
        "t": 171,
-       "p_winner": 0.9113,
+       "p_winner": 0.9023,
        "margin_err_pts": 5.08,
        "in_80": true,
        "turnout_err_pts": 6.38
       },
       "0.05": {
        "t": 229,
-       "p_winner": 0.9935,
+       "p_winner": 0.993,
        "margin_err_pts": 1.25,
        "in_80": true,
        "turnout_err_pts": 0.85
       },
       "0.1": {
        "t": 258,
-       "p_winner": 0.9955,
+       "p_winner": 0.9953,
        "margin_err_pts": 3.19,
        "in_80": true,
        "turnout_err_pts": 0.03
       },
       "0.2": {
        "t": 298,
-       "p_winner": 0.9989,
+       "p_winner": 0.9988,
        "margin_err_pts": 1.96,
        "in_80": true,
        "turnout_err_pts": 1.21
@@ -339,7 +339,7 @@
        "turnout_err_pts": 0.12
       }
      },
-     "max_p_loser_after_5pct": 0.007,
+     "max_p_loser_after_5pct": 0.0076,
      "stays_95_from": "19:16",
      "decided_at": "23:34",
      "lead_minutes": 258
@@ -351,35 +351,35 @@
      "at": {
       "0.01": {
        "t": 132,
-       "p_winner": 0.9781,
+       "p_winner": 0.9759,
        "margin_err_pts": 34.4,
        "in_80": false,
        "turnout_err_pts": 5.97
       },
       "0.05": {
        "t": 176,
-       "p_winner": 0.9911,
+       "p_winner": 0.9907,
        "margin_err_pts": 17.76,
        "in_80": false,
        "turnout_err_pts": 1.71
       },
       "0.1": {
        "t": 199,
-       "p_winner": 0.9676,
+       "p_winner": 0.967,
        "margin_err_pts": 8.28,
        "in_80": true,
        "turnout_err_pts": 1.3
       },
       "0.2": {
        "t": 227,
-       "p_winner": 0.9896,
+       "p_winner": 0.9894,
        "margin_err_pts": 6.94,
        "in_80": true,
        "turnout_err_pts": 0.93
       },
       "0.3": {
        "t": 252,
-       "p_winner": 0.9978,
+       "p_winner": 0.9977,
        "margin_err_pts": 5.49,
        "in_80": false,
        "turnout_err_pts": 1.11
@@ -392,7 +392,7 @@
        "turnout_err_pts": 0.51
       }
      },
-     "max_p_loser_after_5pct": 0.0334,
+     "max_p_loser_after_5pct": 0.034,
      "stays_95_from": "17:51",
      "decided_at": "00:29 (+1)",
      "lead_minutes": 398
@@ -404,14 +404,14 @@
      "at": {
       "0.01": {
        "t": 112,
-       "p_winner": 0.9696,
+       "p_winner": 0.9621,
        "margin_err_pts": 7.21,
        "in_80": false,
        "turnout_err_pts": 3.94
       },
       "0.05": {
        "t": 143,
-       "p_winner": 0.9952,
+       "p_winner": 0.9948,
        "margin_err_pts": 5.7,
        "in_80": true,
        "turnout_err_pts": 0.79
@@ -445,7 +445,7 @@
        "turnout_err_pts": 0.26
       }
      },
-     "max_p_loser_after_5pct": 0.0057,
+     "max_p_loser_after_5pct": 0.0061,
      "stays_95_from": "18:13",
      "decided_at": "21:51",
      "lead_minutes": 218
@@ -457,7 +457,7 @@
      "at": {
       "0.01": {
        "t": 106,
-       "p_winner": 0.9951,
+       "p_winner": 0.9944,
        "margin_err_pts": 0.42,
        "in_80": true,
        "turnout_err_pts": 1.36
@@ -510,14 +510,14 @@
      "at": {
       "0.01": {
        "t": 128,
-       "p_winner": 0.972,
+       "p_winner": 0.9653,
        "margin_err_pts": 5.9,
        "in_80": false,
        "turnout_err_pts": 0.9
       },
       "0.05": {
        "t": 154,
-       "p_winner": 0.9997,
+       "p_winner": 0.9996,
        "margin_err_pts": 1.47,
        "in_80": true,
        "turnout_err_pts": 0.65
@@ -551,7 +551,7 @@
        "turnout_err_pts": 0.37
       }
      },
-     "max_p_loser_after_5pct": 0.0003,
+     "max_p_loser_after_5pct": 0.0004,
      "stays_95_from": "18:07",
      "decided_at": "23:12",
      "lead_minutes": 305
@@ -563,7 +563,7 @@
      "at": {
       "0.01": {
        "t": 87,
-       "p_winner": 0.9934,
+       "p_winner": 0.9922,
        "margin_err_pts": 12.84,
        "in_80": false,
        "turnout_err_pts": 6.05
@@ -616,14 +616,14 @@
      "at": {
       "0.01": {
        "t": 106,
-       "p_winner": 0.9917,
+       "p_winner": 0.9898,
        "margin_err_pts": 9.88,
        "in_80": false,
        "turnout_err_pts": 2.11
       },
       "0.05": {
        "t": 130,
-       "p_winner": 0.9994,
+       "p_winner": 0.9993,
        "margin_err_pts": 3.25,
        "in_80": true,
        "turnout_err_pts": 0.33
@@ -657,7 +657,7 @@
        "turnout_err_pts": 0.01
       }
      },
-     "max_p_loser_after_5pct": 0.0006,
+     "max_p_loser_after_5pct": 0.0007,
      "stays_95_from": "17:41",
      "decided_at": "21:44",
      "lead_minutes": 243
@@ -669,51 +669,51 @@
      "at": {
       "0.01": {
        "t": 126,
-       "p_winner": 0.1925,
+       "p_winner": 0.2063,
        "margin_err_pts": 13.51,
        "in_80": true,
        "turnout_err_pts": 7.28
       },
       "0.05": {
        "t": 148,
-       "p_winner": 0.5819,
+       "p_winner": 0.5793,
        "margin_err_pts": 0.8,
        "in_80": true,
        "turnout_err_pts": 0.81
       },
       "0.1": {
        "t": 160,
-       "p_winner": 0.6744,
+       "p_winner": 0.6706,
        "margin_err_pts": 0.31,
        "in_80": true,
        "turnout_err_pts": 1.37
       },
       "0.2": {
        "t": 179,
-       "p_winner": 0.5928,
+       "p_winner": 0.5914,
        "margin_err_pts": 1.11,
        "in_80": true,
        "turnout_err_pts": 2.25
       },
       "0.3": {
        "t": 200,
-       "p_winner": 0.6156,
+       "p_winner": 0.6143,
        "margin_err_pts": 1.11,
        "in_80": true,
        "turnout_err_pts": 1.3
       },
       "0.7": {
        "t": 285,
-       "p_winner": 0.9067,
+       "p_winner": 0.9057,
        "margin_err_pts": 0.2,
        "in_80": true,
        "turnout_err_pts": 0.63
       }
      },
-     "max_p_loser_after_5pct": 0.5257,
-     "stays_95_from": "20:56",
+     "max_p_loser_after_5pct": 0.5249,
+     "stays_95_from": "20:59",
      "decided_at": "23:32",
-     "lead_minutes": 156
+     "lead_minutes": 153
     },
     {
      "area": "嘉義縣",
@@ -722,7 +722,7 @@
      "at": {
       "0.01": {
        "t": 103,
-       "p_winner": 0.979,
+       "p_winner": 0.9775,
        "margin_err_pts": 31.74,
        "in_80": false,
        "turnout_err_pts": 1.74
@@ -775,14 +775,14 @@
      "at": {
       "0.01": {
        "t": 75,
-       "p_winner": 0.9093,
+       "p_winner": 0.9031,
        "margin_err_pts": 3.93,
        "in_80": true,
        "turnout_err_pts": 2.57
       },
       "0.05": {
        "t": 93,
-       "p_winner": 0.9933,
+       "p_winner": 0.9926,
        "margin_err_pts": 4.24,
        "in_80": true,
        "turnout_err_pts": 2.32
@@ -816,7 +816,7 @@
        "turnout_err_pts": 0.11
       }
      },
-     "max_p_loser_after_5pct": 0.0067,
+     "max_p_loser_after_5pct": 0.0074,
      "stays_95_from": "17:22",
      "decided_at": "23:10",
      "lead_minutes": 348
@@ -828,14 +828,14 @@
      "at": {
       "0.01": {
        "t": 86,
-       "p_winner": 0.9048,
+       "p_winner": 0.9019,
        "margin_err_pts": 0.86,
        "in_80": true,
        "turnout_err_pts": 1.77
       },
       "0.05": {
        "t": 112,
-       "p_winner": 0.9852,
+       "p_winner": 0.9843,
        "margin_err_pts": 3.13,
        "in_80": true,
        "turnout_err_pts": 1.07
@@ -869,7 +869,7 @@
        "turnout_err_pts": 0.27
       }
      },
-     "max_p_loser_after_5pct": 0.0261,
+     "max_p_loser_after_5pct": 0.0271,
      "stays_95_from": "17:46",
      "decided_at": "23:03",
      "lead_minutes": 317
@@ -881,21 +881,21 @@
      "at": {
       "0.01": {
        "t": 117,
-       "p_winner": 0.9741,
+       "p_winner": 0.9726,
        "margin_err_pts": 12.64,
-       "in_80": false,
+       "in_80": true,
        "turnout_err_pts": 0.42
       },
       "0.05": {
        "t": 143,
-       "p_winner": 0.9779,
+       "p_winner": 0.9774,
        "margin_err_pts": 1.99,
        "in_80": true,
        "turnout_err_pts": 0.23
       },
       "0.1": {
        "t": 161,
-       "p_winner": 0.9968,
+       "p_winner": 0.9967,
        "margin_err_pts": 2.96,
        "in_80": true,
        "turnout_err_pts": 0.64
@@ -922,7 +922,7 @@
        "turnout_err_pts": 0.06
       }
      },
-     "max_p_loser_after_5pct": 0.0221,
+     "max_p_loser_after_5pct": 0.0226,
      "stays_95_from": "17:46",
      "decided_at": "22:11",
      "lead_minutes": 265
@@ -934,35 +934,35 @@
      "at": {
       "0.01": {
        "t": 112,
-       "p_winner": 0.9168,
+       "p_winner": 0.9069,
        "margin_err_pts": 5.93,
        "in_80": true,
        "turnout_err_pts": 1.94
       },
       "0.05": {
        "t": 138,
-       "p_winner": 0.9255,
+       "p_winner": 0.9185,
        "margin_err_pts": 5.57,
        "in_80": true,
        "turnout_err_pts": 1.94
       },
       "0.1": {
        "t": 157,
-       "p_winner": 0.9845,
+       "p_winner": 0.9834,
        "margin_err_pts": 1.92,
        "in_80": true,
        "turnout_err_pts": 1.23
       },
       "0.2": {
        "t": 175,
-       "p_winner": 0.9786,
+       "p_winner": 0.9783,
        "margin_err_pts": 0.42,
        "in_80": true,
        "turnout_err_pts": 0.67
       },
       "0.3": {
        "t": 198,
-       "p_winner": 0.9848,
+       "p_winner": 0.9846,
        "margin_err_pts": 1.0,
        "in_80": true,
        "turnout_err_pts": 0.37
@@ -975,7 +975,7 @@
        "turnout_err_pts": 0.1
       }
      },
-     "max_p_loser_after_5pct": 0.1093,
+     "max_p_loser_after_5pct": 0.1138,
      "stays_95_from": "18:28",
      "decided_at": "22:45",
      "lead_minutes": 257
@@ -987,7 +987,7 @@
      "at": {
       "0.01": {
        "t": 143,
-       "p_winner": 0.9963,
+       "p_winner": 0.9954,
        "margin_err_pts": 1.6,
        "in_80": true,
        "turnout_err_pts": 3.42
@@ -1040,21 +1040,21 @@
      "at": {
       "0.01": {
        "t": 121,
-       "p_winner": 0.6013,
+       "p_winner": 0.5987,
        "margin_err_pts": 17.59,
        "in_80": true,
        "turnout_err_pts": 3.63
       },
       "0.05": {
        "t": 140,
-       "p_winner": 0.8883,
+       "p_winner": 0.8869,
        "margin_err_pts": 4.73,
        "in_80": true,
        "turnout_err_pts": 2.47
       },
       "0.1": {
        "t": 153,
-       "p_winner": 0.9995,
+       "p_winner": 0.9994,
        "margin_err_pts": 2.84,
        "in_80": true,
        "turnout_err_pts": 0.32
@@ -1081,7 +1081,7 @@
        "turnout_err_pts": 0.01
       }
      },
-     "max_p_loser_after_5pct": 0.1117,
+     "max_p_loser_after_5pct": 0.1131,
      "stays_95_from": "18:29",
      "decided_at": "22:22",
      "lead_minutes": 233
@@ -1093,48 +1093,48 @@
      "at": {
       "0.01": {
        "t": 72,
-       "p_winner": 0.3339,
+       "p_winner": 0.3724,
        "margin_err_pts": 15.19,
        "in_80": true,
        "turnout_err_pts": 6.68
       },
       "0.05": {
        "t": 85,
-       "p_winner": 0.8973,
+       "p_winner": 0.8791,
        "margin_err_pts": 10.28,
        "in_80": true,
        "turnout_err_pts": 5.21
       },
       "0.1": {
        "t": 94,
-       "p_winner": 0.4245,
+       "p_winner": 0.4279,
        "margin_err_pts": 10.9,
        "in_80": true,
        "turnout_err_pts": 4.55
       },
       "0.2": {
        "t": 113,
-       "p_winner": 0.8923,
+       "p_winner": 0.8867,
        "margin_err_pts": 4.33,
        "in_80": true,
        "turnout_err_pts": 1.49
       },
       "0.3": {
        "t": 136,
-       "p_winner": 0.8722,
+       "p_winner": 0.8681,
        "margin_err_pts": 0.68,
        "in_80": true,
        "turnout_err_pts": 1.48
       },
       "0.7": {
        "t": 260,
-       "p_winner": 0.9913,
+       "p_winner": 0.9909,
        "margin_err_pts": 0.89,
        "in_80": true,
        "turnout_err_pts": 0.03
       }
      },
-     "max_p_loser_after_5pct": 0.7196,
+     "max_p_loser_after_5pct": 0.7111,
      "stays_95_from": "19:07",
      "decided_at": "23:03",
      "lead_minutes": 236
@@ -1146,28 +1146,28 @@
      "at": {
       "0.01": {
        "t": 89,
-       "p_winner": 0.0026,
+       "p_winner": 0.0029,
        "margin_err_pts": 84.52,
        "in_80": false,
        "turnout_err_pts": 16.61
       },
       "0.05": {
        "t": 139,
-       "p_winner": 0.4238,
+       "p_winner": 0.424,
        "margin_err_pts": 7.46,
        "in_80": true,
        "turnout_err_pts": 2.95
       },
       "0.1": {
        "t": 147,
-       "p_winner": 0.3284,
+       "p_winner": 0.3292,
        "margin_err_pts": 8.77,
        "in_80": true,
        "turnout_err_pts": 2.15
       },
       "0.2": {
        "t": 161,
-       "p_winner": 0.4488,
+       "p_winner": 0.449,
        "margin_err_pts": 3.5,
        "in_80": true,
        "turnout_err_pts": 0.95
@@ -1181,13 +1181,13 @@
       },
       "0.7": {
        "t": 219,
-       "p_winner": 0.6314,
+       "p_winner": 0.6313,
        "margin_err_pts": 0.13,
        "in_80": true,
        "turnout_err_pts": 0.11
       }
      },
-     "max_p_loser_after_5pct": 0.7439,
+     "max_p_loser_after_5pct": 0.743,
      "stays_95_from": "20:39",
      "decided_at": "21:03",
      "lead_minutes": 24
@@ -1199,35 +1199,35 @@
      "at": {
       "0.01": {
        "t": 223,
-       "p_winner": 0.9966,
+       "p_winner": 0.9963,
        "margin_err_pts": 27.13,
        "in_80": false,
        "turnout_err_pts": 6.28
       },
       "0.05": {
        "t": 223,
-       "p_winner": 0.9966,
+       "p_winner": 0.9963,
        "margin_err_pts": 27.13,
        "in_80": false,
        "turnout_err_pts": 6.28
       },
       "0.1": {
        "t": 223,
-       "p_winner": 0.9966,
+       "p_winner": 0.9963,
        "margin_err_pts": 27.13,
        "in_80": false,
        "turnout_err_pts": 6.28
       },
       "0.2": {
        "t": 227,
-       "p_winner": 0.9958,
+       "p_winner": 0.9954,
        "margin_err_pts": 11.94,
        "in_80": true,
        "turnout_err_pts": 9.72
       },
       "0.3": {
        "t": 249,
-       "p_winner": 0.9969,
+       "p_winner": 0.9967,
        "margin_err_pts": 7.1,
        "in_80": true,
        "turnout_err_pts": 3.95
@@ -1240,7 +1240,7 @@
        "turnout_err_pts": 0.5
       }
      },
-     "max_p_loser_after_5pct": 0.0042,
+     "max_p_loser_after_5pct": 0.0046,
      "stays_95_from": "19:43",
      "decided_at": "22:36",
      "lead_minutes": 173
@@ -1256,9 +1256,9 @@
     "n": 21,
     "at": {
      "0.01": {
-      "log_loss": 0.293,
+      "log_loss": 0.284,
       "margin_err_pts": 7.9,
-      "in_80": 0.67,
+      "in_80": 0.81,
       "turnout_err_pts": 3.3,
       "favorite_won": 19,
       "time_median": "17:38",
@@ -1266,7 +1266,7 @@
       "time_last": "19:13"
      },
      "0.05": {
-      "log_loss": 0.167,
+      "log_loss": 0.168,
       "margin_err_pts": 2.8,
       "in_80": 0.81,
       "turnout_err_pts": 2.8,
@@ -1296,7 +1296,7 @@
       "time_last": "19:22"
      },
      "0.3": {
-      "log_loss": 0.053,
+      "log_loss": 0.054,
       "margin_err_pts": 1.0,
       "in_80": 1.0,
       "turnout_err_pts": 1.3,
@@ -1327,7 +1327,7 @@
      "at": {
       "0.01": {
        "t": 98,
-       "p_winner": 0.9918,
+       "p_winner": 0.9906,
        "margin_err_pts": 0.22,
        "in_80": true,
        "turnout_err_pts": 1.67
@@ -1369,9 +1369,9 @@
       }
      },
      "max_p_loser_after_5pct": 0.0,
-     "stays_95_from": "17:29",
+     "stays_95_from": "17:30",
      "decided_at": "20:15",
-     "lead_minutes": 166
+     "lead_minutes": 165
     },
     {
      "area": "新北市",
@@ -1422,9 +1422,9 @@
       }
      },
      "max_p_loser_after_5pct": 0.0,
-     "stays_95_from": "16:51",
+     "stays_95_from": "16:52",
      "decided_at": "19:52",
-     "lead_minutes": 181
+     "lead_minutes": 180
     },
     {
      "area": "基隆市",
@@ -1433,21 +1433,21 @@
      "at": {
       "0.01": {
        "t": 90,
-       "p_winner": 0.8711,
+       "p_winner": 0.8556,
        "margin_err_pts": 1.7,
        "in_80": true,
        "turnout_err_pts": 4.64
       },
       "0.05": {
        "t": 112,
-       "p_winner": 0.9933,
+       "p_winner": 0.9921,
        "margin_err_pts": 0.39,
        "in_80": true,
        "turnout_err_pts": 2.12
       },
       "0.1": {
        "t": 124,
-       "p_winner": 0.9996,
+       "p_winner": 0.9994,
        "margin_err_pts": 0.59,
        "in_80": true,
        "turnout_err_pts": 1.54
@@ -1474,7 +1474,7 @@
        "turnout_err_pts": 0.08
       }
      },
-     "max_p_loser_after_5pct": 0.0067,
+     "max_p_loser_after_5pct": 0.0079,
      "stays_95_from": "17:44",
      "decided_at": "20:17",
      "lead_minutes": 153
@@ -1486,7 +1486,7 @@
      "at": {
       "0.01": {
        "t": 109,
-       "p_winner": 0.9941,
+       "p_winner": 0.9929,
        "margin_err_pts": 2.12,
        "in_80": true,
        "turnout_err_pts": 3.18
@@ -1539,48 +1539,48 @@
      "at": {
       "0.01": {
        "t": 94,
-       "p_winner": 0.5656,
+       "p_winner": 0.5617,
        "margin_err_pts": 9.86,
        "in_80": true,
        "turnout_err_pts": 1.77
       },
       "0.05": {
        "t": 127,
-       "p_winner": 0.776,
+       "p_winner": 0.7687,
        "margin_err_pts": 7.82,
        "in_80": false,
        "turnout_err_pts": 2.09
       },
       "0.1": {
        "t": 142,
-       "p_winner": 0.9392,
+       "p_winner": 0.9366,
        "margin_err_pts": 4.15,
        "in_80": true,
        "turnout_err_pts": 3.28
       },
       "0.2": {
        "t": 161,
-       "p_winner": 0.9844,
+       "p_winner": 0.984,
        "margin_err_pts": 0.37,
        "in_80": true,
        "turnout_err_pts": 1.14
       },
       "0.3": {
        "t": 176,
-       "p_winner": 0.9904,
+       "p_winner": 0.9902,
        "margin_err_pts": 1.07,
        "in_80": true,
        "turnout_err_pts": 1.24
       },
       "0.7": {
        "t": 234,
-       "p_winner": 0.9992,
+       "p_winner": 0.9991,
        "margin_err_pts": 1.63,
        "in_80": false,
        "turnout_err_pts": 0.57
       }
      },
-     "max_p_loser_after_5pct": 0.224,
+     "max_p_loser_after_5pct": 0.2313,
      "stays_95_from": "18:25",
      "decided_at": "20:46",
      "lead_minutes": 141
@@ -1592,14 +1592,14 @@
      "at": {
       "0.01": {
        "t": 124,
-       "p_winner": 0.9926,
+       "p_winner": 0.992,
        "margin_err_pts": 12.99,
        "in_80": false,
        "turnout_err_pts": 1.44
       },
       "0.05": {
        "t": 156,
-       "p_winner": 1.0,
+       "p_winner": 0.9999,
        "margin_err_pts": 0.77,
        "in_80": true,
        "turnout_err_pts": 0.74
@@ -1645,21 +1645,21 @@
      "at": {
       "0.01": {
        "t": 113,
-       "p_winner": 0.9527,
+       "p_winner": 0.9458,
        "margin_err_pts": 11.08,
        "in_80": true,
        "turnout_err_pts": 2.36
       },
       "0.05": {
        "t": 137,
-       "p_winner": 0.9866,
+       "p_winner": 0.9842,
        "margin_err_pts": 2.62,
        "in_80": true,
        "turnout_err_pts": 0.03
       },
       "0.1": {
        "t": 151,
-       "p_winner": 0.9986,
+       "p_winner": 0.9984,
        "margin_err_pts": 2.51,
        "in_80": true,
        "turnout_err_pts": 1.16
@@ -1686,10 +1686,10 @@
        "turnout_err_pts": 0.17
       }
      },
-     "max_p_loser_after_5pct": 0.0134,
-     "stays_95_from": "17:53",
+     "max_p_loser_after_5pct": 0.0158,
+     "stays_95_from": "17:56",
      "decided_at": "21:00",
-     "lead_minutes": 187
+     "lead_minutes": 184
     },
     {
      "area": "臺中市",
@@ -1698,9 +1698,9 @@
      "at": {
       "0.01": {
        "t": 89,
-       "p_winner": 0.9995,
+       "p_winner": 0.9994,
        "margin_err_pts": 4.73,
-       "in_80": false,
+       "in_80": true,
        "turnout_err_pts": 0.88
       },
       "0.05": {
@@ -1740,9 +1740,9 @@
       }
      },
      "max_p_loser_after_5pct": 0.0,
-     "stays_95_from": "17:14",
+     "stays_95_from": "17:15",
      "decided_at": "19:43",
-     "lead_minutes": 149
+     "lead_minutes": 148
     },
     {
      "area": "彰化縣",
@@ -1751,7 +1751,7 @@
      "at": {
       "0.01": {
        "t": 113,
-       "p_winner": 0.9988,
+       "p_winner": 0.9985,
        "margin_err_pts": 8.05,
        "in_80": false,
        "turnout_err_pts": 1.7
@@ -1804,28 +1804,28 @@
      "at": {
       "0.01": {
        "t": 98,
-       "p_winner": 0.4576,
+       "p_winner": 0.4598,
        "margin_err_pts": 14.55,
        "in_80": false,
        "turnout_err_pts": 4.55
       },
       "0.05": {
        "t": 126,
-       "p_winner": 0.9766,
+       "p_winner": 0.9721,
        "margin_err_pts": 5.05,
        "in_80": false,
        "turnout_err_pts": 4.46
       },
       "0.1": {
        "t": 138,
-       "p_winner": 0.9982,
+       "p_winner": 0.9978,
        "margin_err_pts": 2.81,
        "in_80": true,
        "turnout_err_pts": 1.2
       },
       "0.2": {
        "t": 161,
-       "p_winner": 0.9999,
+       "p_winner": 0.9998,
        "margin_err_pts": 1.16,
        "in_80": true,
        "turnout_err_pts": 0.51
@@ -1845,10 +1845,10 @@
        "turnout_err_pts": 0.15
       }
      },
-     "max_p_loser_after_5pct": 0.027,
-     "stays_95_from": "18:00",
+     "max_p_loser_after_5pct": 0.0311,
+     "stays_95_from": "18:01",
      "decided_at": "21:06",
-     "lead_minutes": 186
+     "lead_minutes": 185
     },
     {
      "area": "雲林縣",
@@ -1857,14 +1857,14 @@
      "at": {
       "0.01": {
        "t": 96,
-       "p_winner": 0.9377,
+       "p_winner": 0.9312,
        "margin_err_pts": 2.26,
        "in_80": true,
        "turnout_err_pts": 2.93
       },
       "0.05": {
        "t": 125,
-       "p_winner": 0.9991,
+       "p_winner": 0.9989,
        "margin_err_pts": 0.64,
        "in_80": true,
        "turnout_err_pts": 3.56
@@ -1898,7 +1898,7 @@
        "turnout_err_pts": 0.41
       }
      },
-     "max_p_loser_after_5pct": 0.0009,
+     "max_p_loser_after_5pct": 0.0011,
      "stays_95_from": "17:44",
      "decided_at": "20:30",
      "lead_minutes": 166
@@ -1910,14 +1910,14 @@
      "at": {
       "0.01": {
        "t": 82,
-       "p_winner": 0.9828,
+       "p_winner": 0.9807,
        "margin_err_pts": 8.36,
        "in_80": true,
        "turnout_err_pts": 3.61
       },
       "0.05": {
        "t": 113,
-       "p_winner": 0.9995,
+       "p_winner": 0.9994,
        "margin_err_pts": 1.78,
        "in_80": true,
        "turnout_err_pts": 1.47
@@ -1951,7 +1951,7 @@
        "turnout_err_pts": 0.41
       }
      },
-     "max_p_loser_after_5pct": 0.0005,
+     "max_p_loser_after_5pct": 0.0006,
      "stays_95_from": "17:08",
      "decided_at": "20:33",
      "lead_minutes": 205
@@ -1963,28 +1963,28 @@
      "at": {
       "0.01": {
        "t": 68,
-       "p_winner": 0.6145,
+       "p_winner": 0.6108,
        "margin_err_pts": 4.1,
        "in_80": true,
        "turnout_err_pts": 2.81
       },
       "0.05": {
        "t": 89,
-       "p_winner": 0.6911,
+       "p_winner": 0.6854,
        "margin_err_pts": 4.52,
        "in_80": false,
        "turnout_err_pts": 3.79
       },
       "0.1": {
        "t": 100,
-       "p_winner": 0.982,
+       "p_winner": 0.9799,
        "margin_err_pts": 1.94,
        "in_80": true,
        "turnout_err_pts": 2.33
       },
       "0.2": {
        "t": 116,
-       "p_winner": 0.9989,
+       "p_winner": 0.9987,
        "margin_err_pts": 1.7,
        "in_80": false,
        "turnout_err_pts": 1.81
@@ -2004,7 +2004,7 @@
        "turnout_err_pts": 0.48
       }
      },
-     "max_p_loser_after_5pct": 0.3519,
+     "max_p_loser_after_5pct": 0.3555,
      "stays_95_from": "17:38",
      "decided_at": "19:52",
      "lead_minutes": 134
@@ -2016,14 +2016,14 @@
      "at": {
       "0.01": {
        "t": 76,
-       "p_winner": 0.9321,
+       "p_winner": 0.9306,
        "margin_err_pts": 3.78,
        "in_80": true,
        "turnout_err_pts": 1.29
       },
       "0.05": {
        "t": 93,
-       "p_winner": 0.9993,
+       "p_winner": 0.9992,
        "margin_err_pts": 1.07,
        "in_80": true,
        "turnout_err_pts": 2.31
@@ -2057,7 +2057,7 @@
        "turnout_err_pts": 0.45
       }
      },
-     "max_p_loser_after_5pct": 0.0007,
+     "max_p_loser_after_5pct": 0.0008,
      "stays_95_from": "17:17",
      "decided_at": "19:35",
      "lead_minutes": 138
@@ -2069,35 +2069,35 @@
      "at": {
       "0.01": {
        "t": 118,
-       "p_winner": 0.7516,
+       "p_winner": 0.7445,
        "margin_err_pts": 2.5,
        "in_80": true,
        "turnout_err_pts": 2.5
       },
       "0.05": {
        "t": 137,
-       "p_winner": 0.4131,
+       "p_winner": 0.414,
        "margin_err_pts": 3.81,
        "in_80": true,
        "turnout_err_pts": 0.27
       },
       "0.1": {
        "t": 151,
-       "p_winner": 0.5362,
+       "p_winner": 0.5359,
        "margin_err_pts": 2.31,
        "in_80": true,
        "turnout_err_pts": 0.43
       },
       "0.2": {
        "t": 167,
-       "p_winner": 0.7813,
+       "p_winner": 0.7798,
        "margin_err_pts": 0.54,
        "in_80": true,
        "turnout_err_pts": 0.41
       },
       "0.3": {
        "t": 182,
-       "p_winner": 0.9004,
+       "p_winner": 0.8993,
        "margin_err_pts": 0.13,
        "in_80": true,
        "turnout_err_pts": 0.47
@@ -2110,7 +2110,7 @@
        "turnout_err_pts": 0.28
       }
      },
-     "max_p_loser_after_5pct": 0.6511,
+     "max_p_loser_after_5pct": 0.6498,
      "stays_95_from": "19:30",
      "decided_at": "21:43",
      "lead_minutes": 133
@@ -2122,21 +2122,21 @@
      "at": {
       "0.01": {
        "t": 109,
-       "p_winner": 0.8915,
+       "p_winner": 0.8845,
        "margin_err_pts": 1.76,
        "in_80": true,
        "turnout_err_pts": 7.91
       },
       "0.05": {
        "t": 130,
-       "p_winner": 0.9861,
+       "p_winner": 0.9838,
        "margin_err_pts": 0.14,
        "in_80": true,
        "turnout_err_pts": 4.45
       },
       "0.1": {
        "t": 141,
-       "p_winner": 0.9956,
+       "p_winner": 0.9947,
        "margin_err_pts": 1.26,
        "in_80": true,
        "turnout_err_pts": 2.72
@@ -2163,7 +2163,7 @@
        "turnout_err_pts": 0.47
       }
      },
-     "max_p_loser_after_5pct": 0.0222,
+     "max_p_loser_after_5pct": 0.0249,
      "stays_95_from": "17:51",
      "decided_at": "20:40",
      "lead_minutes": 169
@@ -2175,7 +2175,7 @@
      "at": {
       "0.01": {
        "t": 102,
-       "p_winner": 0.9677,
+       "p_winner": 0.959,
        "margin_err_pts": 5.71,
        "in_80": true,
        "turnout_err_pts": 1.51
@@ -2217,9 +2217,9 @@
       }
      },
      "max_p_loser_after_5pct": 0.0001,
-     "stays_95_from": "17:21",
+     "stays_95_from": "17:42",
      "decided_at": "20:35",
-     "lead_minutes": 194
+     "lead_minutes": 173
     },
     {
      "area": "臺東縣",
@@ -2228,21 +2228,21 @@
      "at": {
       "0.01": {
        "t": 98,
-       "p_winner": 0.8242,
+       "p_winner": 0.7831,
        "margin_err_pts": 14.17,
-       "in_80": false,
+       "in_80": true,
        "turnout_err_pts": 5.68
       },
       "0.05": {
        "t": 127,
-       "p_winner": 0.9929,
+       "p_winner": 0.9917,
        "margin_err_pts": 1.82,
        "in_80": true,
        "turnout_err_pts": 1.78
       },
       "0.1": {
        "t": 143,
-       "p_winner": 0.9907,
+       "p_winner": 0.9898,
        "margin_err_pts": 6.27,
        "in_80": true,
        "turnout_err_pts": 0.62
@@ -2269,10 +2269,10 @@
        "turnout_err_pts": 0.53
       }
      },
-     "max_p_loser_after_5pct": 0.0307,
-     "stays_95_from": "17:48",
+     "max_p_loser_after_5pct": 0.0322,
+     "stays_95_from": "17:56",
      "decided_at": "21:01",
-     "lead_minutes": 193
+     "lead_minutes": 185
     },
     {
      "area": "澎湖縣",
@@ -2281,48 +2281,48 @@
      "at": {
       "0.01": {
        "t": 63,
-       "p_winner": 0.0695,
+       "p_winner": 0.098,
        "margin_err_pts": 27.9,
        "in_80": false,
        "turnout_err_pts": 2.11
       },
       "0.05": {
        "t": 83,
-       "p_winner": 0.4576,
+       "p_winner": 0.4615,
        "margin_err_pts": 5.89,
        "in_80": true,
        "turnout_err_pts": 7.37
       },
       "0.1": {
        "t": 100,
-       "p_winner": 0.417,
+       "p_winner": 0.4243,
        "margin_err_pts": 6.19,
        "in_80": true,
        "turnout_err_pts": 5.73
       },
       "0.2": {
        "t": 126,
-       "p_winner": 0.5032,
+       "p_winner": 0.503,
        "margin_err_pts": 4.69,
        "in_80": true,
        "turnout_err_pts": 1.78
       },
       "0.3": {
        "t": 141,
-       "p_winner": 0.6501,
+       "p_winner": 0.645,
        "margin_err_pts": 3.13,
        "in_80": true,
        "turnout_err_pts": 3.21
       },
       "0.7": {
        "t": 213,
-       "p_winner": 0.9789,
+       "p_winner": 0.9777,
        "margin_err_pts": 0.6,
        "in_80": true,
        "turnout_err_pts": 0.59
       }
      },
-     "max_p_loser_after_5pct": 0.7354,
+     "max_p_loser_after_5pct": 0.7187,
      "stays_95_from": "19:25",
      "decided_at": "22:06",
      "lead_minutes": 161
@@ -2334,48 +2334,48 @@
      "at": {
       "0.01": {
        "t": 93,
-       "p_winner": 0.9304,
+       "p_winner": 0.9158,
        "margin_err_pts": 19.1,
-       "in_80": false,
+       "in_80": true,
        "turnout_err_pts": 6.28
       },
       "0.05": {
        "t": 107,
-       "p_winner": 0.5749,
+       "p_winner": 0.5744,
        "margin_err_pts": 4.35,
        "in_80": true,
        "turnout_err_pts": 1.06
       },
       "0.1": {
        "t": 128,
-       "p_winner": 0.8092,
+       "p_winner": 0.8085,
        "margin_err_pts": 10.4,
        "in_80": true,
        "turnout_err_pts": 1.14
       },
       "0.2": {
        "t": 139,
-       "p_winner": 0.7271,
+       "p_winner": 0.7266,
        "margin_err_pts": 0.12,
        "in_80": true,
        "turnout_err_pts": 1.02
       },
       "0.3": {
        "t": 151,
-       "p_winner": 0.7994,
+       "p_winner": 0.7989,
        "margin_err_pts": 0.91,
        "in_80": true,
        "turnout_err_pts": 0.64
       },
       "0.7": {
        "t": 199,
-       "p_winner": 0.9496,
+       "p_winner": 0.9495,
        "margin_err_pts": 0.51,
        "in_80": true,
        "turnout_err_pts": 0.7
       }
      },
-     "max_p_loser_after_5pct": 0.4251,
+     "max_p_loser_after_5pct": 0.4256,
      "stays_95_from": "19:20",
      "decided_at": "20:02",
      "lead_minutes": 42
@@ -2387,48 +2387,48 @@
      "at": {
       "0.01": {
        "t": 193,
-       "p_winner": 0.551,
+       "p_winner": 0.5481,
        "margin_err_pts": 7.98,
        "in_80": true,
        "turnout_err_pts": 8.54
       },
       "0.05": {
        "t": 193,
-       "p_winner": 0.551,
+       "p_winner": 0.5481,
        "margin_err_pts": 7.98,
        "in_80": true,
        "turnout_err_pts": 8.54
       },
       "0.1": {
        "t": 193,
-       "p_winner": 0.551,
+       "p_winner": 0.5481,
        "margin_err_pts": 7.98,
        "in_80": true,
        "turnout_err_pts": 8.54
       },
       "0.2": {
        "t": 202,
-       "p_winner": 0.5601,
+       "p_winner": 0.5574,
        "margin_err_pts": 8.23,
        "in_80": true,
        "turnout_err_pts": 6.21
       },
       "0.3": {
        "t": 209,
-       "p_winner": 0.7024,
+       "p_winner": 0.6957,
        "margin_err_pts": 5.85,
        "in_80": true,
        "turnout_err_pts": 2.61
       },
       "0.7": {
        "t": 338,
-       "p_winner": 0.9865,
+       "p_winner": 0.9862,
        "margin_err_pts": 3.76,
        "in_80": true,
        "turnout_err_pts": 1.55
       }
      },
-     "max_p_loser_after_5pct": 0.449,
+     "max_p_loser_after_5pct": 0.4519,
      "stays_95_from": "20:13",
      "decided_at": "21:47",
      "lead_minutes": 94
@@ -2444,7 +2444,7 @@
     "n": 22,
     "at": {
      "0.01": {
-      "log_loss": 0.147,
+      "log_loss": 0.151,
       "margin_err_pts": 7.3,
       "in_80": 0.64,
       "turnout_err_pts": 3.0,
@@ -2454,9 +2454,9 @@
       "time_last": "18:30"
      },
      "0.05": {
-      "log_loss": 0.039,
+      "log_loss": 0.042,
       "margin_err_pts": 4.5,
-      "in_80": 0.77,
+      "in_80": 0.86,
       "turnout_err_pts": 1.8,
       "favorite_won": 22,
       "time_median": "17:55",
@@ -2464,7 +2464,7 @@
       "time_last": "18:32"
      },
      "0.1": {
-      "log_loss": 0.023,
+      "log_loss": 0.025,
       "margin_err_pts": 3.7,
       "in_80": 0.73,
       "turnout_err_pts": 1.3,
@@ -2474,7 +2474,7 @@
       "time_last": "18:50"
      },
      "0.2": {
-      "log_loss": 0.006,
+      "log_loss": 0.007,
       "margin_err_pts": 2.2,
       "in_80": 0.82,
       "turnout_err_pts": 1.0,
@@ -2494,7 +2494,7 @@
       "time_last": "19:24"
      },
      "0.7": {
-      "log_loss": 0.016,
+      "log_loss": 0.017,
       "margin_err_pts": 0.6,
       "in_80": 0.86,
       "turnout_err_pts": 0.3,
@@ -2515,7 +2515,7 @@
      "at": {
       "0.01": {
        "t": 118,
-       "p_winner": 0.9943,
+       "p_winner": 0.9933,
        "margin_err_pts": 2.03,
        "in_80": true,
        "turnout_err_pts": 1.1
@@ -2557,9 +2557,9 @@
       }
      },
      "max_p_loser_after_5pct": 0.0,
-     "stays_95_from": "17:49",
+     "stays_95_from": "17:50",
      "decided_at": "20:29",
-     "lead_minutes": 160
+     "lead_minutes": 159
     },
     {
      "area": "新北市",
@@ -2568,7 +2568,7 @@
      "at": {
       "0.01": {
        "t": 93,
-       "p_winner": 0.9993,
+       "p_winner": 0.9989,
        "margin_err_pts": 4.93,
        "in_80": false,
        "turnout_err_pts": 1.01
@@ -2621,35 +2621,35 @@
      "at": {
       "0.01": {
        "t": 119,
-       "p_winner": 0.5233,
+       "p_winner": 0.5218,
        "margin_err_pts": 6.86,
        "in_80": true,
        "turnout_err_pts": 0.86
       },
       "0.05": {
        "t": 144,
-       "p_winner": 0.9094,
+       "p_winner": 0.9016,
        "margin_err_pts": 1.91,
        "in_80": true,
        "turnout_err_pts": 1.24
       },
       "0.1": {
        "t": 165,
-       "p_winner": 0.9383,
+       "p_winner": 0.9311,
        "margin_err_pts": 2.96,
        "in_80": true,
        "turnout_err_pts": 0.6
       },
       "0.2": {
        "t": 186,
-       "p_winner": 0.992,
+       "p_winner": 0.9907,
        "margin_err_pts": 1.72,
        "in_80": true,
        "turnout_err_pts": 0.93
       },
       "0.3": {
        "t": 203,
-       "p_winner": 0.9976,
+       "p_winner": 0.9972,
        "margin_err_pts": 1.31,
        "in_80": true,
        "turnout_err_pts": 0.96
@@ -2662,10 +2662,10 @@
        "turnout_err_pts": 0.17
       }
      },
-     "max_p_loser_after_5pct": 0.1016,
-     "stays_95_from": "18:55",
+     "max_p_loser_after_5pct": 0.1094,
+     "stays_95_from": "18:57",
      "decided_at": "21:14",
-     "lead_minutes": 139
+     "lead_minutes": 137
     },
     {
      "area": "桃園市",
@@ -2674,7 +2674,7 @@
      "at": {
       "0.01": {
        "t": 133,
-       "p_winner": 0.9907,
+       "p_winner": 0.9894,
        "margin_err_pts": 2.65,
        "in_80": true,
        "turnout_err_pts": 1.14
@@ -2727,21 +2727,21 @@
      "at": {
       "0.01": {
        "t": 128,
-       "p_winner": 0.9443,
+       "p_winner": 0.9386,
        "margin_err_pts": 4.6,
        "in_80": true,
        "turnout_err_pts": 1.74
       },
       "0.05": {
        "t": 147,
-       "p_winner": 0.9882,
+       "p_winner": 0.9871,
        "margin_err_pts": 3.83,
        "in_80": true,
        "turnout_err_pts": 3.48
       },
       "0.1": {
        "t": 161,
-       "p_winner": 0.9948,
+       "p_winner": 0.9945,
        "margin_err_pts": 0.06,
        "in_80": true,
        "turnout_err_pts": 1.19
@@ -2755,7 +2755,7 @@
       },
       "0.3": {
        "t": 189,
-       "p_winner": 0.9984,
+       "p_winner": 0.9983,
        "margin_err_pts": 0.41,
        "in_80": true,
        "turnout_err_pts": 0.18
@@ -2768,10 +2768,10 @@
        "turnout_err_pts": 0.22
       }
      },
-     "max_p_loser_after_5pct": 0.0118,
-     "stays_95_from": "18:12",
+     "max_p_loser_after_5pct": 0.0129,
+     "stays_95_from": "18:16",
      "decided_at": "20:28",
-     "lead_minutes": 136
+     "lead_minutes": 132
     },
     {
      "area": "新竹縣",
@@ -2780,48 +2780,48 @@
      "at": {
       "0.01": {
        "t": 95,
-       "p_winner": 0.763,
+       "p_winner": 0.7476,
        "margin_err_pts": 4.01,
        "in_80": true,
        "turnout_err_pts": 0.58
       },
       "0.05": {
        "t": 122,
-       "p_winner": 0.8891,
+       "p_winner": 0.8864,
        "margin_err_pts": 6.74,
        "in_80": true,
        "turnout_err_pts": 3.25
       },
       "0.1": {
        "t": 137,
-       "p_winner": 0.9604,
+       "p_winner": 0.9587,
        "margin_err_pts": 7.13,
        "in_80": false,
        "turnout_err_pts": 2.66
       },
       "0.2": {
        "t": 157,
-       "p_winner": 0.9504,
+       "p_winner": 0.9491,
        "margin_err_pts": 5.07,
        "in_80": false,
        "turnout_err_pts": 0.95
       },
       "0.3": {
        "t": 172,
-       "p_winner": 0.752,
+       "p_winner": 0.7507,
        "margin_err_pts": 1.17,
        "in_80": true,
        "turnout_err_pts": 1.02
       },
       "0.7": {
        "t": 224,
-       "p_winner": 0.6962,
+       "p_winner": 0.6956,
        "margin_err_pts": 0.12,
        "in_80": true,
        "turnout_err_pts": 0.46
       }
      },
-     "max_p_loser_after_5pct": 0.375,
+     "max_p_loser_after_5pct": 0.3757,
      "stays_95_from": "20:19",
      "decided_at": "21:01",
      "lead_minutes": 42
@@ -2833,35 +2833,35 @@
      "at": {
       "0.01": {
        "t": 84,
-       "p_winner": 0.5383,
+       "p_winner": 0.5353,
        "margin_err_pts": 5.05,
        "in_80": true,
        "turnout_err_pts": 0.16
       },
       "0.05": {
        "t": 102,
-       "p_winner": 0.9375,
+       "p_winner": 0.9311,
        "margin_err_pts": 0.42,
        "in_80": true,
        "turnout_err_pts": 0.82
       },
       "0.1": {
        "t": 115,
-       "p_winner": 0.9902,
+       "p_winner": 0.9886,
        "margin_err_pts": 1.14,
        "in_80": true,
        "turnout_err_pts": 1.34
       },
       "0.2": {
        "t": 130,
-       "p_winner": 0.996,
+       "p_winner": 0.9953,
        "margin_err_pts": 0.31,
        "in_80": true,
        "turnout_err_pts": 0.83
       },
       "0.3": {
        "t": 141,
-       "p_winner": 0.9997,
+       "p_winner": 0.9996,
        "margin_err_pts": 0.16,
        "in_80": true,
        "turnout_err_pts": 0.85
@@ -2874,10 +2874,10 @@
        "turnout_err_pts": 0.1
       }
      },
-     "max_p_loser_after_5pct": 0.0625,
-     "stays_95_from": "17:43",
+     "max_p_loser_after_5pct": 0.0689,
+     "stays_95_from": "17:47",
      "decided_at": "19:46",
-     "lead_minutes": 123
+     "lead_minutes": 119
     },
     {
      "area": "臺中市",
@@ -2886,7 +2886,7 @@
      "at": {
       "0.01": {
        "t": 104,
-       "p_winner": 0.9872,
+       "p_winner": 0.9863,
        "margin_err_pts": 6.33,
        "in_80": true,
        "turnout_err_pts": 10.52
@@ -2939,7 +2939,7 @@
      "at": {
       "0.01": {
        "t": 96,
-       "p_winner": 0.9991,
+       "p_winner": 0.9989,
        "margin_err_pts": 1.08,
        "in_80": true,
        "turnout_err_pts": 1.85
@@ -2981,9 +2981,9 @@
       }
      },
      "max_p_loser_after_5pct": 0.0,
-     "stays_95_from": "16:59",
+     "stays_95_from": "17:22",
      "decided_at": "19:51",
-     "lead_minutes": 172
+     "lead_minutes": 149
     },
     {
      "area": "南投縣",
@@ -2992,28 +2992,28 @@
      "at": {
       "0.01": {
        "t": 68,
-       "p_winner": 0.4512,
+       "p_winner": 0.4558,
        "margin_err_pts": 7.32,
        "in_80": true,
        "turnout_err_pts": 4.27
       },
       "0.05": {
        "t": 97,
-       "p_winner": 0.6978,
+       "p_winner": 0.6898,
        "margin_err_pts": 4.31,
        "in_80": true,
        "turnout_err_pts": 2.02
       },
       "0.1": {
        "t": 116,
-       "p_winner": 0.8154,
+       "p_winner": 0.8063,
        "margin_err_pts": 3.97,
        "in_80": false,
        "turnout_err_pts": 1.15
       },
       "0.2": {
        "t": 134,
-       "p_winner": 0.9873,
+       "p_winner": 0.9861,
        "margin_err_pts": 0.8,
        "in_80": true,
        "turnout_err_pts": 0.87
@@ -3033,7 +3033,7 @@
        "turnout_err_pts": 0.2
       }
      },
-     "max_p_loser_after_5pct": 0.3022,
+     "max_p_loser_after_5pct": 0.3102,
      "stays_95_from": "18:00",
      "decided_at": "20:17",
      "lead_minutes": 137
@@ -3045,7 +3045,7 @@
      "at": {
       "0.01": {
        "t": 86,
-       "p_winner": 0.9954,
+       "p_winner": 0.9939,
        "margin_err_pts": 9.06,
        "in_80": false,
        "turnout_err_pts": 2.15
@@ -3098,28 +3098,28 @@
      "at": {
       "0.01": {
        "t": 123,
-       "p_winner": 0.9823,
+       "p_winner": 0.9805,
        "margin_err_pts": 3.35,
        "in_80": true,
        "turnout_err_pts": 1.06
       },
       "0.05": {
        "t": 137,
-       "p_winner": 0.9939,
+       "p_winner": 0.9936,
        "margin_err_pts": 0.92,
        "in_80": true,
        "turnout_err_pts": 0.9
       },
       "0.1": {
        "t": 147,
-       "p_winner": 0.9973,
+       "p_winner": 0.9972,
        "margin_err_pts": 0.61,
        "in_80": true,
        "turnout_err_pts": 1.63
       },
       "0.2": {
        "t": 165,
-       "p_winner": 0.9984,
+       "p_winner": 0.9983,
        "margin_err_pts": 0.3,
        "in_80": true,
        "turnout_err_pts": 1.1
@@ -3139,7 +3139,7 @@
        "turnout_err_pts": 0.24
       }
      },
-     "max_p_loser_after_5pct": 0.0061,
+     "max_p_loser_after_5pct": 0.0064,
      "stays_95_from": "18:00",
      "decided_at": "19:46",
      "lead_minutes": 106
@@ -3151,14 +3151,14 @@
      "at": {
       "0.01": {
        "t": 71,
-       "p_winner": 0.9743,
+       "p_winner": 0.9702,
        "margin_err_pts": 9.91,
        "in_80": true,
        "turnout_err_pts": 3.53
       },
       "0.05": {
        "t": 93,
-       "p_winner": 0.9997,
+       "p_winner": 0.9996,
        "margin_err_pts": 7.53,
        "in_80": false,
        "turnout_err_pts": 3.54
@@ -3192,7 +3192,7 @@
        "turnout_err_pts": 0.52
       }
      },
-     "max_p_loser_after_5pct": 0.0003,
+     "max_p_loser_after_5pct": 0.0004,
      "stays_95_from": "17:04",
      "decided_at": "19:26",
      "lead_minutes": 142
@@ -3257,7 +3257,7 @@
      "at": {
       "0.01": {
        "t": 96,
-       "p_winner": 0.999,
+       "p_winner": 0.9988,
        "margin_err_pts": 7.75,
        "in_80": false,
        "turnout_err_pts": 2.44
@@ -3310,7 +3310,7 @@
      "at": {
       "0.01": {
        "t": 94,
-       "p_winner": 0.9962,
+       "p_winner": 0.9956,
        "margin_err_pts": 8.01,
        "in_80": false,
        "turnout_err_pts": 5.05
@@ -3363,7 +3363,7 @@
      "at": {
       "0.01": {
        "t": 101,
-       "p_winner": 0.9622,
+       "p_winner": 0.9533,
        "margin_err_pts": 17.44,
        "in_80": false,
        "turnout_err_pts": 3.92
@@ -3372,7 +3372,7 @@
        "t": 117,
        "p_winner": 0.9999,
        "margin_err_pts": 5.03,
-       "in_80": false,
+       "in_80": true,
        "turnout_err_pts": 0.41
       },
       "0.1": {
@@ -3416,14 +3416,14 @@
      "at": {
       "0.01": {
        "t": 75,
-       "p_winner": 0.9438,
+       "p_winner": 0.9291,
        "margin_err_pts": 8.26,
        "in_80": true,
        "turnout_err_pts": 3.14
       },
       "0.05": {
        "t": 98,
-       "p_winner": 0.9977,
+       "p_winner": 0.9972,
        "margin_err_pts": 5.81,
        "in_80": true,
        "turnout_err_pts": 2.62
@@ -3457,7 +3457,7 @@
        "turnout_err_pts": 0.23
       }
      },
-     "max_p_loser_after_5pct": 0.0023,
+     "max_p_loser_after_5pct": 0.0028,
      "stays_95_from": "17:27",
      "decided_at": "19:29",
      "lead_minutes": 122
@@ -3469,28 +3469,28 @@
      "at": {
       "0.01": {
        "t": 86,
-       "p_winner": 0.9866,
+       "p_winner": 0.98,
        "margin_err_pts": 2.86,
        "in_80": true,
        "turnout_err_pts": 0.99
       },
       "0.05": {
        "t": 105,
-       "p_winner": 0.9915,
+       "p_winner": 0.9907,
        "margin_err_pts": 1.11,
        "in_80": true,
        "turnout_err_pts": 0.96
       },
       "0.1": {
        "t": 112,
-       "p_winner": 0.9996,
+       "p_winner": 0.9995,
        "margin_err_pts": 1.79,
        "in_80": true,
        "turnout_err_pts": 0.35
       },
       "0.2": {
        "t": 127,
-       "p_winner": 0.9985,
+       "p_winner": 0.9984,
        "margin_err_pts": 0.65,
        "in_80": true,
        "turnout_err_pts": 0.1
@@ -3510,10 +3510,10 @@
        "turnout_err_pts": 0.19
       }
      },
-     "max_p_loser_after_5pct": 0.0085,
-     "stays_95_from": "17:36",
+     "max_p_loser_after_5pct": 0.0093,
+     "stays_95_from": "17:39",
      "decided_at": "19:28",
-     "lead_minutes": 112
+     "lead_minutes": 109
     },
     {
      "area": "澎湖縣",
@@ -3522,35 +3522,35 @@
      "at": {
       "0.01": {
        "t": 50,
-       "p_winner": 0.5292,
+       "p_winner": 0.5246,
        "margin_err_pts": 12.88,
        "in_80": false,
        "turnout_err_pts": 14.38
       },
       "0.05": {
        "t": 63,
-       "p_winner": 0.8424,
+       "p_winner": 0.8106,
        "margin_err_pts": 7.25,
-       "in_80": false,
+       "in_80": true,
        "turnout_err_pts": 6.42
       },
       "0.1": {
        "t": 72,
-       "p_winner": 0.8439,
+       "p_winner": 0.8329,
        "margin_err_pts": 6.49,
        "in_80": true,
        "turnout_err_pts": 3.21
       },
       "0.2": {
        "t": 86,
-       "p_winner": 0.9453,
+       "p_winner": 0.9407,
        "margin_err_pts": 2.69,
        "in_80": true,
        "turnout_err_pts": 4.03
       },
       "0.3": {
        "t": 98,
-       "p_winner": 0.9881,
+       "p_winner": 0.987,
        "margin_err_pts": 0.13,
        "in_80": true,
        "turnout_err_pts": 3.24
@@ -3563,7 +3563,7 @@
        "turnout_err_pts": 0.41
       }
      },
-     "max_p_loser_after_5pct": 0.2287,
+     "max_p_loser_after_5pct": 0.2529,
      "stays_95_from": "17:29",
      "decided_at": "19:30",
      "lead_minutes": 121
@@ -3575,21 +3575,21 @@
      "at": {
       "0.01": {
        "t": 62,
-       "p_winner": 0.9945,
+       "p_winner": 0.9885,
        "margin_err_pts": 8.19,
        "in_80": true,
        "turnout_err_pts": 3.5
       },
       "0.05": {
        "t": 84,
-       "p_winner": 0.9973,
+       "p_winner": 0.9968,
        "margin_err_pts": 16.11,
        "in_80": false,
        "turnout_err_pts": 0.5
       },
       "0.1": {
        "t": 89,
-       "p_winner": 0.9998,
+       "p_winner": 0.9997,
        "margin_err_pts": 11.43,
        "in_80": false,
        "turnout_err_pts": 0.79
@@ -3616,7 +3616,7 @@
        "turnout_err_pts": 0.98
       }
      },
-     "max_p_loser_after_5pct": 0.0027,
+     "max_p_loser_after_5pct": 0.0032,
      "stays_95_from": "17:02",
      "decided_at": "18:36",
      "lead_minutes": 94
@@ -3628,35 +3628,35 @@
      "at": {
       "0.01": {
        "t": 150,
-       "p_winner": 0.9926,
+       "p_winner": 0.9917,
        "margin_err_pts": 19.69,
        "in_80": false,
        "turnout_err_pts": 1.24
       },
       "0.05": {
        "t": 150,
-       "p_winner": 0.9926,
+       "p_winner": 0.9917,
        "margin_err_pts": 19.69,
        "in_80": false,
        "turnout_err_pts": 1.24
       },
       "0.1": {
        "t": 150,
-       "p_winner": 0.9926,
+       "p_winner": 0.9917,
        "margin_err_pts": 19.69,
        "in_80": false,
        "turnout_err_pts": 1.24
       },
       "0.2": {
        "t": 151,
-       "p_winner": 0.9981,
+       "p_winner": 0.9979,
        "margin_err_pts": 15.91,
        "in_80": false,
        "turnout_err_pts": 2.57
       },
       "0.3": {
        "t": 157,
-       "p_winner": 0.9988,
+       "p_winner": 0.9986,
        "margin_err_pts": 12.55,
        "in_80": false,
        "turnout_err_pts": 3.3
@@ -3669,7 +3669,7 @@
        "turnout_err_pts": 1.71
       }
      },
-     "max_p_loser_after_5pct": 0.0074,
+     "max_p_loser_after_5pct": 0.0083,
      "stays_95_from": "18:30",
      "decided_at": "19:39",
      "lead_minutes": 69
@@ -3682,7 +3682,7 @@
     "at": {
      "0.01": {
       "t": 89,
-      "p_winner": 0.9997,
+      "p_winner": 0.9996,
       "margin_err_pts": 7.45,
       "in_80": false,
       "turnout_err_pts": 0.34
@@ -3737,9 +3737,9 @@
     "n": 22,
     "at": {
      "0.01": {
-      "log_loss": 0.188,
+      "log_loss": 0.191,
       "margin_err_pts": 11.2,
-      "in_80": 0.68,
+      "in_80": 0.73,
       "turnout_err_pts": 3.8,
       "favorite_won": 20,
       "time_median": "17:20",
@@ -3747,9 +3747,9 @@
       "time_last": "18:23"
      },
      "0.05": {
-      "log_loss": 0.092,
+      "log_loss": 0.094,
       "margin_err_pts": 5.7,
-      "in_80": 0.86,
+      "in_80": 0.91,
       "turnout_err_pts": 1.7,
       "favorite_won": 21,
       "time_median": "17:45",
@@ -3757,7 +3757,7 @@
       "time_last": "18:23"
      },
      "0.1": {
-      "log_loss": 0.057,
+      "log_loss": 0.06,
       "margin_err_pts": 3.9,
       "in_80": 0.82,
       "turnout_err_pts": 1.2,
@@ -3767,9 +3767,9 @@
       "time_last": "18:30"
      },
      "0.2": {
-      "log_loss": 0.049,
+      "log_loss": 0.051,
       "margin_err_pts": 3.3,
-      "in_80": 0.73,
+      "in_80": 0.77,
       "turnout_err_pts": 0.9,
       "favorite_won": 22,
       "time_median": "18:12",
@@ -3777,7 +3777,7 @@
       "time_last": "18:47"
      },
      "0.3": {
-      "log_loss": 0.048,
+      "log_loss": 0.05,
       "margin_err_pts": 2.1,
       "in_80": 0.68,
       "turnout_err_pts": 0.7,
@@ -3808,48 +3808,48 @@
      "at": {
       "0.01": {
        "t": 93,
-       "p_winner": 0.7464,
+       "p_winner": 0.7395,
        "margin_err_pts": 2.77,
        "in_80": true,
        "turnout_err_pts": 0.87
       },
       "0.05": {
        "t": 118,
-       "p_winner": 0.8845,
+       "p_winner": 0.878,
        "margin_err_pts": 2.0,
        "in_80": true,
        "turnout_err_pts": 0.01
       },
       "0.1": {
        "t": 128,
-       "p_winner": 0.8922,
+       "p_winner": 0.8877,
        "margin_err_pts": 1.65,
        "in_80": true,
        "turnout_err_pts": 0.62
       },
       "0.2": {
        "t": 141,
-       "p_winner": 0.8899,
+       "p_winner": 0.8865,
        "margin_err_pts": 1.19,
        "in_80": true,
        "turnout_err_pts": 0.52
       },
       "0.3": {
        "t": 151,
-       "p_winner": 0.6252,
+       "p_winner": 0.6237,
        "margin_err_pts": 0.2,
        "in_80": true,
        "turnout_err_pts": 0.25
       },
       "0.7": {
        "t": 185,
-       "p_winner": 0.6577,
+       "p_winner": 0.6567,
        "margin_err_pts": 0.07,
        "in_80": true,
        "turnout_err_pts": 0.03
       }
      },
-     "max_p_loser_after_5pct": 0.518,
+     "max_p_loser_after_5pct": 0.5178,
      "stays_95_from": "20:05",
      "decided_at": "21:41",
      "lead_minutes": 96
@@ -3861,21 +3861,21 @@
      "at": {
       "0.01": {
        "t": 80,
-       "p_winner": 0.9841,
+       "p_winner": 0.9778,
        "margin_err_pts": 5.31,
-       "in_80": false,
+       "in_80": true,
        "turnout_err_pts": 0.22
       },
       "0.05": {
        "t": 119,
-       "p_winner": 0.9867,
+       "p_winner": 0.9851,
        "margin_err_pts": 0.69,
        "in_80": true,
        "turnout_err_pts": 0.24
       },
       "0.1": {
        "t": 135,
-       "p_winner": 0.9996,
+       "p_winner": 0.9995,
        "margin_err_pts": 0.71,
        "in_80": true,
        "turnout_err_pts": 1.09
@@ -3902,10 +3902,10 @@
        "turnout_err_pts": 0.26
       }
      },
-     "max_p_loser_after_5pct": 0.0192,
-     "stays_95_from": "17:15",
+     "max_p_loser_after_5pct": 0.021,
+     "stays_95_from": "17:16",
      "decided_at": "20:40",
-     "lead_minutes": 205
+     "lead_minutes": 204
     },
     {
      "area": "基隆市",
@@ -3914,35 +3914,35 @@
      "at": {
       "0.01": {
        "t": 92,
-       "p_winner": 0.6272,
+       "p_winner": 0.6174,
        "margin_err_pts": 1.64,
        "in_80": true,
        "turnout_err_pts": 0.31
       },
       "0.05": {
        "t": 128,
-       "p_winner": 0.6253,
+       "p_winner": 0.6179,
        "margin_err_pts": 3.73,
        "in_80": true,
        "turnout_err_pts": 0.1
       },
       "0.1": {
        "t": 143,
-       "p_winner": 0.6035,
+       "p_winner": 0.5993,
        "margin_err_pts": 4.28,
        "in_80": true,
        "turnout_err_pts": 0.13
       },
       "0.2": {
        "t": 161,
-       "p_winner": 0.7823,
+       "p_winner": 0.7765,
        "margin_err_pts": 3.19,
-       "in_80": false,
+       "in_80": true,
        "turnout_err_pts": 0.35
       },
       "0.3": {
        "t": 179,
-       "p_winner": 0.9719,
+       "p_winner": 0.9694,
        "margin_err_pts": 1.21,
        "in_80": true,
        "turnout_err_pts": 0.64
@@ -3955,7 +3955,7 @@
        "turnout_err_pts": 0.23
       }
      },
-     "max_p_loser_after_5pct": 0.579,
+     "max_p_loser_after_5pct": 0.5747,
      "stays_95_from": "18:51",
      "decided_at": "20:46",
      "lead_minutes": 115
@@ -3967,35 +3967,35 @@
      "at": {
       "0.01": {
        "t": 115,
-       "p_winner": 0.7662,
+       "p_winner": 0.7542,
        "margin_err_pts": 1.28,
        "in_80": true,
        "turnout_err_pts": 2.15
       },
       "0.05": {
        "t": 135,
-       "p_winner": 0.8572,
+       "p_winner": 0.8518,
        "margin_err_pts": 0.8,
        "in_80": true,
        "turnout_err_pts": 1.81
       },
       "0.1": {
        "t": 150,
-       "p_winner": 0.9584,
+       "p_winner": 0.9558,
        "margin_err_pts": 1.33,
        "in_80": true,
        "turnout_err_pts": 0.64
       },
       "0.2": {
        "t": 165,
-       "p_winner": 0.9878,
+       "p_winner": 0.9867,
        "margin_err_pts": 0.94,
        "in_80": true,
        "turnout_err_pts": 0.34
       },
       "0.3": {
        "t": 179,
-       "p_winner": 0.99,
+       "p_winner": 0.9893,
        "margin_err_pts": 0.47,
        "in_80": true,
        "turnout_err_pts": 0.36
@@ -4008,10 +4008,10 @@
        "turnout_err_pts": 0.4
       }
      },
-     "max_p_loser_after_5pct": 0.2793,
-     "stays_95_from": "18:30",
+     "max_p_loser_after_5pct": 0.2828,
+     "stays_95_from": "18:37",
      "decided_at": "20:52",
-     "lead_minutes": 142
+     "lead_minutes": 135
     },
     {
      "area": "新竹市",
@@ -4020,35 +4020,35 @@
      "at": {
       "0.01": {
        "t": 99,
-       "p_winner": 0.9331,
+       "p_winner": 0.9206,
        "margin_err_pts": 16.13,
        "in_80": false,
        "turnout_err_pts": 4.8
       },
       "0.05": {
        "t": 135,
-       "p_winner": 0.8782,
+       "p_winner": 0.8701,
        "margin_err_pts": 0.81,
        "in_80": true,
        "turnout_err_pts": 4.83
       },
       "0.1": {
        "t": 149,
-       "p_winner": 0.94,
+       "p_winner": 0.9358,
        "margin_err_pts": 0.78,
        "in_80": true,
        "turnout_err_pts": 1.77
       },
       "0.2": {
        "t": 167,
-       "p_winner": 0.9752,
+       "p_winner": 0.9739,
        "margin_err_pts": 1.38,
        "in_80": true,
        "turnout_err_pts": 0.55
       },
       "0.3": {
        "t": 178,
-       "p_winner": 0.9779,
+       "p_winner": 0.977,
        "margin_err_pts": 0.38,
        "in_80": true,
        "turnout_err_pts": 0.41
@@ -4061,7 +4061,7 @@
        "turnout_err_pts": 0.09
       }
      },
-     "max_p_loser_after_5pct": 0.1218,
+     "max_p_loser_after_5pct": 0.1299,
      "stays_95_from": "18:31",
      "decided_at": "20:26",
      "lead_minutes": 115
@@ -4073,21 +4073,21 @@
      "at": {
       "0.01": {
        "t": 80,
-       "p_winner": 0.4406,
+       "p_winner": 0.4435,
        "margin_err_pts": 17.78,
        "in_80": true,
        "turnout_err_pts": 5.91
       },
       "0.05": {
        "t": 110,
-       "p_winner": 0.9775,
+       "p_winner": 0.9745,
        "margin_err_pts": 1.01,
        "in_80": true,
        "turnout_err_pts": 2.7
       },
       "0.1": {
        "t": 125,
-       "p_winner": 0.9993,
+       "p_winner": 0.9991,
        "margin_err_pts": 0.83,
        "in_80": true,
        "turnout_err_pts": 2.2
@@ -4114,10 +4114,10 @@
        "turnout_err_pts": 0.39
       }
      },
-     "max_p_loser_after_5pct": 0.0225,
-     "stays_95_from": "17:46",
+     "max_p_loser_after_5pct": 0.0255,
+     "stays_95_from": "17:47",
      "decided_at": "20:12",
-     "lead_minutes": 146
+     "lead_minutes": 145
     },
     {
      "area": "苗栗縣",
@@ -4126,14 +4126,14 @@
      "at": {
       "0.01": {
        "t": 77,
-       "p_winner": 0.9306,
+       "p_winner": 0.9138,
        "margin_err_pts": 1.32,
        "in_80": true,
        "turnout_err_pts": 2.32
       },
       "0.05": {
        "t": 94,
-       "p_winner": 0.9996,
+       "p_winner": 0.9992,
        "margin_err_pts": 2.8,
        "in_80": true,
        "turnout_err_pts": 2.28
@@ -4167,7 +4167,7 @@
        "turnout_err_pts": 0.22
       }
      },
-     "max_p_loser_after_5pct": 0.0004,
+     "max_p_loser_after_5pct": 0.0008,
      "stays_95_from": "17:19",
      "decided_at": "19:27",
      "lead_minutes": 128
@@ -4179,7 +4179,7 @@
      "at": {
       "0.01": {
        "t": 98,
-       "p_winner": 0.982,
+       "p_winner": 0.9774,
        "margin_err_pts": 2.82,
        "in_80": true,
        "turnout_err_pts": 1.31
@@ -4221,9 +4221,9 @@
       }
      },
      "max_p_loser_after_5pct": 0.0,
-     "stays_95_from": "17:13",
+     "stays_95_from": "17:38",
      "decided_at": "20:08",
-     "lead_minutes": 175
+     "lead_minutes": 150
     },
     {
      "area": "彰化縣",
@@ -4232,14 +4232,14 @@
      "at": {
       "0.01": {
        "t": 89,
-       "p_winner": 0.9702,
+       "p_winner": 0.9602,
        "margin_err_pts": 3.3,
        "in_80": true,
        "turnout_err_pts": 1.22
       },
       "0.05": {
        "t": 105,
-       "p_winner": 0.9993,
+       "p_winner": 0.9989,
        "margin_err_pts": 1.6,
        "in_80": true,
        "turnout_err_pts": 1.08
@@ -4273,10 +4273,10 @@
        "turnout_err_pts": 0.02
       }
      },
-     "max_p_loser_after_5pct": 0.0007,
-     "stays_95_from": "17:28",
+     "max_p_loser_after_5pct": 0.0011,
+     "stays_95_from": "17:29",
      "decided_at": "20:13",
-     "lead_minutes": 165
+     "lead_minutes": 164
     },
     {
      "area": "南投縣",
@@ -4285,51 +4285,51 @@
      "at": {
       "0.01": {
        "t": 68,
-       "p_winner": 0.7247,
+       "p_winner": 0.7036,
        "margin_err_pts": 4.65,
        "in_80": true,
        "turnout_err_pts": 3.45
       },
       "0.05": {
        "t": 90,
-       "p_winner": 0.3773,
+       "p_winner": 0.3875,
        "margin_err_pts": 4.12,
        "in_80": true,
        "turnout_err_pts": 1.45
       },
       "0.1": {
        "t": 106,
-       "p_winner": 0.7606,
+       "p_winner": 0.7498,
        "margin_err_pts": 0.54,
        "in_80": true,
        "turnout_err_pts": 0.84
       },
       "0.2": {
        "t": 121,
-       "p_winner": 0.694,
+       "p_winner": 0.6844,
        "margin_err_pts": 1.92,
        "in_80": true,
        "turnout_err_pts": 0.36
       },
       "0.3": {
        "t": 134,
-       "p_winner": 0.7071,
+       "p_winner": 0.6993,
        "margin_err_pts": 2.08,
        "in_80": false,
        "turnout_err_pts": 0.09
       },
       "0.7": {
        "t": 175,
-       "p_winner": 0.9997,
+       "p_winner": 0.9996,
        "margin_err_pts": 0.68,
        "in_80": false,
        "turnout_err_pts": 0.13
       }
      },
-     "max_p_loser_after_5pct": 0.6577,
-     "stays_95_from": "18:33",
+     "max_p_loser_after_5pct": 0.6447,
+     "stays_95_from": "18:34",
      "decided_at": "20:05",
-     "lead_minutes": 92
+     "lead_minutes": 91
     },
     {
      "area": "雲林縣",
@@ -4338,7 +4338,7 @@
      "at": {
       "0.01": {
        "t": 77,
-       "p_winner": 0.9431,
+       "p_winner": 0.9316,
        "margin_err_pts": 4.2,
        "in_80": true,
        "turnout_err_pts": 1.66
@@ -4391,35 +4391,35 @@
      "at": {
       "0.01": {
        "t": 100,
-       "p_winner": 0.2095,
+       "p_winner": 0.239,
        "margin_err_pts": 27.13,
        "in_80": false,
        "turnout_err_pts": 14.02
       },
       "0.05": {
        "t": 125,
-       "p_winner": 0.9785,
+       "p_winner": 0.9766,
        "margin_err_pts": 5.96,
        "in_80": true,
        "turnout_err_pts": 2.29
       },
       "0.1": {
        "t": 136,
-       "p_winner": 0.9906,
+       "p_winner": 0.99,
        "margin_err_pts": 3.54,
        "in_80": true,
        "turnout_err_pts": 1.3
       },
       "0.2": {
        "t": 151,
-       "p_winner": 0.995,
+       "p_winner": 0.9948,
        "margin_err_pts": 2.73,
        "in_80": true,
        "turnout_err_pts": 1.61
       },
       "0.3": {
        "t": 161,
-       "p_winner": 0.9968,
+       "p_winner": 0.9967,
        "margin_err_pts": 2.54,
        "in_80": true,
        "turnout_err_pts": 0.95
@@ -4432,10 +4432,10 @@
        "turnout_err_pts": 0.39
       }
      },
-     "max_p_loser_after_5pct": 0.0215,
-     "stays_95_from": "17:55",
+     "max_p_loser_after_5pct": 0.0234,
+     "stays_95_from": "17:58",
      "decided_at": "19:45",
-     "lead_minutes": 110
+     "lead_minutes": 107
     },
     {
      "area": "嘉義縣",
@@ -4444,14 +4444,14 @@
      "at": {
       "0.01": {
        "t": 62,
-       "p_winner": 0.9851,
+       "p_winner": 0.9777,
        "margin_err_pts": 11.24,
        "in_80": true,
        "turnout_err_pts": 1.15
       },
       "0.05": {
        "t": 79,
-       "p_winner": 1.0,
+       "p_winner": 0.9999,
        "margin_err_pts": 4.18,
        "in_80": true,
        "turnout_err_pts": 1.6
@@ -4485,7 +4485,7 @@
        "turnout_err_pts": 0.14
       }
      },
-     "max_p_loser_after_5pct": 0.0,
+     "max_p_loser_after_5pct": 0.0001,
      "stays_95_from": "16:42",
      "decided_at": "19:19",
      "lead_minutes": 157
@@ -4550,7 +4550,7 @@
      "at": {
       "0.01": {
        "t": 78,
-       "p_winner": 0.9862,
+       "p_winner": 0.9858,
        "margin_err_pts": 5.2,
        "in_80": true,
        "turnout_err_pts": 5.01
@@ -4603,7 +4603,7 @@
      "at": {
       "0.01": {
        "t": 91,
-       "p_winner": 0.9875,
+       "p_winner": 0.9842,
        "margin_err_pts": 0.26,
        "in_80": true,
        "turnout_err_pts": 2.06
@@ -4656,7 +4656,7 @@
      "at": {
       "0.01": {
        "t": 75,
-       "p_winner": 0.9824,
+       "p_winner": 0.9752,
        "margin_err_pts": 11.26,
        "in_80": true,
        "turnout_err_pts": 1.23
@@ -4697,7 +4697,7 @@
        "turnout_err_pts": 0.2
       }
      },
-     "max_p_loser_after_5pct": 0.0002,
+     "max_p_loser_after_5pct": 0.0003,
      "stays_95_from": "17:14",
      "decided_at": "19:22",
      "lead_minutes": 128
@@ -4709,21 +4709,21 @@
      "at": {
       "0.01": {
        "t": 60,
-       "p_winner": 0.9881,
+       "p_winner": 0.9824,
        "margin_err_pts": 13.74,
        "in_80": true,
        "turnout_err_pts": 5.89
       },
       "0.05": {
        "t": 90,
-       "p_winner": 0.9992,
+       "p_winner": 0.999,
        "margin_err_pts": 2.4,
        "in_80": true,
        "turnout_err_pts": 4.77
       },
       "0.1": {
        "t": 104,
-       "p_winner": 1.0,
+       "p_winner": 0.9999,
        "margin_err_pts": 1.55,
        "in_80": true,
        "turnout_err_pts": 2.56
@@ -4750,7 +4750,7 @@
        "turnout_err_pts": 0.36
       }
      },
-     "max_p_loser_after_5pct": 0.0008,
+     "max_p_loser_after_5pct": 0.001,
      "stays_95_from": "16:58",
      "decided_at": "19:15",
      "lead_minutes": 137
@@ -4762,14 +4762,14 @@
      "at": {
       "0.01": {
        "t": 66,
-       "p_winner": 0.9936,
+       "p_winner": 0.9893,
        "margin_err_pts": 21.31,
        "in_80": false,
        "turnout_err_pts": 9.97
       },
       "0.05": {
        "t": 88,
-       "p_winner": 0.9992,
+       "p_winner": 0.999,
        "margin_err_pts": 12.09,
        "in_80": false,
        "turnout_err_pts": 1.33
@@ -4803,10 +4803,10 @@
        "turnout_err_pts": 0.25
       }
      },
-     "max_p_loser_after_5pct": 0.001,
-     "stays_95_from": "16:55",
+     "max_p_loser_after_5pct": 0.0012,
+     "stays_95_from": "16:57",
      "decided_at": "19:23",
-     "lead_minutes": 148
+     "lead_minutes": 146
     },
     {
      "area": "澎湖縣",
@@ -4815,48 +4815,48 @@
      "at": {
       "0.01": {
        "t": 41,
-       "p_winner": 0.9569,
+       "p_winner": 0.9221,
        "margin_err_pts": 32.48,
        "in_80": false,
        "turnout_err_pts": 9.0
       },
       "0.05": {
        "t": 50,
-       "p_winner": 0.8928,
+       "p_winner": 0.877,
        "margin_err_pts": 17.94,
-       "in_80": false,
+       "in_80": true,
        "turnout_err_pts": 0.06
       },
       "0.1": {
        "t": 64,
-       "p_winner": 0.7786,
+       "p_winner": 0.7649,
        "margin_err_pts": 6.42,
        "in_80": true,
        "turnout_err_pts": 0.18
       },
       "0.2": {
        "t": 79,
-       "p_winner": 0.7296,
+       "p_winner": 0.7227,
        "margin_err_pts": 2.74,
        "in_80": true,
        "turnout_err_pts": 0.49
       },
       "0.3": {
        "t": 89,
-       "p_winner": 0.8358,
+       "p_winner": 0.8229,
        "margin_err_pts": 1.51,
        "in_80": true,
        "turnout_err_pts": 0.86
       },
       "0.7": {
        "t": 133,
-       "p_winner": 0.9871,
+       "p_winner": 0.9861,
        "margin_err_pts": 2.02,
        "in_80": false,
        "turnout_err_pts": 0.12
       }
      },
-     "max_p_loser_after_5pct": 0.4087,
+     "max_p_loser_after_5pct": 0.4128,
      "stays_95_from": "17:59",
      "decided_at": "19:29",
      "lead_minutes": 90
@@ -4868,14 +4868,14 @@
      "at": {
       "0.01": {
        "t": 56,
-       "p_winner": 0.9953,
+       "p_winner": 0.9939,
        "margin_err_pts": 27.21,
        "in_80": false,
        "turnout_err_pts": 2.0
       },
       "0.05": {
        "t": 79,
-       "p_winner": 0.999,
+       "p_winner": 0.9989,
        "margin_err_pts": 25.62,
        "in_80": false,
        "turnout_err_pts": 0.93
@@ -4909,7 +4909,7 @@
        "turnout_err_pts": 0.73
       }
      },
-     "max_p_loser_after_5pct": 0.001,
+     "max_p_loser_after_5pct": 0.0011,
      "stays_95_from": "16:56",
      "decided_at": "18:05",
      "lead_minutes": 69
@@ -4921,35 +4921,35 @@
      "at": {
       "0.01": {
        "t": 143,
-       "p_winner": 0.9943,
+       "p_winner": 0.9923,
        "margin_err_pts": 20.61,
        "in_80": true,
        "turnout_err_pts": 7.64
       },
       "0.05": {
        "t": 143,
-       "p_winner": 0.9943,
+       "p_winner": 0.9923,
        "margin_err_pts": 20.61,
        "in_80": true,
        "turnout_err_pts": 7.64
       },
       "0.1": {
        "t": 143,
-       "p_winner": 0.9943,
+       "p_winner": 0.9923,
        "margin_err_pts": 20.61,
        "in_80": true,
        "turnout_err_pts": 7.64
       },
       "0.2": {
        "t": 147,
-       "p_winner": 0.9974,
+       "p_winner": 0.9968,
        "margin_err_pts": 23.03,
        "in_80": false,
        "turnout_err_pts": 2.72
       },
       "0.3": {
        "t": 152,
-       "p_winner": 0.9987,
+       "p_winner": 0.9986,
        "margin_err_pts": 15.48,
        "in_80": false,
        "turnout_err_pts": 1.96
@@ -4962,7 +4962,7 @@
        "turnout_err_pts": 0.07
       }
      },
-     "max_p_loser_after_5pct": 0.0057,
+     "max_p_loser_after_5pct": 0.0077,
      "stays_95_from": "18:23",
      "decided_at": "19:06",
      "lead_minutes": 43
@@ -4975,7 +4975,7 @@
     "at": {
      "0.01": {
       "t": 77,
-      "p_winner": 0.9987,
+      "p_winner": 0.9985,
       "margin_err_pts": 4.76,
       "in_80": true,
       "turnout_err_pts": 2.81
@@ -4991,7 +4991,7 @@
       "t": 117,
       "p_winner": 1.0,
       "margin_err_pts": 1.66,
-      "in_80": false,
+      "in_80": true,
       "turnout_err_pts": 1.0
      },
      "0.2": {
@@ -5037,9 +5037,9 @@
   "n": 43,
   "at": {
    "0.01": {
-    "log_loss": 0.374,
+    "log_loss": 0.365,
     "margin_err_pts": 11.3,
-    "in_80": 0.58,
+    "in_80": 0.67,
     "turnout_err_pts": 3.6,
     "favorite_won": 38,
     "time_median": "17:46",
@@ -5047,7 +5047,7 @@
     "time_last": "19:43"
    },
    "0.05": {
-    "log_loss": 0.127,
+    "log_loss": 0.129,
     "margin_err_pts": 4.4,
     "in_80": 0.84,
     "turnout_err_pts": 2.4,
@@ -5067,7 +5067,7 @@
     "time_last": "20:18"
    },
    "0.2": {
-    "log_loss": 0.081,
+    "log_loss": 0.082,
     "margin_err_pts": 1.9,
     "in_80": 0.93,
     "turnout_err_pts": 1.5,
@@ -5087,7 +5087,7 @@
     "time_last": "21:18"
    },
    "0.7": {
-    "log_loss": 0.016,
+    "log_loss": 0.017,
     "margin_err_pts": 0.8,
     "in_80": 0.84,
     "turnout_err_pts": 0.4,
