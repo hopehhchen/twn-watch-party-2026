@@ -205,9 +205,10 @@ def check():
 
     def pkgs():
         import certifi  # noqa: F401
+        import numpy  # noqa: F401
         import openpyxl  # noqa: F401
         import xlrd  # noqa: F401
-        return True, "openpyxl, xlrd, certifi"
+        return True, "openpyxl, xlrd, certifi, numpy"
 
     def tests():
         r = subprocess.run([PY, "tests/test_live.py"], cwd=ROOT, capture_output=True, text=True, env=ENV, timeout=600,

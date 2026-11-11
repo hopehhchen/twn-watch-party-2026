@@ -48,14 +48,14 @@ function Start-TwnNight {
   Rename-Item $unz.FullName 'code'
   Remove-Item $zipFile
 
-  # 4. A private Python environment with the three packages the program needs
+  # 4. A private Python environment with the packages the program needs
   $vpy = Join-Path $Dir 'venv\Scripts\python.exe'
   if (-not (Test-Path $vpy)) {
     Write-Host 'Setting up Python (first time only)...'
     & $py[0] @pyArgs -m venv (Join-Path $Dir 'venv')
     if (-not (Test-Path $vpy)) { Stop-Twn "Couldn't set up Python."; return }
   }
-  & $vpy -m pip install -q --disable-pip-version-check openpyxl==3.1.5 xlrd==2.0.2 certifi
+  & $vpy -m pip install -q --disable-pip-version-check openpyxl==3.1.5 xlrd==2.0.2 certifi numpy
   if ($LASTEXITCODE -ne 0) { Stop-Twn "Couldn't install the Python packages. Is the internet working?"; return }
 
   # 5. Go

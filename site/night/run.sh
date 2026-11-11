@@ -43,12 +43,12 @@ unzip -q "$DIR/code.zip" -d "$DIR" || stop "Couldn't unpack the program."
 mv "$DIR"/twn-watch-party-2026-* "$DIR/code"
 rm -f "$DIR/code.zip"
 
-# 4. A private Python environment with the three packages the program needs
+# 4. A private Python environment with the packages the program needs
 if [ ! -x "$DIR/venv/bin/python" ]; then
   say "Setting up Python (first time only)…"
   "$PY" -m venv "$DIR/venv" || stop "Couldn't set up Python. (On Linux: sudo apt install python3-venv)"
 fi
-"$DIR/venv/bin/python" -m pip install -q --disable-pip-version-check openpyxl==3.1.5 xlrd==2.0.2 certifi || stop "Couldn't install the Python packages. Is the internet working?"
+"$DIR/venv/bin/python" -m pip install -q --disable-pip-version-check openpyxl==3.1.5 xlrd==2.0.2 certifi numpy || stop "Couldn't install the Python packages. Is the internet working?"
 
 # 5. Go
 cd "$DIR/code"
