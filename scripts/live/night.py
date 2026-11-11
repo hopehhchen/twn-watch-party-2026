@@ -252,7 +252,14 @@ def check():
         mock = subprocess.Popen([PY, "-u", "scripts/live/mock_cec.py", "--port", "8791", "--speed", "240", "--start", "17:30"],
                                 cwd=ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, env=ENV)
         try:
-            time.sleep(6)
+            for _ in range(120):  # wait for the stand-in site to come up (a few seconds; longer on a slow computer)
+                try:
+                    urllib.request.urlopen("http://127.0.0.1:8791/zh-TW/TC/63000000000000000.html", timeout=2)
+                    break
+                except urllib.error.HTTPError:
+                    break
+                except Exception:
+                    time.sleep(1)
             for _ in range(2):
                 r = subprocess.run([PY, "scripts/live/poll.py", "--base", "http://127.0.0.1:8791/zh-TW/", "--out", str(out), "--once"],
                                    cwd=ROOT, capture_output=True, text=True, env=ENV, timeout=300, encoding="utf-8", errors="replace")
