@@ -8,7 +8,7 @@ Each cycle fetches, for the 22 mayoral races: the county page and every town pag
 candidate and stations sent/total) and the county turnout page (SC prefix: electors and ballots by town).
 Pages that haven't changed (ETag / Last-Modified) are not downloaded again; a page that fails or doesn't
 parse keeps its last good value. Every cycle's parsed snapshot is archived (out/archive/), so the night can
-be recomputed from scratch (--rebuild) after a fix.
+be recomputed from scratch after a fix: on start, the poller rebuilds every race from what's already archived.
 
 Output: out/needle/2026-mayors.json, the same file the page loads (data/needle/2026-mayors.json plus points),
 written atomically. scripts/live/publish.py puts it on the site.
@@ -24,6 +24,7 @@ import json
 import os
 import sys
 import time
+import ssl
 import urllib.error
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
@@ -39,6 +40,11 @@ from cec_parse import parse_count, parse_turnout  # noqa: E402
 from live_model import LiveRace  # noqa: E402
 
 TW = timezone(timedelta(hours=8))
+try:  # Python from python.org on a Mac has no certificates of its own: use certifi's when installed
+    import certifi
+    SSL = ssl.create_default_context(cafile=certifi.where())
+except ImportError:
+    SSL = ssl.create_default_context()
 UA = "twn-watch-party-2026 (election-2026.tw; https://github.com/hopehhchen/twn-watch-party-2026)"
 NIGHT_FILE = ROOT / "data" / "needle" / "2026-mayors.json"
 TOWNS_FILE = ROOT / "data" / "live" / "towns-2022.json"
@@ -65,7 +71,7 @@ class Fetcher:
             if lm:
                 req.add_header("If-Modified-Since", lm)
             try:
-                with urllib.request.urlopen(req, timeout=self.timeout) as r:
+                with urllib.request.urlopen(req, timeout=self.timeout, context=SSL) as r:
                     raw = r.read()
                     if r.headers.get("Content-Encoding") == "gzip":
                         raw = gzip.decompress(raw)
@@ -261,7 +267,7 @@ class Night:
             if e["county"]:
                 r["_parties"] = {x["no"]: (x["party"] if x["party"] != "無" else "無黨籍") for x in e["county"]["rows"]}
             nos = sorted(names) or r["_nos"]
-            sig = json.dumps({k: (v["sent"], sorted(v["votes"].items())) for k, v in sorted(e["towns"].items())})
+            sig = self._sig(e["towns"])
             blue, other, third, mode = self.sides(r, e["towns"])
             if self.apply_sides(r, blue, other, third, mode, names):
                 self.recompute(r, nos)
@@ -291,16 +297,53 @@ class Night:
         if e.get("turnout") and e["turnout"].get("E"):
             r["electors"] = e["turnout"]["E"]
 
+    @staticmethod
+    def _norm(towns):
+        return {k: {**v, "votes": {int(a): b for a, b in v["votes"].items()}, "names": {int(a): b for a, b in v.get("names", {}).items()}}
+                for k, v in towns.items()}
+
+    @staticmethod
+    def _sig(towns):
+        return json.dumps({k: (v["sent"], sorted(v["votes"].items())) for k, v in sorted(towns.items())})
+
+    def resume(self):
+        """After a restart: take contenders from the latest archived snapshot and rebuild every race's points."""
+        files = sorted((self.out / "archive").glob("*.json.gz"))
+        if not files:
+            return
+        log(f"resuming from {len(files)} saved snapshots")
+        with gzip.open(files[-1], "rt", encoding="utf-8") as fh:
+            latest = json.load(fh)
+        for r in self.doc["races"]:
+            e = latest.get(r["area"])
+            if not e or not e["towns"]:
+                continue
+            towns = self._norm(e["towns"])
+            names = {}
+            for t in towns.values():
+                names.update(t["names"])
+            if e.get("county"):
+                r["_parties"] = {x["no"]: (x["party"] if x["party"] != "無" else "無黨籍") for x in e["county"]["rows"]}
+            self.apply_sides(r, *self.sides(r, towns), names)
+            self.recompute(r, sorted(names) or r["_nos"])
+            self.last[r["area"]] = self._sig(towns)
+            self.meta(r, {**e, "towns": towns})
+
     def recompute(self, r, nos):
-        """Rebuild a race's points from every archived snapshot (after its contenders changed)."""
+        """Rebuild a race's points from every archived snapshot (after its contenders changed, or a restart)."""
         r["pts"] = []
         m = self.model(r, nos)
+        prev = None
         for f in sorted((self.out / "archive").glob("*.json.gz")):
             with gzip.open(f, "rt", encoding="utf-8") as fh:
                 e = json.load(fh).get(r["area"])
             if not e or not e["towns"]:
                 continue
-            towns = {k: {**v, "votes": {int(a): b for a, b in v["votes"].items()}} for k, v in e["towns"].items()}
+            towns = self._norm(e["towns"])
+            sig = self._sig(towns)
+            if sig == prev:
+                continue
+            prev = sig
             row = m.row(e["t"], towns)
             if row is None:
                 continue
@@ -326,14 +369,17 @@ class Night:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--base", required=True, help="count site root, e.g. https://vote.cec.gov.tw/zh-TW/")
+    ap.add_argument("--base", help="count site root, e.g. https://vote.cec.gov.tw/zh-TW/ (default: data/live/night-config.json)")
     ap.add_argument("--out", default=str(ROOT / "live-out"))
     ap.add_argument("--interval", type=float, default=60)
     ap.add_argument("--once", action="store_true")
     ap.add_argument("--probe", action="store_true")
-    ap.add_argument("--rebuild", action="store_true", help="recompute every race from the archive, then continue")
     ap.add_argument("--date", default="2026-11-28", help="the night (for page timestamps)")
     a = ap.parse_args()
+    if not a.base:
+        a.base = json.loads((ROOT / "data" / "live" / "night-config.json").read_text())["count_base"]
+        if not a.base:
+            sys.exit("The CEC count site's address isn't set yet (data/live/night-config.json, count_base).")
     night, fetcher = Night(a.out), Fetcher()
     if a.probe:
         c = night.towns["臺北市"]
@@ -348,10 +394,8 @@ def main():
                     print("   PARSE FAILED:", e, body[:300])
         return
     day = datetime.fromisoformat(a.date).replace(tzinfo=TW)
-    if a.rebuild:
-        for r in night.doc["races"]:
-            night.recompute(r, r["_nos"])
-        night.write(datetime.now(TW))
+    night.resume()  # no-op on a fresh start; after a restart, picks up where the last run stopped
+    first, path = True, night.out / "needle" / "2026-mayors.json"
     while True:
         t_start = time.time()
         now = datetime.now(TW)
@@ -360,7 +404,9 @@ def main():
         snap, errors = night.snapshot(a.base, pages, now_night)
         night.archive(snap, now)
         moved = night.step(snap)
-        path = night.write(now)
+        if moved or first:  # "updated" in the file = when the figures last changed (the page warns if that gets old)
+            path = night.write(now)
+        first = False
         log(f"cycle {time.time() - t_start:.1f}s {fetcher.stats} moved: {', '.join(moved) or '-'}"
             + (f" | {len(errors)} parse errors, e.g. {errors[0]}" if errors else ""))
         if a.once:

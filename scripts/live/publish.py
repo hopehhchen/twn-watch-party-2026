@@ -14,6 +14,7 @@ in than the last published file (a count never goes backwards). A failed check s
 """
 import argparse
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -22,6 +23,19 @@ from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
+WRANGLER = "wrangler@4.149.0"  # pinned: the night doesn't depend on whatever wrangler is newest
+
+
+def deploy(worker):
+    """npx wrangler deploy (to `worker`, if given). Returns (ok, the output's last lines)."""
+    cmd = ["npx", "--yes", WRANGLER, "deploy"] + (["--name", worker] if worker else [])
+    env = dict(os.environ, WRANGLER_SEND_METRICS="false", CI="1")
+    if os.name == "nt":  # npx is a .cmd file on Windows
+        r = subprocess.run(" ".join(cmd), cwd=ROOT, capture_output=True, text=True, timeout=300, shell=True, env=env,
+                           encoding="utf-8", errors="replace")
+    else:
+        r = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, timeout=300, env=env)
+    return r.returncode == 0, (r.stdout + r.stderr).strip()
 
 
 def log(*a):
@@ -56,6 +70,7 @@ def main():
     ap.add_argument("--deploy", action="store_true")
     ap.add_argument("--every", type=float, default=45)
     ap.add_argument("--once", action="store_true")
+    ap.add_argument("--worker", help="deploy to this Worker instead of the one in wrangler.jsonc (rehearsals: a test Worker)")
     a = ap.parse_args()
     src, dst = Path(a.src), Path(a.site) / "needle" / "2026-mayors.json"
     last_mtime, prev = None, None
@@ -78,9 +93,8 @@ def main():
                 shutil.copy(src, dst)
                 ok = True
                 if a.deploy:
-                    r = subprocess.run(["npx", "wrangler", "deploy"], cwd=ROOT, capture_output=True, text=True, timeout=180)
-                    ok = r.returncode == 0
-                    log("deploy", "ok" if ok else "FAILED", (r.stdout + r.stderr).strip().splitlines()[-1:] if (r.stdout or r.stderr) else "")
+                    ok, out = deploy(a.worker)
+                    log("deploy", "ok" if ok else "FAILED: " + " / ".join(out.splitlines()[-3:]))
                 if ok:
                     last_mtime, prev = m, doc
                     log("published", doc.get("updated"), sum(len(r["pts"]) for r in doc["races"]), "points")

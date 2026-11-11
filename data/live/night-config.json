@@ -1,0 +1,6 @@
+{
+ "count_base": null,
+ "note": "The CEC count site root (e.g. https://vote.cec.gov.tw/zh-TW/), set once the CEC announces it. The night runner (scripts/live/night.py) reads this.",
+ "worker": "twn-watch-party-2026",
+ "test_worker": "twn-watch-party-2026-test"
+}

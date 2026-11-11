@@ -116,6 +116,9 @@ def main():
         (out / sub).mkdir(exist_ok=True)
         for f in src.glob("*.json"):
             shutil.copy(f, out / sub / f.name)
+    (out / "night").mkdir(exist_ok=True)
+    for f in (ROOT / "site" / "night").glob("*"):  # election-night setup scripts for the machine that reads the CEC
+        shutil.copy(f, out / "night" / f.name)
     for f in (ROOT / "site" / "icons").glob("*"):  # tab icons (the vote stamp): favicon.svg/.ico/-32.png, apple-touch-icon.png
         shutil.copy(f, out / f.name)
     (out / "needle.html").write_text(REDIRECT.replace("{hash}", ""))
