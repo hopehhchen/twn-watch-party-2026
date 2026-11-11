@@ -1,0 +1,3822 @@
+{
+ "source": "CEC candidate files, info.cec.gov.tw/vote2026/static/json/cand/T/<county code>.json, read 2026-11-11. 臺南市's file was not published (404); its districts are taken from 2022 until it is.",
+ "counties": {
+  "臺北市": {
+   "code": "63000",
+   "districts": [
+    {
+     "no": 1,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 12,
+     "women": 3,
+     "candidates": 20,
+     "towns": [
+      "士林區",
+      "北投區"
+     ],
+     "page": "T1/63000010000000000.html",
+     "electors_est": 413790
+    },
+    {
+     "no": 2,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 9,
+     "women": 2,
+     "candidates": 13,
+     "towns": [
+      "南港區",
+      "內湖區"
+     ],
+     "page": "T1/63000020000000000.html",
+     "electors_est": 311073
+    },
+    {
+     "no": 3,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 9,
+     "women": 2,
+     "candidates": 13,
+     "towns": [
+      "松山區",
+      "信義區"
+     ],
+     "page": "T1/63000030000000000.html",
+     "electors_est": 319364
+    },
+    {
+     "no": 4,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 8,
+     "women": 2,
+     "candidates": 14,
+     "towns": [
+      "中山區",
+      "大同區"
+     ],
+     "page": "T1/63000040000000000.html",
+     "electors_est": 271792
+    },
+    {
+     "no": 5,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 8,
+     "women": 2,
+     "candidates": 14,
+     "towns": [
+      "中正區",
+      "萬華區"
+     ],
+     "page": "T1/63000050000000000.html",
+     "electors_est": 262278
+    },
+    {
+     "no": 6,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 13,
+     "women": 3,
+     "candidates": 18,
+     "towns": [
+      "大安區",
+      "文山區"
+     ],
+     "page": "T1/63000060000000000.html",
+     "electors_est": 430492
+    },
+    {
+     "no": 7,
+     "prefix": "T2",
+     "seat_type": "平地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "松山區",
+      "信義區",
+      "大安區",
+      "中山區",
+      "中正區",
+      "大同區",
+      "萬華區",
+      "文山區",
+      "南港區",
+      "內湖區",
+      "士林區",
+      "北投區"
+     ],
+     "page": "T2/63000070000000000.html",
+     "electors_est": 7178
+    },
+    {
+     "no": 8,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "松山區",
+      "信義區",
+      "大安區",
+      "中山區",
+      "中正區",
+      "大同區",
+      "萬華區",
+      "文山區",
+      "南港區",
+      "內湖區",
+      "士林區",
+      "北投區"
+     ],
+     "page": "T3/63000080000000000.html",
+     "electors_est": 4886
+    }
+   ]
+  },
+  "新北市": {
+   "code": "65000",
+   "districts": [
+    {
+     "no": 1,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 4,
+     "women": 1,
+     "candidates": 5,
+     "towns": [
+      "淡水區",
+      "三芝區",
+      "石門區",
+      "八里區"
+     ],
+     "page": "T1/65000010000000000.html",
+     "electors_est": 215770
+    },
+    {
+     "no": 2,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 7,
+     "towns": [
+      "五股區",
+      "泰山區",
+      "林口區"
+     ],
+     "page": "T1/65000020000000000.html",
+     "electors_est": 229451
+    },
+    {
+     "no": 3,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 7,
+     "women": 1,
+     "candidates": 12,
+     "towns": [
+      "新莊區"
+     ],
+     "page": "T1/65000030000000000.html",
+     "electors_est": 336090
+    },
+    {
+     "no": 4,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 9,
+     "women": 2,
+     "candidates": 17,
+     "towns": [
+      "三重區",
+      "蘆洲區"
+     ],
+     "page": "T1/65000040000000000.html",
+     "electors_est": 480074
+    },
+    {
+     "no": 5,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 9,
+     "women": 2,
+     "candidates": 12,
+     "towns": [
+      "板橋區"
+     ],
+     "page": "T1/65000050000000000.html",
+     "electors_est": 446836
+    },
+    {
+     "no": 6,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 6,
+     "women": 1,
+     "candidates": 9,
+     "towns": [
+      "中和區"
+     ],
+     "page": "T1/65000060000000000.html",
+     "electors_est": 338747
+    },
+    {
+     "no": 7,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 3,
+     "women": 0,
+     "candidates": 5,
+     "towns": [
+      "永和區"
+     ],
+     "page": "T1/65000070000000000.html",
+     "electors_est": 174497
+    },
+    {
+     "no": 8,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 9,
+     "women": 2,
+     "candidates": 12,
+     "towns": [
+      "樹林區",
+      "鶯歌區",
+      "三峽區",
+      "土城區"
+     ],
+     "page": "T1/65000080000000000.html",
+     "electors_est": 497438
+    },
+    {
+     "no": 9,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 9,
+     "towns": [
+      "新店區",
+      "深坑區",
+      "石碇區",
+      "坪林區",
+      "烏來區"
+     ],
+     "page": "T1/65000090000000000.html",
+     "electors_est": 287083
+    },
+    {
+     "no": 10,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 1,
+     "women": 0,
+     "candidates": 1,
+     "towns": [
+      "瑞芳區",
+      "平溪區",
+      "雙溪區",
+      "貢寮區"
+     ],
+     "page": "T1/65000100000000000.html",
+     "electors_est": 53503
+    },
+    {
+     "no": 11,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 4,
+     "women": 1,
+     "candidates": 9,
+     "towns": [
+      "汐止區",
+      "金山區",
+      "萬里區"
+     ],
+     "page": "T1/65000110000000000.html",
+     "electors_est": 207494
+    },
+    {
+     "no": 12,
+     "prefix": "T2",
+     "seat_type": "平地原住民",
+     "seats": 4,
+     "women": 1,
+     "candidates": 7,
+     "towns": [
+      "板橋區",
+      "三重區",
+      "中和區",
+      "永和區",
+      "新莊區",
+      "新店區",
+      "樹林區",
+      "鶯歌區",
+      "三峽區",
+      "淡水區",
+      "汐止區",
+      "瑞芳區",
+      "土城區",
+      "蘆洲區",
+      "五股區",
+      "泰山區",
+      "林口區",
+      "深坑區",
+      "石碇區",
+      "坪林區",
+      "三芝區",
+      "石門區",
+      "八里區",
+      "平溪區",
+      "雙溪區",
+      "貢寮區",
+      "金山區",
+      "萬里區",
+      "烏來區"
+     ],
+     "page": "T2/65000120000000000.html",
+     "electors_est": 28713
+    },
+    {
+     "no": 13,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 2,
+     "women": 0,
+     "candidates": 6,
+     "towns": [
+      "板橋區",
+      "三重區",
+      "中和區",
+      "永和區",
+      "新莊區",
+      "新店區",
+      "樹林區",
+      "鶯歌區",
+      "三峽區",
+      "淡水區",
+      "汐止區",
+      "瑞芳區",
+      "土城區",
+      "蘆洲區",
+      "五股區",
+      "泰山區",
+      "林口區",
+      "深坑區",
+      "石碇區",
+      "坪林區",
+      "三芝區",
+      "石門區",
+      "八里區",
+      "平溪區",
+      "雙溪區",
+      "貢寮區",
+      "金山區",
+      "萬里區",
+      "烏來區"
+     ],
+     "page": "T3/65000130000000000.html",
+     "electors_est": 12516
+    }
+   ]
+  },
+  "基隆市": {
+   "code": "10017",
+   "districts": [
+    {
+     "no": 1,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 4,
+     "women": 1,
+     "candidates": 8,
+     "towns": [
+      "中正區"
+     ],
+     "page": "T1/10017010000000000.html",
+     "electors_est": 41018
+    },
+    {
+     "no": 2,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 9,
+     "towns": [
+      "信義區"
+     ],
+     "page": "T1/10017020000000000.html",
+     "electors_est": 44830
+    },
+    {
+     "no": 3,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 3,
+     "women": 0,
+     "candidates": 4,
+     "towns": [
+      "仁愛區"
+     ],
+     "page": "T1/10017030000000000.html",
+     "electors_est": 33626
+    },
+    {
+     "no": 4,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 4,
+     "women": 1,
+     "candidates": 9,
+     "towns": [
+      "中山區"
+     ],
+     "page": "T1/10017040000000000.html",
+     "electors_est": 38999
+    },
+    {
+     "no": 5,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 7,
+     "women": 1,
+     "candidates": 12,
+     "towns": [
+      "安樂區"
+     ],
+     "page": "T1/10017050000000000.html",
+     "electors_est": 66943
+    },
+    {
+     "no": 6,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 3,
+     "women": 0,
+     "candidates": 5,
+     "towns": [
+      "暖暖區"
+     ],
+     "page": "T1/10017060000000000.html",
+     "electors_est": 31978
+    },
+    {
+     "no": 7,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 4,
+     "women": 1,
+     "candidates": 6,
+     "towns": [
+      "七堵區"
+     ],
+     "page": "T1/10017070000000000.html",
+     "electors_est": 43573
+    },
+    {
+     "no": 8,
+     "prefix": "T2",
+     "seat_type": "平地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "中正區",
+      "七堵區",
+      "暖暖區",
+      "仁愛區",
+      "中山區",
+      "安樂區",
+      "信義區"
+     ],
+     "page": "T2/10017080000000000.html",
+     "electors_est": 5962
+    },
+    {
+     "no": 9,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 4,
+     "towns": [
+      "中正區",
+      "七堵區",
+      "暖暖區",
+      "仁愛區",
+      "中山區",
+      "安樂區",
+      "信義區"
+     ],
+     "page": "T3/10017090000000000.html",
+     "electors_est": 307913
+    }
+   ]
+  },
+  "桃園市": {
+   "code": "68000",
+   "districts": [
+    {
+     "no": 1,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 12,
+     "women": 3,
+     "candidates": 19,
+     "towns": [
+      "桃園區"
+     ],
+     "page": "T1/68000010000000000.html",
+     "electors_est": 359433
+    },
+    {
+     "no": 2,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 9,
+     "towns": [
+      "龜山區"
+     ],
+     "page": "T1/68000020000000000.html",
+     "electors_est": 132781
+    },
+    {
+     "no": 3,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 8,
+     "towns": [
+      "八德區"
+     ],
+     "page": "T1/68000030000000000.html",
+     "electors_est": 162085
+    },
+    {
+     "no": 4,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 4,
+     "women": 1,
+     "candidates": 6,
+     "towns": [
+      "蘆竹區"
+     ],
+     "page": "T1/68000040000000000.html",
+     "electors_est": 126539
+    },
+    {
+     "no": 5,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 2,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "大園區"
+     ],
+     "page": "T1/68000050000000000.html",
+     "electors_est": 67040
+    },
+    {
+     "no": 6,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 2,
+     "women": 0,
+     "candidates": 5,
+     "towns": [
+      "大溪區",
+      "復興區"
+     ],
+     "page": "T1/68000060000000000.html",
+     "electors_est": 75398
+    },
+    {
+     "no": 7,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 11,
+     "women": 2,
+     "candidates": 17,
+     "towns": [
+      "中壢區"
+     ],
+     "page": "T1/68000070000000000.html",
+     "electors_est": 330519
+    },
+    {
+     "no": 8,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 6,
+     "women": 1,
+     "candidates": 10,
+     "towns": [
+      "平鎮區"
+     ],
+     "page": "T1/68000080000000000.html",
+     "electors_est": 176716
+    },
+    {
+     "no": 9,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 4,
+     "women": 1,
+     "candidates": 7,
+     "towns": [
+      "楊梅區"
+     ],
+     "page": "T1/68000090000000000.html",
+     "electors_est": 137958
+    },
+    {
+     "no": 10,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 3,
+     "women": 0,
+     "candidates": 5,
+     "towns": [
+      "龍潭區"
+     ],
+     "page": "T1/68000100000000000.html",
+     "electors_est": 98152
+    },
+    {
+     "no": 11,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "新屋區"
+     ],
+     "page": "T1/68000110000000000.html",
+     "electors_est": 40320
+    },
+    {
+     "no": 12,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 2,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "觀音區"
+     ],
+     "page": "T1/68000120000000000.html",
+     "electors_est": 56541
+    },
+    {
+     "no": 13,
+     "prefix": "T2",
+     "seat_type": "平地原住民",
+     "seats": 4,
+     "women": 1,
+     "candidates": 6,
+     "towns": [
+      "桃園區",
+      "中壢區",
+      "大溪區",
+      "楊梅區",
+      "蘆竹區",
+      "大園區",
+      "龜山區",
+      "八德區",
+      "龍潭區",
+      "平鎮區",
+      "新屋區",
+      "觀音區",
+      "復興區"
+     ],
+     "page": "T2/68000130000000000.html",
+     "electors_est": 31164
+    },
+    {
+     "no": 14,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 4,
+     "women": 1,
+     "candidates": 8,
+     "towns": [
+      "桃園區",
+      "中壢區",
+      "大溪區",
+      "楊梅區",
+      "蘆竹區",
+      "大園區",
+      "龜山區",
+      "八德區",
+      "龍潭區",
+      "平鎮區",
+      "新屋區",
+      "觀音區",
+      "復興區"
+     ],
+     "page": "T3/68000140000000000.html",
+     "electors_est": 24121
+    }
+   ]
+  },
+  "新竹市": {
+   "code": "10018",
+   "districts": [
+    {
+     "no": 1,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 12,
+     "women": 3,
+     "candidates": 19,
+     "towns": [
+      "東區"
+     ],
+     "page": "T1/10018010000000000.html",
+     "electors_est": 120775
+    },
+    {
+     "no": 2,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 4,
+     "women": 1,
+     "candidates": 6,
+     "towns": [
+      "東區"
+     ],
+     "page": "T1/10018020000000000.html",
+     "electors_est": 42293
+    },
+    {
+     "no": 3,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 2,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "北區"
+     ],
+     "page": "T1/10018030000000000.html",
+     "electors_est": 26483
+    },
+    {
+     "no": 4,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 9,
+     "women": 2,
+     "candidates": 13,
+     "towns": [
+      "北區"
+     ],
+     "page": "T1/10018040000000000.html",
+     "electors_est": 94480
+    },
+    {
+     "no": 5,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 6,
+     "women": 1,
+     "candidates": 8,
+     "towns": [
+      "香山區"
+     ],
+     "page": "T1/10018050000000000.html",
+     "electors_est": 63991
+    },
+    {
+     "no": 6,
+     "prefix": "T2",
+     "seat_type": "平地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "東區",
+      "北區",
+      "香山區"
+     ],
+     "page": "T2/10018060000000000.html",
+     "electors_est": 1502
+    },
+    {
+     "no": 7,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 5,
+     "towns": [
+      "東區",
+      "北區",
+      "香山區"
+     ],
+     "page": "T3/10018070000000000.html",
+     "electors_est": 350758
+    }
+   ]
+  },
+  "新竹縣": {
+   "code": "10004",
+   "districts": [
+    {
+     "no": 1,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 4,
+     "women": 1,
+     "candidates": 6,
+     "towns": [
+      "竹北市"
+     ],
+     "page": "T1/10004010000000000.html",
+     "electors_est": 147534
+    },
+    {
+     "no": 2,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 9,
+     "women": 2,
+     "candidates": 14,
+     "towns": [
+      "竹北市"
+     ],
+     "page": "T1/10004020000000000.html",
+     "electors_est": 148551
+    },
+    {
+     "no": 3,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 11,
+     "towns": [
+      "湖口鄉"
+     ],
+     "page": "T1/10004030000000000.html",
+     "electors_est": 64996
+    },
+    {
+     "no": 4,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 3,
+     "women": 0,
+     "candidates": 6,
+     "towns": [
+      "新豐鄉"
+     ],
+     "page": "T1/10004040000000000.html",
+     "electors_est": 46193
+    },
+    {
+     "no": 5,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 2,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "關西鎮"
+     ],
+     "page": "T1/10004050000000000.html",
+     "electors_est": 23240
+    },
+    {
+     "no": 6,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 2,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "新埔鎮"
+     ],
+     "page": "T1/10004060000000000.html",
+     "electors_est": 28475
+    },
+    {
+     "no": 7,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 1,
+     "women": 0,
+     "candidates": 1,
+     "towns": [
+      "橫山鄉",
+      "尖石鄉"
+     ],
+     "page": "T1/10004070000000000.html",
+     "electors_est": 17749
+    },
+    {
+     "no": 8,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 1,
+     "women": 0,
+     "candidates": 1,
+     "towns": [
+      "芎林鄉"
+     ],
+     "page": "T1/10004080000000000.html",
+     "electors_est": 17157
+    },
+    {
+     "no": 9,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 9,
+     "towns": [
+      "竹東鎮",
+      "五峰鄉"
+     ],
+     "page": "T1/10004090000000000.html",
+     "electors_est": 81449
+    },
+    {
+     "no": 10,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "寶山鄉"
+     ],
+     "page": "T1/10004100000000000.html",
+     "electors_est": 12512
+    },
+    {
+     "no": 11,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "北埔鄉",
+      "峨眉鄉"
+     ],
+     "page": "T1/10004110000000000.html",
+     "electors_est": 12398
+    },
+    {
+     "no": 12,
+     "prefix": "T2",
+     "seat_type": "平地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "竹北市",
+      "竹東鎮",
+      "新埔鎮",
+      "關西鎮",
+      "湖口鄉",
+      "新豐鄉",
+      "芎林鄉",
+      "橫山鄉",
+      "北埔鄉",
+      "寶山鄉",
+      "峨眉鄉",
+      "尖石鄉",
+      "五峰鄉"
+     ],
+     "page": "T2/10004120000000000.html",
+     "electors_est": 2170
+    },
+    {
+     "no": 13,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 5,
+     "towns": [
+      "竹北市",
+      "新埔鎮",
+      "關西鎮",
+      "湖口鄉",
+      "新豐鄉",
+      "橫山鄉",
+      "尖石鄉"
+     ],
+     "page": "T3/10004130000000000.html",
+     "electors_est": 7544
+    },
+    {
+     "no": 14,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "竹東鎮",
+      "芎林鄉",
+      "北埔鄉",
+      "寶山鄉",
+      "峨眉鄉",
+      "五峰鄉"
+     ],
+     "page": "T3/10004140000000000.html",
+     "electors_est": 7544
+    }
+   ]
+  },
+  "苗栗縣": {
+   "code": "10005",
+   "districts": [
+    {
+     "no": 1,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 9,
+     "women": 2,
+     "candidates": 15,
+     "towns": [
+      "苗栗市",
+      "公館鄉",
+      "頭屋鄉"
+     ],
+     "page": "T1/10005010000000000.html",
+     "electors_est": 105970
+    },
+    {
+     "no": 2,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 3,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "銅鑼鄉",
+      "三義鄉",
+      "西湖鄉"
+     ],
+     "page": "T1/10005020000000000.html",
+     "electors_est": 32864
+    },
+    {
+     "no": 3,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 7,
+     "towns": [
+      "苑裡鎮",
+      "通霄鎮"
+     ],
+     "page": "T1/10005030000000000.html",
+     "electors_est": 64754
+    },
+    {
+     "no": 4,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 9,
+     "women": 2,
+     "candidates": 12,
+     "towns": [
+      "竹南鎮",
+      "後龍鎮",
+      "造橋鄉"
+     ],
+     "page": "T1/10005040000000000.html",
+     "electors_est": 107214
+    },
+    {
+     "no": 5,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 8,
+     "women": 2,
+     "candidates": 12,
+     "towns": [
+      "頭份市",
+      "南庄鄉",
+      "三灣鄉"
+     ],
+     "page": "T1/10005050000000000.html",
+     "electors_est": 94361
+    },
+    {
+     "no": 6,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 2,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "卓蘭鎮",
+      "大湖鄉",
+      "獅潭鄉",
+      "泰安鄉"
+     ],
+     "page": "T1/10005060000000000.html",
+     "electors_est": 30010
+    },
+    {
+     "no": 7,
+     "prefix": "T2",
+     "seat_type": "平地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "苗栗市",
+      "苑裡鎮",
+      "通霄鎮",
+      "竹南鎮",
+      "頭份市",
+      "後龍鎮",
+      "卓蘭鎮",
+      "大湖鄉",
+      "公館鄉",
+      "銅鑼鄉",
+      "南庄鄉",
+      "頭屋鄉",
+      "三義鄉",
+      "西湖鄉",
+      "造橋鄉",
+      "三灣鄉",
+      "獅潭鄉",
+      "泰安鄉"
+     ],
+     "page": "T2/10005070000000000.html",
+     "electors_est": 3239
+    },
+    {
+     "no": 8,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "苗栗市",
+      "苑裡鎮",
+      "通霄鎮",
+      "竹南鎮",
+      "頭份市",
+      "後龍鎮",
+      "卓蘭鎮",
+      "大湖鄉",
+      "公館鄉",
+      "銅鑼鄉",
+      "南庄鄉",
+      "頭屋鄉",
+      "三義鄉",
+      "西湖鄉",
+      "造橋鄉",
+      "三灣鄉",
+      "獅潭鄉",
+      "泰安鄉"
+     ],
+     "page": "T3/10005080000000000.html",
+     "electors_est": 5014
+    }
+   ]
+  },
+  "臺中市": {
+   "code": "66000",
+   "districts": [
+    {
+     "no": 1,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 3,
+     "women": 0,
+     "candidates": 4,
+     "towns": [
+      "大甲區",
+      "外埔區",
+      "大安區"
+     ],
+     "page": "T1/66000010000000000.html",
+     "electors_est": 101498
+    },
+    {
+     "no": 2,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 7,
+     "towns": [
+      "清水區",
+      "沙鹿區",
+      "梧棲區"
+     ],
+     "page": "T1/66000020000000000.html",
+     "electors_est": 193116
+    },
+    {
+     "no": 3,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 5,
+     "towns": [
+      "烏日區",
+      "大肚區",
+      "龍井區"
+     ],
+     "page": "T1/66000030000000000.html",
+     "electors_est": 169220
+    },
+    {
+     "no": 4,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 9,
+     "towns": [
+      "豐原區",
+      "后里區"
+     ],
+     "page": "T1/66000040000000000.html",
+     "electors_est": 174017
+    },
+    {
+     "no": 5,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 6,
+     "women": 1,
+     "candidates": 10,
+     "towns": [
+      "神岡區",
+      "潭子區",
+      "大雅區"
+     ],
+     "page": "T1/66000050000000000.html",
+     "electors_est": 213890
+    },
+    {
+     "no": 6,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 6,
+     "towns": [
+      "西屯區"
+     ],
+     "page": "T1/66000060000000000.html",
+     "electors_est": 180777
+    },
+    {
+     "no": 7,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 4,
+     "women": 1,
+     "candidates": 5,
+     "towns": [
+      "南屯區"
+     ],
+     "page": "T1/66000070000000000.html",
+     "electors_est": 136910
+    },
+    {
+     "no": 8,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 7,
+     "women": 1,
+     "candidates": 13,
+     "towns": [
+      "北屯區"
+     ],
+     "page": "T1/66000080000000000.html",
+     "electors_est": 232089
+    },
+    {
+     "no": 9,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 3,
+     "women": 0,
+     "candidates": 4,
+     "towns": [
+      "北區"
+     ],
+     "page": "T1/66000090000000000.html",
+     "electors_est": 117315
+    },
+    {
+     "no": 10,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 3,
+     "women": 0,
+     "candidates": 4,
+     "towns": [
+      "中區",
+      "西區"
+     ],
+     "page": "T1/66000100000000000.html",
+     "electors_est": 102516
+    },
+    {
+     "no": 11,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 4,
+     "women": 1,
+     "candidates": 8,
+     "towns": [
+      "東區",
+      "南區"
+     ],
+     "page": "T1/66000110000000000.html",
+     "electors_est": 163586
+    },
+    {
+     "no": 12,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 4,
+     "women": 1,
+     "candidates": 7,
+     "towns": [
+      "太平區"
+     ],
+     "page": "T1/66000120000000000.html",
+     "electors_est": 155954
+    },
+    {
+     "no": 13,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 6,
+     "women": 1,
+     "candidates": 9,
+     "towns": [
+      "霧峰區",
+      "大里區"
+     ],
+     "page": "T1/66000130000000000.html",
+     "electors_est": 220964
+    },
+    {
+     "no": 14,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 2,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "東勢區",
+      "新社區",
+      "石岡區",
+      "和平區"
+     ],
+     "page": "T1/66000140000000000.html",
+     "electors_est": 78014
+    },
+    {
+     "no": 15,
+     "prefix": "T2",
+     "seat_type": "平地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "中區",
+      "東區",
+      "南區",
+      "西區",
+      "北區",
+      "西屯區",
+      "南屯區",
+      "北屯區",
+      "豐原區",
+      "東勢區",
+      "大甲區",
+      "清水區",
+      "沙鹿區",
+      "梧棲區",
+      "后里區",
+      "神岡區",
+      "潭子區",
+      "大雅區",
+      "新社區",
+      "石岡區",
+      "外埔區",
+      "大安區",
+      "烏日區",
+      "大肚區",
+      "龍井區",
+      "霧峰區",
+      "太平區",
+      "大里區",
+      "和平區"
+     ],
+     "page": "T2/66000150000000000.html",
+     "electors_est": 10364
+    },
+    {
+     "no": 16,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "豐原區",
+      "東勢區",
+      "大甲區",
+      "清水區",
+      "后里區",
+      "神岡區",
+      "潭子區",
+      "大雅區",
+      "新社區",
+      "石岡區",
+      "外埔區",
+      "大安區",
+      "和平區"
+     ],
+     "page": "T3/66000160000000000.html",
+     "electors_est": 6907
+    },
+    {
+     "no": 17,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 4,
+     "towns": [
+      "中區",
+      "東區",
+      "南區",
+      "西區",
+      "北區",
+      "西屯區",
+      "南屯區",
+      "北屯區",
+      "沙鹿區",
+      "梧棲區",
+      "烏日區",
+      "大肚區",
+      "龍井區",
+      "霧峰區",
+      "太平區",
+      "大里區"
+     ],
+     "page": "T3/66000170000000000.html",
+     "electors_est": 7701
+    }
+   ]
+  },
+  "彰化縣": {
+   "code": "10007",
+   "districts": [
+    {
+     "no": 1,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 12,
+     "women": 3,
+     "candidates": 15,
+     "towns": [
+      "彰化市",
+      "花壇鄉",
+      "芬園鄉"
+     ],
+     "page": "T1/10007010000000000.html",
+     "electors_est": 239225
+    },
+    {
+     "no": 2,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 7,
+     "women": 1,
+     "candidates": 9,
+     "towns": [
+      "鹿港鎮",
+      "福興鄉",
+      "秀水鄉"
+     ],
+     "page": "T1/10007020000000000.html",
+     "electors_est": 137432
+    },
+    {
+     "no": 3,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 6,
+     "women": 1,
+     "candidates": 10,
+     "towns": [
+      "和美鎮",
+      "線西鄉",
+      "伸港鄉"
+     ],
+     "page": "T1/10007030000000000.html",
+     "electors_est": 116691
+    },
+    {
+     "no": 4,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 9,
+     "women": 2,
+     "candidates": 13,
+     "towns": [
+      "員林市",
+      "大村鄉",
+      "永靖鄉"
+     ],
+     "page": "T1/10007040000000000.html",
+     "electors_est": 160987
+    },
+    {
+     "no": 5,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 6,
+     "towns": [
+      "溪湖鎮",
+      "埔鹽鄉",
+      "埔心鄉"
+     ],
+     "page": "T1/10007050000000000.html",
+     "electors_est": 98717
+    },
+    {
+     "no": 6,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 4,
+     "women": 1,
+     "candidates": 6,
+     "towns": [
+      "田中鎮",
+      "社頭鄉",
+      "二水鄉"
+     ],
+     "page": "T1/10007060000000000.html",
+     "electors_est": 80732
+    },
+    {
+     "no": 7,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 8,
+     "towns": [
+      "北斗鎮",
+      "田尾鄉",
+      "埤頭鄉",
+      "溪州鄉"
+     ],
+     "page": "T1/10007070000000000.html",
+     "electors_est": 97768
+    },
+    {
+     "no": 8,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 9,
+     "towns": [
+      "二林鎮",
+      "芳苑鄉",
+      "大城鄉",
+      "竹塘鄉"
+     ],
+     "page": "T1/10007080000000000.html",
+     "electors_est": 93776
+    },
+    {
+     "no": 9,
+     "prefix": "T2",
+     "seat_type": "平地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "彰化市",
+      "鹿港鎮",
+      "和美鎮",
+      "線西鄉",
+      "伸港鄉",
+      "福興鄉",
+      "秀水鄉",
+      "花壇鄉",
+      "芬園鄉",
+      "員林市",
+      "溪湖鎮",
+      "田中鎮",
+      "大村鄉",
+      "埔鹽鄉",
+      "埔心鄉",
+      "永靖鄉",
+      "社頭鄉",
+      "二水鄉",
+      "北斗鎮",
+      "二林鎮",
+      "田尾鄉",
+      "埤頭鄉",
+      "芳苑鄉",
+      "大城鄉",
+      "竹塘鄉",
+      "溪州鄉"
+     ],
+     "page": "T2/10007090000000000.html",
+     "electors_est": 2120
+    },
+    {
+     "no": 10,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 8,
+     "towns": [
+      "彰化市",
+      "鹿港鎮",
+      "和美鎮",
+      "線西鄉",
+      "伸港鄉",
+      "福興鄉",
+      "秀水鄉",
+      "花壇鄉",
+      "芬園鄉",
+      "員林市",
+      "溪湖鎮",
+      "田中鎮",
+      "大村鄉",
+      "埔鹽鄉",
+      "埔心鄉",
+      "永靖鄉",
+      "社頭鄉",
+      "二水鄉",
+      "北斗鎮",
+      "二林鎮",
+      "田尾鄉",
+      "埤頭鄉",
+      "芳苑鄉",
+      "大城鄉",
+      "竹塘鄉",
+      "溪州鄉"
+     ],
+     "page": "T3/10007100000000000.html",
+     "electors_est": 1028606
+    }
+   ]
+  },
+  "南投縣": {
+   "code": "10008",
+   "districts": [
+    {
+     "no": 1,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 10,
+     "women": 2,
+     "candidates": 17,
+     "towns": [
+      "南投市",
+      "名間鄉"
+     ],
+     "page": "T1/10008010000000000.html",
+     "electors_est": 111482
+    },
+    {
+     "no": 2,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 9,
+     "women": 2,
+     "candidates": 13,
+     "towns": [
+      "草屯鎮",
+      "中寮鄉"
+     ],
+     "page": "T1/10008020000000000.html",
+     "electors_est": 92587
+    },
+    {
+     "no": 3,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 3,
+     "women": 0,
+     "candidates": 6,
+     "towns": [
+      "集集鎮",
+      "魚池鄉",
+      "水里鄉",
+      "信義鄉"
+     ],
+     "page": "T1/10008030000000000.html",
+     "electors_est": 41022
+    },
+    {
+     "no": 4,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 9,
+     "towns": [
+      "竹山鎮",
+      "鹿谷鄉"
+     ],
+     "page": "T1/10008040000000000.html",
+     "electors_est": 58852
+    },
+    {
+     "no": 5,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 7,
+     "women": 1,
+     "candidates": 10,
+     "towns": [
+      "埔里鎮",
+      "國姓鄉",
+      "仁愛鄉"
+     ],
+     "page": "T1/10008050000000000.html",
+     "electors_est": 80708
+    },
+    {
+     "no": 6,
+     "prefix": "T2",
+     "seat_type": "平地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "南投市",
+      "埔里鎮",
+      "草屯鎮",
+      "竹山鎮",
+      "集集鎮",
+      "名間鄉",
+      "鹿谷鄉",
+      "中寮鄉",
+      "魚池鄉",
+      "國姓鄉",
+      "水里鄉",
+      "信義鄉",
+      "仁愛鄉"
+     ],
+     "page": "T2/10008060000000000.html",
+     "electors_est": 1312
+    },
+    {
+     "no": 7,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "南投市",
+      "竹山鎮",
+      "集集鎮",
+      "名間鄉",
+      "鹿谷鄉",
+      "水里鄉",
+      "信義鄉"
+     ],
+     "page": "T3/10008070000000000.html",
+     "electors_est": 7887
+    },
+    {
+     "no": 8,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 1,
+     "towns": [
+      "埔里鎮",
+      "草屯鎮",
+      "中寮鄉",
+      "魚池鄉",
+      "國姓鄉",
+      "仁愛鄉"
+     ],
+     "page": "T3/10008080000000000.html",
+     "electors_est": 12091
+    }
+   ]
+  },
+  "雲林縣": {
+   "code": "10009",
+   "districts": [
+    {
+     "no": 1,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 10,
+     "women": 2,
+     "candidates": 18,
+     "towns": [
+      "斗六市",
+      "莿桐鄉",
+      "林內鄉"
+     ],
+     "page": "T1/10009010000000000.html",
+     "electors_est": 125373
+    },
+    {
+     "no": 2,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 6,
+     "women": 1,
+     "candidates": 9,
+     "towns": [
+      "斗南鎮",
+      "古坑鄉",
+      "大埤鄉"
+     ],
+     "page": "T1/10009020000000000.html",
+     "electors_est": 78434
+    },
+    {
+     "no": 3,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 9,
+     "women": 2,
+     "candidates": 11,
+     "towns": [
+      "虎尾鎮",
+      "土庫鎮",
+      "褒忠鄉",
+      "元長鄉"
+     ],
+     "page": "T1/10009030000000000.html",
+     "electors_est": 111385
+    },
+    {
+     "no": 4,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 6,
+     "women": 1,
+     "candidates": 10,
+     "towns": [
+      "西螺鎮",
+      "二崙鄉",
+      "崙背鄉"
+     ],
+     "page": "T1/10009040000000000.html",
+     "electors_est": 78213
+    },
+    {
+     "no": 5,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 7,
+     "women": 1,
+     "candidates": 10,
+     "towns": [
+      "麥寮鄉",
+      "東勢鄉",
+      "臺西鄉",
+      "四湖鄉"
+     ],
+     "page": "T1/10009050000000000.html",
+     "electors_est": 90306
+    },
+    {
+     "no": 6,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 7,
+     "towns": [
+      "北港鎮",
+      "口湖鄉",
+      "水林鄉"
+     ],
+     "page": "T1/10009060000000000.html",
+     "electors_est": 75169
+    },
+    {
+     "no": 7,
+     "prefix": "T2",
+     "seat_type": "平地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "斗六市",
+      "斗南鎮",
+      "虎尾鎮",
+      "西螺鎮",
+      "土庫鎮",
+      "北港鎮",
+      "古坑鄉",
+      "大埤鄉",
+      "莿桐鄉",
+      "林內鄉",
+      "二崙鄉",
+      "崙背鄉",
+      "麥寮鄉",
+      "東勢鄉",
+      "褒忠鄉",
+      "臺西鄉",
+      "元長鄉",
+      "四湖鄉",
+      "口湖鄉",
+      "水林鄉"
+     ],
+     "page": "T2/10009070000000000.html",
+     "electors_est": 559273
+    },
+    {
+     "no": 8,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 4,
+     "towns": [
+      "斗六市",
+      "斗南鎮",
+      "虎尾鎮",
+      "西螺鎮",
+      "土庫鎮",
+      "北港鎮",
+      "古坑鄉",
+      "大埤鄉",
+      "莿桐鄉",
+      "林內鄉",
+      "二崙鄉",
+      "崙背鄉",
+      "麥寮鄉",
+      "東勢鄉",
+      "褒忠鄉",
+      "臺西鄉",
+      "元長鄉",
+      "四湖鄉",
+      "口湖鄉",
+      "水林鄉"
+     ],
+     "page": "T3/10009080000000000.html",
+     "electors_est": 559273
+    }
+   ]
+  },
+  "嘉義市": {
+   "code": "10020",
+   "districts": [
+    {
+     "no": 1,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 10,
+     "women": 2,
+     "candidates": 16,
+     "towns": [
+      "東區"
+     ],
+     "page": "T1/10020010000000000.html",
+     "electors_est": 96538
+    },
+    {
+     "no": 2,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 13,
+     "women": 3,
+     "candidates": 21,
+     "towns": [
+      "西區"
+     ],
+     "page": "T1/10020020000000000.html",
+     "electors_est": 117102
+    }
+   ]
+  },
+  "嘉義縣": {
+   "code": "10010",
+   "districts": [
+    {
+     "no": 1,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 8,
+     "women": 2,
+     "candidates": 9,
+     "towns": [
+      "太保市",
+      "鹿草鄉",
+      "水上鄉"
+     ],
+     "page": "T1/10010010000000000.html",
+     "electors_est": 86490
+    },
+    {
+     "no": 2,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 8,
+     "women": 2,
+     "candidates": 14,
+     "towns": [
+      "民雄鄉",
+      "新港鄉"
+     ],
+     "page": "T1/10010020000000000.html",
+     "electors_est": 85478
+    },
+    {
+     "no": 3,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 4,
+     "women": 1,
+     "candidates": 7,
+     "towns": [
+      "大林鎮",
+      "溪口鄉",
+      "梅山鄉"
+     ],
+     "page": "T1/10010030000000000.html",
+     "electors_est": 53552
+    },
+    {
+     "no": 4,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 6,
+     "women": 1,
+     "candidates": 8,
+     "towns": [
+      "朴子市",
+      "六腳鄉",
+      "東石鄉"
+     ],
+     "page": "T1/10010040000000000.html",
+     "electors_est": 73583
+    },
+    {
+     "no": 5,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 3,
+     "women": 0,
+     "candidates": 4,
+     "towns": [
+      "布袋鎮",
+      "義竹鄉"
+     ],
+     "page": "T1/10010050000000000.html",
+     "electors_est": 37688
+    },
+    {
+     "no": 6,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 7,
+     "women": 1,
+     "candidates": 9,
+     "towns": [
+      "鹿草鄉",
+      "中埔鄉",
+      "竹崎鄉",
+      "大埔鄉",
+      "阿里山鄉"
+     ],
+     "page": "T1/10010060000000000.html",
+     "electors_est": 88307
+    },
+    {
+     "no": 7,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 1,
+     "towns": [
+      "太保市",
+      "朴子市",
+      "布袋鎮",
+      "大林鎮",
+      "民雄鄉",
+      "溪口鄉",
+      "新港鄉",
+      "六腳鄉",
+      "東石鄉",
+      "義竹鄉",
+      "鹿草鄉",
+      "水上鄉",
+      "中埔鄉",
+      "竹崎鄉",
+      "梅山鄉",
+      "番路鄉",
+      "大埔鄉",
+      "阿里山鄉"
+     ],
+     "page": "T3/10010070000000000.html",
+     "electors_est": 3864
+    }
+   ]
+  },
+  "臺南市": {
+   "code": "67000",
+   "from_2022": true,
+   "districts": [
+    {
+     "no": 1,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 6,
+     "women": 1,
+     "candidates": 9,
+     "towns": [
+      "後壁區",
+      "白河區",
+      "東山區",
+      "鹽水區",
+      "新營區",
+      "柳營區"
+     ],
+     "page": "T1/67000010000000000.html",
+     "electors_est": 160263
+    },
+    {
+     "no": 2,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 7,
+     "towns": [
+      "北門區",
+      "學甲區",
+      "將軍區",
+      "七股區",
+      "佳里區",
+      "西港區"
+     ],
+     "page": "T1/67000020000000000.html",
+     "electors_est": 135832
+    },
+    {
+     "no": 3,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 3,
+     "women": 0,
+     "candidates": 6,
+     "towns": [
+      "下營區",
+      "六甲區",
+      "麻豆區",
+      "官田區",
+      "大內區"
+     ],
+     "page": "T1/67000030000000000.html",
+     "electors_est": 99947
+    },
+    {
+     "no": 4,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "楠西區",
+      "南化區",
+      "玉井區",
+      "左鎮區"
+     ],
+     "page": "T1/67000040000000000.html",
+     "electors_est": 30622
+    },
+    {
+     "no": 5,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 9,
+     "towns": [
+      "善化區",
+      "安定區",
+      "新市區",
+      "山上區",
+      "新化區"
+     ],
+     "page": "T1/67000050000000000.html",
+     "electors_est": 138353
+    },
+    {
+     "no": 6,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 6,
+     "women": 1,
+     "candidates": 14,
+     "towns": [
+      "安南區"
+     ],
+     "page": "T1/67000060000000000.html",
+     "electors_est": 160064
+    },
+    {
+     "no": 7,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 7,
+     "women": 1,
+     "candidates": 15,
+     "towns": [
+      "永康區"
+     ],
+     "page": "T1/67000070000000000.html",
+     "electors_est": 189911
+    },
+    {
+     "no": 8,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 6,
+     "women": 1,
+     "candidates": 10,
+     "towns": [
+      "北區",
+      "中西區"
+     ],
+     "page": "T1/67000080000000000.html",
+     "electors_est": 166295
+    },
+    {
+     "no": 9,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 6,
+     "women": 1,
+     "candidates": 11,
+     "towns": [
+      "安平區",
+      "南區"
+     ],
+     "page": "T1/67000090000000000.html",
+     "electors_est": 159245
+    },
+    {
+     "no": 10,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 10,
+     "towns": [
+      "東區"
+     ],
+     "page": "T1/67000100000000000.html",
+     "electors_est": 144677
+    },
+    {
+     "no": 11,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 8,
+     "towns": [
+      "仁德區",
+      "歸仁區",
+      "關廟區",
+      "龍崎區"
+     ],
+     "page": "T1/67000110000000000.html",
+     "electors_est": 152052
+    },
+    {
+     "no": 12,
+     "prefix": "T2",
+     "seat_type": "平地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "後壁區",
+      "白河區",
+      "東山區",
+      "鹽水區",
+      "新營區",
+      "柳營區",
+      "北門區",
+      "學甲區",
+      "將軍區",
+      "七股區",
+      "佳里區",
+      "西港區",
+      "下營區",
+      "六甲區",
+      "麻豆區",
+      "官田區",
+      "大內區",
+      "楠西區",
+      "南化區",
+      "玉井區",
+      "左鎮區",
+      "善化區",
+      "安定區",
+      "新市區",
+      "山上區",
+      "新化區",
+      "安南區",
+      "永康區",
+      "北區",
+      "中西區",
+      "安平區",
+      "南區",
+      "東區",
+      "仁德區",
+      "歸仁區",
+      "關廟區",
+      "龍崎區"
+     ],
+     "page": "T2/67000120000000000.html",
+     "electors_est": 2755
+    },
+    {
+     "no": 13,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "後壁區",
+      "白河區",
+      "東山區",
+      "鹽水區",
+      "新營區",
+      "柳營區",
+      "北門區",
+      "學甲區",
+      "將軍區",
+      "七股區",
+      "佳里區",
+      "西港區",
+      "下營區",
+      "六甲區",
+      "麻豆區",
+      "官田區",
+      "大內區",
+      "楠西區",
+      "南化區",
+      "玉井區",
+      "左鎮區",
+      "善化區",
+      "安定區",
+      "新市區",
+      "山上區",
+      "新化區",
+      "安南區",
+      "永康區",
+      "北區",
+      "中西區",
+      "安平區",
+      "南區",
+      "東區",
+      "仁德區",
+      "歸仁區",
+      "關廟區",
+      "龍崎區"
+     ],
+     "page": "T3/67000130000000000.html",
+     "electors_est": 3202
+    }
+   ]
+  },
+  "高雄市": {
+   "code": "64000",
+   "districts": [
+    {
+     "no": 1,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 3,
+     "women": 0,
+     "candidates": 5,
+     "towns": [
+      "旗山區",
+      "美濃區",
+      "六龜區",
+      "甲仙區",
+      "杉林區",
+      "內門區",
+      "茂林區",
+      "桃源區",
+      "那瑪夏區"
+     ],
+     "page": "T1/64000010000000000.html",
+     "electors_est": 100139
+    },
+    {
+     "no": 2,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 3,
+     "women": 0,
+     "candidates": 5,
+     "towns": [
+      "田寮區",
+      "阿蓮區",
+      "路竹區",
+      "湖內區",
+      "茄萣區"
+     ],
+     "page": "T1/64000020000000000.html",
+     "electors_est": 121238
+    },
+    {
+     "no": 3,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 8,
+     "towns": [
+      "岡山區",
+      "橋頭區",
+      "燕巢區",
+      "永安區",
+      "彌陀區",
+      "梓官區"
+     ],
+     "page": "T1/64000030000000000.html",
+     "electors_est": 193616
+    },
+    {
+     "no": 4,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 9,
+     "women": 2,
+     "candidates": 12,
+     "towns": [
+      "左營區",
+      "楠梓區"
+     ],
+     "page": "T1/64000040000000000.html",
+     "electors_est": 307854
+    },
+    {
+     "no": 5,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 7,
+     "towns": [
+      "大樹區",
+      "大社區",
+      "仁武區",
+      "鳥松區"
+     ],
+     "page": "T1/64000050000000000.html",
+     "electors_est": 178895
+    },
+    {
+     "no": 6,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 4,
+     "women": 1,
+     "candidates": 4,
+     "towns": [
+      "鹽埕區",
+      "鼓山區",
+      "旗津區"
+     ],
+     "page": "T1/64000060000000000.html",
+     "electors_est": 153513
+    },
+    {
+     "no": 7,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 8,
+     "women": 2,
+     "candidates": 12,
+     "towns": [
+      "三民區"
+     ],
+     "page": "T1/64000070000000000.html",
+     "electors_est": 274188
+    },
+    {
+     "no": 8,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 9,
+     "towns": [
+      "新興區",
+      "前金區",
+      "苓雅區"
+     ],
+     "page": "T1/64000080000000000.html",
+     "electors_est": 200713
+    },
+    {
+     "no": 9,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 8,
+     "women": 2,
+     "candidates": 10,
+     "towns": [
+      "鳳山區"
+     ],
+     "page": "T1/64000090000000000.html",
+     "electors_est": 290142
+    },
+    {
+     "no": 10,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 7,
+     "women": 1,
+     "candidates": 13,
+     "towns": [
+      "前鎮區",
+      "小港區"
+     ],
+     "page": "T1/64000100000000000.html",
+     "electors_est": 277130
+    },
+    {
+     "no": 11,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 4,
+     "women": 1,
+     "candidates": 6,
+     "towns": [
+      "林園區",
+      "大寮區"
+     ],
+     "page": "T1/64000110000000000.html",
+     "electors_est": 150102
+    },
+    {
+     "no": 12,
+     "prefix": "T2",
+     "seat_type": "平地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "鹽埕區",
+      "鼓山區",
+      "左營區",
+      "楠梓區",
+      "三民區",
+      "新興區",
+      "前金區",
+      "苓雅區",
+      "前鎮區",
+      "旗津區",
+      "小港區",
+      "鳳山區",
+      "林園區",
+      "大寮區",
+      "大樹區",
+      "大社區",
+      "仁武區",
+      "鳥松區",
+      "岡山區",
+      "橋頭區",
+      "燕巢區",
+      "田寮區",
+      "阿蓮區",
+      "路竹區",
+      "湖內區",
+      "茄萣區",
+      "永安區",
+      "彌陀區",
+      "梓官區",
+      "旗山區",
+      "美濃區",
+      "六龜區",
+      "甲仙區",
+      "杉林區",
+      "內門區",
+      "茂林區",
+      "桃源區",
+      "那瑪夏區"
+     ],
+     "page": "T2/64000120000000000.html",
+     "electors_est": 9842
+    },
+    {
+     "no": 13,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "左營區",
+      "楠梓區",
+      "三民區",
+      "路竹區",
+      "湖內區",
+      "茄萣區",
+      "永安區",
+      "彌陀區",
+      "梓官區",
+      "旗山區",
+      "甲仙區",
+      "杉林區",
+      "內門區",
+      "那瑪夏區"
+     ],
+     "page": "T3/64000130000000000.html",
+     "electors_est": 5389
+    },
+    {
+     "no": 14,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "鹽埕區",
+      "鼓山區",
+      "新興區",
+      "前金區",
+      "岡山區",
+      "橋頭區",
+      "燕巢區",
+      "田寮區",
+      "阿蓮區",
+      "美濃區",
+      "六龜區",
+      "桃源區"
+     ],
+     "page": "T3/64000140000000000.html",
+     "electors_est": 4607
+    },
+    {
+     "no": 15,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "苓雅區",
+      "前鎮區",
+      "旗津區",
+      "小港區",
+      "鳳山區",
+      "林園區",
+      "大寮區",
+      "大樹區",
+      "大社區",
+      "仁武區",
+      "鳥松區",
+      "茂林區"
+     ],
+     "page": "T3/64000150000000000.html",
+     "electors_est": 5943
+    }
+   ]
+  },
+  "屏東縣": {
+   "code": "10013",
+   "districts": [
+    {
+     "no": 1,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 12,
+     "women": 3,
+     "candidates": 20,
+     "towns": [
+      "屏東市"
+     ],
+     "page": "T1/10013010000000000.html",
+     "electors_est": 158453
+    },
+    {
+     "no": 2,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 8,
+     "women": 2,
+     "candidates": 11,
+     "towns": [
+      "長治鄉",
+      "麟洛鄉",
+      "九如鄉",
+      "里港鄉",
+      "鹽埔鄉",
+      "高樹鄉",
+      "三地門鄉",
+      "霧臺鄉",
+      "瑪家鄉"
+     ],
+     "page": "T1/10013020000000000.html",
+     "electors_est": 116049
+    },
+    {
+     "no": 3,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 10,
+     "women": 2,
+     "candidates": 14,
+     "towns": [
+      "潮州鎮",
+      "萬巒鄉",
+      "內埔鄉",
+      "竹田鄉",
+      "新埤鄉",
+      "枋寮鄉",
+      "泰武鄉",
+      "來義鄉",
+      "春日鄉"
+     ],
+     "page": "T1/10013030000000000.html",
+     "electors_est": 146490
+    },
+    {
+     "no": 4,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 8,
+     "women": 2,
+     "candidates": 10,
+     "towns": [
+      "東港鎮",
+      "萬丹鄉",
+      "新園鄉"
+     ],
+     "page": "T1/10013040000000000.html",
+     "electors_est": 108077
+    },
+    {
+     "no": 5,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 4,
+     "women": 1,
+     "candidates": 5,
+     "towns": [
+      "崁頂鄉",
+      "林邊鄉",
+      "南州鄉",
+      "佳冬鄉"
+     ],
+     "page": "T1/10013050000000000.html",
+     "electors_est": 50769
+    },
+    {
+     "no": 6,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 3,
+     "women": 0,
+     "candidates": 4,
+     "towns": [
+      "恆春鎮",
+      "車城鄉",
+      "滿州鄉",
+      "枋山鄉",
+      "獅子鄉",
+      "牡丹鄉"
+     ],
+     "page": "T1/10013060000000000.html",
+     "electors_est": 40786
+    },
+    {
+     "no": 7,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "琉球鄉"
+     ],
+     "page": "T1/10013070000000000.html",
+     "electors_est": 10507
+    },
+    {
+     "no": 8,
+     "prefix": "T2",
+     "seat_type": "平地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 1,
+     "towns": [
+      "屏東市",
+      "潮州鎮",
+      "東港鎮",
+      "恆春鎮",
+      "萬丹鄉",
+      "長治鄉",
+      "麟洛鄉",
+      "九如鄉",
+      "里港鄉",
+      "鹽埔鄉",
+      "高樹鄉",
+      "萬巒鄉",
+      "內埔鄉",
+      "竹田鄉",
+      "新埤鄉",
+      "枋寮鄉",
+      "新園鄉",
+      "崁頂鄉",
+      "林邊鄉",
+      "南州鄉",
+      "佳冬鄉",
+      "琉球鄉",
+      "車城鄉",
+      "滿州鄉",
+      "枋山鄉",
+      "三地門鄉",
+      "霧臺鄉",
+      "瑪家鄉",
+      "泰武鄉",
+      "來義鄉",
+      "春日鄉",
+      "獅子鄉",
+      "牡丹鄉"
+     ],
+     "page": "T2/10013080000000000.html",
+     "electors_est": 3777
+    },
+    {
+     "no": 9,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "九如鄉",
+      "里港鄉",
+      "鹽埔鄉",
+      "高樹鄉",
+      "三地門鄉"
+     ],
+     "page": "T3/10013090000000000.html",
+     "electors_est": 6319
+    },
+    {
+     "no": 10,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "屏東市",
+      "長治鄉",
+      "麟洛鄉",
+      "內埔鄉",
+      "瑪家鄉"
+     ],
+     "page": "T3/10013100000000000.html",
+     "electors_est": 9362
+    },
+    {
+     "no": 11,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "萬丹鄉",
+      "萬巒鄉",
+      "竹田鄉",
+      "泰武鄉"
+     ],
+     "page": "T3/10013110000000000.html",
+     "electors_est": 4831
+    },
+    {
+     "no": 12,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "潮州鎮",
+      "新埤鄉",
+      "新園鄉",
+      "崁頂鄉",
+      "南州鄉",
+      "來義鄉"
+     ],
+     "page": "T3/10013120000000000.html",
+     "electors_est": 7490
+    },
+    {
+     "no": 13,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "東港鎮",
+      "枋寮鄉",
+      "林邊鄉",
+      "佳冬鄉",
+      "琉球鄉",
+      "春日鄉"
+     ],
+     "page": "T3/10013130000000000.html",
+     "electors_est": 4218
+    },
+    {
+     "no": 14,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "枋山鄉",
+      "獅子鄉"
+     ],
+     "page": "T3/10013140000000000.html",
+     "electors_est": 3906
+    },
+    {
+     "no": 15,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 4,
+     "towns": [
+      "恆春鎮",
+      "車城鄉",
+      "滿州鄉",
+      "牡丹鄉"
+     ],
+     "page": "T3/10013150000000000.html",
+     "electors_est": 4746
+    },
+    {
+     "no": 16,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "霧臺鄉"
+     ],
+     "page": "T3/10013160000000000.html",
+     "electors_est": 2796
+    }
+   ]
+  },
+  "宜蘭縣": {
+   "code": "10002",
+   "districts": [
+    {
+     "no": 1,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 7,
+     "women": 1,
+     "candidates": 15,
+     "towns": [
+      "宜蘭市"
+     ],
+     "page": "T1/10002010000000000.html",
+     "electors_est": 75588
+    },
+    {
+     "no": 2,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 2,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "頭城鎮"
+     ],
+     "page": "T1/10002020000000000.html",
+     "electors_est": 24027
+    },
+    {
+     "no": 3,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 3,
+     "women": 0,
+     "candidates": 5,
+     "towns": [
+      "礁溪鄉"
+     ],
+     "page": "T1/10002030000000000.html",
+     "electors_est": 29610
+    },
+    {
+     "no": 4,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 2,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "員山鄉"
+     ],
+     "page": "T1/10002040000000000.html",
+     "electors_est": 27157
+    },
+    {
+     "no": 5,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 2,
+     "women": 0,
+     "candidates": 4,
+     "towns": [
+      "壯圍鄉"
+     ],
+     "page": "T1/10002050000000000.html",
+     "electors_est": 21049
+    },
+    {
+     "no": 6,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 8,
+     "towns": [
+      "羅東鎮"
+     ],
+     "page": "T1/10002060000000000.html",
+     "electors_est": 54050
+    },
+    {
+     "no": 7,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 3,
+     "women": 0,
+     "candidates": 4,
+     "towns": [
+      "五結鄉"
+     ],
+     "page": "T1/10002070000000000.html",
+     "electors_est": 34293
+    },
+    {
+     "no": 8,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 4,
+     "women": 1,
+     "candidates": 4,
+     "towns": [
+      "冬山鄉"
+     ],
+     "page": "T1/10002080000000000.html",
+     "electors_est": 43744
+    },
+    {
+     "no": 9,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 1,
+     "women": 0,
+     "candidates": 5,
+     "towns": [
+      "三星鄉",
+      "大同鄉"
+     ],
+     "page": "T1/10002090000000000.html",
+     "electors_est": 19177
+    },
+    {
+     "no": 10,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 2,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "蘇澳鎮",
+      "南澳鄉"
+     ],
+     "page": "T1/10002100000000000.html",
+     "electors_est": 32441
+    },
+    {
+     "no": 11,
+     "prefix": "T2",
+     "seat_type": "平地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 1,
+     "towns": [
+      "宜蘭市",
+      "羅東鎮",
+      "蘇澳鎮",
+      "頭城鎮",
+      "礁溪鄉",
+      "壯圍鄉",
+      "員山鄉",
+      "冬山鄉",
+      "五結鄉",
+      "三星鄉",
+      "大同鄉",
+      "南澳鄉"
+     ],
+     "page": "T2/10002110000000000.html",
+     "electors_est": 2004
+    },
+    {
+     "no": 12,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "宜蘭市",
+      "頭城鎮",
+      "礁溪鄉",
+      "壯圍鄉",
+      "員山鄉",
+      "三星鄉",
+      "大同鄉"
+     ],
+     "page": "T3/10002120000000000.html",
+     "electors_est": 5104
+    },
+    {
+     "no": 13,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "羅東鎮",
+      "蘇澳鎮",
+      "冬山鄉",
+      "五結鄉",
+      "南澳鄉"
+     ],
+     "page": "T3/10002130000000000.html",
+     "electors_est": 5375
+    }
+   ]
+  },
+  "花蓮縣": {
+   "code": "10015",
+   "districts": [
+    {
+     "no": 1,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 9,
+     "women": 2,
+     "candidates": 15,
+     "towns": [
+      "花蓮市"
+     ],
+     "page": "T1/10015010000000000.html",
+     "electors_est": 70984
+    },
+    {
+     "no": 2,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "新城鄉",
+      "秀林鄉"
+     ],
+     "page": "T1/10015020000000000.html",
+     "electors_est": 13751
+    },
+    {
+     "no": 3,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 10,
+     "women": 2,
+     "candidates": 14,
+     "towns": [
+      "鳳林鎮",
+      "吉安鄉",
+      "壽豐鄉",
+      "光復鄉",
+      "豐濱鄉",
+      "萬榮鄉"
+     ],
+     "page": "T1/10015030000000000.html",
+     "electors_est": 81746
+    },
+    {
+     "no": 4,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 3,
+     "women": 0,
+     "candidates": 5,
+     "towns": [
+      "玉里鎮",
+      "瑞穗鄉",
+      "富里鄉",
+      "卓溪鄉"
+     ],
+     "page": "T1/10015040000000000.html",
+     "electors_est": 26268
+    },
+    {
+     "no": 5,
+     "prefix": "T2",
+     "seat_type": "平地原住民",
+     "seats": 4,
+     "women": 1,
+     "candidates": 5,
+     "towns": [
+      "花蓮市",
+      "新城鄉",
+      "吉安鄉",
+      "秀林鄉"
+     ],
+     "page": "T2/10015050000000000.html",
+     "electors_est": 20748
+    },
+    {
+     "no": 6,
+     "prefix": "T2",
+     "seat_type": "平地原住民",
+     "seats": 2,
+     "women": 0,
+     "candidates": 4,
+     "towns": [
+      "鳳林鎮",
+      "壽豐鄉",
+      "光復鄉",
+      "豐濱鄉",
+      "萬榮鄉"
+     ],
+     "page": "T2/10015060000000000.html",
+     "electors_est": 14550
+    },
+    {
+     "no": 7,
+     "prefix": "T2",
+     "seat_type": "平地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "玉里鎮",
+      "瑞穗鄉",
+      "富里鄉",
+      "卓溪鄉"
+     ],
+     "page": "T2/10015070000000000.html",
+     "electors_est": 10147
+    },
+    {
+     "no": 8,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "花蓮市",
+      "新城鄉",
+      "吉安鄉",
+      "壽豐鄉",
+      "秀林鄉"
+     ],
+     "page": "T3/10015080000000000.html",
+     "electors_est": 16632
+    },
+    {
+     "no": 9,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "鳳林鎮",
+      "光復鄉",
+      "豐濱鄉",
+      "瑞穗鄉",
+      "萬榮鄉"
+     ],
+     "page": "T3/10015090000000000.html",
+     "electors_est": 5474
+    },
+    {
+     "no": 10,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "玉里鎮",
+      "富里鄉",
+      "卓溪鄉"
+     ],
+     "page": "T3/10015100000000000.html",
+     "electors_est": 5108
+    }
+   ]
+  },
+  "臺東縣": {
+   "code": "10014",
+   "districts": [
+    {
+     "no": 1,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 10,
+     "women": 2,
+     "candidates": 17,
+     "towns": [
+      "臺東市",
+      "蘭嶼鄉"
+     ],
+     "page": "T1/10014010000000000.html",
+     "electors_est": 68700
+    },
+    {
+     "no": 2,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "卑南鄉",
+      "延平鄉"
+     ],
+     "page": "T1/10014020000000000.html",
+     "electors_est": 9417
+    },
+    {
+     "no": 3,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 2,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "成功鎮",
+      "東河鄉",
+      "長濱鄉"
+     ],
+     "page": "T1/10014030000000000.html",
+     "electors_est": 11347
+    },
+    {
+     "no": 4,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 2,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "關山鎮",
+      "鹿野鄉",
+      "池上鄉",
+      "海端鄉"
+     ],
+     "page": "T1/10014040000000000.html",
+     "electors_est": 15091
+    },
+    {
+     "no": 5,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "太麻里鄉",
+      "大武鄉",
+      "金峰鄉",
+      "達仁鄉"
+     ],
+     "page": "T1/10014050000000000.html",
+     "electors_est": 7245
+    },
+    {
+     "no": 6,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "綠島鄉"
+     ],
+     "page": "T1/10014060000000000.html",
+     "electors_est": 3511
+    },
+    {
+     "no": 7,
+     "prefix": "T2",
+     "seat_type": "平地原住民",
+     "seats": 3,
+     "women": 0,
+     "candidates": 7,
+     "towns": [
+      "臺東市"
+     ],
+     "page": "T2/10014070000000000.html",
+     "electors_est": 14718
+    },
+    {
+     "no": 8,
+     "prefix": "T2",
+     "seat_type": "平地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "卑南鄉",
+      "蘭嶼鄉"
+     ],
+     "page": "T2/10014080000000000.html",
+     "electors_est": 4927
+    },
+    {
+     "no": 9,
+     "prefix": "T2",
+     "seat_type": "平地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "太麻里鄉",
+      "大武鄉",
+      "金峰鄉",
+      "達仁鄉"
+     ],
+     "page": "T2/10014090000000000.html",
+     "electors_est": 6745
+    },
+    {
+     "no": 10,
+     "prefix": "T2",
+     "seat_type": "平地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 1,
+     "towns": [
+      "關山鎮",
+      "鹿野鄉",
+      "池上鄉",
+      "海端鄉",
+      "延平鄉"
+     ],
+     "page": "T2/10014100000000000.html",
+     "electors_est": 5237
+    },
+    {
+     "no": 11,
+     "prefix": "T2",
+     "seat_type": "平地原住民",
+     "seats": 2,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "成功鎮",
+      "東河鄉",
+      "長濱鄉",
+      "綠島鄉"
+     ],
+     "page": "T2/10014110000000000.html",
+     "electors_est": 13303
+    },
+    {
+     "no": 12,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "成功鎮",
+      "卑南鄉",
+      "東河鄉",
+      "長濱鄉",
+      "延平鄉"
+     ],
+     "page": "T3/10014120000000000.html",
+     "electors_est": 3120
+    },
+    {
+     "no": 13,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 4,
+     "towns": [
+      "關山鎮",
+      "鹿野鄉",
+      "池上鄉",
+      "海端鄉"
+     ],
+     "page": "T3/10014130000000000.html",
+     "electors_est": 3320
+    },
+    {
+     "no": 14,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "臺東市",
+      "太麻里鄉",
+      "綠島鄉",
+      "金峰鄉"
+     ],
+     "page": "T3/10014140000000000.html",
+     "electors_est": 4749
+    },
+    {
+     "no": 15,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "大武鄉",
+      "達仁鄉"
+     ],
+     "page": "T3/10014150000000000.html",
+     "electors_est": 2979
+    },
+    {
+     "no": 16,
+     "prefix": "T3",
+     "seat_type": "山地原住民",
+     "seats": 1,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "蘭嶼鄉"
+     ],
+     "page": "T3/10014160000000000.html",
+     "electors_est": 3267
+    }
+   ]
+  },
+  "澎湖縣": {
+   "code": "10016",
+   "districts": [
+    {
+     "no": 1,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 11,
+     "women": 2,
+     "candidates": 19,
+     "towns": [
+      "馬公市"
+     ],
+     "page": "T1/10016010000000000.html",
+     "electors_est": 52801
+    },
+    {
+     "no": 2,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 3,
+     "women": 0,
+     "candidates": 5,
+     "towns": [
+      "湖西鄉"
+     ],
+     "page": "T1/10016020000000000.html",
+     "electors_est": 13457
+    },
+    {
+     "no": 3,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 2,
+     "women": 0,
+     "candidates": 4,
+     "towns": [
+      "白沙鄉"
+     ],
+     "page": "T1/10016030000000000.html",
+     "electors_est": 8610
+    },
+    {
+     "no": 4,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 1,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "西嶼鄉"
+     ],
+     "page": "T1/10016040000000000.html",
+     "electors_est": 7257
+    },
+    {
+     "no": 5,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "望安鄉"
+     ],
+     "page": "T1/10016050000000000.html",
+     "electors_est": 4763
+    },
+    {
+     "no": 6,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 1,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "七美鄉"
+     ],
+     "page": "T1/10016060000000000.html",
+     "electors_est": 3347
+    }
+   ]
+  },
+  "金門縣": {
+   "code": "09020",
+   "districts": [
+    {
+     "no": 1,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 10,
+     "women": 2,
+     "candidates": 19,
+     "towns": [
+      "金城鎮",
+      "金寧鄉",
+      "烏坵鄉"
+     ],
+     "page": "T1/09020010000000000.html",
+     "electors_est": 66019
+    },
+    {
+     "no": 2,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 7,
+     "women": 1,
+     "candidates": 11,
+     "towns": [
+      "金沙鎮",
+      "金湖鎮"
+     ],
+     "page": "T1/09020020000000000.html",
+     "electors_est": 44758
+    },
+    {
+     "no": 3,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 2,
+     "women": 0,
+     "candidates": 4,
+     "towns": [
+      "烈嶼鄉"
+     ],
+     "page": "T1/09020030000000000.html",
+     "electors_est": 11417
+    }
+   ]
+  },
+  "連江縣": {
+   "code": "09007",
+   "districts": [
+    {
+     "no": 1,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 5,
+     "women": 1,
+     "candidates": 7,
+     "towns": [
+      "南竿鄉"
+     ],
+     "page": "T1/09007010000000000.html",
+     "electors_est": 6465
+    },
+    {
+     "no": 2,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 2,
+     "women": 0,
+     "candidates": 3,
+     "towns": [
+      "北竿鄉"
+     ],
+     "page": "T1/09007020000000000.html",
+     "electors_est": 2742
+    },
+    {
+     "no": 3,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "莒光鄉"
+     ],
+     "page": "T1/09007030000000000.html",
+     "electors_est": 1320
+    },
+    {
+     "no": 4,
+     "prefix": "T1",
+     "seat_type": "區域",
+     "seats": 1,
+     "women": 0,
+     "candidates": 2,
+     "towns": [
+      "東引鄉"
+     ],
+     "page": "T1/09007040000000000.html",
+     "electors_est": 1277
+    }
+   ]
+  }
+ },
+ "note": "electors_est: the 2022 district's electors where the district and its towns are unchanged; otherwise the 2022 electors of its towns (regional seats; an overestimate where a district takes part of a town) or the largest 2022 district of the same indigenous type in the county. Used only as an upper bound on the votes still out."
+}

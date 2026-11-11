@@ -646,7 +646,7 @@ const DATA = /*__DATA__*/null;
           <button data-mode="winner" aria-pressed="${st.mode === 'winner'}">${pres ? tx('President', '總統') : tx('Mayors', '縣市長')}</button>
           <button data-mode="turnout" aria-pressed="${st.mode === 'turnout'}">${tx('Turnout', '投票率')}</button>
           ${info.legis ? `<button data-mode="legis" aria-pressed="${st.mode === 'legis'}">${tx('Legislature', '立委')}</button>`
-            : `<button data-mode="council" aria-pressed="${council}" ${info.council ? '' : `disabled title="${night.live ? tx('Council seats appear here once counting starts', '開票後顯示議員席次', '開票了後才顯示議員席次') : tx('No council election on this night', '這一晚沒有議員選舉', '這暗無議員選舉')}"`}>${tx('Council', '議員')}</button>`}</div></div>
+            : `<button data-mode="council" aria-pressed="${council}" ${info.council && (!night.live || night.council_live) ? '' : `disabled title="${night.live ? tx('Council seats appear here once counting starts', '開票後顯示議員席次', '開票了後才顯示議員席次') : tx('No council election on this night', '這一晚沒有議員選舉', '這暗無議員選舉')}"`}>${tx('Council', '議員')}</button>`}</div></div>
         <div class="ctl"><span>${tx('Night', '選舉')}</span><div class="seg" role="group" aria-label="${tx('Night', '選舉')}">
           ${DATA.nights.map(n => `<button data-night="${n.id}" aria-pressed="${n.id === st.night}" title="${esc(n.legis ? n.title.replace('總統選舉', '總統、立委選舉') : n.title)}">${n.id.slice(0, 4)}</button>`).join('')}</div></div>
       </div>
@@ -1626,6 +1626,7 @@ const DATA = /*__DATA__*/null;
   function setNight(id) {
     st.night = id; const night = NIGHTS[id];
     if ((st.mode === 'council' && !nightInfoOf(id).council) || (st.mode === 'legis' && !nightInfoOf(id).legis)) st.mode = 'winner';
+    if (st.mode === 'council' && night.live && !night.council_live) st.mode = 'winner'; // 2026: councils once counting starts
     // the legislature and council views pick their own area once their data is in (a link can name a district)
     if (st.mode !== 'legis' && st.mode !== 'council' && (!night.races.some(r => r.area === st.area) || st.area === '全國')) st.area = night.races.find(r => r.area !== '全國').area;
     const firsts = night.races.filter(r => r.pts.length).map(r => r.pts[0][C.t]);
@@ -1675,6 +1676,9 @@ const DATA = /*__DATA__*/null;
       const fresh = await r.json(), old = NIGHTS[liveInfo.id];
       if (fresh.updated && fresh.updated === old.updated) return;
       nameNight(fresh); NIGHTS[liveInfo.id] = fresh;
+      if (fresh.council_live && (COUNCIL[liveInfo.id] || st.mode === 'council')) { // councils: refetch their file too
+        try { const rc = await fetch(`${liveInfo.council}?v=${Date.now()}`, { cache: 'no-store' }); if (rc.ok) { COUNCIL[liveInfo.id] = await rc.json(); CSkey = ''; } } catch (e) { /* next round */ }
+      }
       if (st.night !== liveInfo.id || st.playing) return;
       if (st.follow) st.t = liveEnd(fresh);
       render();

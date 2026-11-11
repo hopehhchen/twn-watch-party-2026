@@ -3,8 +3,9 @@
 
   python3 scripts/live/mock_cec.py [--port 8790] [--speed 16] [--start 16:00] [--fail 0.03] [--layout 2025]
 
-Serves /zh-TW/TC/<code>.html (county and town candidate votes) and /zh-TW/SC/<code>.html (county turnout by
-town) in the CEC's 2022 markup (or the 2025 id-based markup), with ETags. The clock starts at --start when the
+Serves /zh-TW/TC/<code>.html (county and town candidate votes), /zh-TW/SC/<code>.html (county turnout by
+town) and /zh-TW/T1|T2|T3/<code>.html (council districts: 2022's count for each 2026 district with the same
+number; districts new in 2026 answer 404) in the CEC's 2022 markup (or the 2025 id-based markup), with ETags. The clock starts at --start when the
 server starts and runs --speed times faster (16: 16:00 to 24:00 in 30 minutes). Every 2022 station reports at
 its logged time; its votes go to the 2026 candidates: 2022's blue side to 2026's blue, the other side to 2026's
 other, the 2022 third-placed candidate to the 2026 third (in three-way races) and the rest to the rest.
@@ -71,6 +72,47 @@ def build():
     return races
 
 
+def build_council():
+    """2026 council page path -> the 2022 district with the same county, seat type and number (if any)."""
+    import council as CO
+    spec = json.loads((ROOT / "data" / "live" / "council-2026.json").read_text(encoding="utf-8"))["counties"]
+    data, tm = CO.load(2022), ST.times("2022-mayors")
+    t0 = datetime(2022, 11, 26, 16, 0)
+    SEAT = {"T1": "區域", "T2": "平地原住民", "T3": "山地原住民"}
+    out = {}
+    for area, c in spec.items():
+        old = {(SEAT[d["seat_type"]] if d["seat_type"] in SEAT else d["seat_type"], d["no"]): d for d in data[area]}
+        for d in c["districts"]:
+            o = old.get((d["seat_type"], d["no"]))
+            if not o:
+                continue
+            keep = [k for k, x in enumerate(o["cands"]) if "note" not in x]
+            sts = []
+            for s_ in o["stations"]:
+                when = tm.get((area, s_["district"], s_["no"]))
+                sts.append(((when - t0).total_seconds() / 60 if when else 420.0, [s_["v"][k] for k in keep]))
+            cands = [{"no": o["cands"][k]["no"], "name": o["cands"][k]["name"], "sex": o["cands"][k]["sex"],
+                      "party": o["cands"][k]["party"] or "無"} for k in keep]
+            out[d["page"].split("/")[1][:-5]] = {"area": area, "no": d["no"], "type": d["seat_type"], "seats": o["seats"],
+                                                 "women": o["women"], "cands": cands, "st": sts}
+    return out
+
+
+def council_page(d, now, stamp):
+    done = [v for t, v in d["st"] if t <= now]
+    votes = [sum(v[k] for v in done) for k in range(len(d["cands"]))]
+    V = sum(votes) or 1
+    rows = "".join(f"""<tr><td class="electmark"></td><td>{c['no']}</td><td>{c['name']}</td><td>{'女' if c['sex'] == 2 else '男'}</td>
+      <td class="numeric">{v:,}</td><td class="numeric">{100 * v / V:.2f}%</td><td>{c['party']}</td></tr>""" for c, v in zip(d["cands"], votes))
+    kind = "" if d["type"] == "區域" else f"({d['type']})"
+    return f"""<div class="table-header"><table class="title"><tr><td><b>{d['area']} 議員選舉 第{d['no']}選舉區{kind} 候選人得票數</b></td></tr></table>
+<div class="subtitle"><div class="bullet">應選人數: {d['seats']}</div>{f'<div class="bullet">婦女應當選名額: {d["women"]}</div>' if d['women'] else ''}
+<div class="bullet emph-right">投開票所數 已送/應送: {len(done)}/{len(d['st'])}</div></div></div>
+<div class="table-content"><table class="tablesaw"><thead><tr><th scope="col">註記</th><th scope="col">號次</th><th scope="col">姓名</th><th scope="col">性別</th><th scope="col">得票數</th><th scope="col">得票率%</th><th scope="col">推薦之政黨</th></tr></thead>
+<tbody>{rows}</tbody></table></div><div class="table-footer">資料更新時間: {stamp}</div>
+"""
+
+
 def table_2022(title, sent, total, cands, votes, stamp):
     V = sum(votes.values()) or 1
     rows = "".join(f"""
@@ -130,6 +172,7 @@ def main():
     ap.add_argument("--layout", default="2022", choices=["2022", "2025"])
     a = ap.parse_args()
     races = build()
+    council = build_council()
     h, m = (int(x) for x in a.start.split(":"))
     t_start, real0 = (h - 16) * 60 + m, time.time()
     table = table_2025 if a.layout == "2025" else table_2022
@@ -152,6 +195,19 @@ def main():
                     return
                 time.sleep(20)
             parts = self.path.split("?")[0].strip("/").split("/")
+            if len(parts) == 3 and parts[1] in ("T1", "T2", "T3") and parts[2].endswith(".html"):
+                d = council.get(parts[2][:-5])
+                now = sim_minutes()
+                if not d or now < 0:
+                    self.send_error(404)
+                    return
+                raw = council_page(d, now, stamp(now)).encode()
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html; charset=utf-8")
+                self.send_header("Content-Length", str(len(raw)))
+                self.end_headers()
+                self.wfile.write(raw)
+                return
             if len(parts) != 3 or parts[1] not in ("TC", "SC") or not parts[2].endswith(".html"):
                 self.send_error(404)
                 return

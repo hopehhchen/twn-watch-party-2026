@@ -63,7 +63,7 @@ python3 scripts/live/publish.py            # copies into _site; serve _site with
 
 ## Not built yet
 
-- **Council seats live.** The page's Council button is greyed out on 2026 with "Council seats appear here once counting starts". The council model (`scripts/council.py`) needs the council pages (prefix `T1` and others, 215 districts × their towns). Decide: build it, or change that line.
+- ~~Council seats live~~ **built 2026-11-11** (`scripts/live/council_live.py`): one CEC page per council district (221: the CEC's 2026 candidate files list 208; 臺南市's file isn't published yet, so its 13 districts come from 2022 — check when the CEC posts it). The page enables its Council view once the first district reports, and refetches the council file with the mayors'. No model: the page shows who would hold each seat if counting stopped, as on the replays; "decided" uses a generous estimate of the votes still out.
 - **Count watch** (other outlets' numbers next to the CEC's): sources to find once 2026 pages are up (in past cycles 中央社 relayed the CEC as JSON).
 - **Turnout view on 2026:** works from the same points; checked only in the rehearsal.
 
@@ -75,7 +75,7 @@ python3 scripts/live/publish.py            # copies into _site; serve _site with
 | done 11/10 | Candidate names and ballot numbers checked against the CEC's candidate files: all 22 match | Claude | done |
 | done 11/10 | Mayoral pipeline: parser, live model, poller, publisher, page live mode, stand-in site, tests, first rehearsal | Claude | done |
 | by 11/14 (Sat) | Decide where it runs on the night (a Taiwan-located machine is safest; see below) and set up a Cloudflare deploy token there | Hope | open |
-| by 11/17 | Decide on council live (build or not) | Hope | open |
+| done 11/11 | Council seats live (built, rehearsed with the 2022 count) | Claude | done |
 | by 11/21 (Sat) | Full rehearsal on the machine that will run the night, deploying to a test Worker, not the real site | both | open |
 | ~11/21 (unverified) | CEC announces the count site: `poll.py --probe` from the night's machine; refresh `towns-2022.json` from the 2026 site menu if towns changed | Claude + Hope | open |
 | by 11/24 | Taiwanese review back (`docs/taigi-review.md`, regenerated 11/10) | Hope | open |
@@ -99,4 +99,4 @@ python3 scripts/live/publish.py            # copies into _site; serve _site with
   - Hope's Mac if he's in Taiwan that night.
   - Whichever is chosen, keep a second machine ready to take over, since the archive lets a new poller pick up where the old one stopped.
 - ~~Model: sampling noise in tiny first stations~~ **applied 2026-11-11** (docs/needle.md, "Model review"); replays and the accuracy figures rebuilt.
-- Council live (above). Count-watch sources (above).
+- Count-watch sources (above). 臺南市's 2026 council districts once the CEC posts them.

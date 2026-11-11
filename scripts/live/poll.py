@@ -37,6 +37,7 @@ sys.path.insert(0, str(HERE.parent))
 sys.path.insert(0, str(HERE))
 import stations as ST  # noqa: E402
 from cec_parse import parse_count, parse_turnout  # noqa: E402
+from council_live import CouncilLive  # noqa: E402
 from live_model import LiveRace  # noqa: E402
 
 TW = timezone(timedelta(hours=8))
@@ -57,7 +58,7 @@ def log(*a):
 class Fetcher:
     """Conditional GETs with a timeout, a couple of retries, and the last good body kept per URL."""
 
-    def __init__(self, timeout=15, retries=2, workers=4):
+    def __init__(self, timeout=15, retries=2, workers=6):
         self.timeout, self.retries, self.workers = timeout, retries, workers
         self.cache = {}  # url -> (etag, last_modified, body)
         self.stats = {}
@@ -120,7 +121,8 @@ class Night:
         self.out = Path(out)
         (self.out / "archive").mkdir(parents=True, exist_ok=True)
         (self.out / "needle").mkdir(parents=True, exist_ok=True)
-        self.doc = json.loads(NIGHT_FILE.read_text())
+        self.doc = json.loads(NIGHT_FILE.read_text(encoding="utf-8"))
+        self.council = CouncilLive(self.out)
         self.towns = json.loads(TOWNS_FILE.read_text())["counties"]
         st22 = ST.load("2022-mayors")
         self.models, self.last = {}, {}
@@ -148,7 +150,7 @@ class Night:
             out.append(page_url(base, "TC", c["code"]))
             out += [page_url(base, "TC", c["code"], code) for code, _ in c["towns"]]
             out.append(page_url(base, "SC", c["code"]))
-        return out
+        return out + self.council.urls(base)
 
     def snapshot(self, base, pages, now):
         """{area: {"county": parsed county page, "towns": {town: {...}}, "turnout": {...}, "t": minutes}}"""
@@ -355,11 +357,12 @@ class Night:
         log(f"{r['area']}: {len(r['pts'])} points recomputed")
 
     def write(self, now):
-        doc = {k: v for k, v in self.doc.items() if k != "races"}
+        doc = {k: v for k, v in self.doc.items() if k != "races" and not k.startswith("_")}
         doc["races"] = [{k: v for k, v in r.items() if not k.startswith("_")} for r in self.doc["races"]]
         last = max((r["pts"][-1][0] for r in doc["races"] if r["pts"]), default=0)
         doc["end"] = max(self.doc["end"], int(last) + 30) if last > self.doc["end"] - 30 else self.doc["end"]
         doc["updated"] = now.isoformat(timespec="seconds")
+        doc["council_live"] = self.council.counting()  # the page enables its Council view once this is true
         path = self.out / "needle" / "2026-mayors.json"
         tmp = path.with_suffix(".tmp")
         tmp.write_text(json.dumps(doc, ensure_ascii=False, separators=(",", ":")) + "\n")
@@ -404,10 +407,15 @@ def main():
         snap, errors = night.snapshot(a.base, pages, now_night)
         night.archive(snap, now)
         moved = night.step(snap)
+        cmoved = night.council.step(a.base, pages, lambda u: tmin(u, now_night))
+        if cmoved or first:
+            night.council.write(now)
+        if cmoved and not moved and not night.doc.get("_council_flag"):
+            moved, night.doc["_council_flag"] = ["council"], True  # rewrite the mayors' file once so the flag goes out
         if moved or first:  # "updated" in the file = when the figures last changed (the page warns if that gets old)
             path = night.write(now)
         first = False
-        log(f"cycle {time.time() - t_start:.1f}s {fetcher.stats} moved: {', '.join(moved) or '-'}"
+        log(f"cycle {time.time() - t_start:.1f}s {fetcher.stats} moved: {', '.join(moved) or '-'}; council districts moved: {cmoved}"
             + (f" | {len(errors)} parse errors, e.g. {errors[0]}" if errors else ""))
         if a.once:
             print(path)

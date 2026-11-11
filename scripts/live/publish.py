@@ -74,17 +74,18 @@ def main():
     ap.add_argument("--worker", help="deploy to this Worker instead of the one in wrangler.jsonc (rehearsals: a test Worker)")
     a = ap.parse_args()
     src, dst = Path(a.src), Path(a.site) / "needle" / "2026-mayors.json"
+    csrc, cdst = src.parent.parent / "council" / "2026.json", Path(a.site) / "council" / "2026.json"  # the councils, beside it
     last_mtime, prev = None, None
     while True:
         t0 = time.time()
         try:
-            m = src.stat().st_mtime
+            m = src.stat().st_mtime + (csrc.stat().st_mtime if csrc.exists() else 0)
         except FileNotFoundError:
             m = None
             log("waiting for", src)
         if m and m != last_mtime:
             try:
-                doc = json.loads(src.read_text())
+                doc = json.loads(src.read_text(encoding="utf-8"))
                 why = check(doc, prev)
             except Exception as e:
                 why = f"unreadable: {e}"
@@ -92,6 +93,12 @@ def main():
                 log("NOT published:", why)
             else:
                 shutil.copy(src, dst)
+                if csrc.exists():
+                    try:
+                        json.loads(csrc.read_text(encoding="utf-8"))
+                        shutil.copy(csrc, cdst)
+                    except Exception as e:
+                        log("council file NOT published:", e)
                 ok = True
                 if a.deploy:
                     ok, out = deploy(a.worker)

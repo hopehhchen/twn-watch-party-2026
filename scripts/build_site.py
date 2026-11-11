@@ -26,7 +26,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 NEEDLE_NIGHTS = ["2018-mayors", "2020-president", "2022-mayors", "2024-president", "2026-mayors"]  # 2026: before the count (scripts/build_2026_night.py)
-COUNCIL_YEARS = {"2018-mayors": 2018, "2022-mayors": 2022}
+COUNCIL_YEARS = {"2018-mayors": 2018, "2022-mayors": 2022, "2026-mayors": 2026}  # 2026: filled live on the night
 LEGIS_YEARS = {"2020-president": 2020, "2024-president": 2024}
 
 HEAD = """<!doctype html>

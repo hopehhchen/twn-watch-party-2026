@@ -28,6 +28,16 @@ def test_parser():
     assert s["rows"][0] == {"area": "總計", "E": 2026769, "C": 1372179, "A": 1360951, "invalid": 11228}
     assert len(s["rows"]) == 13
     assert P._sent((F / "F1-2025-referendum.html").read_text()) == (17832, 17832)
+    k = P.parse_count((F / "T1-63000011100000000.html").read_text())  # a council page: seats, women's seats, sex
+    assert (k["seats"], k["women"], k["sent"]) == (12, 3, 182) and k["rows"][0]["sex"] == 2 and k["rows"][1]["sex"] == 1
+
+
+def test_council_list():
+    spec = json.loads((ROOT / "data" / "live" / "council-2026.json").read_text())["counties"]
+    assert len(spec) == 22 and sum(len(c["districts"]) for c in spec.values()) == 221
+    for c in spec.values():
+        for d in c["districts"]:
+            assert len(d["page"].split("/")[1]) == 17 + 5 and d["electors_est"] > 0
 
 
 def test_towns():

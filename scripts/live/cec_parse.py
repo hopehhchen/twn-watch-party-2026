@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Parse the CEC count site's pages (計票資訊查詢網站): candidate-vote pages and turnout pages.
 
-  parse_count(html)   -> {"title", "sent", "total", "rows": [{"no", "name", "votes", "party", "mark"}], "updated"}
+  parse_count(html)   -> {"title", "sent", "total", "rows": [{"no", "name", "sex", "votes", "party", "mark"}], "updated",
+                          "seats", "women"}   (seats and reserved women's seats: council pages)
   parse_turnout(html) -> {"title", "rows": [{"area", "E", "C", "A", "invalid"}], "updated"}
 
 The pages are HTML fragments. Their markup changed between 2022 (class-based) and 2025 (id-based), so the
@@ -77,6 +78,7 @@ def parse_count(page):
             if not isinstance(no, int):
                 continue
             rows.append({"no": no, "name": _text(cells[ix["姓名"]]) if "姓名" in ix else "",
+                         "sex": {"男": 1, "女": 2}.get(_text(cells[ix["性別"]]), 0) if "性別" in ix else 0,
                          "votes": _num(cells[ix["得票數"]]) or 0,
                          "party": _text(cells[ix["推薦之政黨"]]) if "推薦之政黨" in ix else "",
                          "mark": _text(cells[ix["註記"]]) if "註記" in ix else ""})
@@ -84,7 +86,11 @@ def parse_count(page):
         raise ValueError("no candidate table on the page")
     if sent is None:
         raise ValueError("no station count (已送/應送) on the page")
-    return {"title": _title(page), "sent": sent, "total": total, "rows": rows, "updated": _updated(page)}
+    t = _text(page)
+    seats = re.search(r"應選人數[:：]\s*(\d+)", t)
+    women = re.search(r"婦女應當選名額[:：]\s*(\d+)", t)
+    return {"title": _title(page), "sent": sent, "total": total, "rows": rows, "updated": _updated(page),
+            "seats": int(seats.group(1)) if seats else None, "women": int(women.group(1)) if women else 0}
 
 
 def parse_turnout(page):
