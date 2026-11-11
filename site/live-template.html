@@ -1200,49 +1200,75 @@ const DATA = /*__DATA__*/null;
     const S = src.series; let k = -1;
     for (let i = 0; i < S.length && S[i][0] <= t; i++) k = i;
     if (k < 0 || (src.ends != null && t > src.ends + 10)) return null;
-    return { v: S[k].slice(1), age: t - S[k][0] };
+    // a live source's last reading holds until it was last read ("seen"), so an unchanged count isn't shown as old
+    const since = k === S.length - 1 && src.seen != null ? Math.max(S[k][0], Math.min(src.seen, t)) : S[k][0];
+    return { v: S[k].slice(1), age: t - since };
   }
   // Channel / CEC count watch (2024): per candidate, the floor (highest reliable count), the field (other
   // channels: mean and range) and the model's projected final with its 80% range. A count above the top of
   // that range is red: more than the count can plausibly reach, the live counterpart of "above the final".
   function watchData(race) {
     const p = at(race, st.t);
+    const three = race.third != null;
     const cands = [race.blue, race.other, race.third];
-    const cec = p ? [p[C.b], p[C.o], p[C.c3]] : null;
-    const v3 = view3(race, st.t);
-    // projected final votes: projected share x projected valid votes (ballots projected x counted valid/ballot ratio)
-    const proj = p && !v3.pre ? (() => { const vb = (p[C.b] + p[C.o] + p[C.c3]) / Math.max(p[C.cc], 1), tot = p[isDist() ? C.tmd : C.tm] * vb;
-      return v3.rows.map(r => ({ m: r.share * tot, lo: Math.max(0, r.share - 1.2816 * r.sd) * tot, hi: (r.share + 1.2816 * r.sd) * tot })); })() : null;
+    const cec = p ? [p[C.b], p[C.o], three ? p[C.c3] : null] : null;
+    // projected final votes. Three-way: projected share x projected valid votes (ballots projected x counted
+    // valid/ballot ratio). Two-way: each side's half of the projected two-way total, plus or minus half the
+    // projected margin; the range adds the turnout range to the margin's.
+    let proj = null;
+    if (p && three) {
+      const v3 = view3(race, st.t);
+      if (!v3.pre) { const vb = (p[C.b] + p[C.o] + p[C.c3]) / Math.max(p[C.cc], 1), tot = p[isDist() ? C.tmd : C.tm] * vb;
+        proj = v3.rows.map(r => ({ m: r.share * tot, lo: Math.max(0, r.share - 1.2816 * r.sd) * tot, hi: (r.share + 1.2816 * r.sd) * tot })); }
+    } else if (p) {
+      const v = view(race, st.t), f2 = p[C.b] + p[C.o] + v.twoLeft, f2sd = p[isDist() ? C.tsdd : C.tsd] * (p[C.b] + p[C.o]) / Math.max(p[C.cc], 1);
+      const sd = Math.hypot(v.sd, f2sd) / 2;
+      proj = [(f2 + v.mean) / 2, (f2 - v.mean) / 2].map(m => ({ m, lo: Math.max(0, m - 1.2816 * sd), hi: m + 1.2816 * sd }));
+      proj.push(null);
+    }
     const rows = [], reliable = [], field = [];
-    if (cec) { rows.push({ label: '中選會', en: 'CEC count', cohort: 'reliable', v: cec, age: 0 }); reliable.push({ v: cec, label: '中選會' }); }
+    if (cec) { rows.push({ label: '中選會', en: 'CEC', cohort: 'reliable', v: cec, age: 0 }); reliable.push({ v: cec, label: '中選會', en: 'CEC' }); }
     for (const src of race.sources || []) {
       const r = srcAt(src, st.t);
       if (!r || r.age > (src.stale || 10)) { rows.push({ label: src.label, en: src.en, cohort: src.cohort, v: null, why: r ? tx(`last reading ${Math.round(r.age)} min ago`, `最後讀數 ${Math.round(r.age)} 分鐘前`, `上尾的讀數 ${Math.round(r.age)} 分鐘前`) : (src.ends != null && st.t > src.ends ? tx('switched to the CEC feed', '已改用中選會資料', '已經改用中選會的資料') : tx('no reading yet', '尚無讀數', '猶無讀數')) }); continue; }
       rows.push({ label: src.label, en: src.en, cohort: src.cohort, v: r.v, age: r.age });
-      (src.cohort === 'reliable' ? reliable : field).push({ v: r.v, label: src.label });
+      (src.cohort === 'reliable' ? reliable : field).push({ v: r.v, label: src.label, en: src.en });
     }
     // a channel that didn't show a candidate (null) is left out for that candidate, not counted as 0
     const floor = [0, 1, 2].map(i => { const c = reliable.filter(x => x.v[i] != null); if (!c.length) return null;
-      const b = c.reduce((a, x) => x.v[i] > a.v[i] ? x : a); return { v: b.v[i], src: b.label }; });
+      const b = c.reduce((a, x) => x.v[i] > a.v[i] ? x : a); return { v: b.v[i], src: srcName(b) }; });
     const fld = [0, 1, 2].map(i => { const c = field.map(x => x.v[i]).filter(x => x != null); return c.length ? { mean: c.reduce((a, x) => a + x, 0) / c.length, min: Math.min(...c), max: Math.max(...c), n: c.length } : null; });
     return { cands, rows, floor, fld, proj, p };
   }
+  // a source's name in the page's language (2024's channel labels, else the source's own English name)
+  function srcName(r) { return LANG === 'en' ? ({ '中選會': 'CEC', '公視': 'PTS', '華視': 'CTS', '三立': 'SET' })[r.label] || r.en || r.label : r.label; }
+  function srcNote(race) { // "Reliable: CEC, CNA. Field: SET, FTV." from the race's own sources
+    const names = c => race.sources.filter(s => s.cohort === c).map(s => srcName(s));
+    const rel = [srcName({ label: '中選會', en: 'CEC' })].concat(names('reliable')), fld = names('field');
+    const sep = LANG === 'en' ? ', ' : '、';
+    return tx('Reliable: ', '可靠來源：', '可靠來源：') + rel.join(sep) + tx('. ', '。', '。') + (fld.length ? tx('Field: ', '其他來源：', '其他來源：') + fld.join(sep) + tx('. ', '。', '。') : '')
+      + tx('Read from their own pages each minute. ', '每分鐘從各來源網頁讀取。', '逐分鐘對各來源的網頁讀。');
+  }
   function watch(race) {
-    if (cur().live && !race.sources) return `<div class="watch later"><h2>${tx('Count watch', '開票數字監看')}</h2>
-      <p class="muted" style="margin:0;font-size:13px">${tx("On election night: the CEC's count next to the TV channels' on-screen counts, with the model's projected final and its 80% range. A count above what the race can plausibly reach is marked red.", '開票當晚：中選會票數與各電視台畫面上的票數並列，加上模型預估的最終票數與 80% 區間。超出合理可能範圍的票數會以紅字標示。', '開票彼暗：中選會的票數佮各電視台畫面頂懸的票數排做伙，閣有模型預估上尾的票數佮 80% 區間。超過合理範圍的票數會用紅字標出來。')}</p>
+    const n = cur(), anySrc = n.races.some(r => r.sources);
+    // before the count, on a live night with no outlet read yet: say what will appear; after that, only races with readings
+    if (n.live && !anySrc && !n.races.some(r => r.pts.length)) return `<div class="watch later"><h2>${tx('Count watch', '開票數字監看')}</h2>
+      <p class="muted" style="margin:0;font-size:13px">${tx("On election night, where other outlets publish their counts: the CEC's count next to theirs, with the model's projected final and its 80% range. A count above what the race can plausibly reach is marked red.", '開票當晚，若其他媒體公布計票數字：中選會票數與各來源並列，加上模型預估的最終票數與 80% 區間。超出合理可能範圍的票數會以紅字標示。', '開票彼暗，若是其他媒體有公布票數：中選會的票數佮各來源排做伙，閣有模型預估上尾的票數佮 80% 區間。超過合理範圍的票數會用紅字標出來。')}</p>
       <div class="ghost"></div><div class="ghost"></div></div>`;
-    if (race.third == null || !cur().races.some(r => r.sources)) return ''; // 2024 only: no channel counts read for other nights
+    // 2024: every three-way race (the national one has channel counts, counties the CTS panel or the CEC alone);
+    // other nights: races with readings from other outlets
+    if (!race.sources && !(race.third != null && anySrc && !n.live)) return '';
     const W = watchData(race);
-    if (!W.p) return `<div class="watch"><h2>${tx('Count watch', '開票數字監看')}</h2><p class="muted" style="margin:0;font-size:13px">${tx('No counts yet.', '尚無票數。', '猶無票數。')}</p></div>`;
-    const order = [1, 0, 2].filter(i => W.cands[i]); // 賴, 侯, 柯 (ballot order would be 柯, 賴, 侯)
-    const scale = Math.max(1, ...order.map(i => Math.max(W.proj ? W.proj[i].hi : 0, W.floor[i] ? W.floor[i].v : 0, W.fld[i] ? W.fld[i].max : 0))) * 1.04;
+    if (!W.p && !W.rows.some(r => r.v)) return `<div class="watch"><h2>${tx('Count watch', '開票數字監看')}</h2><p class="muted" style="margin:0;font-size:13px">${tx('No counts yet.', '尚無票數。', '猶無票數。')}</p></div>`;
+    const order = (race.area === '全國' ? [1, 0, 2] : [0, 1, 2]).filter(i => W.cands[i]); // 2024: 賴, 侯, 柯 (ballot order would be 柯, 賴, 侯)
+    const scale = Math.max(1, ...order.map(i => Math.max(W.proj && W.proj[i] ? W.proj[i].hi : 0, W.floor[i] ? W.floor[i].v : 0, W.fld[i] ? W.fld[i].max : 0))) * 1.04;
     const pc = v => `${Math.max(0, Math.min(100, 100 * v / scale)).toFixed(2)}%`;
-    const over = (v, i) => W.proj && v != null && v > W.proj[i].hi;
+    const over = (v, i) => W.proj && W.proj[i] && v != null && v > W.proj[i].hi;
     const bars = order.map(i => { const c = W.cands[i], f = W.floor[i], fd = W.fld[i], pr = W.proj ? W.proj[i] : null;
       return `<div class="wrow">
         <div class="whead"><span class="nm" style="color:${tone(c)}">${esc(c.name)}</span>
           <span class="wf"><label>${tx('Floor', '下限')}</label><b class="num${over(f && f.v, i) ? ' over' : ''}">${f ? comma(f.v) : '—'}</b><small>${f ? esc(f.src) : ''}</small></span>
-          ${race.sources && race.sources.some(s => s.cohort === 'field') ? `<span class="wf"><label>${tx('Field', '其他頻道', '其他電視台')}</label><b class="num${over(fd && fd.mean, i) ? ' over' : ''}">${fd ? comma(fd.mean) : '—'}</b><small>${fd ? (fd.n > 1 ? `${comma(fd.min)}–${comma(fd.max)}` : tx('1 channel', '1 台')) : tx('no reading', '無讀數')}</small></span>` : ''}
+          ${race.sources && race.sources.some(s => s.cohort === 'field') ? `<span class="wf"><label>${tx('Field', '其他來源', '其他來源')}</label><b class="num${over(fd && fd.mean, i) ? ' over' : ''}">${fd ? comma(fd.mean) : '—'}</b><small>${fd ? (fd.n > 1 ? `${comma(fd.min)}–${comma(fd.max)}` : tx('1 source', '1 個來源', '1 个來源')) : tx('no reading', '無讀數')}</small></span>` : ''}
           <span class="wf"><label>${tx('Projected final', '預估最終', '預估上尾')}</label><b class="num">${pr ? comma(pr.m) : '—'}</b><small>${pr ? `${comma(pr.lo)}–${comma(pr.hi)}` : ''}</small></span></div>
         <div class="wbar" role="img" aria-label="${esc(c.name)}: floor ${f ? comma(f.v) : 'none'}${fd ? ', field ' + comma(fd.mean) : ''}${pr ? ', projected final ' + comma(pr.m) : ''}">
           ${pr ? `<div class="prj" style="left:${pc(pr.lo)};width:calc(${pc(pr.hi)} - ${pc(pr.lo)})"></div><div class="prm" style="left:${pc(pr.m)}"></div>` : ''}
@@ -1251,15 +1277,15 @@ const DATA = /*__DATA__*/null;
         </div></div>`; }).join('');
     const cell = (val, i) => val == null ? '<td class="stale">—</td>' : `<td class="${over(val, i) ? 'over' : ''}"><span class="num">${comma(val)}</span></td>`;
     const table = `<table class="srcs"><thead><tr><th>${tx('Source', '來源')}</th>${order.map(i => `<th style="color:${tone(W.cands[i])}">${esc(W.cands[i].name)}</th>`).join('')}<th>${tx('Reading', '讀數')}</th></tr></thead><tbody>
-      ${W.rows.map(r => `<tr><td><b>${esc(LANG === 'en' ? ({ '中選會': 'CEC', '公視': 'PTS', '華視': 'CTS', '三立': 'SET' })[r.label] || r.label : r.label)}</b><span class="cohort">${r.cohort === 'reliable' ? tx('reliable', '可靠') : tx('field', '其他')}</span></td>${r.v ? order.map(i => cell(r.v[i], i)).join('') : order.map(() => '<td class="stale">—</td>').join('')}<td class="stale">${r.v ? (r.age ? tx(Math.round(r.age) + ' min old', Math.round(r.age) + ' 分鐘前') : tx('now', '即時')) : esc(r.why)}</td></tr>`).join('')}
+      ${W.rows.map(r => `<tr><td><b>${esc(srcName(r))}</b><span class="cohort">${r.cohort === 'reliable' ? tx('reliable', '可靠') : tx('field', '其他')}</span></td>${r.v ? order.map(i => cell(r.v[i], i)).join('') : order.map(() => '<td class="stale">—</td>').join('')}<td class="stale">${r.v ? (r.age ? tx(Math.round(r.age) + ' min old', Math.round(r.age) + ' 分鐘前') : tx('now', '即時')) : esc(r.why)}</td></tr>`).join('')}
     </tbody></table>`;
     const nat = race.area === '全國';
     return `<div class="watch">
       <h2>${tx('Count watch at', '開票數字監看')} ${clockTxt(st.t)}</h2>
-      <div class="wkey"><span><i class="k-fl"></i>${tx('floor: highest reliable count', '下限：可靠來源中的最高票數', '下限：可靠來源內底上懸的票數')}</span>${race.sources && race.sources.some(s => s.cohort === 'field') ? `<span><i class="k-band"></i>${tx('field: other channels, range and mean', '其他頻道：範圍與平均', '其他電視台：範圍佮平均')}</span>` : ''}<span><i class="k-prj"></i>${tx('projected final, 80% range', '預估最終票數，80% 區間', '預估上尾的票數，80% 區間')}</span></div>
+      <div class="wkey"><span><i class="k-fl"></i>${tx('floor: highest reliable count', '下限：可靠來源中的最高票數', '下限：可靠來源內底上懸的票數')}</span>${race.sources && race.sources.some(s => s.cohort === 'field') ? `<span><i class="k-band"></i>${tx('field: other sources, range and mean', '其他來源：範圍與平均', '其他來源：範圍佮平均')}</span>` : ''}<span><i class="k-prj"></i>${tx('projected final, 80% range', '預估最終票數，80% 區間', '預估上尾的票數，80% 區間')}</span></div>
       ${bars}
       <details><summary>${tx('Readings by source', '各來源讀數', '逐个來源的讀數')}</summary><div class="tbl">${table}</div></details>
-      <p class="note muted" style="margin:0;font-size:12px">${nat ? tx('Reliable: CEC, PTS (own count), CTS. Field: SET, TVBS. ', '可靠來源：中選會、公視（自行計票）、華視。其他頻道：三立、TVBS。', '可靠來源：中選會、公視（家己算票）、華視。其他電視台：三立、TVBS。') : race.sources ? tx("County counts: 中選會 and 華視's county panel, read off the recording. ", '縣市票數：中選會與華視的縣市面板（從錄影辨識）。', '縣市票數：中選會佮華視的縣市面板（對錄影辨識）。') : tx('Floor: the CEC count. ', '下限：中選會票數。', '下限：中選會的票數。')}<span style="color:var(--stamp);font-weight:700">${tx('Red', '紅字')}</span>${tx(': above the top of the projected 80% range.', '：高於預估 80% 區間上限。', '：比預估 80% 區間的上限閣較懸。')}</p>
+      <p class="note muted" style="margin:0;font-size:12px">${nat ? tx('Reliable: CEC, PTS (own count), CTS. Field: SET, TVBS. ', '可靠來源：中選會、公視（自行計票）、華視。其他頻道：三立、TVBS。', '可靠來源：中選會、公視（家己算票）、華視。其他電視台：三立、TVBS。') : race.sources && race.third != null && !cur().live && cur().races.some(r => r.area === '全國') ? tx("County counts: 中選會 and 華視's county panel, read off the recording. ", '縣市票數：中選會與華視的縣市面板（從錄影辨識）。', '縣市票數：中選會佮華視的縣市面板（對錄影辨識）。') : race.sources ? srcNote(race) : tx('Floor: the CEC count. ', '下限：中選會票數。', '下限：中選會的票數。')}<span style="color:var(--stamp);font-weight:700">${tx('Red', '紅字')}</span>${tx(': above the top of the projected 80% range.', '：高於預估 80% 區間上限。', '：比預估 80% 區間的上限閣較懸。')}</p>
     </div>`;
   }
   function chartT(race) {

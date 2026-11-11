@@ -38,6 +38,35 @@ CEC count site --(every 60 s)--> scripts/live/poll.py --> live-out/needle/2026-m
 - `python3 scripts/live/check_certainty.py`: 43 races, never "decided" early or on the wrong side; on average 14 stations after the truth.
 - Rehearsal on 11/10: mock site at 60× with 3% failures → poller every 10 s → publisher → local site. The page followed the count, kept a reader's look-back position across refreshes, and returned with "Live". No errors.
 
+### Other outlets (built 11/11)
+
+`scripts/live/outlets.py`, switched on by settings (`data/live/outlets.json`), not code. An outlet is read once its `url` is set. The poller re-reads the settings every 5 minutes: first the copy on the repository's `night` branch, then the local one. So an address found on the night can be added from anywhere, and the friend's computer picks it up without a restart. Pushing to the `night` branch doesn't redeploy the site, because Cloudflare deploys only from `main`. **Check that in the Workers Builds settings before relying on it.**
+
+| Kind | What it reads | 2022 / 2024 example | Used for |
+|---|---|---|---|
+| `cna` | 中央社's JSON: per county, ballot number and votes, % of stations in | `cna.com.tw/project/20221126-election-live/api/city.json` | count watch (reliable) |
+| `cec_feed` | the CEC's own media feed as 公視 republished it: `{"ST", "TC": [...], "T1": [...]}` with stations sent/total per town and district | 公視 2022: `d3prffu8f9hpuw.cloudfront.net/campaign-2022/assets/data/final.json` (end-of-night copy; the in-count file name is unknown); 2024: `.../2024-election-vote/vote/p1-63-000.json` | **fallback for the CEC's numbers**: needle and councils |
+| `tv_json` | TV channels' on-screen counts keyed by candidate name | 公視 2024: `.../2024-election-vote/tv/latest.json` (2022's local-election page had none) | count watch, one row per channel |
+| `page_text` | any page printing names then votes; optional split at channel names | 自由時報 2022 realtime pages (東森, 民視, 台視, CEC); 聯合報 | count watch (crude; readings checked) |
+
+**Fallback.** For each town, county and council district, the poller takes whichever source has more stations in: the CEC's page or the feed. If the CEC's count site goes down, the needle and councils carry on from the feed. This was rehearsed with `mock_cec.py --down`.
+- The feed has no names. Mayoral names come from the ballot.
+- A council district falls back only after its CEC page has been read once, because its candidates' names and sex come from that page.
+- When the CEC site fails, the poller tries the rest of its pages once each without retries, so a cycle still takes seconds.
+
+**Checks.** A reading counts only if it covers both contenders and no candidate has more votes than the race has electors. Readings are stored as they change, with the time of the CEC's latest page, in `live-out/outlets-state.json`, and picked up again after a restart.
+
+**The page.** The count watch now works for two-way races too:
+- It shows the floor (the highest reliable count), the field (other sources, range and mean), and the projected final with its 80% range. Two-way races use half the projected two-way total, plus or minus half the projected margin; the range combines margin and turnout.
+- It appears for races with outlet readings. Before the count, a placeholder says what will appear. After the count starts with no outlets, it doesn't show at all.
+- "Reliable" means the CEC, 中央社, and 公視's or 華視's own counts. Everything else is "field".
+
+**Mock.** `mock_cec.py` serves all three JSON kinds from the same 2022 count:
+- 中央社 one minute behind.
+- TV counts 5–10 minutes ahead, and inflated early for 三立 and 民視.
+
+The rehearsal and the check use `data/live/outlets-mock.json`.
+
 ### Running it
 
 ```sh
@@ -64,7 +93,7 @@ python3 scripts/live/publish.py            # copies into _site; serve _site with
 ## Not built yet
 
 - ~~Council seats live~~ **built 2026-11-11** (`scripts/live/council_live.py`): one CEC page per council district (221: the CEC's 2026 candidate files list 208; 臺南市's file isn't published yet, so its 13 districts come from 2022 — check when the CEC posts it). The page enables its Council view once the first district reports, and refetches the council file with the mayors'. No model: the page shows who would hold each seat if counting stopped, as on the replays; "decided" uses a generous estimate of the votes still out.
-- **Count watch** (other outlets' numbers next to the CEC's): sources to find once 2026 pages are up (in past cycles 中央社 relayed the CEC as JSON).
+- ~~Count watch~~ **built 2026-11-11**; see "Other outlets" below. Each outlet's 2026 address is still to find once its page is up.
 - **Turnout view on 2026:** works from the same points; checked only in the rehearsal.
 
 ## Timeline

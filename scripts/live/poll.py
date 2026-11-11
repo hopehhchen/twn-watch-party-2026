@@ -39,6 +39,8 @@ import stations as ST  # noqa: E402
 from cec_parse import parse_count, parse_turnout  # noqa: E402
 from council_live import CouncilLive  # noqa: E402
 from live_model import LiveRace  # noqa: E402
+from outlets import Outlets  # noqa: E402
+from build_2026_night import ballot  # noqa: E402
 
 TW = timezone(timedelta(hours=8))
 try:  # Python from python.org on a Mac has no certificates of its own: use certifi's when installed
@@ -63,10 +65,11 @@ class Fetcher:
         self.cache = {}  # url -> (etag, last_modified, body)
         self.stats = {}
 
-    def get(self, url):
+    def get(self, url, retries=None):
         etag, lm, body = self.cache.get(url, (None, None, None))
-        for attempt in range(self.retries + 1):
-            req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "text/html,*/*"})
+        tries = (self.retries if retries is None else retries) + 1
+        for attempt in range(tries):
+            req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "text/html,*/*", "Accept-Encoding": "gzip"})
             if etag:
                 req.add_header("If-None-Match", etag)
             if lm:
@@ -90,13 +93,26 @@ class Fetcher:
             except Exception as e:  # timeouts, resets
                 self.stats["err"] = self.stats.get("err", 0) + 1
                 last = e
-            time.sleep(0.5 * (attempt + 1))
+            if attempt + 1 < tries:
+                time.sleep(0.5 * (attempt + 1))
         return body, False
 
-    def get_many(self, urls):
-        self.stats = {}
+    def get_many(self, urls, reset=True):
+        """Fetch urls in parallel. If the first dozen all fail (the site is down or overloaded), the rest are tried
+        once each without retries, so a cycle stays short and other sources (outlets) are still read on time."""
+        if reset:
+            self.stats = {}
+        head, rest = urls[:12], urls[12:]
         with ThreadPoolExecutor(self.workers) as ex:
-            return dict(zip(urls, ex.map(self.get, urls)))
+            before = dict(self.stats)
+            out = dict(zip(head, ex.map(self.get, head)))
+            ok = sum(self.stats.get(k, 0) - before.get(k, 0) for k in ("200", "304"))
+            if head and not ok:
+                self.stats["fast"] = self.stats.get("fast", 0) + len(rest)
+                out.update(zip(rest, ex.map(lambda u: self.get(u, retries=0), rest)))
+            else:
+                out.update(zip(rest, ex.map(self.get, rest)))
+        return out
 
 
 def page_url(base, prefix, county, town="000"):
@@ -141,6 +157,10 @@ class Night:
             r["_nos"] = nos  # filled with every candidate's number from the first page
             r["_towns"], r["_valid"] = tw, valid
             r["_open"] = r["other"]["name"].endswith("?") or not r.get("sure", True)
+        self.ballots = {r["area"]: ballot(r["area"]) for r in self.doc["races"]}
+        self.outlets = Outlets(self.out, self.doc["races"], self.ballots)
+        self.outlets.set_counties(self.towns)
+        self.fallback_used = 0
 
     # ---- one cycle -------------------------------------------------------------------------------------
     def urls(self, base):
@@ -155,6 +175,8 @@ class Night:
     def snapshot(self, base, pages, now):
         """{area: {"county": parsed county page, "towns": {town: {...}}, "turnout": {...}, "t": minutes}}"""
         snap, errors = {}, []
+        fb = self.outlets.fallback  # the CEC's media feed via an outlet, when one is set (outlets.py, cec_feed)
+        self.fallback_used = 0
         for r in self.doc["races"]:
             area, c = r["area"], self.towns[r["area"]]
             entry = {"towns": {}, "county": None, "turnout": None}
@@ -172,15 +194,28 @@ class Night:
                 except ValueError as e:
                     errors.append(f"{area} turnout: {e}")
             entry["turnout"] = turnout.get("總計")
+            fc = fb.get(("TC", c["code"], "000"))
+            if fc and fc.get("E") and not (entry["turnout"] or {}).get("E"):
+                entry["turnout"] = {"E": fc["E"], "C": fc.get("C")}
+            names = {c_["no"]: c_["name"] for c_ in self.ballots[area].values()}
             stamps = []
             for code, name, *_ in c["towns"]:
                 body, _ = pages.get(page_url(base, "TC", c["code"], code), (None, False))
-                if not body:
+                p = None
+                if body:
+                    try:
+                        p = parse_count(body)
+                    except ValueError as e:
+                        errors.append(f"{area} {name}: {e}")
+                f = fb.get(("TC", c["code"], code))
+                if f and (p is None or (f["sent"] or 0) > (p["sent"] or 0)):  # the feed is further along: use it
+                    entry["towns"][name] = {"sent": f["sent"], "total": f["total"], "votes": dict(f["votes"]), "C": f.get("C"),
+                                            "E": f.get("E"), "names": {no: names.get(no, f"{no}號") for no in f["votes"]}}
+                    self.fallback_used += 1
+                    if fb.get("stamp"):
+                        stamps.append(fb["stamp"])
                     continue
-                try:
-                    p = parse_count(body)
-                except ValueError as e:
-                    errors.append(f"{area} {name}: {e}")
+                if p is None:
                     continue
                 tr = turnout.get(name) or {}
                 entry["towns"][name] = {"sent": p["sent"], "total": p["total"], "votes": {x["no"]: x["votes"] for x in p["rows"]},
@@ -356,12 +391,17 @@ class Night:
                 r["pts"].append(row)
         log(f"{r['area']}: {len(r['pts'])} points recomputed")
 
-    def write(self, now):
+    def write(self, now, keep_updated=False):
         doc = {k: v for k, v in self.doc.items() if k != "races" and not k.startswith("_")}
         doc["races"] = [{k: v for k, v in r.items() if not k.startswith("_")} for r in self.doc["races"]]
+        for r in doc["races"]:  # other outlets' counts, for the count watch
+            src = self.outlets.sources(r)
+            if src:
+                r["sources"] = src
         last = max((r["pts"][-1][0] for r in doc["races"] if r["pts"]), default=0)
         doc["end"] = max(self.doc["end"], int(last) + 30) if last > self.doc["end"] - 30 else self.doc["end"]
-        doc["updated"] = now.isoformat(timespec="seconds")
+        doc["updated"] = self.doc["_updated"] if keep_updated and self.doc.get("_updated") else now.isoformat(timespec="seconds")
+        self.doc["_updated"] = doc["updated"]
         doc["council_live"] = self.council.counting()  # the page enables its Council view once this is true
         path = self.out / "needle" / "2026-mayors.json"
         tmp = path.with_suffix(".tmp")
@@ -378,6 +418,7 @@ def main():
     ap.add_argument("--once", action="store_true")
     ap.add_argument("--probe", action="store_true")
     ap.add_argument("--date", default="2026-11-28", help="the night (for page timestamps)")
+    ap.add_argument("--outlets", help="outlet settings file (default data/live/outlets.json, which points to its remote copy)")
     ap.add_argument("--wait-until", help="Taiwan time (e.g. 2026-11-28T15:50) before which only one page is checked every "
                                          "10 minutes: the night runner can start hours early without hammering the CEC")
     a = ap.parse_args()
@@ -386,6 +427,10 @@ def main():
         if not a.base:
             sys.exit("The CEC count site's address isn't set yet (data/live/night-config.json, count_base).")
     night, fetcher = Night(a.out), Fetcher()
+    night.outlets.fetcher = fetcher
+    if a.outlets:
+        night.outlets.config = Path(a.outlets)
+    night.outlets.reload(force=True)
     if a.probe:
         c = night.towns["臺北市"]
         for u in (page_url(a.base, "TC", c["code"]), page_url(a.base, "TC", c["code"], c["towns"][0][0]), page_url(a.base, "SC", c["code"])):
@@ -408,25 +453,38 @@ def main():
             body, _ = fetcher.get(probe)
             log(f"waiting until {until:%H:%M} (Taiwan time) to start reading; the CEC count site answered: {fetcher.stats}")
             time.sleep(min(600, max(1, (until - datetime.now(TW)).total_seconds())))
-    first, path = True, night.out / "needle" / "2026-mayors.json"
+    first, path, last_write = True, night.out / "needle" / "2026-mayors.json", time.time()
     while True:
         t_start = time.time()
         now = datetime.now(TW)
         now_night = day.replace(hour=now.hour, minute=now.minute, second=now.second) if a.date else now
         pages = fetcher.get_many(night.urls(a.base))
+        pages.update(fetcher.get_many(night.outlets.urls(), reset=False))
+        night.outlets.read(pages)
         snap, errors = night.snapshot(a.base, pages, now_night)
+        # outlets' readings are timed like the CEC's: its latest page stamp this cycle (else this computer's clock)
+        omoved = night.outlets.commit(max((e["t"] for e in snap.values() if e["towns"]), default=tmin(None, now_night)))
         night.archive(snap, now)
         moved = night.step(snap)
-        cmoved = night.council.step(a.base, pages, lambda u: tmin(u, now_night))
+        if omoved and not moved:
+            moved = ["outlets"]
+        cmoved = night.council.step(a.base, pages, lambda u: tmin(u, now_night), night.outlets.fallback)
         if cmoved or first:
             night.council.write(now)
         if cmoved and not moved and not night.doc.get("_council_flag"):
             moved, night.doc["_council_flag"] = ["council"], True  # rewrite the mayors' file once so the flag goes out
         if moved or first:  # "updated" in the file = when the figures last changed (the page warns if that gets old)
-            path = night.write(now)
+            path, last_write = night.write(now), time.time()
+        elif night.outlets.state and time.time() - last_write > 120:  # outlets read but unchanged: refresh when they were last read
+            night.outlets.save()
+            path, last_write = night.write(now, keep_updated=True), time.time()
         first = False
         log(f"cycle {time.time() - t_start:.1f}s {fetcher.stats} moved: {', '.join(moved) or '-'}; council districts moved: {cmoved}"
-            + (f" | {len(errors)} parse errors, e.g. {errors[0]}" if errors else ""))
+            + (f" | {len(errors)} parse errors, e.g. {errors[0]}" if errors else "")
+            + (f" | {night.fallback_used} towns from the CEC feed via an outlet" if night.fallback_used else "")
+            + (f" | outlets read: {', '.join(sorted(night.outlets.state))}" if night.outlets.state else "")
+            + (" | " + "; ".join(night.outlets.msgs.values()) if night.outlets.msgs else ""))
+        night.outlets.msgs.clear()
         if a.once:
             print(path)
             return

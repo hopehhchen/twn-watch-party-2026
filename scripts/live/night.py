@@ -269,15 +269,20 @@ def check():
                     break
                 except Exception:
                     time.sleep(1)
+            cfg = out / "outlets-check.json"  # the stand-in site's outlets, on this check's port
+            cfg.parent.mkdir(parents=True, exist_ok=True)
+            cfg.write_text((ROOT / "data" / "live" / "outlets-mock.json").read_text(encoding="utf-8").replace(":8790/", ":8791/"), encoding="utf-8")
             for _ in range(2):
-                r = subprocess.run([PY, "scripts/live/poll.py", "--base", "http://127.0.0.1:8791/zh-TW/", "--out", str(out), "--once"],
+                r = subprocess.run([PY, "scripts/live/poll.py", "--base", "http://127.0.0.1:8791/zh-TW/", "--out", str(out), "--once",
+                                    "--outlets", str(cfg)],
                                    cwd=ROOT, capture_output=True, text=True, env=ENV, timeout=300, encoding="utf-8", errors="replace")
                 time.sleep(5)
             d = json.loads((out / "needle" / "2026-mayors.json").read_text(encoding="utf-8"))
             n = sum(len(x["pts"]) for x in d["races"])
             c = json.loads((out / "council" / "2026.json").read_text(encoding="utf-8"))
             cn = sum(1 for x in c["counties"] for dd in x["districts"] if dd["pts"])
-            return n > 0 and cn > 0, f"practice count read: mayors ({n} points) and councils ({cn} districts)"
+            src = sum(1 for x in d["races"] if x.get("sources"))
+            return n > 0 and cn > 0 and src > 0, f"practice count read: mayors ({n} points), councils ({cn} districts), other outlets ({src} races)"
         finally:
             mock.terminate()
 
@@ -318,7 +323,8 @@ def rehearsal():
         if f.is_file():
             f.unlink()
     run([Child("mock", ["scripts/live/mock_cec.py", "--port", "8790", "--speed", "16", "--start", "15:58", "--fail", "0.02"]),
-         Child("poll", ["scripts/live/poll.py", "--base", "http://127.0.0.1:8790/zh-TW/", "--out", str(REH), "--interval", "20"]),
+         Child("poll", ["scripts/live/poll.py", "--base", "http://127.0.0.1:8790/zh-TW/", "--out", str(REH), "--interval", "20",
+                        "--outlets", "data/live/outlets-mock.json"]),
          Child("publish", ["scripts/live/publish.py", "--src", str(REH / "needle" / "2026-mayors.json"), "--deploy",
                            "--worker", CONFIG["test_worker"], "--every", "30"], env=cf_env(c))],
         "\nREHEARSAL running: the 2022 count, 16:00 to midnight in 30 minutes, published to a TEST site (not the real one).\n"

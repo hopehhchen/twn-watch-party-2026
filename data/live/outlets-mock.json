@@ -1,0 +1,9 @@
+{
+ "note": "Rehearsal settings: the mock count site's outlets (scripts/live/mock_cec.py). night.py rehearsal uses this file.",
+ "outlets": [
+  {"id": "cna", "kind": "cna", "label": "中央社", "en": "CNA", "cohort": "reliable", "url": "http://127.0.0.1:8790/outlets/cna/city.json"},
+  {"id": "pts-feed", "kind": "cec_feed", "label": "公視（中選會資料）", "en": "PTS (CEC feed)", "url": "http://127.0.0.1:8790/outlets/feed/running.json"},
+  {"id": "tv", "kind": "tv_json", "label": "電視台", "en": "TV", "cohort": "field", "url": "http://127.0.0.1:8790/outlets/tv/latest.json",
+   "channels": {"公視": {"id": "pts", "en": "PTS", "cohort": "reliable"}, "三立": {"id": "set", "en": "SET"}, "民視": {"id": "ftv", "en": "FTV"}}}
+ ]
+}

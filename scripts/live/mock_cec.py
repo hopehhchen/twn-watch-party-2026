@@ -11,6 +11,14 @@ its logged time; its votes go to the 2026 candidates: 2022's blue side to 2026's
 other, the 2022 third-placed candidate to the 2026 third (in three-way races) and the rest to the rest.
 嘉義市 voted in December 2022 with no logged times; its stations take 新竹市's times in order.
 --fail makes that share of requests fail (500 or a 20 s stall) to exercise retries.
+
+Outlets, from the same count (scripts/live/outlets.py reads them; data/live/outlets-mock.json points to them):
+  /outlets/cna/city.json     中央社's feed (2022 format), one minute behind the CEC
+  /outlets/feed/running.json the CEC's media feed as 公視 republished it in 2022 (TC, T1-T3)
+  /outlets/tv/latest.json    TV channels' on-screen counts (2024 format): 公視 5 minutes ahead of the CEC, 三立 and
+                             民視 10 minutes ahead and inflated early (up to +12%, shrinking as the count fills)
+--down M makes the CEC's own pages answer 503 from minute M after 16:00 (the media feed carries on), to rehearse
+the fallback.
 """
 import argparse
 import hashlib
@@ -93,7 +101,7 @@ def build_council():
                 sts.append(((when - t0).total_seconds() / 60 if when else 420.0, [s_["v"][k] for k in keep]))
             cands = [{"no": o["cands"][k]["no"], "name": o["cands"][k]["name"], "sex": o["cands"][k]["sex"],
                       "party": o["cands"][k]["party"] or "無"} for k in keep]
-            out[d["page"].split("/")[1][:-5]] = {"area": area, "no": d["no"], "type": d["seat_type"], "seats": o["seats"],
+            out[d["page"].split("/")[1][:-5]] = {"area": area, "no": d["no"], "type": d["seat_type"], "type_code": d["prefix"], "seats": o["seats"],
                                                  "women": o["women"], "cands": cands, "st": sts}
     return out
 
@@ -170,6 +178,7 @@ def main():
     ap.add_argument("--start", default="16:00")
     ap.add_argument("--fail", type=float, default=0.0)
     ap.add_argument("--layout", default="2022", choices=["2022", "2025"])
+    ap.add_argument("--down", type=float, help="the CEC's pages fail from this minute after 16:00 (outlets carry on)")
     a = ap.parse_args()
     races = build()
     council = build_council()
@@ -184,6 +193,52 @@ def main():
         t = datetime(2026, 11, 28, 16, 0) + timedelta(minutes=mins)
         return t.strftime("%m/%d %H:%M:%S")
 
+    def count(race, now, town=None):
+        ss = [s for s in race["st"] if town is None or s["d"] == town]
+        done = [s for s in ss if s["t"] <= now]
+        return ss, done, {c["no"]: sum(s["v"][c["no"]] for s in done) for c in race["cands"]}
+
+    def outlet(path, now):
+        if now < 0:
+            return None
+        if path == "cna/city.json":
+            out = {}
+            for code, race in races.items():
+                ss, done, v = count(race, now - 1)
+                out[code] = {"time": (datetime(2026, 11, 28, 16) + timedelta(minutes=now)).strftime("%Y/%m/%d %H:%M"),
+                             "process": round(100 * len(done) / len(ss), 2), "name": race["area"].replace("臺", "台"), "code": code,
+                             "electionType": "city", "candidates": [{"candNo": c["no"], "name": c["name"], "party": c["party"],
+                                                                     "tickets": v[c["no"]]} for c in race["cands"]], "towns": {}}
+            return json.dumps(out, ensure_ascii=False)
+        if path == "feed/running.json":
+            tc = []
+            for code, race in races.items():
+                for tcode, name in [("000", None)] + [(x[0], x[1]) for x in race["towns"]]:
+                    ss, done, v = count(race, now, name)
+                    E = sum(s["E"] for s in ss)
+                    C, A = (sum(s["C"] for s in done), sum(s["A"] for s in done))
+                    tc.append({"prvCode": code[:2], "cityCode": code[2:], "areaCode": None, "deptCode": None if tcode == "000" else tcode,
+                               "liCode": None, "tboxNo": None, "candTksInfo": [{"candNo": no, "tks": x} for no, x in v.items()],
+                               "prof1": A, "prof2": C - A, "prof3": C, "prof7": E, "tboxTot": len(ss), "tboxRcv": len(done)})
+            feed = {"ST": (datetime(2026, 11, 28, 16) + timedelta(minutes=now)).strftime("%m%d%H%M%S"), "TC": tc, "T1": [], "T2": [], "T3": []}
+            for key, d in council.items():
+                done = [v for t, v in d["st"] if t <= now]
+                feed[d["type_code"]].append({"prvCode": key[:2], "cityCode": key[2:5], "areaCode": key[5:7], "deptCode": None,
+                                             "candTksInfo": [{"candNo": c["no"], "tks": sum(v[k] for v in done)} for k, c in enumerate(d["cands"])],
+                                             "tboxTot": len(d["st"]), "tboxRcv": len(done)})
+            return json.dumps(feed, ensure_ascii=False)
+        if path == "tv/latest.json":
+            data = {}
+            for ch, lead, infl in (("公視", 5, 0.0), ("三立", 10, 0.12), ("民視", 10, 0.08)):
+                items = []
+                for race in races.values():
+                    ss, done, v = count(race, now + lead)
+                    f = 1 + infl * (1 - len(done) / len(ss))
+                    items += [{"vote_name": c["name"], "title": ch, "vote_count": round(v[c["no"]] * f)} for c in race["cands"]]
+                data[ch] = items
+            return json.dumps({"data": data}, ensure_ascii=False)
+        return None
+
     class H(BaseHTTPRequestHandler):
         def log_message(self, *x):
             pass
@@ -195,6 +250,15 @@ def main():
                     return
                 time.sleep(20)
             parts = self.path.split("?")[0].strip("/").split("/")
+            if parts[0] == "outlets":
+                body = outlet("/".join(parts[1:]), sim_minutes())
+                if body is None:
+                    self.send_error(404)
+                    return
+                return self.send_body(body, "application/json")
+            if a.down is not None and sim_minutes() >= a.down:
+                self.send_error(503)
+                return
             if len(parts) == 3 and parts[1] in ("T1", "T2", "T3") and parts[2].endswith(".html"):
                 d = council.get(parts[2][:-5])
                 now = sim_minutes()
@@ -242,6 +306,9 @@ def main():
                 votes = {c["no"]: sum(s["v"][c["no"]] for s in done) for c in race["cands"]}
                 title = f"{race['area']} {race['office']}選舉 候選人" + (f"在 {name}得票數" if name else "得票數")
                 body = table(title, len(done), len(ss), race["cands"], votes, stamp(now))
+            self.send_body(body, "text/html")
+
+        def send_body(self, body, ctype):
             raw = body.encode()
             etag = '"' + hashlib.md5(raw).hexdigest() + '"'
             if self.headers.get("If-None-Match") == etag:
@@ -249,7 +316,7 @@ def main():
                 self.end_headers()
                 return
             self.send_response(200)
-            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Type", f"{ctype}; charset=utf-8")
             self.send_header("ETag", etag)
             self.send_header("Content-Length", str(len(raw)))
             self.end_headers()

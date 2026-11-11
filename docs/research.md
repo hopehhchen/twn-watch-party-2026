@@ -18,7 +18,9 @@ Hence: MAX over the reliable cohort (CEC, CNA, PTS, CTS) as a floor; MEAN with s
 |---|---|---|
 | 自由時報 `election.ltn.com.tw/2022/realtime/<City>` | Side-by-side 東森 / 民視 / 台視 / 中選會 per race | Still online; server-rendered; blocks bots. Minor-candidate rows misaligned in its comparison table. |
 | 公視 `news.pts.org.tw/projects/2024-election-vote/` | `api/getVoteTv/?after=<unix>` per-station counts (三立, TVBS, 公視, 台視) | Endpoint still responds but only returns the final snapshot now. |
-| 中央社 `cna.com.tw/project/20221126-election-live/` | `api/city.json` (relays CEC) | Good schema reference (`candNo`, `tickets`, `process`, `time`). |
+| 公視 2024, as served now (checked 2026-11-11) | `tv/latest.json`: `{"data": {"三立": [{"vote_name", "vote_count"}], ...}}`; `vote/p1-63-000.json`: the CEC's media-feed rows per county (prvCode/cityCode/deptCode, `cand_tks_infos`, `tboxTot`/`tboxRcv`, prof1–7) | The page now reads static files; `getVoteTv` answers with the site's 404 page. |
+| 公視 2022 `news.pts.org.tw/projects/2022-election-vote/` | `d3prffu8f9hpuw.cloudfront.net/campaign-2022/assets/data/final.json`: the CEC's media feed for every race (TC mayors and towns, T1–T3 councils, TD, T4–T6, TV villages), with stations sent/total | End-of-night copy (`ST` 1126235101). No TV counts that year. A second route to the CEC's numbers if the 2026 page does the same. |
+| 中央社 `cna.com.tw/project/20221126-election-live/` | `api/city.json` (relays CEC), also `api/council.json`, `api/result.json` (referendum) | Keyed by CEC county code; per county `time`, `process` (% stations), `candidates` [`candNo`, `tickets`, `name`, `party`], `towns` → `villages` (votes only, no station counts). About 18 MB at the end. A separate `storage.googleapis.com/flask-project/2022election/election2022.json` lists each county's winner (CNA's calls?). |
 | Wayback Machine | ~7 mid-count captures of 自由時報 2022 (18:32–20:28 Taipei) | Only real mid-count multi-source evidence found so far. |
 
 ## Rebuilding other outlets' counts over the night (2026-11-05)

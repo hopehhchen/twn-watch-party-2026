@@ -61,16 +61,25 @@ class CouncilLive:
     def urls(self, base):
         return [f"{base.rstrip('/')}/{p}" for p in self.pages]
 
-    def step(self, base, pages, t_of):
-        """Append a point to every district whose count moved. t_of(updated stamp) -> minutes after 16:00."""
+    def step(self, base, pages, t_of, fallback=None):
+        """Append a point to every district whose count moved. t_of(updated stamp) -> minutes after 16:00.
+        fallback: {("T", page): {"sent", "total", "votes": {no: n}}} from the CEC's media feed (outlets.py), used when it
+        is further along than the district's page; it has no names, so only for districts already read once."""
         moved = 0
         for p, d in self.pages.items():
             body, _ = pages.get(f"{base.rstrip('/')}/{p}", (None, False))
-            if not body:
-                continue
-            try:
-                pg = parse_count(body)
-            except ValueError:
+            pg = None
+            if body:
+                try:
+                    pg = parse_count(body)
+                except ValueError:
+                    pass
+            f = (fallback or {}).get(("T", p))
+            if f and d["cands"] and set(f["votes"]) == {c["no"] for c in d["cands"]} and (pg is None or f["sent"] > pg["sent"]):
+                pg = {"sent": f["sent"], "total": f["total"], "seats": None, "women": None, "updated": fallback.get("stamp"),
+                      "rows": [{"no": c["no"], "name": c["name"], "party": c["party"], "sex": c["sex"], "votes": f["votes"][c["no"]],
+                                "mark": ""} for c in d["cands"]]}
+            if pg is None:
                 continue
             if not d["cands"] or len(d["cands"]) != len(pg["rows"]):
                 d["cands"] = [{"no": r["no"], "name": r["name"], "party": party(r["party"]), "tone": TONE.get(party(r["party"]), "oth"),
