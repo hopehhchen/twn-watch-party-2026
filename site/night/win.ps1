@@ -1,8 +1,9 @@
-# Election-night runner for election-2026.tw, for Windows. Open PowerShell and paste ONE of these lines:
+# Election-night runner for election-2026.tw, for Windows. Open PowerShell and paste ONE of these lines
+# (DownloadString always returns text, whatever type the server labels the file; 3072 = TLS 1.2 for older Windows):
 #
-#   irm https://election-2026.tw/night/win.ps1 | iex                                  # set up, then check this computer
-#   $env:TWN_MODE='rehearsal'; irm https://election-2026.tw/night/win.ps1 | iex       # practice run to a test site
-#   $env:TWN_MODE='night'; irm https://election-2026.tw/night/win.ps1 | iex           # election night
+#   [Net.ServicePointManager]::SecurityProtocol=3072; iex ((New-Object Net.WebClient).DownloadString('https://election-2026.tw/night/win.ps1'))
+#   $env:TWN_MODE='rehearsal'; [Net.ServicePointManager]::SecurityProtocol=3072; iex ((New-Object Net.WebClient).DownloadString('https://election-2026.tw/night/win.ps1'))
+#   $env:TWN_MODE='night'; [Net.ServicePointManager]::SecurityProtocol=3072; iex ((New-Object Net.WebClient).DownloadString('https://election-2026.tw/night/win.ps1'))
 #
 # Each time it downloads the latest code into %USERPROFILE%\twn-night\code (results and settings in twn-night are
 # kept), makes a private Python environment in twn-night\venv, and starts scripts\live\night.py.
