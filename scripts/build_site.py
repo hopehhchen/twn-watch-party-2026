@@ -113,7 +113,9 @@ def main():
     nights = night_index()
     mapd = json.loads((ROOT / "data" / "map" / "taiwan-counties.json").read_text())
     names = {n["zh"]: n["en"] for n in json.loads((ROOT / "data" / "names-en.json").read_text())["names"]}
-    render("live-template.html", {"nights": nights, "map": mapd, "names": names}, out / "live.html")
+    towns_en = {k: {t[1]: t[2] for t in v["towns"] if len(t) > 2 and t[2]}  # towns' English names: the CEC's own
+                for k, v in json.loads((ROOT / "data" / "live" / "towns-2022.json").read_text())["counties"].items()}
+    render("live-template.html", {"nights": nights, "map": mapd, "names": names, "towns_en": towns_en}, out / "live.html")
     if (ROOT / "site" / "index-template.html").exists():
         render("index-template.html", {"nights": nights, "accuracy": json.loads((ROOT / "data" / "accuracy.json").read_text())},
                out / "index.html")

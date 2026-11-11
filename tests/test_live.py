@@ -44,7 +44,7 @@ def test_towns():
     import stations as ST
     towns = json.loads((ROOT / "data" / "live" / "towns-2022.json").read_text())["counties"]
     for county, race in ST.load("2022-mayors").items():
-        assert {s["district"] for s in race["stations"]} == {n for _, n in towns[county]["towns"]}, county
+        assert {s["district"] for s in race["stations"]} == {t[1] for t in towns[county]["towns"]}, county
 
 
 def test_live_race():

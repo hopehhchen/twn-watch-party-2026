@@ -686,7 +686,7 @@ const DATA = /*__DATA__*/null;
 
       </div>
       `}
-      ${!council && isDist() ? `<div class="flag">${tx("District totals only: the CEC's live feed isn't giving per-station results, so the projection can't see which stations within a district have reported and stays less certain for longer.", '僅有鄉鎮市區合計：中選會即時資料沒有逐所結果，模型看不到區內哪些投開票所已回報，因此較久才能確定。', '干焦有鄉鎮市區的合計：中選會的即時資料無逐所的結果，模型看袂著區內佗幾所已經回報，所以愛較久才會確定。')}</div>` : ''}
+      ${!council && isDist() && night.races.some(r => r.pts.length) ? `<div class="flag">${tx("District totals only: the CEC's live feed isn't giving per-station results, so the projection can't see which stations within a district have reported and stays less certain for longer.", '僅有鄉鎮市區合計：中選會即時資料沒有逐所結果，模型看不到區內哪些投開票所已回報，因此較久才能確定。', '干焦有鄉鎮市區的合計：中選會的即時資料無逐所的結果，模型看袂著區內佗幾所已經回報，所以愛較久才會確定。')}</div>` : ''}
 
 `;
   }
@@ -1483,7 +1483,8 @@ const DATA = /*__DATA__*/null;
     const sel = mapEl.querySelector('path.sel'); if (sel) sel.parentNode.appendChild(sel);
   }
   function distBlock(d, s, i) {
-    const towns = d.towns.length > 4 ? d.towns.slice(0, 3).join('、') + ` +${d.towns.length - 3}` : d.towns.join('、');
+    const TE = (DATA.towns_en || {})[st.area] || {}, tn = t => LANG === 'en' && TE[t] ? `${TE[t]} ${t}` : t, sep = LANG === 'en' ? ', ' : '、';
+    const towns = d.towns.length > 4 ? d.towns.slice(0, 3).map(tn).join(sep) + ` +${d.towns.length - 3}` : d.towns.map(tn).join(sep);
     const prog = s.pre ? tx('no stations yet', '尚未開票', '猶未開票') : tx(`${(100 * s.frac).toFixed(0)}% of ${comma(d.stations)} stations · ${s.decided ? 'all decided' : `${s.safe.size} of ${d.seats} decided`}`,
       `${comma(d.stations)} 所已開 ${(100 * s.frac).toFixed(0)}% · ${s.decided ? '全部確定' : `${s.safe.size}/${d.seats} 席確定`}`, `${comma(d.stations)} 所已開 ${(100 * s.frac).toFixed(0)}% · ${s.decided ? '攏確定' : `${s.safe.size}/${d.seats} 席確定`}`);
     const dname = LANG === 'en' ? `District ${+String(d.name).replace(/\D/g, '')}` : d.name;

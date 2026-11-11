@@ -161,7 +161,7 @@ footer b { color: var(--ink); }
         <li><b>Decided.</b> When a lead is bigger than every elector at the stations still out, the race is decided, whatever the turnout.</li>
       </ol>
       <h3>Three-way races</h3>
-      <p>When a third candidate is close (in 2024, 柯文哲 in eight counties), the two candidates with a past election to compare with are split by the swing model, and the third candidate's share is projected from the counted stations in each district, adjusted for station size. The page shows a two-way needle between the two likeliest winners and the third candidate's chance beside it, from the 5th station counted.</p>
+      <p>When a third candidate is close (in 2024, Ko Wen-je 柯文哲 in eight counties), the two candidates with a past election to compare with are split by the swing model, and the third candidate's share is projected from the counted stations in each district, adjusted for station size. The page shows a two-way needle between the two likeliest winners and the third candidate's chance beside it, from the 5th station counted.</p>
       <h3>Turnout, council seats and the count watch</h3>
       <p><b>Turnout</b> is projected the same way as the vote: counted stations against their own past turnout. <b>Council seats</b> aren't projected: the page shows who would hold each seat if counting stopped now, with the women's quota, and marks a seat decided only when no split of the votes still out could change it. The <b>count watch</b> (2024) sets the TV channels' on-screen counts next to the CEC count and the model's projected final, and flags any count that goes above what can plausibly be reached.</p>
     </div>
@@ -212,21 +212,21 @@ footer b { color: var(--ink); }
     <h2 id="h-limits">What it can't do · 限制</h2>
     <ul class="steps" data-l="en">
       <li><b>Small sample.</b> Four nights, 87 county races, few of them close. The accuracy numbers above are a rough guide.</li>
-      <li><b>The 2026 feed.</b> Everything above uses per-station results. If the CEC's live feed on the night only gives district (鄉鎮市區) totals, the same model runs but is noticeably less certain early on (in the backtests, log loss 1.1–1.8× the per-station figure through half the count). The results page then switches to district totals by itself and says so. Which one the feed provides isn't known yet.</li>
+      <li><b>The 2026 feed.</b> Everything above uses per-station results. The CEC's live count site gives only district (鄉鎮市區) totals: each district's votes so far and how many of its polling stations have reported, but not which ones. So on the night the same model runs on district totals, which is noticeably less certain early on (in the backtests, log loss 1.1–1.8× the per-station figure through half the count). The results page says so on the night. That is how the CEC's 2022 count site worked; the 2026 site isn't up yet.</li>
       <li><b>Station electors.</b> Not published before the vote, so they are estimated from 2022 and 2024 station data until a station reports.</li>
       <li><b>Report times</b> are when the CEC logged each station, for all contests at once. TV often showed counts earlier.</li>
       <li><b>Three-way races</b> can't be checked well: one night, eight counties.</li>
     </ul>
     <ul class="steps" data-l="zh">
       <li><b>樣本小。</b>四個晚上、87 場縣市層級選舉，接戰的不多。上面的準確度數字只是粗略參考。</li>
-      <li><b>2026 年的即時資料。</b>以上都使用逐所結果。若當晚中選會的即時資料只有鄉鎮市區合計，同一模型仍可運作，但早期明顯較不確定（回測中，開出一半前的對數損失為逐所的 1.1–1.8 倍）。屆時開票頁會自動改用鄉鎮市區合計並加以標示。目前還不知道會提供哪一種。</li>
+      <li><b>2026 年的即時資料。</b>以上都使用逐所結果。中選會的即時開票網站只提供鄉鎮市區合計：各區目前的得票與已回報的投開票所數，但不顯示是哪幾所。因此當晚同一模型改以鄉鎮市區合計運作，早期明顯較不確定（回測中，開出一半前的對數損失為逐所的 1.1–1.8 倍）。開票頁當晚會加以標示。這是中選會 2022 年開票網站的做法；2026 年的網站尚未上線。</li>
       <li><b>各投開票所選舉人數</b>投票前不公布，因此在投開票所回報前，以 2022、2024 年的資料估計。</li>
       <li><b>回報時間</b>是中選會登錄各投開票所的時間（同一所的所有選舉一起）。電視常常更早顯示票數。</li>
       <li><b>三強選舉</b>難以驗證：只有一晚、八個縣市。</li>
     </ul>
     <ul class="steps" data-l="tw">
       <li><b>樣本少。</b>四暗、87 場縣市層級的選舉，相倚的無濟。頂懸的準確度數字干焦是粗略的參考。</li>
-      <li><b>2026 年的即時資料。</b>頂懸攏用逐所的結果。若當暗中選會的即時資料干焦有鄉鎮市區合計，仝一个模型猶原會使行，毋過早期明顯較無確定（回測內底，開出一半進前的對數損失是逐所的 1.1–1.8 倍）。彼時開票頁會家己改用鄉鎮市區合計，閣會標示出來。這馬猶毋知會提供佗一種。</li>
+      <li><b>2026 年的即時資料。</b>頂懸攏用逐所的結果。中選會的即時開票網站干焦提供鄉鎮市區合計：逐區這馬的得票佮已經回報的投開票所數，毋過無顯示是佗幾所。所以當暗仝一个模型改用鄉鎮市區合計來行，早期明顯較無確定（回測內底，開出一半進前的對數損失是逐所的 1.1–1.8 倍）。開票頁當暗會標示出來。這是中選會 2022 年開票網站的做法；2026 年的網站猶未上線。</li>
       <li><b>逐个投開票所的選舉人數</b>投票進前無公佈，所以佇投開票所回報進前，用 2022、2024 年的資料來估。</li>
       <li><b>回報時間</b>是中選會登錄逐个投開票所的時間（仝一所的所有選舉做伙）。電視定定較早就顯示票數。</li>
       <li><b>三強選舉</b>歹驗證：干焦一暗、八个縣市。</li>
@@ -254,18 +254,18 @@ footer b { color: var(--ink); }
 
   <section class="panel" aria-labelledby="h-2026">
     <h2 id="h-2026">Races to watch on 28 November · 11/28 焦點選戰</h2>
-    <p data-l="en">Why these races matter, from news coverage and analysts' previews as of 10 November. This is not a forecast: on the night, the count decides. It is the first nationwide vote since the 2025 recall votes, and the midpoint of 賴清德's presidency.</p>
+    <p data-l="en">Why these races matter, from news coverage and analysts' previews as of 10 November. This is not a forecast: on the night, the count decides. It is the first nationwide vote since the 2025 recall votes, and the midpoint of Lai Ching-te's (賴清德) presidency.</p>
     <p data-l="zh">這些選戰為何重要，整理自截至 11 月 10 日的新聞報導與分析者的選前評估。這不是預測：當晚以開票為準。這是 2025 年大罷免投票後第一次全國性投票，也是賴清德總統任期的期中考。</p>
     <p data-l="tw">這寡選戰是按怎重要，整理自到 11 月 10 日為止的新聞報導佮分析者的選前評估。這毋是預測：當暗以開票為準。這是 2025 年大罷免投票了後頭一擺全國性的投票，嘛是賴清德總統任期的期中考。</p>
     <ul class="watch" data-l="en">
-      <li class="hot"><b>New Taipei City 新北市</b> — The largest electorate (3.3 million in 2022), and an open seat: 侯友宜 (KMT) is term-limited. 李四川 (KMT, backed by the TPP) vs 蘇巧慧 (DPP). The DPP last won here in 2001, when it was still Taipei County.</li>
-      <li class="hot"><b>Taipei City 臺北市</b> — 蔣萬安 (KMT, incumbent) vs 沈伯洋 (DPP). Taipei mayors often go on to run for president, so the race is read as an early round of 2028. Only three of the city's elections since 1994 went to a non-KMT mayor (1994, 2014, 2018).</li>
-      <li class="hot"><b>Hualien County 花蓮縣</b> — The likeliest three-way race, and shown as one from the start: 游淑貞 (KMT) against two independents, 張峻 and 魏嘉賢; the DPP fielded no one. Coverage also frames it around 傅崐萁's long influence in county politics.</li>
-      <li class="hot"><b>Taichung City 臺中市</b> — Open seat: 盧秀燕 (KMT), often named as a 2028 presidential contender, is term-limited. 江啟臣 (KMT, backed by the TPP) vs 何欣純 (DPP).</li>
-      <li><b>Penghu County 澎湖縣</b> — Held by the DPP. After 陳光復 (DPP) was seriously injured, his wife 吳淑瑾 became the party's candidate, against 陳振中 (KMT). Rated a toss-up by some analysts; the DPP calls it its hardest seat to hold.</li>
-      <li><b>Chiayi City 嘉義市</b> — The one race where the joint KMT–TPP candidate comes from the TPP: 張啓楷 vs 王美惠 (DPP), for a seat left open by 黃敏惠 (KMT). Read as a test of blue–white cooperation.</li>
-      <li><b>Kaohsiung City 高雄市 · Tainan City 臺南市</b> — Open seats in the DPP's southern base: 賴瑞隆 (DPP) vs 柯志恩 (KMT) in Kaohsiung, 陳亭妃 (DPP) vs 謝龍介 (KMT) in Tainan. Some observers see Kaohsiung as tighter than usual.</li>
-      <li><b>Hsinchu City 新竹市</b> — 高虹安, elected for the TPP in 2022 and now an independent, runs for a second term with the KMT standing aside, against 莊競程 (DPP).</li>
+      <li class="hot"><b>New Taipei City 新北市</b> — The largest electorate (3.3 million in 2022), and an open seat: Hou Yu-ih 侯友宜 (KMT) is term-limited. Lee Shu-chuan 李四川 (KMT, backed by the TPP) vs Su Chiao-hui 蘇巧慧 (DPP). The DPP last won here in 2001, when it was still Taipei County.</li>
+      <li class="hot"><b>Taipei City 臺北市</b> — Chiang Wan-an 蔣萬安 (KMT, incumbent) vs Puma Shen 沈伯洋 (DPP). Taipei mayors often go on to run for president, so the race is read as an early round of 2028. Only three of the city's elections since 1994 went to a non-KMT mayor (1994, 2014, 2018).</li>
+      <li class="hot"><b>Hualien County 花蓮縣</b> — The likeliest three-way race, and shown as one from the start: Yu Shu-chen 游淑貞 (KMT) against two independents, Chang Chun 張峻 and Wei Chia-hsien 魏嘉賢; the DPP fielded no one. Coverage also frames it around Fu Kun-chi's (傅崐萁) long influence in county politics.</li>
+      <li class="hot"><b>Taichung City 臺中市</b> — Open seat: Lu Shiow-yen 盧秀燕 (KMT), often named as a 2028 presidential contender, is term-limited. Johnny Chiang 江啟臣 (KMT, backed by the TPP) vs Ho Hsin-chun 何欣純 (DPP).</li>
+      <li><b>Penghu County 澎湖縣</b> — Held by the DPP. After Chen Kuang-fu 陳光復 (DPP) was seriously injured, his wife Wu Shu-chin 吳淑瑾 became the party's candidate, against Chen Chen-chung 陳振中 (KMT). Rated a toss-up by some analysts; the DPP calls it its hardest seat to hold.</li>
+      <li><b>Chiayi City 嘉義市</b> — The one race where the joint KMT–TPP candidate comes from the TPP: Chang Chi-kai 張啓楷 vs Wang Mei-hui 王美惠 (DPP), for a seat left open by Huang Min-hui 黃敏惠 (KMT). Read as a test of blue–white cooperation.</li>
+      <li><b>Kaohsiung City 高雄市 · Tainan City 臺南市</b> — Open seats in the DPP's southern base: Lai Jui-lung 賴瑞隆 (DPP) vs Ko Chih-en 柯志恩 (KMT) in Kaohsiung, Chen Ting-fei 陳亭妃 (DPP) vs Hsieh Lung-chieh 謝龍介 (KMT) in Tainan. Some observers see Kaohsiung as tighter than usual.</li>
+      <li><b>Hsinchu City 新竹市</b> — Ann Kao 高虹安, elected for the TPP in 2022 and now an independent, runs for a second term with the KMT standing aside, against Chuang Ching-cheng 莊競程 (DPP).</li>
       <li><b>Seats that could change hands</b> — The DPP names Changhua 彰化, Yilan 宜蘭, Keelung 基隆, Hsinchu County 新竹縣 and Chiayi City 嘉義市 as targets (Changhua and Yilan are open KMT seats); Taitung 臺東 is also open. Changhua, Kinmen 金門 and Penghu switch to three-way on the night if a third candidate comes within 10 points of the leader.</li>
 </ul>
     <ul class="watch" data-l="zh">

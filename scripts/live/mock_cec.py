@@ -224,7 +224,7 @@ def main():
             sts = race["st"]
             if parts[1] == "SC":
                 rows, tot = [], [0, 0, 0]
-                for tcode, name in race["towns"]:
+                for tcode, name, *_ in race["towns"]:
                     ss = [s for s in sts if s["d"] == name]
                     E = sum(s["E"] for s in ss)
                     C = sum(s["C"] for s in ss if s["t"] <= now)
@@ -233,7 +233,7 @@ def main():
                     tot = [tot[0] + E, tot[1] + C, tot[2] + A]
                 body = turnout_page(f"{race['area']} {race['office']}選舉 選舉概況", [("總計", *tot)] + rows, stamp(now))
             else:
-                name = None if town == "000" else dict(race["towns"]).get(town)
+                name = None if town == "000" else {x[0]: x[1] for x in race["towns"]}.get(town)
                 if town != "000" and name is None:
                     self.send_error(404)
                     return

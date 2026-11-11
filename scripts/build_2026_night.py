@@ -102,7 +102,7 @@ def main():
             e["three_way"] = tw["status"]
         races.append(e)
     out = {"id": "2026-mayors", "title": "2026 縣市長選舉", "date": "2026-11-28", "baseline": "2022-mayors+2024-president",
-           "previous": "2022-mayors", "start": 0, "end": END, "live": True, "feed": "station",
+           "previous": "2022-mayors", "start": 0, "end": END, "live": True, "feed": "district",  # the CEC's count site gives town totals only
            "turnout_sigma": prev_night.get("turnout_sigma"), "point_columns": prev_night["point_columns"],
            "note": "Before the count. Electors, stations and last-time turnout are 2022's; incumbent = 2022 winner, with their current party.",
            "races": races, "skipped": []}

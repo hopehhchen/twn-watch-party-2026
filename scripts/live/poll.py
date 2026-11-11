@@ -148,7 +148,7 @@ class Night:
         for r in self.doc["races"]:
             c = self.towns[r["area"]]
             out.append(page_url(base, "TC", c["code"]))
-            out += [page_url(base, "TC", c["code"], code) for code, _ in c["towns"]]
+            out += [page_url(base, "TC", c["code"], code) for code, *_ in c["towns"]]
             out.append(page_url(base, "SC", c["code"]))
         return out + self.council.urls(base)
 
@@ -173,7 +173,7 @@ class Night:
                     errors.append(f"{area} turnout: {e}")
             entry["turnout"] = turnout.get("總計")
             stamps = []
-            for code, name in c["towns"]:
+            for code, name, *_ in c["towns"]:
                 body, _ = pages.get(page_url(base, "TC", c["code"], code), (None, False))
                 if not body:
                     continue
