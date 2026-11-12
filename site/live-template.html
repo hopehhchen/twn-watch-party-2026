@@ -433,7 +433,8 @@ const DATA = /*__DATA__*/null;
   const NIGHTS = {}; // night id -> data, loaded from needle/<night>.json when first opened
   async function loadNight(id) {
     if (NIGHTS[id]) return NIGHTS[id];
-    const r = await fetch(nightInfoOf(id).src); if (!r.ok) throw new Error(r.status);
+    const info = nightInfoOf(id); // the live night's file changes every minute: never a cached copy
+    const r = await fetch(info.live ? `${info.src}?v=${Date.now()}` : info.src, info.live ? { cache: 'no-store' } : undefined); if (!r.ok) throw new Error(r.status);
     NIGHTS[id] = await r.json(); nameNight(NIGHTS[id]);
     return NIGHTS[id];
   }
@@ -459,6 +460,7 @@ const DATA = /*__DATA__*/null;
   const skipWhy = k => /rerun/.test(k.why) ? tx('voted on 2022-12-18 (rerun after a candidate died); not part of this night', '因候選人過世延至 2022-12-18 投票，不在今晚', '因為候選人過身延到 2022-12-18 投票，無佇今暗') : k.why;
   const Ll = label => LANG === 'en' ? label.toLowerCase() : L(label);
   const C = { t: 0, n: 1, b: 2, o: 3, p: 4, m: 5, sd: 6, cert: 7, remE: 8, eb: 9, vrem: 10, pd: 11, md: 12, sdd: 13, certd: 14, vremd: 15, rho: 16, cc: 17, tm: 18, tsd: 19, tmd: 20, tsdd: 21, c3: 22, s3: 23, sd3: 26, cert3: 29, s3d: 30, sd3d: 33, cert3d: 36, p3: 37, p3d: 40 };
+  const LATEST = DATA.nights[DATA.nights.length - 1].id; // the newest night (2026)
   const st = { night: (DATA.nights.find(n => n.live) || DATA.nights[DATA.nights.length - 1]).id, area: '臺北市', t: 0, playing: false, speed: 5, unit: 'votes', mode: 'winner', follow: true };
   // feed: per-station results whenever the feed has them; district totals only when it doesn't (the night's data says which)
   const isDist = () => { const n = cur(); return !!(n && n.feed === 'district'); };
@@ -1684,7 +1686,10 @@ const DATA = /*__DATA__*/null;
     // the legislature and council views pick their own area once their data is in (a link can name a district)
     if (st.mode !== 'legis' && st.mode !== 'council' && (!night.races.some(r => r.area === st.area) || st.area === '全國')) st.area = night.races.find(r => r.area !== '全國').area;
     const firsts = night.races.filter(r => r.pts.length).map(r => r.pts[0][C.t]);
-    st.t = night.live ? liveEnd(night) : !firsts.length ? night.start : Math.max(0, Math.min(...firsts) - 10);
+    // 2026 (live, and after the count too) opens at its latest minute and follows the count; past years open just
+    // before their first results
+    if (night.live) st.follow = true;
+    st.t = night.live || id === LATEST ? liveEnd(night) : !firsts.length ? night.start : Math.max(0, Math.min(...firsts) - 10);
   }
 
   desk.addEventListener('click', e => {
@@ -1759,7 +1764,7 @@ const DATA = /*__DATA__*/null;
   phone.addEventListener('change', () => { if (!phone.matches) setCompact(false); });
   readHash(); setLang(LANG);
   // open at a moment where things are happening
-  openNight(st.night, nightInfoOf(st.night).live ? null : st.night === '2022-mayors' ? 150 : 180);
+  openNight(st.night, nightInfoOf(st.night).live || st.night === LATEST ? null : st.night === '2022-mayors' ? 150 : 180);
 })();
 </script>
 <script>
