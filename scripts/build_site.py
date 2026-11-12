@@ -4,7 +4,7 @@
   python3 scripts/build_site.py [OUT_DIR]
 
   index.html   entry page: what the site does, how the model works, how accurate it was
-               (site/index-template.html + data/accuracy.json)
+               (site/index-template.html + data/accuracy.json), with the hero replay (site/hero-replay.html)
   live.html    the results page: needles, turnout and council for every night
                (site/live-template.html; the county map is embedded)
   needle/<night>.json, council/<year>.json, legislature/<year>.json
@@ -119,16 +119,17 @@ def main():
     if (ROOT / "site" / "index-template.html").exists():
         render("index-template.html", {"nights": nights, "accuracy": json.loads((ROOT / "data" / "accuracy.json").read_text())},
                out / "index.html")
-        # mock: the entry page with the hero replay (not linked from anywhere; for review)
+        # the entry page's hero: real races replayed in about ten seconds each (site/hero-replay.html, data as window.HERO)
         idx = (out / "index.html").read_text()
         frag = (ROOT / "site" / "hero-replay.html").read_text()
         frag = frag.replace("<script>", "<script>window.HERO = " + json.dumps(hero_data(names), ensure_ascii=False, separators=(",", ":")) + ";\n", 1)
         i = idx.index('<section class="hero">')
         j = idx.index("</section>", i)
-        mock = idx[:i] + '<section class="hero rp">' + idx[i + len('<section class="hero">'):j] + frag + idx[j:]
-        mock = mock.replace("<head>", '<head>\n<meta name="robots" content="noindex">', 1)
-        (out / "mock-hero.html").write_text(mock)
-        print(f"{out / 'mock-hero.html'}: {len(mock) / 1024:.0f} KB")
+        idx = idx[:i] + '<section class="hero rp">' + idx[i + len('<section class="hero">'):j] + frag + idx[j:]
+        (out / "index.html").write_text(idx)
+        print(f"{out / 'index.html'} with the hero replay: {len(idx) / 1024:.0f} KB")
+        # the review copy's old address now leads to the entry page
+        (out / "mock-hero.html").write_text(REDIRECT.replace("live.html", "index.html").replace("{hash}", "").replace("Moved to", "Now at"))
     for sub, src in (("needle", ROOT / "data" / "needle"), ("council", ROOT / "data" / "council"),
                      ("legislature", ROOT / "data" / "legislature")):
         (out / sub).mkdir(exist_ok=True)
