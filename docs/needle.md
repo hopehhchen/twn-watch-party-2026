@@ -102,7 +102,7 @@ Added 2026-11-10 (report times: 109全國投開票所完成時間.xls, CEC attac
   - Where they mattered, they looked right. In 新竹市 (final: 賴 34.8%, 柯 34.3%, 侯 30.9%), they gave 柯 about 42% at 20% counted. The two-way dial, which sets 柯 aside, gave 賴 97.5%.
   - In counties 柯 never threatened, the three-way chances score worse than the two-way p. This is expected: the two-way p can't be punished for ignoring a third candidate who never came close.
 - **2026 three-way watch list** (`data/2026-contenders.json`, `three_way`; updated 2026-11-10). Adjust live if the count disagrees.
-  - **花蓮縣: expected three-way.** 游淑貞 (KMT) vs 張峻 vs 魏嘉賢 (both independents; the DPP fielded no one). Model set-up: 游 vs the non-KMT side by the usual swing (baselines: 2022 mayoral and 2024 presidential, village level); the trailing independent as the third candidate, projected from the count. If 魏 overtakes 張 in the count, swap them.
+  - **花蓮縣: expected three-way, but not set as one before the count (decided 2026-11-13): the live rule decides, as for every race.** 游淑貞 (KMT) vs 張峻 vs 魏嘉賢 (both independents; the DPP fielded no one). Model set-up: 游 vs the non-KMT side by the usual swing (baselines: 2022 mayoral and 2024 presidential, village level); the trailing independent as the third candidate, projected from the count. If 魏 overtakes 張 in the count, swap them.
   - **彰化縣: watch.** 邱建富 (independent, ex-DPP). Two-way unless 邱 gets within 10 points of the leader in the count.
   - **金門縣: watch.** 陳玉珍 (KMT) against several independents (李文良, 張國威 and others). "Other" is whichever independent leads the count. Possibly three-way if two independents split the anti-陳 vote evenly.
   - **澎湖縣: watch.** Six candidates.
@@ -163,7 +163,7 @@ Still open:
 
 ## The 2026 night before the count (`scripts/build_2026_night.py`)
 
-`data/needle/2026-mayors.json`: every race with its contenders (`data/2026-contenders.json`), ballot numbers (中央社 2026-10-27, transcribed 2026-11-10 from an automated reading of the page; **check against the CEC's ballot before the night**), and no points. Electors, stations and "last time" turnout are 2022's; the incumbent shown is the 2022 winner, under the party they won with. The results page opens on this night by default: 16:00 to 00:00 on the time axis (extended if counting runs later), empty chart frames, and space kept for the count watch in each county panel. 花蓮縣 is set up as three-way (游淑貞 / 張峻 / 魏嘉賢).
+`data/needle/2026-mayors.json`: every race with its contenders (`data/2026-contenders.json`), ballot numbers (中央社 2026-10-27, transcribed 2026-11-10 from an automated reading of the page; **check against the CEC's ballot before the night**), and no points. Electors, stations and "last time" turnout are 2022's; the incumbent shown is the 2022 winner, under the party they won with. The results page opens on this night by default: 16:00 to 00:00 on the time axis (extended if counting runs later), empty chart frames, and space kept for the count watch in each county panel. No race is set up as three-way before the count; 花蓮縣's "other" is whichever of 張峻 and 魏嘉賢 leads (decided 2026-11-13).
 
 Feed policy on the page: per-station results whenever the feed has them; district totals only when it doesn't (`"feed": "district"` in the night's data), with a notice. The replays always use per-station results; the district-total columns stay in the data.
 

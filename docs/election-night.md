@@ -25,7 +25,7 @@ CEC count site --(every 60 s)--> scripts/live/poll.py --> live-out/needle/2026-m
   - "Decided" needs the lead to beat the largest stations each town could still have out, from 2022's sizes plus 10%.
 - **`scripts/live/poll.py`** fetches with conditional requests, 4 at a time, with timeouts and retries. A page that fails keeps its last good value. It applies the contender rules:
   - 金門's "other" is whoever leads among non-KMT candidates.
-  - 花蓮 is three-way from the start.
+  - 花蓮's "other" is whichever independent leads. No race is set as three-way in advance (decided 11/13, including 花蓮).
   - Any race goes three-way once 5% is in if a third candidate is in the top two or within 10 points of the leader.
   - When a race's contenders change, its points are recomputed from the archive. `--rebuild` recomputes the whole night after a fix.
 - **`scripts/live/publish.py`** checks each new file before it goes up: it parses, has all 22 races, and no count went backwards. It then deploys at most every 45 s.

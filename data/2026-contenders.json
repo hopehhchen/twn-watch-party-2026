@@ -159,9 +159,9 @@
    "sure": false,
    "why": "DPP fielded no candidate. 張峻 and 魏嘉賢, both independents, are the main challengers.",
    "three_way": {
-    "status": "expected",
+    "status": "watch",
     "third": "魏嘉賢",
-    "why": "DPP fielded no candidate; two anti-傅 independents. Model: 游 vs the non-KMT side by swing; whichever independent trails as the third, projected from the count. Swap 張/魏 live if the count says so."
+    "why": "DPP fielded no candidate; two anti-傅 independents. Not set as three-way before the count (decided 2026-11-13): the usual live rule decides. 'other' = whichever independent leads the count; the trailing one becomes the third if a third candidate gets into the top two or within 10 points of the leader."
    }
   },
   {
@@ -219,7 +219,7 @@
    ]
   }
  ],
- "three_way_rule": "On the night a race is shown as three-way when it is marked \"expected\" here, or, live, when a third candidate is in the top two or within 10 points of the leader in the count with at least 5% of stations in. Win chances in a three-way race start at the 5th station. The third candidate can be changed live (which independent is \"other\" and which is \"third\").",
+ "three_way_rule": "On the night a race is shown as three-way only by the live rule (no race is set as three-way in advance; \"watch\" marks races where it could happen): when a third candidate is in the top two or within 10 points of the leader in the count with at least 5% of stations in. Win chances in a three-way race start at the 5th station. The third candidate can be changed live (which independent is \"other\" and which is \"third\").",
  "three_way_updated": "2026-11-10",
  "_note_polls": "Poll figures removed 2026-11-10 (選罷法 §53 ban on publishing or citing polls from 11/18 to the close of voting)."
 }

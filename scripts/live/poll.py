@@ -16,7 +16,7 @@ written atomically. scripts/live/publish.py puts it on the site.
 Contenders: blue and other come from the file. Where the file marks "other" as unsettled (金門: name ending
 "?"), other is whichever non-blue candidate leads the count. A race switches to three-way, once 5% of its
 stations are in, when a third candidate is in the top two or within 10 points of the leader (docs/needle.md);
-花蓮 is three-way from the start. When contenders change, that race's points are recomputed from the archive.
+no race is three-way before the count (花蓮's "other" is whichever independent leads). When contenders change, that race's points are recomputed from the archive.
 """
 import argparse
 import gzip
