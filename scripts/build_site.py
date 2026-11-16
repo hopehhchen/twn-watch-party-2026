@@ -134,11 +134,13 @@ def main():
         shift_dir = ROOT / "data" / "shift"
         if shift_dir.exists():
             (out / "shift").mkdir(exist_ok=True)
-            years = []
+            years = {}
             for f in sorted(shift_dir.glob("*.json")):
                 shutil.copy(f, out / "shift" / f.name)
                 d = json.loads(f.read_text())
-                years.append({"year": d["year"], "prev": d["previous"][:4], "kind": d["kind"]})
+                y = years.setdefault(d["year"], {"year": d["year"], "kind": d["kind"]})
+                y[d.get("mode", "same")] = {"prev": d["previous"][:4], "prev_kind": d["prev_kind"]}
+            years = [years[k] for k in sorted(years)]
             cmap = json.loads((ROOT / "data" / "map" / "taiwan-counties.json").read_text())
             vmap = json.loads((ROOT / "data" / "map" / "villages.json").read_text())
             geo = {"viewBox": cmap["viewBox"], "counties": cmap["counties"], "insets": cmap["insets"],

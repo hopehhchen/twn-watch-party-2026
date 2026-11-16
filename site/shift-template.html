@@ -61,6 +61,9 @@ html[lang="nan-Hant-TW"] [data-l="en"], html[lang="nan-Hant-TW"] [data-l="zh"] {
 .years button span { font-size: 12px; color: var(--muted); }
 .years button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .years button[aria-pressed="true"] span { color: inherit; opacity: 0.8; }
+.modes { flex-wrap: wrap; align-items: center; border-radius: 14px; justify-self: start; }
+.modes .lab { font-size: 12px; color: var(--muted); padding: 0 6px 0 8px; }
+.modes button { font-size: 13px; }
 .stage { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 18px; align-items: start; }
 @media (max-width: 860px) { .stage { grid-template-columns: 1fr; } }
 .mapbox { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 10px; display: grid; gap: 8px; }
@@ -113,12 +116,13 @@ canvas.dragging { cursor: grabbing; }
 
   <section class="intro">
     <h2 data-l="en">Which way places moved</h2><h2 data-l="zh">各地往哪邊移動</h2><h2 data-l="tw">各所在往佗一爿徙</h2>
-    <p data-l="en">Each arrow is one town or village: how far the margin between the two main sides moved since the previous election of the same kind. Arrows pointing right, in blue, moved toward the KMT side; arrows pointing left moved toward the other side, in that side's colour. The longer the arrow, the bigger the shift.</p>
-    <p data-l="zh">每支箭頭代表一個鄉鎮市區或村里：與上一次同類選舉相比，兩大陣營之間的差距移動了多少。向右的藍色箭頭表示往國民黨一方移動；向左的箭頭表示往另一方移動，顏色為該方的顏色。箭頭越長，移動越大。</p>
-    <p data-l="tw">逐支箭頭是一个鄉鎮市區抑是村里：佮頂一擺仝款的選舉比起來，兩大陣營中間的差距徙偌濟。向正爿的藍色箭頭是往國民黨彼爿徙；向倒爿的箭頭是往另外一爿徙，色水是彼爿的色。箭頭愈長，徙了愈濟。</p>
+    <p data-l="en">Each arrow is one town or village: how far the margin between the two main sides moved since an earlier election: the last one of the same kind, or the last one of any kind. Arrows pointing right, in blue, moved toward the KMT side; arrows pointing left moved toward the other side, in that side's colour. The longer the arrow, the bigger the shift.</p>
+    <p data-l="zh">每支箭頭代表一個鄉鎮市區或村里：與先前的選舉（上一次同類選舉，或不論層級的上一次選舉）相比，兩大陣營之間的差距移動了多少。向右的藍色箭頭表示往國民黨一方移動；向左的箭頭表示往另一方移動，顏色為該方的顏色。箭頭越長，移動越大。</p>
+    <p data-l="tw">逐支箭頭是一个鄉鎮市區抑是村里：佮較早的選舉（頂一擺仝款的選舉，抑是無論層級的頂一擺選舉）比起來，兩大陣營中間的差距徙偌濟。向正爿的藍色箭頭是往國民黨彼爿徙；向倒爿的箭頭是往另外一爿徙，色水是彼爿的色。箭頭愈長，徙了愈濟。</p>
   </section>
 
   <div class="years" id="years" role="group" aria-label="Election"></div>
+  <div class="seg modes" id="mode" role="group" aria-label="Compare with"></div>
 
   <div class="stage">
     <div class="mapbox">
@@ -145,7 +149,7 @@ canvas.dragging { cursor: grabbing; }
 
 <script>
 (() => {
-  const BOOT = /*__DATA__*/null; // {place_en, years: [{year, prev, kind}]}
+  const BOOT = /*__DATA__*/null; // {place_en, years: [{year, kind, same: {prev, prev_kind}, last: {prev, prev_kind}}]}
   const root = document.documentElement;
   let LANG = root.lang === 'zh-Hant' ? 'zh' : root.lang === 'nan-Hant-TW' ? 'tw' : 'en';
   const tx = (en, zh, tw) => LANG === 'en' ? en : LANG === 'tw' ? (tw ?? zh) : zh;
@@ -154,7 +158,7 @@ canvas.dragging { cursor: grabbing; }
   const pl = c => LANG === 'en' && PEN[c] ? `${PEN[c]} <span class="zh2">${c}</span>` : c;
   const plText = c => LANG === 'en' && PEN[c] ? `${PEN[c]} ${c}` : c;
 
-  const st = { year: BOOT.years[BOOT.years.length - 1].year, level: 'auto', county: '' };
+  const st = { year: BOOT.years[BOOT.years.length - 1].year, mode: 'same', level: 'auto', county: '' }; // mode: same kind | last election of any kind
   let GEO = null, D = null; const CACHE = {};
   const cv = document.getElementById('map'), cw = document.getElementById('cw'), tip = document.getElementById('tip');
   const ctx = cv.getContext('2d');
@@ -162,28 +166,31 @@ canvas.dragging { cursor: grabbing; }
 
   // ---- data
   async function getJSON(u) { const r = await fetch(u); if (!r.ok) throw new Error(u + ' ' + r.status); return r.json(); }
-  async function loadYear(y) {
-    if (!CACHE[y]) {
-      const d = await getJSON(`shift/${y}.json`);
+  async function loadYear(y, mode) {
+    const key = mode === 'last' ? `${y}-last` : y;
+    if (!CACHE[key]) {
+      const d = await getJSON(`shift/${key}.json`);
       d.raceBy = Object.fromEntries(d.races.map(r => [r.area, r]));
       d.T = d.towns.map(r => ({ c: r[0], name: r[1], x: r[2], y: r[3], a: r[4], b: r[5], n: r[6] }));
       d.V = d.villages.map(r => { const [c, t, v] = r[0].split('|'); return { c, t, name: v, x: r[1], y: r[2], a: r[3], b: r[4], n: r[5] }; });
-      CACHE[y] = d;
+      CACHE[key] = d;
     }
-    return CACHE[y];
+    return CACHE[key];
   }
 
   // ---- sides and colours
   const css = n => getComputedStyle(root).getPropertyValue(n).trim();
   const toneVar = t => ({ dpp: '--dpp', tpp: '--tpp', kmt: '--kmt' })[t] || '--ind';
+  const bothPres = () => D.kind === 'president' && D.prev_kind === 'president';
+  const kindTxt = k => k === 'president' ? tx('president', '總統', '總統') : tx('mayors', '縣市長', '縣市長');
   function sideNames(r, prev) { // what "blue" and "other" mean in this race, for words
-    if (D.kind === 'president') return { b: tx('KMT', '國民黨', '國民黨'), o: tx('DPP', '民進黨', '民進黨') };
+    if ((prev ? D.prev_kind : D.kind) === 'president') return { b: tx('KMT', '國民黨', '國民黨'), o: tx('DPP', '民進黨', '民進黨') };
     const B = prev ? r.prev_blue : r.blue, O = prev ? r.prev_other : r.other;
     return { b: B.name, o: O.name };
   }
   const fmtM = (m, r, prev) => { const s = sideNames(r, prev); return m >= 0 ? `${esc(s.b)} +${m.toFixed(1)}` : `${esc(s.o)} +${(-m).toFixed(1)}`; };
-  const towardTxt = (s, r) => s >= 0 ? tx(`toward the ${D.kind === 'president' ? 'KMT' : 'blue side'}`, `往${D.kind === 'president' ? '國民黨' : '藍營'}`, `往${D.kind === 'president' ? '國民黨' : '藍營'}`)
-    : tx(`toward the ${D.kind === 'president' ? 'DPP' : 'other side'}`, `往${D.kind === 'president' ? '民進黨' : '另一方'}`, `往${D.kind === 'president' ? '民進黨' : '另外一爿'}`);
+  const towardTxt = (s, r) => { const P = bothPres(); return s >= 0 ? tx(`toward the ${P ? 'KMT' : 'blue side'}`, `往${P ? '國民黨' : '藍營'}`, `往${P ? '國民黨' : '藍營'}`)
+    : tx(`toward the ${P ? 'DPP' : 'other side'}`, `往${P ? '民進黨' : '另一方'}`, `往${P ? '民進黨' : '另外一爿'}`); };
 
   // ---- geometry
   function resize() {
@@ -275,7 +282,8 @@ canvas.dragging { cursor: grabbing; }
       ? (LANG === 'en' ? `${esc(p.name)}, ${esc(ten || town)}, ${esc(PEN[p.c] || p.c)}` : `${esc(p.c)} ${esc(town)} ${esc(p.name)}`)
       : (LANG === 'en' ? `${esc(ten || town)}, ${esc(PEN[p.c] || p.c)} <span style="opacity:.75">${esc(town)}</span>` : `${esc(p.c)} ${esc(town)}`);
     const s = p.b - p.a;
-    tip.innerHTML = `<b>${place}</b><br>${D.previous.slice(0, 4)}: ${fmtM(p.a, r, true)}<br>${D.election.slice(0, 4)}: ${fmtM(p.b, r, false)}<br>`
+    const lab = (e, k) => D.kind !== D.prev_kind ? `${e.slice(0, 4)} ${kindTxt(k)}` : e.slice(0, 4);
+    tip.innerHTML = `<b>${place}</b><br>${lab(D.previous, D.prev_kind)}: ${fmtM(p.a, r, true)}<br>${lab(D.election, D.kind)}: ${fmtM(p.b, r, false)}<br>`
       + `<b>${tx('Shift', '移動', '徙')} ${Math.abs(s).toFixed(1)} ${tx('pts', '個百分點', '个百分點')}</b> ${towardTxt(s, r)}`
       + `<br><span style="opacity:.75">${tx(`${p.n.toLocaleString()} votes for the two sides`, `兩方合計 ${p.n.toLocaleString()} 票`, `兩爿合計 ${p.n.toLocaleString()} 票`)}</span>`;
     tip.style.display = 'block';
@@ -335,19 +343,19 @@ canvas.dragging { cursor: grabbing; }
     const ar = (dir, col, pts, label) => { const L = pts * u, th = ANG(pts), x0 = dir > 0 ? 4 : 4 + L * Math.cos(th);
       const ex = x0 + dir * L * Math.cos(th), ey = 22 - L * Math.sin(th);
       return `<span><svg width="${Math.ceil(L * Math.cos(th)) + 10}" height="26" aria-hidden="true"><line x1="${x0}" y1="22" x2="${ex}" y2="${ey}" stroke="${col}" stroke-width="1.8" stroke-linecap="round"/><circle cx="${ex}" cy="${ey}" r="2.4" fill="${col}"/></svg>${label}</span>`; };
-    const pres = D.kind === 'president';
+    const pres = bothPres();
     const otherCol = pres ? 'var(--dpp)' : 'var(--dpp)';
     document.getElementById('legend').innerHTML =
       ar(1, 'var(--kmt)', 10, tx(`10 pts toward the ${pres ? 'KMT' : 'blue side (KMT)'}`, `往${pres ? '國民黨' : '藍營（國民黨）'} 10 個百分點`, `往${pres ? '國民黨' : '藍營（國民黨）'} 10 个百分點`))
       + ar(1, 'var(--kmt)', 30, tx('30 pts', '30 個百分點', '30 个百分點'))
       + ar(-1, otherCol, 10, tx(`10 pts toward the ${pres ? 'DPP' : 'other side'}`, `往${pres ? '民進黨' : '另一方'} 10 個百分點`, `往${pres ? '民進黨' : '另外一爿'} 10 个百分點`))
-      + (pres ? '' : `<span>${tx('Other side in its own colour: green DPP, teal TPP, brown independent.', '另一方用該方的顏色：綠色民進黨、青色民眾黨、褐色無黨籍。', '另外一爿用彼爿的色：青色民進黨、藍綠色民眾黨、褐色無黨籍。')}</span>`);
+      + (D.kind === 'president' ? '' : `<span>${tx('Other side in its own colour: green DPP, teal TPP, brown independent.', '另一方用該方的顏色：綠色民進黨、青色民眾黨、褐色無黨籍。', '另外一爿用彼爿的色：青色民進黨、藍綠色民眾黨、褐色無黨籍。')}</span>`);
   }
   function side() {
     const rows = [...D.races].sort((a, b) => b.shift - a.shift);
     const nb = rows.filter(r => r.shift > 0).length, n = rows.length;
-    const pres = D.kind === 'president';
-    document.getElementById('sideh').innerHTML = tx(`${D.election.slice(0, 4)} vs ${D.previous.slice(0, 4)}, by county`, `${D.election.slice(0, 4)} 對比 ${D.previous.slice(0, 4)}：各縣市`, `${D.election.slice(0, 4)} 比 ${D.previous.slice(0, 4)}：各縣市`);
+    const pres = bothPres(), a = `${D.election.slice(0, 4)} ${kindTxt(D.kind)}`, b = `${D.previous.slice(0, 4)} ${kindTxt(D.prev_kind)}`;
+    document.getElementById('sideh').innerHTML = tx(`${a} vs ${b}, by county`, `${a} 對比 ${b}：各縣市`, `${a} 比 ${b}：各縣市`);
     document.getElementById('sum').innerHTML = tx(`${nb} of ${n} counties moved toward the ${pres ? 'KMT' : 'blue side'}, ${n - nb} toward the ${pres ? 'DPP' : 'other side'}.`,
       `${n} 個縣市中，${nb} 個往${pres ? '國民黨' : '藍營'}移動，${n - nb} 個往${pres ? '民進黨' : '另一方'}。`, `${n} 个縣市內底，${nb} 个往${pres ? '國民黨' : '藍營'}徙，${n - nb} 个往${pres ? '民進黨' : '另外一爿'}。`);
     const mini = r => { const s = r.shift, L = Math.min(40, Math.abs(s)) * 0.9, th = ANG(s), d = s >= 0 ? 1 : -1;
@@ -357,7 +365,12 @@ canvas.dragging { cursor: grabbing; }
       + rows.map(r => `<button data-county="${r.area}" aria-current="${st.county === r.area}" title="${esc(`${D.previous.slice(0, 4)}: ${fmtM(r.prev_margin, r, true)} → ${D.election.slice(0, 4)}: ${fmtM(r.margin, r, false)}`)}"><span>${pl(r.area)}</span>${mini(r)}<span class="v num">${r.shift >= 0 ? '+' : '−'}${Math.abs(r.shift).toFixed(1)}</span></button>`).join('');
   }
   function controls() {
-    document.getElementById('years').innerHTML = BOOT.years.map(y => `<button data-year="${y.year}" aria-pressed="${st.year === y.year}"><b>${y.year}</b><span>${y.kind === 'president' ? tx('president', '總統', '總統') : tx('mayors', '縣市長', '縣市長')} · ${tx('vs', '比', '比')} ${y.prev}</span></button>`).join('');
+    document.getElementById('years').innerHTML = BOOT.years.map(y => `<button data-year="${y.year}" aria-pressed="${st.year === y.year}"><b>${y.year}</b><span>${kindTxt(y.kind)} · ${tx('vs', '比', '比')} ${y[st.mode].prev}</span></button>`).join('');
+    const Y = BOOT.years.find(y => y.year === st.year);
+    document.getElementById('mode').innerHTML = `<span class="lab">${tx('Compare with', '比較對象', '比較的對象')}</span>`
+      + [['same', tx(`the last ${Y.kind === 'president' ? 'presidential' : 'mayoral'} election (${Y.same.prev})`, `上一次${kindTxt(Y.kind)}選舉（${Y.same.prev}）`, `頂一擺${kindTxt(Y.kind)}選舉（${Y.same.prev}）`)],
+         ['last', tx(`the last election of any kind (${Y.last.prev} ${Y.last.prev_kind === 'president' ? 'presidential' : 'mayoral'})`, `上一次選舉，不論層級（${Y.last.prev} ${kindTxt(Y.last.prev_kind)}）`, `頂一擺選舉，無論層級（${Y.last.prev} ${kindTxt(Y.last.prev_kind)}）`)]]
+        .map(([v, l]) => `<button data-mode="${v}" aria-pressed="${st.mode === v}">${l}</button>`).join('');
     document.getElementById('level').innerHTML = [['auto', tx('Auto', '自動', '自動')], ['towns', tx('Towns', '鄉鎮市區', '鄉鎮市區')], ['villages', tx('Villages', '村里', '村里')]]
       .map(([v, l]) => `<button data-level="${v}" aria-pressed="${st.level === v}">${l}</button>`).join('');
     const sel = document.getElementById('county');
@@ -369,7 +382,11 @@ canvas.dragging { cursor: grabbing; }
       tx('<b>The measure.</b> In each place: the blue side\'s votes minus the other side\'s, as a share of the two sides\' votes, in percentage points. The arrow is this election\'s figure minus the previous one\'s. Votes for anyone else are set aside, so a place can move toward a side even when that side lost votes.',
         '<b>計算方式。</b>每個地方：藍營得票減另一方得票，除以兩方合計票數，以百分點表示。箭頭是這次減上次。其他候選人的票不計，所以就算某方票數減少，該地仍可能往該方移動。',
         '<b>算法。</b>逐个所在：藍營的票減另外一爿的票，除兩爿合計的票數，用百分點表示。箭頭是這擺減頂擺。其他候選人的票無算，所以就算某爿的票減少，彼个所在猶是有可能往彼爿徙。'),
-      D.kind === 'president'
+      D.kind !== D.prev_kind
+        ? tx('<b>Sides, across two kinds of election.</b> The mayoral race (its KMT nominee or blue-camp candidate against the other of the top two) is set against the KMT and DPP tickets in the presidential vote. So the arrows show how the mayoral candidates ran compared with their camp\'s presidential vote, not a change in party mood alone. Where the mayoral race wasn\'t KMT against DPP (Kinmen 金門 and Lienchiang 連江 above all, also Hualien 花蓮, Hsinchu City 新竹市, Miaoli 苗栗 in 2022), the arrows mostly measure the candidates.',
+          '<b>兩方（跨兩種選舉）。</b>縣市長選舉（國民黨提名人或藍營候選人，對上前兩名中的另一人）與總統選舉的國民黨、民進黨候選人相比。因此箭頭顯示的是縣市長候選人相對於其陣營總統得票的表現，而不只是政黨氣氛的變化。縣市長選舉非藍綠對決之處（尤其金門、連江，以及花蓮、新竹市、2022 年苗栗），箭頭主要反映候選人。',
+          '<b>兩爿（跨兩種選舉）。</b>縣市長選舉（國民黨提名的人抑是藍營候選人，對頭前兩名內底的另外一个）佮總統選舉的國民黨、民進黨候選人比。所以箭頭顯示的是縣市長候選人佮伊陣營總統得票比起來的表現，毋是干焦政黨氣氛的變化。縣市長選舉毋是藍綠對決的所在（尤其金門、連江，閣有花蓮、新竹市、2022 年苗栗），箭頭主要是反映候選人。')
+        : D.kind === 'president'
         ? tx('<b>Sides.</b> The KMT ticket against the DPP ticket. Third candidates (James Soong 宋楚瑜 in 2016 and 2020, Ko Wen-je 柯文哲 in 2024) are set aside: in 2024 Ko\'s 26% makes the two-side margin a partial picture.',
           '<b>兩方。</b>國民黨與民進黨的候選人。第三位候選人（2016、2020 宋楚瑜，2024 柯文哲）不計：2024 年柯文哲得票 26%，兩方差距只能呈現部分面貌。',
           '<b>兩爿。</b>國民黨佮民進黨的候選人。第三位候選人（2016、2020 宋楚瑜，2024 柯文哲）無算：2024 年柯文哲得票 26%，兩爿的差距干焦看會著一部分。')
@@ -385,15 +402,16 @@ canvas.dragging { cursor: grabbing; }
     document.getElementById('notes').innerHTML = ps.filter(Boolean).map(p => `<p>${p}</p>`).join('');
   }
   function render() { controls(); legend(); side(); notes(); draw(); }
-  function writeHash() { history.replaceState(null, '', `#${st.year}${st.county ? '/' + st.county : ''}`); }
-  async function setYear(y) {
-    st.year = y; D = await loadYear(y); hover = null; tip.style.display = 'none';
+  function writeHash() { history.replaceState(null, '', `#${st.year}${st.mode === 'last' ? '/last' : ''}${st.county ? '/' + st.county : ''}`); }
+  async function setYear(y, mode = st.mode) {
+    st.year = y; st.mode = mode; D = await loadYear(y, mode); hover = null; tip.style.display = 'none';
     render(); writeHash();
   }
   function setCounty(c) { st.county = c; if (c) fitCounty(c); else home(); hover = null; tip.style.display = 'none'; side(); controls(); draw(); writeHash(); }
 
   document.addEventListener('click', e => {
     const y = e.target.closest('[data-year]'); if (y) { setYear(y.dataset.year); return; }
+    const md = e.target.closest('[data-mode]'); if (md) { setYear(st.year, md.dataset.mode); return; }
     const lv = e.target.closest('[data-level]'); if (lv) { st.level = lv.dataset.level; controls(); draw(); return; }
     const c = e.target.closest('[data-county]'); if (c) { setCounty(c.dataset.county); return; }
     const z = e.target.closest('[data-zoom]');
@@ -414,11 +432,12 @@ canvas.dragging { cursor: grabbing; }
 
   (async () => {
     mark();
-    const h = decodeURIComponent(location.hash.slice(1)).split('/');
+    const h = decodeURIComponent(location.hash.slice(1)).split('/'); // #2018, #2018/last, #2018/last/高雄市, #2018/高雄市
     if (BOOT.years.some(y => y.year === h[0])) st.year = h[0];
+    if (h[1] === 'last') { st.mode = 'last'; h.splice(1, 1); }
     GEO = await getJSON('shift/geo.json');
     paths = { counties: Object.entries(GEO.counties).map(([c, d]) => [c, new Path2D(d)]), towns: Object.values(GEO.towns).map(t => new Path2D(t.d)), insets: new Path2D(GEO.insets) };
-    D = await loadYear(st.year);
+    D = await loadYear(st.year, st.mode);
     home(); resize();
     if (h[1] && D.raceBy[h[1]]) { st.county = h[1]; fitCounty(h[1]); }
     render(); writeHash();

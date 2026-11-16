@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
-"""Shift maps: how each village (村里) and town (鄉鎮市區) moved between an election and the previous one of the same kind.
+"""Shift maps: how each village (村里) and town (鄉鎮市區) moved between an election and an earlier one, two ways:
 
-  2018 mayors vs 2014 · 2020 president vs 2016 · 2022 mayors vs 2018 · 2024 president vs 2020
+  same kind ("same"):  2018 mayors vs 2014 · 2020 president vs 2016 · 2022 mayors vs 2018 · 2024 president vs 2020
+  the last election of any kind ("last"): 2018 mayors vs 2016 president · 2020 president vs 2018 mayors ·
+                       2022 mayors vs 2020 president · 2024 president vs 2022 mayors
+  (legislative elections fall on presidential days; referendums are left out)
 
 The measure is the blue side's margin over the other side, as a share of the two sides' votes, in percentage
 points; the shift is this election's margin minus the previous one's. The sides are the ones the needle uses for
@@ -12,7 +15,7 @@ Places are matched by name (county, town, village) to the Ministry of the Interi
 (data/map/villages.json). Villages merged or renamed between elections don't match; their votes still count in
 their town's arrow, but they get no arrow of their own. Match rates are printed and saved in each file.
 
-  python3 scripts/build_shift.py      # writes data/shift/<year>.json
+  python3 scripts/build_shift.py      # writes data/shift/<year>.json and <year>-last.json
 """
 import json
 import sys
@@ -24,8 +27,11 @@ import stations  # noqa: E402
 from needle import blue_pair  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
-PAIRS = [("2018", "2018-mayors", "2014-mayors", True), ("2020", "2020-president", "2016-president", False),
-         ("2022", "2022-mayors", "2018-mayors", True), ("2024", "2024-president", "2020-president", False)]
+PAIRS = [("2018", "2018-mayors", "2014-mayors", "same"), ("2020", "2020-president", "2016-president", "same"),
+         ("2022", "2022-mayors", "2018-mayors", "same"), ("2024", "2024-president", "2020-president", "same"),
+         ("2018", "2018-mayors", "2016-president", "last"), ("2020", "2020-president", "2018-mayors", "last"),
+         ("2022", "2022-mayors", "2020-president", "last"), ("2024", "2024-president", "2022-mayors", "last")]
+kind = lambda elec: "mayors" if elec.endswith("mayors") else "president"
 TONE = {"中國國民黨": "kmt", "民主進步黨": "dpp", "台灣民眾黨": "tpp", "時代力量": "npp", "親民黨": "pfp"}
 MIN_VOTES = 100  # villages with fewer two-side votes in either election get no arrow (too noisy to read)
 MIN_TOWN = 500  # likewise towns (烏坵鄉 has about 200)
@@ -74,8 +80,12 @@ def main():
     V, T = geo["villages"], geo["towns"]
     outdir = ROOT / "data" / "shift"
     outdir.mkdir(exist_ok=True)
-    for year, cur, prev, top_two in PAIRS:
-        A, B = tally(prev, top_two), tally(cur, top_two)
+    cache = {}
+    for year, cur, prev, mode in PAIRS:
+        for e in (cur, prev):
+            if e not in cache:
+                cache[e] = tally(e, kind(e) == "mayors")
+        A, B = cache[prev], cache[cur]
         races, towns, vills = [], [], []
         n_v = n_vm = n_t = n_tm = 0
         for county in B:
@@ -107,13 +117,14 @@ def main():
                 if min(sum(ao), sum(bo)) < MIN_VOTES:
                     continue
                 vills.append([f"{county}|{t}|{v}", g[0], g[1], round(100 * margin(ao), 1), round(100 * margin(bo), 1), sum(bo)])
-        doc = {"year": year, "election": cur, "previous": prev, "kind": "mayors" if top_two else "president",
+        doc = {"year": year, "mode": mode, "election": cur, "previous": prev, "kind": kind(cur), "prev_kind": kind(prev),
                "columns": {"towns": ["county", "town", "x", "y", "prev_margin", "margin", "votes"],
                            "villages": ["key", "x", "y", "prev_margin", "margin", "votes"]},
                "matched": {"towns": [n_tm, n_t], "villages": [n_vm, n_v], "min_votes": MIN_VOTES, "min_town_votes": MIN_TOWN},
                "races": races, "towns": towns, "villages": vills}
-        (outdir / f"{year}.json").write_text(json.dumps(doc, ensure_ascii=False, separators=(",", ":")))
-        print(f"{year} ({cur} vs {prev}): {len(races)} races; towns matched {n_tm}/{n_t}; villages matched {n_vm}/{n_v}, "
+        name = year if mode == "same" else f"{year}-last"
+        (outdir / f"{name}.json").write_text(json.dumps(doc, ensure_ascii=False, separators=(",", ":")))
+        print(f"{name} ({cur} vs {prev}): {len(races)} races; towns matched {n_tm}/{n_t}; villages matched {n_vm}/{n_v}, "
               f"{len(vills)} with arrows")
 
 
