@@ -113,9 +113,9 @@ canvas.dragging { cursor: grabbing; }
 
   <section class="intro">
     <h2 data-l="en">Which way places moved</h2><h2 data-l="zh">各地往哪邊移動</h2><h2 data-l="tw">各所在往佗一爿徙</h2>
-    <p data-l="en">Each arrow is one town or village: how far the margin between the two main sides moved since the previous election of the same kind. Arrows pointing right, in blue, moved toward the KMT side; arrows pointing left moved toward the other side, in that side's colour. The longer and steeper the arrow, the bigger the shift.</p>
-    <p data-l="zh">每支箭頭代表一個鄉鎮市區或村里：與上一次同類選舉相比，兩大陣營之間的差距移動了多少。向右的藍色箭頭表示往國民黨一方移動；向左的箭頭表示往另一方移動，顏色為該方的顏色。箭頭越長、越陡，移動越大。</p>
-    <p data-l="tw">逐支箭頭是一个鄉鎮市區抑是村里：佮頂一擺仝款的選舉比起來，兩大陣營中間的差距徙偌濟。向正爿的藍色箭頭是往國民黨彼爿徙；向倒爿的箭頭是往另外一爿徙，色水是彼爿的色。箭頭愈長、愈崎，徙了愈濟。</p>
+    <p data-l="en">Each arrow is one town or village: how far the margin between the two main sides moved since the previous election of the same kind. Arrows pointing right, in blue, moved toward the KMT side; arrows pointing left moved toward the other side, in that side's colour. The longer the arrow, the bigger the shift.</p>
+    <p data-l="zh">每支箭頭代表一個鄉鎮市區或村里：與上一次同類選舉相比，兩大陣營之間的差距移動了多少。向右的藍色箭頭表示往國民黨一方移動；向左的箭頭表示往另一方移動，顏色為該方的顏色。箭頭越長，移動越大。</p>
+    <p data-l="tw">逐支箭頭是一个鄉鎮市區抑是村里：佮頂一擺仝款的選舉比起來，兩大陣營中間的差距徙偌濟。向正爿的藍色箭頭是往國民黨彼爿徙；向倒爿的箭頭是往另外一爿徙，色水是彼爿的色。箭頭愈長，徙了愈濟。</p>
   </section>
 
   <div class="years" id="years" role="group" aria-label="Election"></div>
@@ -209,9 +209,12 @@ canvas.dragging { cursor: grabbing; }
   const levelNow = () => st.level !== 'auto' ? st.level : view.k >= 5 ? 'villages' : 'towns';
 
   // ---- drawing
+  // Arrow slope, as on the New York Times' shift maps (2020, 2024): the same shallow upward angle for every arrow,
+  // about 22°; only the length carries the size of the shift.
+  const ANG = () => 22 * Math.PI / 180;
   function arrow(x, y, s, unit, color, lw) {
     const L = Math.abs(s) * unit; if (L < 0.6) return;
-    const th = (12 + 48 * Math.min(1, Math.abs(s) / 40)) * Math.PI / 180, dir = s >= 0 ? 1 : -1;
+    const th = ANG(s), dir = s >= 0 ? 1 : -1;
     const ex = x + dir * L * Math.cos(th), ey = y - L * Math.sin(th);
     ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = lw;
     ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(ex, ey); ctx.stroke();
@@ -236,7 +239,7 @@ canvas.dragging { cursor: grabbing; }
     // arrows, in screen space so they keep their size as the map zooms
     const list = lv === 'villages' ? D.V : D.T;
     const unit = lv === 'villages' ? 0.5 + 0.12 * Math.min(5, Math.log2(view.k)) : 1.0 + 0.2 * Math.min(3, Math.log2(view.k));
-    const lw = lv === 'villages' ? 1.1 : 1.6;
+    const lw = lv === 'villages' ? 1.2 : 2;
     if (Math.abs(unit - legendUnit) > 0.02) legend(unit);
     const blue = css('--kmt'), cols = {};
     items = [];
@@ -329,7 +332,7 @@ canvas.dragging { cursor: grabbing; }
   let legendUnit = 0;
   function legend(u = legendUnit || 1) { // arrow lengths drawn at the map's current scale
     legendUnit = u;
-    const ar = (dir, col, pts, label) => { const L = pts * u, th = (12 + 48 * Math.min(1, pts / 40)) * Math.PI / 180, x0 = dir > 0 ? 4 : 4 + L * Math.cos(th);
+    const ar = (dir, col, pts, label) => { const L = pts * u, th = ANG(pts), x0 = dir > 0 ? 4 : 4 + L * Math.cos(th);
       const ex = x0 + dir * L * Math.cos(th), ey = 22 - L * Math.sin(th);
       return `<span><svg width="${Math.ceil(L * Math.cos(th)) + 10}" height="26" aria-hidden="true"><line x1="${x0}" y1="22" x2="${ex}" y2="${ey}" stroke="${col}" stroke-width="1.8" stroke-linecap="round"/><circle cx="${ex}" cy="${ey}" r="2.4" fill="${col}"/></svg>${label}</span>`; };
     const pres = D.kind === 'president';
@@ -347,7 +350,7 @@ canvas.dragging { cursor: grabbing; }
     document.getElementById('sideh').innerHTML = tx(`${D.election.slice(0, 4)} vs ${D.previous.slice(0, 4)}, by county`, `${D.election.slice(0, 4)} 對比 ${D.previous.slice(0, 4)}：各縣市`, `${D.election.slice(0, 4)} 比 ${D.previous.slice(0, 4)}：各縣市`);
     document.getElementById('sum').innerHTML = tx(`${nb} of ${n} counties moved toward the ${pres ? 'KMT' : 'blue side'}, ${n - nb} toward the ${pres ? 'DPP' : 'other side'}.`,
       `${n} 個縣市中，${nb} 個往${pres ? '國民黨' : '藍營'}移動，${n - nb} 個往${pres ? '民進黨' : '另一方'}。`, `${n} 个縣市內底，${nb} 个往${pres ? '國民黨' : '藍營'}徙，${n - nb} 个往${pres ? '民進黨' : '另外一爿'}。`);
-    const mini = r => { const s = r.shift, L = Math.min(40, Math.abs(s)) * 0.9, th = (12 + 48 * Math.min(1, Math.abs(s) / 40)) * Math.PI / 180, d = s >= 0 ? 1 : -1;
+    const mini = r => { const s = r.shift, L = Math.min(40, Math.abs(s)) * 0.9, th = ANG(s), d = s >= 0 ? 1 : -1;
       const col = s >= 0 ? 'var(--kmt)' : `var(${toneVar(r.tone)})`, x0 = d > 0 ? 3 : 3 + L * Math.cos(th), ex = x0 + d * L * Math.cos(th), ey = 20 - L * Math.sin(th);
       return `<svg width="44" height="24" aria-hidden="true"><line x1="${x0}" y1="20" x2="${ex}" y2="${ey}" stroke="${col}" stroke-width="1.8" stroke-linecap="round"/><circle cx="${ex}" cy="${ey}" r="2.2" fill="${col}"/></svg>`; };
     document.getElementById('rows').innerHTML = `<button data-county="" aria-current="${!st.county}"><span>${tx('All of Taiwan', '全臺灣', '全臺灣')}</span><span></span><span></span></button>`
