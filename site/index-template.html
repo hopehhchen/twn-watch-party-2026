@@ -78,6 +78,8 @@ html[lang="nan-Hant-TW"] [data-l="en"], html[lang="nan-Hant-TW"] [data-l="zh"] {
 .hero { display: grid; gap: 14px; padding: 8px 0 4px; }
 .hero h2 { margin: 0; font-family: var(--font-display); font-weight: 900; font-size: clamp(28px, 5vw, 42px); line-height: 1.2; text-wrap: balance; }
 .hero p { margin: 0; max-width: 68ch; font-size: 17px; }
+.hero p.past { flex-basis: 100%; margin: 2px 0 0; font-size: 14px; color: var(--muted); }
+.hero p.past a { color: var(--ink); font-family: var(--font-num); font-weight: 600; }
 .cta { display: flex; flex-wrap: wrap; gap: 10px; }
 .btn { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 10px 18px; border-radius: 999px; font-weight: 700; background: var(--ink); color: var(--bg); }
 .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--rule); font-weight: 500; }
@@ -145,7 +147,8 @@ footer b { color: var(--ink); }
     <p data-l="en">On 28 November 2026 Taiwan elects its 22 mayors and county magistrates, and every city and county council. This site follows the count as it comes in: for each race, a needle with the chance each contender wins, the projected margin and turnout, and who would hold each council seat if counting stopped now. Until then it replays real past nights — 2018 and 2022 local, 2020 and 2024 presidential — minute by minute, exactly as the model would have seen them.</p>
     <p data-l="zh">2026 年 11 月 28 日，台灣將選出 22 位縣市長，以及各縣市議員。本站在開票過程中即時追蹤：每場縣市長選舉有一支指針，顯示各候選人的勝選機率、預估差距與投票率；議員則顯示若此刻停止開票、各席會由誰拿下。在那之前，本站以真實的過去開票夜（2018、2022 地方選舉，2020、2024 總統選舉）逐分鐘重播，完全照模型當時能看到的資料運算。</p>
     <p data-l="tw">2026 年 11 月 28 日，台灣欲選出 22 位縣市長，佮各縣市的議員。本站佇開票的時陣即時追蹤：逐場縣市長選舉有一支指針，顯示逐位候選人的當選機率、預估差距佮投票率；議員就顯示若這馬停止開票，逐席會予啥人提去。佇彼進前，本站用真正的過去開票暗（2018、2022 地方選舉，2020、2024 總統選舉）一分鐘一分鐘重播，完全照模型當時看會著的資料來算。</p>
-    <div class="cta"><a class="btn" href="live.html"><span data-l="en">Open the results</span><span data-l="zh">打開開票頁</span><span data-l="tw">拍開開票頁</span> →</a><a class="btn ghost" href="#accuracy"><span data-l="en">How accurate is it?</span><span data-l="zh">準不準？</span><span data-l="tw">準無準？</span></a></div>
+    <div class="cta"><a class="btn" href="live.html"><span data-l="en">Open the results</span><span data-l="zh">打開開票頁</span><span data-l="tw">拍開開票頁</span> →</a><a class="btn ghost" href="#accuracy"><span data-l="en">How accurate is it?</span><span data-l="zh">準不準？</span><span data-l="tw">準無準？</span></a>
+      <p class="past"><span data-l="en">Replay a past night:</span><span data-l="zh">重播過去的開票夜：</span><span data-l="tw">重播過去的開票暗：</span> <a href="live.html#2018">2018</a> · <a href="live.html#2020">2020</a> · <a href="live.html#2022">2022</a> · <a href="live.html#2024">2024</a></p></div>
   </section>
 
   <section class="panel" aria-labelledby="h-method">

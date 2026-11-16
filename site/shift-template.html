@@ -1,0 +1,425 @@
+<title>Shift map · 選票移動 · 開票觀察 Watch Party</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&display=swap">
+<style>
+/* Shift map (mock): which way each town and village moved since the previous election of the same kind.
+   Data: data/shift/<year>.json (scripts/build_shift.py); outlines: shift/geo.json (built by build_site.py). */
+:root {
+  --bg: #F2F4F7; --surface: #FFFFFF; --ink: #131B2A; --muted: #5B6578; --rule: #D8DDE5; --land: #E6E9EE; --border: #B9C1CD;
+  --accent: #C96A12; --stamp: #C42B2B;
+  --dpp: #1E8A3E; --kmt: #2646A0; --tpp: #158F8C; --ind: #7A6A55;
+  --font-display: "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+  --font-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --font-num: "IBM Plex Sans Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0D121A; --surface: #151C27; --ink: #E7ECF3; --muted: #9AA5B7; --rule: #283242; --land: #1B2330; --border: #3A4658;
+    --accent: #F09A44; --stamp: #FF6B5F; --dpp: #4FC06C; --kmt: #87A2F0; --tpp: #45CBC6; --ind: #C8B08C;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0D121A; --surface: #151C27; --ink: #E7ECF3; --muted: #9AA5B7; --rule: #283242; --land: #1B2330; --border: #3A4658;
+  --accent: #F09A44; --stamp: #FF6B5F; --dpp: #4FC06C; --kmt: #87A2F0; --tpp: #45CBC6; --ind: #C8B08C;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.6; margin: 0;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 56px; }
+.wrap { max-width: 1120px; margin: 0 auto; display: grid; gap: 18px; }
+a { color: inherit; text-underline-offset: 3px; }
+button, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.muted { color: var(--muted); }
+.num { font-family: var(--font-num); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.mast { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; padding-block: 22px 0; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
+.stamp { width: 40px; height: 40px; color: var(--stamp); transform: rotate(-8deg); flex: none; display: block; }
+.brand h1 { margin: 0; font-family: var(--font-display); font-weight: 900; font-size: 26px; letter-spacing: 0.02em; line-height: 1.1; }
+.brand h1 small { display: block; margin-top: 6px; font-family: var(--font-body); font-weight: 500; font-size: 12px; line-height: 1.35; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.mast-right { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+.tabs { display: flex; gap: 4px; padding: 4px; background: var(--surface); border: 1px solid var(--rule); border-radius: 999px; }
+.tabs a { text-decoration: none; padding: 6px 14px; border-radius: 999px; font-weight: 500; font-size: 14px; color: var(--muted); }
+.tabs a[aria-current="page"] { background: var(--ink); color: var(--bg); }
+.seg { display: inline-flex; gap: 2px; padding: 3px; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); }
+.seg button { border: 0; background: transparent; border-radius: 999px; padding: 4px 10px; font-size: 12px; cursor: pointer; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+html[lang="en"] [data-l="zh"], html[lang="en"] [data-l="tw"], html[lang="zh-Hant"] [data-l="en"], html[lang="zh-Hant"] [data-l="tw"],
+html[lang="nan-Hant-TW"] [data-l="en"], html[lang="nan-Hant-TW"] [data-l="zh"] { display: none !important; }
+
+.mockbar { background: color-mix(in srgb, var(--accent) 14%, var(--surface)); border: 1px dashed var(--accent); border-radius: var(--radius); padding: 8px 14px; font-size: 13px; }
+.intro h2 { margin: 0 0 6px; font-family: var(--font-display); font-weight: 900; font-size: clamp(26px, 4.4vw, 36px); line-height: 1.2; }
+.intro p { margin: 0; max-width: 72ch; }
+.years { display: flex; flex-wrap: wrap; gap: 8px; }
+.years button { border: 1px solid var(--rule); background: var(--surface); border-radius: 12px; padding: 6px 14px 5px; cursor: pointer; text-align: left; line-height: 1.25; }
+.years button b { display: block; font-family: var(--font-num); font-size: 18px; }
+.years button span { font-size: 12px; color: var(--muted); }
+.years button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.years button[aria-pressed="true"] span { color: inherit; opacity: 0.8; }
+.stage { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 18px; align-items: start; }
+@media (max-width: 860px) { .stage { grid-template-columns: 1fr; } }
+.mapbox { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 10px; display: grid; gap: 8px; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
+.controls .grp { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.controls select { border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); padding: 4px 10px; font-size: 13px; max-width: 220px; }
+.zoom button { width: 30px; font-size: 15px; padding: 2px 0; }
+.canvas-wrap { position: relative; touch-action: none; user-select: none; border-radius: 8px; overflow: hidden; background: var(--surface); }
+canvas { display: block; width: 100%; cursor: grab; }
+canvas.dragging { cursor: grabbing; }
+.tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--bg); border-radius: 8px; padding: 6px 10px; font-size: 12.5px; line-height: 1.45;
+  max-width: 260px; box-shadow: 0 4px 14px rgba(0,0,0,.18); display: none; z-index: 2; }
+.tip b { font-weight: 700; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; font-size: 12.5px; color: var(--muted); }
+.legend svg { vertical-align: middle; margin-right: 4px; }
+.hint { font-size: 12px; color: var(--muted); }
+.side { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 12px 14px; display: grid; gap: 8px; }
+.side h3 { margin: 0; font-size: 15px; }
+.side .sum { font-size: 13.5px; margin: 0; }
+.rows { display: grid; gap: 1px; max-height: 640px; overflow: auto; }
+.rows button { display: grid; grid-template-columns: 1fr 44px 48px; gap: 8px; align-items: center; border: 0; background: transparent; text-align: left; padding: 5px 6px; border-radius: 6px; cursor: pointer; font-size: 13.5px; }
+.rows button:hover, .rows button[aria-current="true"] { background: color-mix(in srgb, var(--ink) 7%, transparent); }
+.rows .zh2 { color: var(--muted); font-size: 12px; margin-left: 4px; white-space: nowrap; }
+.rows .v { text-align: right; }
+.notes { font-size: 13px; color: var(--muted); max-width: 80ch; }
+.notes p { margin: 0 0 6px; }
+</style>
+<script>
+(() => { let t = 'auto'; try { t = localStorage.getItem('twn-theme') || 'auto'; } catch (e) {}
+  if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+  let l = null; try { l = localStorage.getItem('twn-lang'); } catch (e) {}
+  if (!l) l = /^(zh|nan|yue|hak|cmn)/i.test((navigator.languages && navigator.languages[0]) || navigator.language || '') ? 'zh' : 'en';
+  document.documentElement.lang = l === 'zh' ? 'zh-Hant' : l === 'tw' ? 'nan-Hant-TW' : 'en'; })();
+</script>
+
+<div class="wrap" id="top">
+  <header class="mast">
+    <a class="brand" href="index.html" aria-label="開票觀察 Watch Party">
+      <svg class="stamp" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17.5" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M16.5 2.85V37.15M16.5 17.5L35.45 28.22" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="butt"/></svg>
+      <h1>開票觀察 Watch Party<small>Election-night needles · 開票即時預測</small></h1>
+    </a>
+    <div class="mast-right">
+      <nav class="tabs" aria-label="Pages"><a href="index.html">About · 說明</a><a href="live.html">Results · 開票</a><a href="mock-shift.html" aria-current="page">Shifts · 移動</a></nav>
+      <div class="seg" role="group" aria-label="Language"><button data-lang-set="en">EN</button><button data-lang-set="zh">中文</button><button data-lang-set="tw" title="台文（試行版，猶未審稿）">台文</button></div>
+      <div class="seg" role="group" aria-label="Color theme"><button data-theme-set="auto">Auto</button><button data-theme-set="light">Light</button><button data-theme-set="dark">Dark</button></div>
+    </div>
+  </header>
+
+  <div class="mockbar"><span data-l="en"><b>Mock-up</b> for review: not linked from the site yet.</span><span data-l="zh"><b>試作版</b>，供審閱：網站其他頁面尚未連到這裡。</span><span data-l="tw"><b>試做版</b>，予人審：網站其他頁面猶未連來遮。</span></div>
+
+  <section class="intro">
+    <h2 data-l="en">Which way places moved</h2><h2 data-l="zh">各地往哪邊移動</h2><h2 data-l="tw">各所在往佗一爿徙</h2>
+    <p data-l="en">Each arrow is one town or village: how far the margin between the two main sides moved since the previous election of the same kind. Arrows pointing right, in blue, moved toward the KMT side; arrows pointing left moved toward the other side, in that side's colour. The longer and steeper the arrow, the bigger the shift.</p>
+    <p data-l="zh">每支箭頭代表一個鄉鎮市區或村里：與上一次同類選舉相比，兩大陣營之間的差距移動了多少。向右的藍色箭頭表示往國民黨一方移動；向左的箭頭表示往另一方移動，顏色為該方的顏色。箭頭越長、越陡，移動越大。</p>
+    <p data-l="tw">逐支箭頭是一个鄉鎮市區抑是村里：佮頂一擺仝款的選舉比起來，兩大陣營中間的差距徙偌濟。向正爿的藍色箭頭是往國民黨彼爿徙；向倒爿的箭頭是往另外一爿徙，色水是彼爿的色。箭頭愈長、愈崎，徙了愈濟。</p>
+  </section>
+
+  <div class="years" id="years" role="group" aria-label="Election"></div>
+
+  <div class="stage">
+    <div class="mapbox">
+      <div class="controls">
+        <div class="grp">
+          <div class="seg" role="group" aria-label="Level" id="level"></div>
+          <select id="county" aria-label="County"></select>
+        </div>
+        <div class="seg zoom" role="group" aria-label="Zoom"><button data-zoom="in" aria-label="Zoom in">+</button><button data-zoom="out" aria-label="Zoom out">−</button><button data-zoom="reset" aria-label="Whole map">⤢</button></div>
+      </div>
+      <div class="canvas-wrap" id="cw"><canvas id="map"></canvas><div class="tip" id="tip"></div></div>
+      <div class="legend" id="legend"></div>
+      <div class="hint" id="hint"></div>
+    </div>
+    <aside class="side">
+      <h3 id="sideh"></h3>
+      <p class="sum" id="sum"></p>
+      <div class="rows" id="rows"></div>
+    </aside>
+  </div>
+
+  <section class="notes" id="notes"></section>
+</div>
+
+<script>
+(() => {
+  const BOOT = /*__DATA__*/null; // {place_en, years: [{year, prev, kind}]}
+  const root = document.documentElement;
+  let LANG = root.lang === 'zh-Hant' ? 'zh' : root.lang === 'nan-Hant-TW' ? 'tw' : 'en';
+  const tx = (en, zh, tw) => LANG === 'en' ? en : LANG === 'tw' ? (tw ?? zh) : zh;
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  const PEN = BOOT.place_en;
+  const pl = c => LANG === 'en' && PEN[c] ? `${PEN[c]} <span class="zh2">${c}</span>` : c;
+  const plText = c => LANG === 'en' && PEN[c] ? `${PEN[c]} ${c}` : c;
+
+  const st = { year: BOOT.years[BOOT.years.length - 1].year, level: 'auto', county: '' };
+  let GEO = null, D = null; const CACHE = {};
+  const cv = document.getElementById('map'), cw = document.getElementById('cw'), tip = document.getElementById('tip');
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, base = 1, view = { k: 1, cx: 0, cy: 0 }, paths = null, hover = null, items = [];
+
+  // ---- data
+  async function getJSON(u) { const r = await fetch(u); if (!r.ok) throw new Error(u + ' ' + r.status); return r.json(); }
+  async function loadYear(y) {
+    if (!CACHE[y]) {
+      const d = await getJSON(`shift/${y}.json`);
+      d.raceBy = Object.fromEntries(d.races.map(r => [r.area, r]));
+      d.T = d.towns.map(r => ({ c: r[0], name: r[1], x: r[2], y: r[3], a: r[4], b: r[5], n: r[6] }));
+      d.V = d.villages.map(r => { const [c, t, v] = r[0].split('|'); return { c, t, name: v, x: r[1], y: r[2], a: r[3], b: r[4], n: r[5] }; });
+      CACHE[y] = d;
+    }
+    return CACHE[y];
+  }
+
+  // ---- sides and colours
+  const css = n => getComputedStyle(root).getPropertyValue(n).trim();
+  const toneVar = t => ({ dpp: '--dpp', tpp: '--tpp', kmt: '--kmt' })[t] || '--ind';
+  function sideNames(r, prev) { // what "blue" and "other" mean in this race, for words
+    if (D.kind === 'president') return { b: tx('KMT', '國民黨', '國民黨'), o: tx('DPP', '民進黨', '民進黨') };
+    const B = prev ? r.prev_blue : r.blue, O = prev ? r.prev_other : r.other;
+    return { b: B.name, o: O.name };
+  }
+  const fmtM = (m, r, prev) => { const s = sideNames(r, prev); return m >= 0 ? `${esc(s.b)} +${m.toFixed(1)}` : `${esc(s.o)} +${(-m).toFixed(1)}`; };
+  const towardTxt = (s, r) => s >= 0 ? tx(`toward the ${D.kind === 'president' ? 'KMT' : 'blue side'}`, `往${D.kind === 'president' ? '國民黨' : '藍營'}`, `往${D.kind === 'president' ? '國民黨' : '藍營'}`)
+    : tx(`toward the ${D.kind === 'president' ? 'DPP' : 'other side'}`, `往${D.kind === 'president' ? '民進黨' : '另一方'}`, `往${D.kind === 'president' ? '民進黨' : '另外一爿'}`);
+
+  // ---- geometry
+  function resize() {
+    const vb = GEO.viewBox, w = cw.clientWidth;
+    const h = Math.min(Math.round(w * vb[3] / vb[2]), Math.round(window.innerHeight * 0.82), 900);
+    const dpr = window.devicePixelRatio || 1;
+    W = w; H = Math.max(320, h); cv.width = W * dpr; cv.height = H * dpr; cv.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    base = Math.min(W / vb[2], H / vb[3]);
+    draw();
+  }
+  const sx = x => (x - view.cx) * base * view.k + W / 2, sy = y => (y - view.cy) * base * view.k + H / 2;
+  const mx = X => (X - W / 2) / (base * view.k) + view.cx, my = Y => (Y - H / 2) / (base * view.k) + view.cy;
+  function home() { const vb = GEO.viewBox; view = { k: 1, cx: vb[0] + vb[2] / 2, cy: vb[1] + vb[3] / 2 }; }
+  function fitCounty(c) {
+    const pts = D.V.filter(v => v.c === c).concat(D.T.filter(t => t.c === c));
+    if (!pts.length) return home();
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (const p of pts) { x0 = Math.min(x0, p.x); y0 = Math.min(y0, p.y); x1 = Math.max(x1, p.x); y1 = Math.max(y1, p.y); }
+    const pad = 6, w = Math.max(x1 - x0 + 2 * pad, 8), h = Math.max(y1 - y0 + 2 * pad, 8);
+    view = { k: Math.max(1, Math.min(60, Math.min(W / w, H / h) / base)), cx: (x0 + x1) / 2, cy: (y0 + y1) / 2 };
+  }
+  const levelNow = () => st.level !== 'auto' ? st.level : view.k >= 5 ? 'villages' : 'towns';
+
+  // ---- drawing
+  function arrow(x, y, s, unit, color, lw) {
+    const L = Math.abs(s) * unit; if (L < 0.6) return;
+    const th = (12 + 48 * Math.min(1, Math.abs(s) / 40)) * Math.PI / 180, dir = s >= 0 ? 1 : -1;
+    const ex = x + dir * L * Math.cos(th), ey = y - L * Math.sin(th);
+    ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = lw;
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(ex, ey); ctx.stroke();
+    const a = Math.atan2(ey - y, ex - x), hs = Math.min(5 + lw, 2.5 + L * 0.35);
+    ctx.beginPath(); ctx.moveTo(ex, ey);
+    ctx.lineTo(ex - hs * Math.cos(a - 0.45), ey - hs * Math.sin(a - 0.45));
+    ctx.lineTo(ex - hs * Math.cos(a + 0.45), ey - hs * Math.sin(a + 0.45)); ctx.closePath(); ctx.fill();
+  }
+  function draw() {
+    if (!GEO || !D) return;
+    ctx.clearRect(0, 0, W, H);
+    const k = base * view.k;
+    ctx.save(); ctx.translate(W / 2, H / 2); ctx.scale(k, k); ctx.translate(-view.cx, -view.cy);
+    ctx.fillStyle = css('--land'); ctx.strokeStyle = css('--border'); ctx.lineJoin = 'round';
+    for (const [c, p] of paths.counties) { ctx.globalAlpha = st.county && st.county !== c ? 0.55 : 1; ctx.fill(p); }
+    ctx.globalAlpha = 1;
+    const lv = levelNow();
+    if (view.k >= 1.8 || lv === 'villages') { ctx.lineWidth = 0.5 / k; ctx.strokeStyle = css('--rule'); for (const p of paths.towns) ctx.stroke(p); }
+    ctx.lineWidth = 1 / k; ctx.strokeStyle = css('--border'); for (const [, p] of paths.counties) ctx.stroke(p);
+    ctx.setLineDash([3 / k, 3 / k]); ctx.stroke(paths.insets); ctx.setLineDash([]);
+    ctx.restore();
+    // arrows, in screen space so they keep their size as the map zooms
+    const list = lv === 'villages' ? D.V : D.T;
+    const unit = lv === 'villages' ? 0.5 + 0.12 * Math.min(5, Math.log2(view.k)) : 1.0 + 0.2 * Math.min(3, Math.log2(view.k));
+    const lw = lv === 'villages' ? 1.1 : 1.6;
+    if (Math.abs(unit - legendUnit) > 0.02) legend(unit);
+    const blue = css('--kmt'), cols = {};
+    items = [];
+    ctx.globalAlpha = lv === 'villages' ? 0.75 : 0.95; ctx.lineCap = 'round';
+    for (const p of list) {
+      const X = sx(p.x), Y = sy(p.y); if (X < -60 || X > W + 60 || Y < -60 || Y > H + 60) continue;
+      if (st.county && p.c !== st.county && view.k > 1.5) continue;
+      const r = D.raceBy[p.c]; if (!r) continue;
+      const s = p.b - p.a;
+      const col = s >= 0 ? blue : (cols[r.tone] ||= css(toneVar(r.tone)));
+      arrow(X, Y, s, unit, col, lw);
+      items.push({ p, X, Y, s });
+    }
+    ctx.globalAlpha = 1;
+    if (hover) { ctx.strokeStyle = css('--ink'); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(hover.X, hover.Y, 4, 0, 2 * Math.PI); ctx.stroke(); }
+    hint();
+  }
+  function hint() {
+    const lv = levelNow();
+    document.getElementById('hint').textContent = (lv === 'villages'
+      ? tx(`Showing villages (村里) · ${D.V.length.toLocaleString()} arrows.`, `顯示村里 · ${D.V.length.toLocaleString()} 支箭頭。`, `顯示村里 · ${D.V.length.toLocaleString()} 支箭頭。`)
+      : tx(`Showing towns (鄉鎮市區). Zoom in for villages.`, '顯示鄉鎮市區。放大即可看到村里。', '顯示鄉鎮市區。放大就看會著村里。'))
+      + ' ' + tx('Drag to move, scroll or pinch to zoom, hover or tap an arrow for its numbers.', '拖曳移動，滾輪或雙指縮放，滑過或點一下箭頭看數字。', '拖咧徙，滾輪抑雙指縮放，滑過抑點一下箭頭看數字。');
+  }
+
+  // ---- tooltip
+  function showTip(it) {
+    hover = it; draw();
+    if (!it) { tip.style.display = 'none'; return; }
+    const p = it.p, r = D.raceBy[p.c], isV = 'name' in p && 't' in p;
+    const town = isV ? p.t : p.name, ten = (GEO.towns[`${p.c}|${town}`] || {}).en;
+    const place = isV
+      ? (LANG === 'en' ? `${esc(p.name)}, ${esc(ten || town)}, ${esc(PEN[p.c] || p.c)}` : `${esc(p.c)} ${esc(town)} ${esc(p.name)}`)
+      : (LANG === 'en' ? `${esc(ten || town)}, ${esc(PEN[p.c] || p.c)} <span style="opacity:.75">${esc(town)}</span>` : `${esc(p.c)} ${esc(town)}`);
+    const s = p.b - p.a;
+    tip.innerHTML = `<b>${place}</b><br>${D.previous.slice(0, 4)}: ${fmtM(p.a, r, true)}<br>${D.election.slice(0, 4)}: ${fmtM(p.b, r, false)}<br>`
+      + `<b>${tx('Shift', '移動', '徙')} ${Math.abs(s).toFixed(1)} ${tx('pts', '個百分點', '个百分點')}</b> ${towardTxt(s, r)}`
+      + `<br><span style="opacity:.75">${tx(`${p.n.toLocaleString()} votes for the two sides`, `兩方合計 ${p.n.toLocaleString()} 票`, `兩爿合計 ${p.n.toLocaleString()} 票`)}</span>`;
+    tip.style.display = 'block';
+    const tw = tip.offsetWidth, th = tip.offsetHeight;
+    tip.style.left = Math.min(W - tw - 6, Math.max(6, it.X + 12)) + 'px';
+    tip.style.top = (it.Y - th - 12 < 6 ? it.Y + 14 : it.Y - th - 12) + 'px';
+  }
+  function nearest(X, Y) {
+    let best = null, bd = 16 * 16;
+    for (const it of items) { const d = (it.X - X) ** 2 + (it.Y - Y) ** 2; if (d < bd) { bd = d; best = it; } }
+    return best;
+  }
+
+  // ---- pan and zoom
+  const ptrs = new Map(); let drag = null, moved = 0, pinch = null;
+  function zoomAt(f, X, Y) {
+    const x = mx(X), y = my(Y);
+    view.k = Math.max(1, Math.min(80, view.k * f));
+    view.cx = x - (X - W / 2) / (base * view.k); view.cy = y - (Y - H / 2) / (base * view.k);
+    draw();
+  }
+  const pos = e => { const b = cv.getBoundingClientRect(); return [e.clientX - b.left, e.clientY - b.top]; };
+  cv.addEventListener('pointerdown', e => {
+    cv.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, pos(e)); moved = 0;
+    if (ptrs.size === 1) { drag = { p: pos(e), cx: view.cx, cy: view.cy }; cv.classList.add('dragging'); }
+    if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch = { d: Math.hypot(a[0] - b[0], a[1] - b[1]), k: view.k }; drag = null; }
+  });
+  cv.addEventListener('pointermove', e => {
+    const p = pos(e);
+    if (ptrs.has(e.pointerId)) ptrs.set(e.pointerId, p);
+    if (pinch && ptrs.size === 2) {
+      const [a, b] = [...ptrs.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]);
+      zoomAt((pinch.k * d / pinch.d) / view.k, (a[0] + b[0]) / 2, (a[1] + b[1]) / 2); moved = 99; return;
+    }
+    if (drag) {
+      const dx = p[0] - drag.p[0], dy = p[1] - drag.p[1]; moved = Math.max(moved, Math.hypot(dx, dy));
+      if (moved > 3) { view.cx = drag.cx - dx / (base * view.k); view.cy = drag.cy - dy / (base * view.k); tip.style.display = 'none'; hover = null; draw(); }
+      return;
+    }
+    if (e.pointerType === 'mouse') showTip(nearest(p[0], p[1]));
+  });
+  const end = e => {
+    const p = pos(e); ptrs.delete(e.pointerId);
+    if (ptrs.size < 2) pinch = null;
+    if (drag && moved <= 3) showTip(nearest(p[0], p[1])); // a tap or click
+    if (!ptrs.size) { drag = null; cv.classList.remove('dragging'); }
+  };
+  cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
+  cv.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse' && !drag) showTip(null); });
+  cv.addEventListener('wheel', e => { e.preventDefault(); const p = pos(e); zoomAt(Math.exp(-e.deltaY * 0.0015), p[0], p[1]); }, { passive: false });
+  cv.addEventListener('dblclick', e => { const p = pos(e); zoomAt(2, p[0], p[1]); });
+
+  // ---- side panel, controls, legend, notes
+  let legendUnit = 0;
+  function legend(u = legendUnit || 1) { // arrow lengths drawn at the map's current scale
+    legendUnit = u;
+    const ar = (dir, col, pts, label) => { const L = pts * u, th = (12 + 48 * Math.min(1, pts / 40)) * Math.PI / 180, x0 = dir > 0 ? 4 : 4 + L * Math.cos(th);
+      const ex = x0 + dir * L * Math.cos(th), ey = 22 - L * Math.sin(th);
+      return `<span><svg width="${Math.ceil(L * Math.cos(th)) + 10}" height="26" aria-hidden="true"><line x1="${x0}" y1="22" x2="${ex}" y2="${ey}" stroke="${col}" stroke-width="1.8" stroke-linecap="round"/><circle cx="${ex}" cy="${ey}" r="2.4" fill="${col}"/></svg>${label}</span>`; };
+    const pres = D.kind === 'president';
+    const otherCol = pres ? 'var(--dpp)' : 'var(--dpp)';
+    document.getElementById('legend').innerHTML =
+      ar(1, 'var(--kmt)', 10, tx(`10 pts toward the ${pres ? 'KMT' : 'blue side (KMT)'}`, `往${pres ? '國民黨' : '藍營（國民黨）'} 10 個百分點`, `往${pres ? '國民黨' : '藍營（國民黨）'} 10 个百分點`))
+      + ar(1, 'var(--kmt)', 30, tx('30 pts', '30 個百分點', '30 个百分點'))
+      + ar(-1, otherCol, 10, tx(`10 pts toward the ${pres ? 'DPP' : 'other side'}`, `往${pres ? '民進黨' : '另一方'} 10 個百分點`, `往${pres ? '民進黨' : '另外一爿'} 10 个百分點`))
+      + (pres ? '' : `<span>${tx('Other side in its own colour: green DPP, teal TPP, brown independent.', '另一方用該方的顏色：綠色民進黨、青色民眾黨、褐色無黨籍。', '另外一爿用彼爿的色：青色民進黨、藍綠色民眾黨、褐色無黨籍。')}</span>`);
+  }
+  function side() {
+    const rows = [...D.races].sort((a, b) => b.shift - a.shift);
+    const nb = rows.filter(r => r.shift > 0).length, n = rows.length;
+    const pres = D.kind === 'president';
+    document.getElementById('sideh').innerHTML = tx(`${D.election.slice(0, 4)} vs ${D.previous.slice(0, 4)}, by county`, `${D.election.slice(0, 4)} 對比 ${D.previous.slice(0, 4)}：各縣市`, `${D.election.slice(0, 4)} 比 ${D.previous.slice(0, 4)}：各縣市`);
+    document.getElementById('sum').innerHTML = tx(`${nb} of ${n} counties moved toward the ${pres ? 'KMT' : 'blue side'}, ${n - nb} toward the ${pres ? 'DPP' : 'other side'}.`,
+      `${n} 個縣市中，${nb} 個往${pres ? '國民黨' : '藍營'}移動，${n - nb} 個往${pres ? '民進黨' : '另一方'}。`, `${n} 个縣市內底，${nb} 个往${pres ? '國民黨' : '藍營'}徙，${n - nb} 个往${pres ? '民進黨' : '另外一爿'}。`);
+    const mini = r => { const s = r.shift, L = Math.min(40, Math.abs(s)) * 0.9, th = (12 + 48 * Math.min(1, Math.abs(s) / 40)) * Math.PI / 180, d = s >= 0 ? 1 : -1;
+      const col = s >= 0 ? 'var(--kmt)' : `var(${toneVar(r.tone)})`, x0 = d > 0 ? 3 : 3 + L * Math.cos(th), ex = x0 + d * L * Math.cos(th), ey = 20 - L * Math.sin(th);
+      return `<svg width="44" height="24" aria-hidden="true"><line x1="${x0}" y1="20" x2="${ex}" y2="${ey}" stroke="${col}" stroke-width="1.8" stroke-linecap="round"/><circle cx="${ex}" cy="${ey}" r="2.2" fill="${col}"/></svg>`; };
+    document.getElementById('rows').innerHTML = `<button data-county="" aria-current="${!st.county}"><span>${tx('All of Taiwan', '全臺灣', '全臺灣')}</span><span></span><span></span></button>`
+      + rows.map(r => `<button data-county="${r.area}" aria-current="${st.county === r.area}" title="${esc(`${D.previous.slice(0, 4)}: ${fmtM(r.prev_margin, r, true)} → ${D.election.slice(0, 4)}: ${fmtM(r.margin, r, false)}`)}"><span>${pl(r.area)}</span>${mini(r)}<span class="v num">${r.shift >= 0 ? '+' : '−'}${Math.abs(r.shift).toFixed(1)}</span></button>`).join('');
+  }
+  function controls() {
+    document.getElementById('years').innerHTML = BOOT.years.map(y => `<button data-year="${y.year}" aria-pressed="${st.year === y.year}"><b>${y.year}</b><span>${y.kind === 'president' ? tx('president', '總統', '總統') : tx('mayors', '縣市長', '縣市長')} · ${tx('vs', '比', '比')} ${y.prev}</span></button>`).join('');
+    document.getElementById('level').innerHTML = [['auto', tx('Auto', '自動', '自動')], ['towns', tx('Towns', '鄉鎮市區', '鄉鎮市區')], ['villages', tx('Villages', '村里', '村里')]]
+      .map(([v, l]) => `<button data-level="${v}" aria-pressed="${st.level === v}">${l}</button>`).join('');
+    const sel = document.getElementById('county');
+    sel.innerHTML = `<option value="">${tx('All of Taiwan', '全臺灣', '全臺灣')}</option>` + D.races.map(r => `<option value="${r.area}"${st.county === r.area ? ' selected' : ''}>${plText(r.area)}</option>`).join('');
+  }
+  function notes() {
+    const m = D.matched;
+    const ps = [
+      tx('<b>The measure.</b> In each place: the blue side\'s votes minus the other side\'s, as a share of the two sides\' votes, in percentage points. The arrow is this election\'s figure minus the previous one\'s. Votes for anyone else are set aside, so a place can move toward a side even when that side lost votes.',
+        '<b>計算方式。</b>每個地方：藍營得票減另一方得票，除以兩方合計票數，以百分點表示。箭頭是這次減上次。其他候選人的票不計，所以就算某方票數減少，該地仍可能往該方移動。',
+        '<b>算法。</b>逐个所在：藍營的票減另外一爿的票，除兩爿合計的票數，用百分點表示。箭頭是這擺減頂擺。其他候選人的票無算，所以就算某爿的票減少，彼个所在猶是有可能往彼爿徙。'),
+      D.kind === 'president'
+        ? tx('<b>Sides.</b> The KMT ticket against the DPP ticket. Third candidates (James Soong 宋楚瑜 in 2016 and 2020, Ko Wen-je 柯文哲 in 2024) are set aside: in 2024 Ko\'s 26% makes the two-side margin a partial picture.',
+          '<b>兩方。</b>國民黨與民進黨的候選人。第三位候選人（2016、2020 宋楚瑜，2024 柯文哲）不計：2024 年柯文哲得票 26%，兩方差距只能呈現部分面貌。',
+          '<b>兩爿。</b>國民黨佮民進黨的候選人。第三位候選人（2016、2020 宋楚瑜，2024 柯文哲）無算：2024 年柯文哲得票 26%，兩爿的差距干焦看會著一部分。')
+        : tx('<b>Sides.</b> Mayoral races have different candidates each time, so the arrows mix party mood with candidates. The blue side is the KMT nominee (or the blue camp\'s candidate where the KMT fielded none); the other side is whichever of the top two isn\'t. Where a race wasn\'t KMT against DPP (Lienchiang 連江, Kinmen 金門, Hualien 花蓮, Hsinchu City 新竹市 in 2022), read the arrows as candidates, not parties.',
+          '<b>兩方。</b>縣市長每次候選人不同，箭頭混合了政黨氣氛與候選人因素。藍營是國民黨提名人（國民黨未提名時為藍營支持者）；另一方為前兩名中的另一人。非藍綠對決的選舉（連江、金門、花蓮、2022 年新竹市），箭頭反映的是候選人而非政黨。',
+          '<b>兩爿。</b>縣市長逐擺候選人無仝，箭頭摻著政黨氣氛佮候選人因素。藍營是國民黨提名的人（國民黨無提名的時是藍營支持的人）；另外一爿是頭前兩名內底的另外一个。毋是藍綠對決的選舉（連江、金門、花蓮、2022 年新竹市），箭頭反映的是候選人毋是政黨。'),
+      tx(`<b>Places.</b> Matched by name to the Ministry of the Interior's 2021 village map. Villages merged or renamed between the two elections have no arrow of their own (${m.villages[0].toLocaleString()} of ${m.villages[1].toLocaleString()} matched this time); their votes still count in their town's arrow. Villages with fewer than ${m.min_votes} votes for the two sides in either election are left out (towns: fewer than ${m.min_town_votes}). Arrows start at the middle of each area.`,
+        `<b>地點。</b>依名稱對應內政部 2021 年村里界圖。兩次選舉之間合併或改名的村里沒有自己的箭頭（這次 ${m.villages[1].toLocaleString()} 個中對上 ${m.villages[0].toLocaleString()} 個），其票數仍計入所屬鄉鎮市區。任一次兩方合計少於 ${m.min_votes} 票的村里不顯示（鄉鎮市區為 ${m.min_town_votes} 票）。箭頭從各區域的中心點出發。`,
+        `<b>所在。</b>照名稱對內政部 2021 年的村里界圖。兩擺選舉中間合併抑改名的村里無家己的箭頭（這擺 ${m.villages[1].toLocaleString()} 个內底對著 ${m.villages[0].toLocaleString()} 个），𪜶的票猶是算入所屬的鄉鎮市區。任何一擺兩爿合計無夠 ${m.min_votes} 票的村里無顯示（鄉鎮市區是 ${m.min_town_votes} 票）。箭頭對逐區的中心點出發。`),
+      D.year === '2022' ? tx('Chiayi City 嘉義市 voted on 18 December 2022, three weeks after the rest.', '嘉義市於 2022 年 12 月 18 日投票，比其他縣市晚三週。', '嘉義市佇 2022 年 12 月 18 日投票，比其他縣市晏三禮拜。') : '',
+      tx('Sources: the CEC\'s station-level results; map: taiwan-atlas (MIT) from the Ministry of the Interior\'s village and town boundaries.', '資料：中選會投開票所結果；地圖：taiwan-atlas（MIT 授權），源自內政部村里與鄉鎮市區界線。', '資料：中選會投開票所結果；地圖：taiwan-atlas（MIT 授權），源自內政部村里佮鄉鎮市區界線。'),
+    ];
+    document.getElementById('notes').innerHTML = ps.filter(Boolean).map(p => `<p>${p}</p>`).join('');
+  }
+  function render() { controls(); legend(); side(); notes(); draw(); }
+  function writeHash() { history.replaceState(null, '', `#${st.year}${st.county ? '/' + st.county : ''}`); }
+  async function setYear(y) {
+    st.year = y; D = await loadYear(y); hover = null; tip.style.display = 'none';
+    render(); writeHash();
+  }
+  function setCounty(c) { st.county = c; if (c) fitCounty(c); else home(); hover = null; tip.style.display = 'none'; side(); controls(); draw(); writeHash(); }
+
+  document.addEventListener('click', e => {
+    const y = e.target.closest('[data-year]'); if (y) { setYear(y.dataset.year); return; }
+    const lv = e.target.closest('[data-level]'); if (lv) { st.level = lv.dataset.level; controls(); draw(); return; }
+    const c = e.target.closest('[data-county]'); if (c) { setCounty(c.dataset.county); return; }
+    const z = e.target.closest('[data-zoom]');
+    if (z) { const a = z.dataset.zoom; if (a === 'reset') { st.county = ''; home(); side(); controls(); draw(); writeHash(); } else zoomAt(a === 'in' ? 1.8 : 1 / 1.8, W / 2, H / 2); return; }
+    const l = e.target.closest('[data-lang-set]');
+    if (l) { LANG = l.dataset.langSet; try { localStorage.setItem('twn-lang', LANG); } catch (err) {} root.lang = LANG === 'zh' ? 'zh-Hant' : LANG === 'tw' ? 'nan-Hant-TW' : 'en'; mark(); render(); return; }
+    const t = e.target.closest('[data-theme-set]');
+    if (t) { const v = t.dataset.themeSet; if (v === 'auto') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', v);
+      try { localStorage.setItem('twn-theme', v); } catch (err) {} mark(); draw(); }
+  });
+  document.getElementById('county').addEventListener('change', e => setCounty(e.target.value));
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
+  function mark() {
+    let th = 'auto'; try { th = localStorage.getItem('twn-theme') || 'auto'; } catch (e) {}
+    document.querySelectorAll('[data-theme-set]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themeSet === th)));
+    document.querySelectorAll('[data-lang-set]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.langSet === LANG)));
+  }
+
+  (async () => {
+    mark();
+    const h = decodeURIComponent(location.hash.slice(1)).split('/');
+    if (BOOT.years.some(y => y.year === h[0])) st.year = h[0];
+    GEO = await getJSON('shift/geo.json');
+    paths = { counties: Object.entries(GEO.counties).map(([c, d]) => [c, new Path2D(d)]), towns: Object.values(GEO.towns).map(t => new Path2D(t.d)), insets: new Path2D(GEO.insets) };
+    D = await loadYear(st.year);
+    home(); resize();
+    if (h[1] && D.raceBy[h[1]]) { st.county = h[1]; fitCounty(h[1]); }
+    render(); writeHash();
+    new ResizeObserver(() => { const w = cw.clientWidth; if (w !== W) resize(); }).observe(cw);
+  })();
+})();
+</script>

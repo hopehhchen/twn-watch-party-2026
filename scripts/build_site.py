@@ -130,6 +130,21 @@ def main():
         print(f"{out / 'index.html'} with the hero replay: {len(idx) / 1024:.0f} KB")
         # the review copy's old address now leads to the entry page
         (out / "mock-hero.html").write_text(REDIRECT.replace("live.html", "index.html").replace("{hash}", "").replace("Moved to", "Now at"))
+        # shift map (mock, not linked yet): arrows for how each town and village moved since the previous election
+        shift_dir = ROOT / "data" / "shift"
+        if shift_dir.exists():
+            (out / "shift").mkdir(exist_ok=True)
+            years = []
+            for f in sorted(shift_dir.glob("*.json")):
+                shutil.copy(f, out / "shift" / f.name)
+                d = json.loads(f.read_text())
+                years.append({"year": d["year"], "prev": d["previous"][:4], "kind": d["kind"]})
+            cmap = json.loads((ROOT / "data" / "map" / "taiwan-counties.json").read_text())
+            vmap = json.loads((ROOT / "data" / "map" / "villages.json").read_text())
+            geo = {"viewBox": cmap["viewBox"], "counties": cmap["counties"], "insets": cmap["insets"],
+                   "towns": {k: {"d": t["d"], "en": t["en"]} for k, t in vmap["towns"].items()}, "source": vmap["source"]}
+            (out / "shift" / "geo.json").write_text(json.dumps(geo, ensure_ascii=False, separators=(",", ":")))
+            render("shift-template.html", {"place_en": PLACE_EN, "years": years}, out / "mock-shift.html")
     for sub, src in (("needle", ROOT / "data" / "needle"), ("council", ROOT / "data" / "council"),
                      ("legislature", ROOT / "data" / "legislature")):
         (out / sub).mkdir(exist_ok=True)
