@@ -27,6 +27,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import stations  # noqa: E402
 from needle import blue_pair  # noqa: E402
+from build_needle_data import ORDER  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 PAIRS = [("2018", "2018-mayors", "2014-mayors", "same"), ("2020", "2020-president", "2016-president", "same"),
@@ -100,7 +101,7 @@ def main():
         races, towns, vills = [], [], []
         tot_a, tot_b = [0, 0], [0, 0]  # all counties together, for the overall direction
         n_v = n_vm = n_t = n_tm = 0
-        for county in B:
+        for county in sorted(B, key=lambda c: ORDER.index(c) if c in ORDER else len(ORDER)):  # the site's usual north-to-south order
             if county not in A:
                 print(f"  {year} {county}: no previous race, left out")
                 continue
