@@ -339,12 +339,20 @@ canvas.dragging { cursor: grabbing; }
   cv.addEventListener('dblclick', e => { const p = pos(e); zoomAt(2, p[0], p[1]); });
 
   // ---- side panel, controls, legend, notes
+  // the same arrow as on the map, as SVG: a line ending in a pointed, filled head
+  function svgArrow(x0, y0, ex, ey, col, lw) {
+    const L = Math.hypot(ex - x0, ey - y0); if (L < 0.6) return '';
+    const a = Math.atan2(ey - y0, ex - x0), hs = Math.min(5 + lw, 2.5 + L * 0.35), f = n => n.toFixed(1);
+    const bx = ex - hs * 0.8 * Math.cos(a), by = ey - hs * 0.8 * Math.sin(a); // the line stops inside the head
+    return `<line x1="${f(x0)}" y1="${f(y0)}" x2="${f(bx)}" y2="${f(by)}" stroke="${col}" stroke-width="${lw}" stroke-linecap="round"/>`
+      + `<polygon points="${f(ex)},${f(ey)} ${f(ex - hs * Math.cos(a - 0.45))},${f(ey - hs * Math.sin(a - 0.45))} ${f(ex - hs * Math.cos(a + 0.45))},${f(ey - hs * Math.sin(a + 0.45))}" fill="${col}"/>`;
+  }
   let legendUnit = 0;
   function legend(u = legendUnit || 1) { // arrow lengths drawn at the map's current scale
     legendUnit = u;
     const ar = (dir, col, pts, label) => { const L = pts * u, th = ANG(pts), x0 = dir > 0 ? 4 : 4 + L * Math.cos(th);
       const ex = x0 + dir * L * Math.cos(th), ey = 22 - L * Math.sin(th);
-      return `<span><svg width="${Math.ceil(L * Math.cos(th)) + 10}" height="26" aria-hidden="true"><line x1="${x0}" y1="22" x2="${ex}" y2="${ey}" stroke="${col}" stroke-width="1.8" stroke-linecap="round"/><circle cx="${ex}" cy="${ey}" r="2.4" fill="${col}"/></svg>${label}</span>`; };
+      return `<span><svg width="${Math.ceil(L * Math.cos(th)) + 10}" height="26" aria-hidden="true">${svgArrow(x0, 22, ex, ey, col, 2)}</svg>${label}</span>`; };
     const pres = bothPres();
     const otherCol = pres ? 'var(--dpp)' : 'var(--dpp)';
     document.getElementById('legend').innerHTML =
@@ -354,16 +362,21 @@ canvas.dragging { cursor: grabbing; }
       + (D.kind === 'president' ? '' : `<span>${tx('Other side in its own colour: green DPP, teal TPP, brown independent.', '另一方用該方的顏色：綠色民進黨、青色民眾黨、褐色無黨籍。', '另外一爿用彼爿的色：青色民進黨、藍綠色民眾黨、褐色無黨籍。')}</span>`);
   }
   function side() {
-    const rows = [...D.races].sort((a, b) => b.shift - a.shift);
+    // ranked in the overall direction: a blue shift across Taiwan lists the most blue-shifted county first,
+    // an overall shift to the other side lists the most shifted that way first
+    const up = D.national.shift >= 0, rows = [...D.races].sort((a, b) => up ? b.shift - a.shift : a.shift - b.shift);
     const nb = rows.filter(r => r.shift > 0).length, n = rows.length;
     const pres = bothPres(), a = `${D.election.slice(0, 4)} ${kindTxt(D.kind)}`, b = `${D.previous.slice(0, 4)} ${kindTxt(D.prev_kind)}`;
     document.getElementById('sideh').innerHTML = tx(`${a} vs ${b}, by county`, `${a} 對比 ${b}：各縣市`, `${a} 比 ${b}：各縣市`);
-    document.getElementById('sum').innerHTML = tx(`${nb} of ${n} counties moved toward the ${pres ? 'KMT' : 'blue side'}, ${n - nb} toward the ${pres ? 'DPP' : 'other side'}.`,
-      `${n} 個縣市中，${nb} 個往${pres ? '國民黨' : '藍營'}移動，${n - nb} 個往${pres ? '民進黨' : '另一方'}。`, `${n} 个縣市內底，${nb} 个往${pres ? '國民黨' : '藍營'}徙，${n - nb} 个往${pres ? '民進黨' : '另外一爿'}。`);
+    const B = [tx(pres ? 'the KMT' : 'the blue side', pres ? '國民黨' : '藍營', pres ? '國民黨' : '藍營'), nb], O = [tx(pres ? 'the DPP' : 'the other side', pres ? '民進黨' : '另一方', pres ? '民進黨' : '另外一爿'), n - nb];
+    const [f1, f2] = up ? [B, O] : [O, B]; // the overall direction first
+    document.getElementById('sum').innerHTML = tx(`${f1[1]} of ${n} counties moved toward ${f1[0]}, ${f2[1]} toward ${f2[0]}.`,
+      `${n} 個縣市中，${f1[1]} 個往${f1[0]}移動，${f2[1]} 個往${f2[0]}。`, `${n} 个縣市內底，${f1[1]} 个往${f1[0]}徙，${f2[1]} 个往${f2[0]}。`);
     const mini = r => { const s = r.shift, L = Math.min(40, Math.abs(s)) * 0.9, th = ANG(s), d = s >= 0 ? 1 : -1;
       const col = s >= 0 ? 'var(--kmt)' : `var(${toneVar(r.tone)})`, x0 = d > 0 ? 3 : 3 + L * Math.cos(th), ex = x0 + d * L * Math.cos(th), ey = 20 - L * Math.sin(th);
-      return `<svg width="44" height="24" aria-hidden="true"><line x1="${x0}" y1="20" x2="${ex}" y2="${ey}" stroke="${col}" stroke-width="1.8" stroke-linecap="round"/><circle cx="${ex}" cy="${ey}" r="2.2" fill="${col}"/></svg>`; };
-    document.getElementById('rows').innerHTML = `<button data-county="" aria-current="${!st.county}"><span>${tx('All of Taiwan', '全臺灣', '全臺灣')}</span><span></span><span></span></button>`
+      return `<svg width="44" height="24" aria-hidden="true">${svgArrow(x0, 20, ex, ey, col, 1.8)}</svg>`; };
+    const N = { ...D.national, tone: D.kind === 'president' ? 'dpp' : 'dpp', area: '' };
+    document.getElementById('rows').innerHTML = `<button data-county="" aria-current="${!st.county}"><span><b>${tx('All of Taiwan', '全臺灣', '全臺灣')}</b></span>${mini(N)}<span class="v num">${N.shift >= 0 ? '+' : '−'}${Math.abs(N.shift).toFixed(1)}</span></button>`
       + rows.map(r => `<button data-county="${r.area}" aria-current="${st.county === r.area}" title="${esc(`${D.previous.slice(0, 4)}: ${fmtM(r.prev_margin, r, true)} → ${D.election.slice(0, 4)}: ${fmtM(r.margin, r, false)}`)}"><span>${pl(r.area)}</span>${mini(r)}<span class="v num">${r.shift >= 0 ? '+' : '−'}${Math.abs(r.shift).toFixed(1)}</span></button>`).join('');
   }
   function controls() {

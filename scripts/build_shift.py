@@ -87,6 +87,7 @@ def main():
                 cache[e] = tally(e, kind(e) == "mayors")
         A, B = cache[prev], cache[cur]
         races, towns, vills = [], [], []
+        tot_a, tot_b = [0, 0], [0, 0]  # all counties together, for the overall direction
         n_v = n_vm = n_t = n_tm = 0
         for county in B:
             if county not in A:
@@ -95,6 +96,8 @@ def main():
             a, b = A[county], B[county]
             ca = [sum(x[0] for x in a["towns"].values()), sum(x[1] for x in a["towns"].values())]
             cb = [sum(x[0] for x in b["towns"].values()), sum(x[1] for x in b["towns"].values())]
+            tot_a = [tot_a[0] + ca[0], tot_a[1] + ca[1]]
+            tot_b = [tot_b[0] + cb[0], tot_b[1] + cb[1]]
             races.append({"area": county, "blue": b["blue"], "other": b["other"], "prev_blue": a["blue"], "prev_other": a["other"],
                           "tone": TONE.get(b["other"]["party"], "ind"), "prev_margin": round(100 * margin(ca), 1),
                           "margin": round(100 * margin(cb), 1), "shift": round(100 * (margin(cb) - margin(ca)), 1)})
@@ -121,6 +124,8 @@ def main():
                "columns": {"towns": ["county", "town", "x", "y", "prev_margin", "margin", "votes"],
                            "villages": ["key", "x", "y", "prev_margin", "margin", "votes"]},
                "matched": {"towns": [n_tm, n_t], "villages": [n_vm, n_v], "min_votes": MIN_VOTES, "min_town_votes": MIN_TOWN},
+               "national": {"prev_margin": round(100 * margin(tot_a), 1), "margin": round(100 * margin(tot_b), 1),
+                            "shift": round(100 * (margin(tot_b) - margin(tot_a)), 1)},
                "races": races, "towns": towns, "villages": vills}
         name = year if mode == "same" else f"{year}-last"
         (outdir / f"{name}.json").write_text(json.dumps(doc, ensure_ascii=False, separators=(",", ":")))
