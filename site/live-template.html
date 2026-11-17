@@ -340,7 +340,14 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
   .desk.compact .ctl > span, .desk.compact > .flag, .desk.compact > .summary, .desk.compact > .desk-row:not(:first-child) > .summary { display: none; }
   .desk.compact .clock { font-size: 24px; min-width: 0; }
   .desk.compact .play { width: 32px; height: 32px; }
-  .desk.compact .seg button { padding: 3px 8px; font-size: 12.5px; }
+  .desk.compact .seg button { padding: 3px 8px; font-size: 12.5px; 
+  /* full bar on phones: the spacer becomes a line break, so Show and Night both start at the left edge */
+  .desk:not(.compact) > .desk-row:first-child > span[style] { flex-basis: 100%; height: 0; }
+}
+@media (max-width: 359px) {
+  /* the smallest phones: let a control's label sit above its buttons, and tighten the buttons, so nothing runs off the side */
+  .ctl { flex-wrap: wrap; }
+  .seg button { padding: 3px 6px; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 .mast-right { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
@@ -886,7 +893,7 @@ const DATA = /*__DATA__*/null;
           return `<button class="card" data-area="${esc(r.area)}" aria-pressed="${r.area === st.area}">
             <div class="top"><span class="area">${areaLabel(r)}</span><span class="pct">${v3.pre ? '—' : Math.round(100 * v3.frac) + tx('% in', '% 已開')}</span></div>
             ${dial(pp.pr, { pre: v3.pre || v3.early, pb: pp.p }, false)}
-            <div class="lead">${v3.pre ? `<span class="muted">${tx('waiting · three-way', '等待開票 · 三強', '等開票 · 三強')}</span>` : v3.early ? `<span class="muted">${tx(`${v3.n} station${v3.n > 1 ? 's' : ''} in`, `已開 ${v3.n} 所`)}</span>` : cardLead(pp.lead, pctTxt(pp.q))}<span class="chip ${sq.cls}">${L(sq.label)}</span></div>
+            <div class="lead">${v3.pre ? '<span></span>' : v3.early ? `<span class="muted">${tx(`${v3.n} station${v3.n > 1 ? 's' : ''} in`, `已開 ${v3.n} 所`)}</span>` : cardLead(pp.lead, pctTxt(pp.q))}<span class="chip ${sq.cls}">${L(sq.label)}</span></div>
             <div class="third3">${v3.pre ? tx(`three-way: ${esc(pp.third.name)} too`, `三強：另有 ${esc(pp.third.name)}`, `三強：猶有 ${esc(pp.third.name)}`) : v3.early ? tx('win chances from the 5th station', '第 5 所開出後估勝率', '第 5 所開出來了後才估贏面') : tx(`${esc(pp.third.name)}: ${pctTxt(pp.pt)} to win`, `${esc(pp.third.name)}：勝率 ${pctTxt(pp.pt)}`, `${esc(pp.third.name)}：贏面 ${pctTxt(pp.pt)}`)}</div>
           </button>`;
         }
@@ -902,7 +909,7 @@ const DATA = /*__DATA__*/null;
       return `<button class="card" data-area="${esc(r.area)}" aria-pressed="${r.area === st.area}">
         <div class="top"><span class="area">${areaLabel(r)}</span><span class="pct">${v.pre ? '—' : Math.round(100 * v.frac) + tx('% in', '% 已開')}</span></div>
         ${dial(r, v, false)}
-        <div class="lead">${leader ? cardLead(leader, pctTxt(q)) : `<span class="muted">${tx('waiting', '等待開票', '等開票')}</span>`}<span class="chip ${stt.cls}">${L(stt.label)}</span></div>
+        <div class="lead">${leader ? cardLead(leader, pctTxt(q)) : '<span></span>'}<span class="chip ${stt.cls}">${L(stt.label)}</span></div>
       </button>`;
     }
   }
