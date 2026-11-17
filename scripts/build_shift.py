@@ -11,9 +11,11 @@ points; the shift is this election's margin minus the previous one's. The sides 
 baselines (needle.blue_pair): KMT vs DPP tickets for president (2016's 宋楚瑜 and 2024's 柯文哲 set aside), and
 for mayors the blue side vs the other of the top two, with the camp overrides in needle.CAMPS.
 
-Places are matched by name (county, town, village) to the Ministry of the Interior's 2021 village map
-(data/map/villages.json). Villages merged or renamed between elections don't match; their votes still count in
-their town's arrow, but they get no arrow of their own. Match rates are printed and saved in each file.
+Places: each election is placed on the village map in force at the time (data/map/village-versions.json: the
+Ministry of the Interior's dated releases; ELECTION_MAP below picks the version that matches its village names
+best). The earlier election's villages are carried into the later one's by data/map/village-crosswalk.json
+(the later village containing each earlier village's centroid), so merged, split or renamed villages still get
+an arrow. Villages that match neither way count only in their town's arrow. Match rates are printed and saved.
 
   python3 scripts/build_shift.py      # writes data/shift/<year>.json and <year>-last.json
 """
@@ -35,6 +37,9 @@ kind = lambda elec: "mayors" if elec.endswith("mayors") else "president"
 TONE = {"中國國民黨": "kmt", "民主進步黨": "dpp", "台灣民眾黨": "tpp", "時代力量": "npp", "親民黨": "pfp"}
 MIN_VOTES = 100  # villages with fewer two-side votes in either election get no arrow (too noisy to read)
 MIN_TOWN = 500  # likewise towns (烏坵鄉 has about 200)
+# the village map each election is placed on (best name match among the dated versions; see the docstring)
+ELECTION_MAP = {"2014-mayors": "20150401", "2016-president": "20150401", "2018-mayors": "20181130",
+                "2020-president": "20191121", "2022-mayors": "20221118", "2024-president": "20230928", "2026-mayors": "20260407"}
 
 
 def zh(s):
@@ -77,7 +82,9 @@ def margin(bo):
 
 def main():
     geo = json.loads((ROOT / "data" / "map" / "villages.json").read_text())
-    V, T = geo["villages"], geo["towns"]
+    T = geo["towns"]  # town centroids (2021; town lines rarely move)
+    VERS = json.loads((ROOT / "data" / "map" / "village-versions.json").read_text())["versions"]
+    XW = json.loads((ROOT / "data" / "map" / "village-crosswalk.json").read_text())["pairs"]
     outdir = ROOT / "data" / "shift"
     outdir.mkdir(exist_ok=True)
     cache = {}
@@ -86,6 +93,10 @@ def main():
             if e not in cache:
                 cache[e] = tally(e, kind(e) == "mayors")
         A, B = cache[prev], cache[cur]
+        va, vb = ELECTION_MAP[prev], ELECTION_MAP[cur]
+        V = VERS[vb]  # arrows sit on the later election's map
+        xw = XW.get(f"{va}>{vb}", {}) if va != vb else {}
+        n_x = 0
         races, towns, vills = [], [], []
         tot_a, tot_b = [0, 0], [0, 0]  # all counties together, for the overall direction
         n_v = n_vm = n_t = n_tm = 0
@@ -110,10 +121,19 @@ def main():
                 if min(sum(a["towns"][t]), sum(bo)) < MIN_TOWN:
                     continue
                 towns.append([county, t, g["c"][0], g["c"][1], round(100 * margin(a["towns"][t]), 1), round(100 * margin(bo), 1), sum(bo)])
+            # the earlier election's villages, carried into the later map's villages
+            av = defaultdict(lambda: [0, 0])
+            for (t, v), bo in a["villages"].items():
+                k = xw.get(f"{county}|{t}|{v}")
+                if k:
+                    n_x += 1
+                    t, v = k.split("|")[1:]
+                av[(t, v)][0] += bo[0]
+                av[(t, v)][1] += bo[1]
             for (t, v), bo in b["villages"].items():
                 n_v += 1
                 g = V.get(f"{county}|{t}|{v}")
-                ao = a["villages"].get((t, v))
+                ao = av.get((t, v))
                 if not g or not ao:
                     continue
                 n_vm += 1
@@ -123,13 +143,14 @@ def main():
         doc = {"year": year, "mode": mode, "election": cur, "previous": prev, "kind": kind(cur), "prev_kind": kind(prev),
                "columns": {"towns": ["county", "town", "x", "y", "prev_margin", "margin", "votes"],
                            "villages": ["key", "x", "y", "prev_margin", "margin", "votes"]},
+               "maps": {"previous": va, "election": vb, "carried": n_x},
                "matched": {"towns": [n_tm, n_t], "villages": [n_vm, n_v], "min_votes": MIN_VOTES, "min_town_votes": MIN_TOWN},
                "national": {"prev_margin": round(100 * margin(tot_a), 1), "margin": round(100 * margin(tot_b), 1),
                             "shift": round(100 * (margin(tot_b) - margin(tot_a)), 1)},
                "races": races, "towns": towns, "villages": vills}
         name = year if mode == "same" else f"{year}-last"
         (outdir / f"{name}.json").write_text(json.dumps(doc, ensure_ascii=False, separators=(",", ":")))
-        print(f"{name} ({cur} vs {prev}): {len(races)} races; towns matched {n_tm}/{n_t}; villages matched {n_vm}/{n_v}, "
+        print(f"{name} ({cur} vs {prev}; maps {va} > {vb}, {n_x} villages carried): {len(races)} races; towns matched {n_tm}/{n_t}; villages matched {n_vm}/{n_v}, "
               f"{len(vills)} with arrows")
 
 

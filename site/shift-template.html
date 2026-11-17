@@ -241,8 +241,11 @@ canvas.dragging { cursor: grabbing; }
     for (const [c, p] of paths.counties) { ctx.globalAlpha = st.county && st.county !== c ? 0.55 : 1; ctx.fill(p); }
     ctx.globalAlpha = 1;
     const lv = levelNow();
-    if (view.k >= 1.8 || lv === 'villages') { ctx.lineWidth = 0.5 / k; ctx.strokeStyle = css('--rule'); for (const p of paths.towns) ctx.stroke(p); }
-    ctx.lineWidth = 1 / k; ctx.strokeStyle = css('--border'); for (const [, p] of paths.counties) ctx.stroke(p);
+    // town (鄉鎮市區) lines always, a little stronger once zoomed in; county lines on top, darker
+    ctx.lineWidth = (view.k >= 2 ? 0.9 : 0.6) / k; ctx.strokeStyle = css('--border'); ctx.globalAlpha = view.k >= 2 ? 0.95 : 0.8;
+    for (const p of paths.towns) ctx.stroke(p);
+    ctx.globalAlpha = 0.75; ctx.lineWidth = 1.3 / k; ctx.strokeStyle = css('--muted'); for (const [, p] of paths.counties) ctx.stroke(p);
+    ctx.globalAlpha = 1;
     ctx.setLineDash([3 / k, 3 / k]); ctx.stroke(paths.insets); ctx.setLineDash([]);
     ctx.restore();
     // arrows, in screen space so they keep their size as the map zooms
@@ -391,6 +394,7 @@ canvas.dragging { cursor: grabbing; }
     const sel = document.getElementById('county');
     sel.innerHTML = `<option value="">${tx('All of Taiwan', '全臺灣', '全臺灣')}</option>` + D.races.map(r => `<option value="${r.area}"${st.county === r.area ? ' selected' : ''}>${plText(r.area)}</option>`).join('');
   }
+  const fmtVer = v => LANG === 'en' ? `${v.slice(0, 4)}-${v.slice(4, 6)}-${v.slice(6)}` : `${v.slice(0, 4)}/${+v.slice(4, 6)}/${+v.slice(6)}`;
   function notes() {
     const m = D.matched;
     const ps = [
@@ -408,11 +412,11 @@ canvas.dragging { cursor: grabbing; }
         : tx('<b>Sides.</b> Mayoral races have different candidates each time, so the arrows mix party mood with candidates. The blue side is the KMT nominee (or the blue camp\'s candidate where the KMT fielded none); the other side is whichever of the top two isn\'t. Where a race wasn\'t KMT against DPP (Lienchiang 連江, Kinmen 金門, Hualien 花蓮, Hsinchu City 新竹市 in 2022), read the arrows as candidates, not parties.',
           '<b>兩方。</b>縣市長每次候選人不同，箭頭混合了政黨氣氛與候選人因素。藍營是國民黨提名人（國民黨未提名時為藍營支持者）；另一方為前兩名中的另一人。非藍綠對決的選舉（連江、金門、花蓮、2022 年新竹市），箭頭反映的是候選人而非政黨。',
           '<b>兩爿。</b>縣市長逐擺候選人無仝，箭頭摻著政黨氣氛佮候選人因素。藍營是國民黨提名的人（國民黨無提名的時是藍營支持的人）；另外一爿是頭前兩名內底的另外一个。毋是藍綠對決的選舉（連江、金門、花蓮、2022 年新竹市），箭頭反映的是候選人毋是政黨。'),
-      tx(`<b>Places.</b> Matched by name to the Ministry of the Interior's 2021 village map. Villages merged or renamed between the two elections have no arrow of their own (${m.villages[0].toLocaleString()} of ${m.villages[1].toLocaleString()} matched this time); their votes still count in their town's arrow. Villages with fewer than ${m.min_votes} votes for the two sides in either election are left out (towns: fewer than ${m.min_town_votes}). Arrows start at the middle of each area.`,
-        `<b>地點。</b>依名稱對應內政部 2021 年村里界圖。兩次選舉之間合併或改名的村里沒有自己的箭頭（這次 ${m.villages[1].toLocaleString()} 個中對上 ${m.villages[0].toLocaleString()} 個），其票數仍計入所屬鄉鎮市區。任一次兩方合計少於 ${m.min_votes} 票的村里不顯示（鄉鎮市區為 ${m.min_town_votes} 票）。箭頭從各區域的中心點出發。`,
-        `<b>所在。</b>照名稱對內政部 2021 年的村里界圖。兩擺選舉中間合併抑改名的村里無家己的箭頭（這擺 ${m.villages[1].toLocaleString()} 个內底對著 ${m.villages[0].toLocaleString()} 个），𪜶的票猶是算入所屬的鄉鎮市區。任何一擺兩爿合計無夠 ${m.min_votes} 票的村里無顯示（鄉鎮市區是 ${m.min_town_votes} 票）。箭頭對逐區的中心點出發。`),
+      tx(`<b>Places.</b> Each election sits on the Ministry of the Interior's village map of its time (${fmtVer(D.maps.election)} for ${D.election.slice(0, 4)}, ${fmtVer(D.maps.previous)} for ${D.previous.slice(0, 4)}). Villages merged, split or renamed in between are carried over by location: each earlier village counts in the later village that contains its middle (${D.maps.carried.toLocaleString()} villages this time). ${m.villages[0].toLocaleString()} of ${m.villages[1].toLocaleString()} villages have both elections; the rest count only in their town's arrow. Villages with fewer than ${m.min_votes} votes for the two sides in either election are left out (towns: fewer than ${m.min_town_votes}). Arrows start at the middle of each area.`,
+        `<b>地點。</b>每次選舉對應當時的內政部村里界圖（${D.election.slice(0, 4)} 用 ${fmtVer(D.maps.election)} 版，${D.previous.slice(0, 4)} 用 ${fmtVer(D.maps.previous)} 版）。兩次選舉之間合併、分割或改名的村里依位置對應：較早的村里計入包含其中心點的較新村里（這次 ${D.maps.carried.toLocaleString()} 個）。${m.villages[1].toLocaleString()} 個村里中有 ${m.villages[0].toLocaleString()} 個兩次都有資料，其餘只計入所屬鄉鎮市區。任一次兩方合計少於 ${m.min_votes} 票的村里不顯示（鄉鎮市區為 ${m.min_town_votes} 票）。箭頭從各區域的中心點出發。`,
+        `<b>所在。</b>逐擺選舉對當時的內政部村里界圖（${D.election.slice(0, 4)} 用 ${fmtVer(D.maps.election)} 版，${D.previous.slice(0, 4)} 用 ${fmtVer(D.maps.previous)} 版）。兩擺選舉中間合併、分開抑改名的村里照位置對：較早的村里算入包含伊中心點的較新村里（這擺 ${D.maps.carried.toLocaleString()} 个）。${m.villages[1].toLocaleString()} 个村里內底有 ${m.villages[0].toLocaleString()} 个兩擺攏有資料，其餘干焦算入所屬的鄉鎮市區。任何一擺兩爿合計無夠 ${m.min_votes} 票的村里無顯示（鄉鎮市區是 ${m.min_town_votes} 票）。箭頭對逐區的中心點出發。`),
       D.year === '2022' ? tx('Chiayi City 嘉義市 voted on 18 December 2022, three weeks after the rest.', '嘉義市於 2022 年 12 月 18 日投票，比其他縣市晚三週。', '嘉義市佇 2022 年 12 月 18 日投票，比其他縣市晏三禮拜。') : '',
-      tx('Sources: the CEC\'s station-level results; map: taiwan-atlas (MIT) from the Ministry of the Interior\'s village and town boundaries.', '資料：中選會投開票所結果；地圖：taiwan-atlas（MIT 授權），源自內政部村里與鄉鎮市區界線。', '資料：中選會投開票所結果；地圖：taiwan-atlas（MIT 授權），源自內政部村里佮鄉鎮市區界線。'),
+      tx('Sources: the CEC\'s station-level results; maps: the Ministry of the Interior\'s village and town boundaries (Open Government Data License), dated village releases via Finjon Kiang\'s taiwan_basecode and outlines via taiwan-atlas (both MIT).', '資料：中選會投開票所結果；地圖：內政部村里與鄉鎮市區界線（政府資料開放授權條款），各版村里界取自江明宗（Finjon Kiang）的 taiwan_basecode，輪廓取自 taiwan-atlas（皆為 MIT 授權）。', '資料：中選會投開票所結果；地圖：內政部村里佮鄉鎮市區界線（政府資料開放授權條款），各版村里界對江明宗（Finjon Kiang）的 taiwan_basecode 提的，輪廓對 taiwan-atlas 提的（攏是 MIT 授權）。'),
     ];
     document.getElementById('notes').innerHTML = ps.filter(Boolean).map(p => `<p>${p}</p>`).join('');
   }
