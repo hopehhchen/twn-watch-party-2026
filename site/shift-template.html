@@ -155,8 +155,10 @@ canvas.dragging { cursor: grabbing; }
   const tx = (en, zh, tw) => LANG === 'en' ? en : LANG === 'tw' ? (tw ?? zh) : zh;
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
   const PEN = BOOT.place_en;
-  const pl = c => LANG === 'en' && PEN[c] ? `${PEN[c]} <span class="zh2">${c}</span>` : c;
-  const plText = c => LANG === 'en' && PEN[c] ? `${PEN[c]} ${c}` : c;
+  // English county names as on the Results page: no "City"/"County", except the two Hsinchus and the two Chiayis
+  const en = c => !PEN[c] ? c : /^(新竹|嘉義)/.test(c) ? PEN[c] : PEN[c].replace(/ (City|County)$/, '');
+  const pl = c => LANG === 'en' && PEN[c] ? `${en(c)} <span class="zh2">${c}</span>` : c;
+  const plText = c => LANG === 'en' && PEN[c] ? `${en(c)} ${c}` : c;
 
   const st = { year: BOOT.years[BOOT.years.length - 1].year, mode: 'same', level: 'auto', county: '' }; // mode: same kind | last election of any kind
   let GEO = null, D = null; const CACHE = {};
@@ -279,8 +281,8 @@ canvas.dragging { cursor: grabbing; }
     const p = it.p, r = D.raceBy[p.c], isV = 'name' in p && 't' in p;
     const town = isV ? p.t : p.name, ten = (GEO.towns[`${p.c}|${town}`] || {}).en;
     const place = isV
-      ? (LANG === 'en' ? `${esc(p.name)}, ${esc(ten || town)}, ${esc(PEN[p.c] || p.c)}` : `${esc(p.c)} ${esc(town)} ${esc(p.name)}`)
-      : (LANG === 'en' ? `${esc(ten || town)}, ${esc(PEN[p.c] || p.c)} <span style="opacity:.75">${esc(town)}</span>` : `${esc(p.c)} ${esc(town)}`);
+      ? (LANG === 'en' ? `${esc(p.name)}, ${esc(ten || town)}, ${esc(en(p.c))}` : `${esc(p.c)} ${esc(town)} ${esc(p.name)}`)
+      : (LANG === 'en' ? `${esc(ten || town)}, ${esc(en(p.c))} <span style="opacity:.75">${esc(town)}</span>` : `${esc(p.c)} ${esc(town)}`);
     const s = p.b - p.a;
     const lab = (e, k) => D.kind !== D.prev_kind ? `${e.slice(0, 4)} ${kindTxt(k)}` : e.slice(0, 4);
     tip.innerHTML = `<b>${place}</b><br>${lab(D.previous, D.prev_kind)}: ${fmtM(p.a, r, true)}<br>${lab(D.election, D.kind)}: ${fmtM(p.b, r, false)}<br>`
