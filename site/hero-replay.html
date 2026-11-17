@@ -80,7 +80,7 @@
     document.getElementById('rpRace').textContent = lang() === 'en' ? `${r.year} ${r.area_en.replace(/ (City|County)$/, '')} ${r.area}` : `${r.year} ${r.area}`;
     fig.setAttribute('aria-label', tx(`Replay of the ${r.year} ${r.area} count`, `${r.year} 年${r.area}開票重播`, `${r.year} 年${r.area}開票重播`));
     const w8 = nm(r.winner), dec = clock(r.decided), t90 = clock(r.t90);
-    document.getElementById('rpCap').textContent = phase === 'run' ? tx('A real count, replayed minute by minute as the model saw it.', '真實的開票夜，照模型當時看到的資料逐分鐘重播。', '真正的開票暗，照模型當時看著的資料一分鐘一分鐘重播。') : story(r);
+    document.getElementById('rpCap').textContent = phase === 'run' ? runCap() : story(r);
     document.getElementById('rpNav').innerHTML = H.races.map((q, k) => `<button type="button" data-rp="${k}" aria-pressed="${k === i}">${q.year} ${lang() === 'en' ? q.area_en.replace(/ (City|County)$/, '') : q.area}</button>`).join('')
       + `<button type="button" class="rp-pause" id="rpPause" aria-label="${paused ? tx('Play', '播放', '播放') : tx('Pause', '暫停', '暫停')}">${paused ? '▶' : '❚❚'}</button>`;
   }
@@ -93,6 +93,33 @@
     return ev.sort((a, b) => a.t - b.t);
   }
   const story = r => events(r).map(e => `${clock(e.t)} ${tx(e.en, e.zh, e.tw)}`).join(' · ');
+  const runCap = () => tx('A real count, replayed minute by minute as the model saw it.', '真實的開票夜，照模型當時看到的資料逐分鐘重播。', '真正的開票暗，照模型當時看著的資料一分鐘一分鐘重播。');
+  // Keep the panel the same height all the way through: each line whose text changes (race name, the two sides,
+  // stations counted, the caption) gets the height of its tallest possible text at the current width and language,
+  // so the end-of-night story never pushes the page below it down. Measured again on resize and language change.
+  function reserve() {
+    if (!fig.offsetWidth) return;
+    const fit = (el, fill) => {
+      el.style.minHeight = '';
+      const c = el.cloneNode(true); c.removeAttribute('id'); c.querySelectorAll('[id]').forEach(n => n.removeAttribute('id'));
+      c.style.cssText = `position:absolute;visibility:hidden;pointer-events:none;left:0;top:0;width:${el.getBoundingClientRect().width}px;min-height:0`;
+      el.parentNode.appendChild(c);
+      let m = 0; for (const f of fill) { f(c); m = Math.max(m, c.getBoundingClientRect().height); }
+      c.remove(); el.style.minHeight = Math.ceil(m) + 'px';
+    };
+    const R = H.races, big = '9,999,999';
+    fit(document.querySelector('.rp-top'), R.map(r => c => { c.querySelector('.rp-clock').textContent = '23:59';
+      c.querySelector('.rp-race').textContent = lang() === 'en' ? `${r.year} ${r.area_en.replace(/ (City|County)$/, '')} ${r.area}` : `${r.year} ${r.area}`; }));
+    fit(document.querySelector('.rp-sides'), R.map(r => c => { const [a, b] = c.children;
+      a.innerHTML = `<b>${nm(r.other)}</b>>99% · ${big}`; b.innerHTML = `<b>${nm(r.blue)}</b>>99% · ${big}`; }));
+    fit(document.getElementById('rpSub'), R.flatMap(r => [
+      c => { c.textContent = tx('Waiting for the first polling station', '等待第一個投開票所', '等第一个投開票所'); },
+      c => { c.textContent = tx(`Decided · ${comma(r.stations)} of ${comma(r.stations)} stations counted`, `確定 · 已開 ${comma(r.stations)} / ${comma(r.stations)} 所`, `確定 · 已開 ${comma(r.stations)} / ${comma(r.stations)} 所`); }]));
+    fit(document.getElementById('rpCap'), [c => { c.textContent = runCap(); }, ...R.map(r => c => { c.textContent = story(r); })]);
+  }
+  let rsT = 0, rsW = 0;
+  new ResizeObserver(() => { const w = fig.getBoundingClientRect().width; if (w === rsW) return; rsW = w; clearTimeout(rsT); rsT = setTimeout(reserve, 60); }).observe(fig);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(reserve); // web fonts change line breaks
   const line = document.getElementById('rpLine');
   function drawLine(r) { // a strip under the count: a mark for each moment, lit as the replay reaches it
     const X = t => 6 + (t - r.start) / (r.end - r.start) * 288;
@@ -159,7 +186,7 @@
   });
   new IntersectionObserver(es => { visible = es[0].isIntersecting; go(); }).observe(fig);
   document.addEventListener('visibilitychange', () => { visible = !document.hidden; go(); });
-  new MutationObserver(() => { drawLine(race()); label(); paint(); }).observe(root, { attributes: true, attributeFilter: ['lang'] });
+  new MutationObserver(() => { drawLine(race()); label(); paint(); reserve(); }).observe(root, { attributes: true, attributeFilter: ['lang'] });
   start(0, reduce); go();
 })();
 </script>
