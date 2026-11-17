@@ -42,7 +42,7 @@ CEC count site --(every 60 s)--> scripts/live/poll.py --> live-out/needle/2026-m
 
 | Source | What we saw | Next |
 |---|---|---|
-| CEC count site `vote.cec.gov.tw` | Every path, including `/robots.txt`, returns 403 "FORBIDDEN" from server `HiNetCDN`. On 11/10 the same address forwarded to the CEC's 2026 election page. Looks like a block on visitors outside Taiwan, or a pre-launch lock; can't tell which from here (unverified). | Friend runs `poll.py --probe` from Taiwan. If it's a geo-block, the night has to run from a Taiwan-located machine. |
+| CEC count site `vote.cec.gov.tw` | Every path, including `/robots.txt`, returns 403 "FORBIDDEN" from server `HiNetCDN`. On 11/10 the same address forwarded to the CEC's 2026 election page. The friend's browser in Taiwan gets the same 403 (11/17), so it's a lock on the whole site before launch, not (or not only) a block on visitors outside Taiwan. Whether it also blocks foreign visitors once it opens is still unknown. | When the CEC announces the site: friend and Hope both open it. If only the friend gets through, the night must run from her machine (planned anyway). Then set `count_base` in `data/live/night-config.json` and she reruns the check. |
 | CEC candidate files `info.cec.gov.tw/vote2026/` | Load normally. 臺南市's council file is now up (patched in). | none |
 | 中央社 | `cna.com.tw/project/20261128-election-live/` and its `api/*.json` are 404; the home page links only a news topic. In 2022 and 2024 the page went up about 3 days before the vote. | Check again 11/25. |
 | 公視 | `news.pts.org.tw/projects/2026-election/election/` is up, showing placeholder figures (e.g. "全國開票進度：80%"). No data file loads yet; its scripts reference only build metadata. | Check again 11/25; look for the feed and `tv/` files. |
