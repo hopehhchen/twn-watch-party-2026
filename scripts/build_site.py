@@ -145,6 +145,8 @@ def main():
             vmap = json.loads((ROOT / "data" / "map" / "villages.json").read_text())
             geo = {"viewBox": cmap["viewBox"], "counties": cmap["counties"], "insets": cmap["insets"],
                    "towns": {k: {"d": t["d"], "en": t["en"]} for k, t in vmap["towns"].items()}, "source": vmap["source"]}
+            for f in sorted((ROOT / "data" / "map" / "outlines").glob("outlines-*.json")):
+                shutil.copy(f, out / "shift" / f.name)
             (out / "shift" / "geo.json").write_text(json.dumps(geo, ensure_ascii=False, separators=(",", ":")))
             render("shift-template.html", {"place_en": PLACE_EN, "years": years}, out / "mock-shift.html")
     for sub, src in (("needle", ROOT / "data" / "needle"), ("council", ROOT / "data" / "council"),

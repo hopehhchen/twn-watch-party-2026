@@ -161,7 +161,14 @@ canvas.dragging { cursor: grabbing; }
   const plText = c => LANG === 'en' && PEN[c] ? `${en(c)} ${c}` : c;
 
   const st = { year: BOOT.years[BOOT.years.length - 1].year, mode: 'same', level: 'auto', county: '' }; // mode: same kind | last election of any kind
-  let GEO = null, D = null; const CACHE = {};
+  let GEO = null, D = null; const CACHE = {}, OUT = {}, OUT_LOADING = {};
+  function loadOutlines(ver) { // shift/outlines-<version>.json, built by scripts/map/build_outlines.mjs
+    if (!ver || OUT[ver] || OUT_LOADING[ver]) return;
+    OUT_LOADING[ver] = getJSON(`shift/outlines-${ver}.json`).then(o => {
+      OUT[ver] = { counties: Object.entries(o.counties).map(([c, d]) => [c, new Path2D(d)]), towns: new Path2D(o.towns), villages: new Path2D(o.villages) };
+      draw();
+    }).catch(() => { OUT_LOADING[ver] = null; });
+  }
   const cv = document.getElementById('map'), cw = document.getElementById('cw'), tip = document.getElementById('tip');
   const ctx = cv.getContext('2d');
   let W = 0, H = 0, base = 1, view = { k: 1, cx: 0, cy: 0 }, paths = null, hover = null, items = [];
@@ -237,14 +244,20 @@ canvas.dragging { cursor: grabbing; }
     ctx.clearRect(0, 0, W, H);
     const k = base * view.k;
     ctx.save(); ctx.translate(W / 2, H / 2); ctx.scale(k, k); ctx.translate(-view.cx, -view.cy);
+    // outlines: the election's own village map once loaded (counties, towns and villages cut from one topology, so
+    // their lines meet exactly); until then the light county map and 2021 town lines
+    const O = OUT[D.maps.election], cs = O ? O.counties : paths.counties, ts = O ? [O.towns] : paths.towns;
     ctx.fillStyle = css('--land'); ctx.strokeStyle = css('--border'); ctx.lineJoin = 'round';
-    for (const [c, p] of paths.counties) { ctx.globalAlpha = st.county && st.county !== c ? 0.55 : 1; ctx.fill(p); }
+    for (const [c, p] of cs) { ctx.globalAlpha = st.county && st.county !== c ? 0.55 : 1; ctx.fill(p); }
     ctx.globalAlpha = 1;
     const lv = levelNow();
-    // town (鄉鎮市區) lines always, a little stronger once zoomed in; county lines on top, darker
-    ctx.lineWidth = (view.k >= 2 ? 0.9 : 0.6) / k; ctx.strokeStyle = css('--border'); ctx.globalAlpha = view.k >= 2 ? 0.95 : 0.8;
-    for (const p of paths.towns) ctx.stroke(p);
-    ctx.globalAlpha = 0.75; ctx.lineWidth = 1.3 / k; ctx.strokeStyle = css('--muted'); for (const [, p] of paths.counties) ctx.stroke(p);
+    if (O && (lv === 'villages' || view.k >= 4)) { // village (村里) lines, faint
+      ctx.lineWidth = 0.5 / k; ctx.strokeStyle = css('--border'); ctx.globalAlpha = 0.5; ctx.stroke(O.villages);
+    }
+    // town (鄉鎮市區) lines always, clearly stronger than village lines; county lines on top, darker still
+    ctx.lineWidth = (view.k >= 2 ? 1 : 0.7) / k; ctx.strokeStyle = css('--muted'); ctx.globalAlpha = view.k >= 2 ? 0.6 : 0.45;
+    for (const p of ts) ctx.stroke(p);
+    ctx.globalAlpha = 0.85; ctx.lineWidth = 1.5 / k; ctx.strokeStyle = css('--muted'); for (const [, p] of cs) ctx.stroke(p);
     ctx.globalAlpha = 1;
     ctx.setLineDash([3 / k, 3 / k]); ctx.stroke(paths.insets); ctx.setLineDash([]);
     ctx.restore();
@@ -423,7 +436,7 @@ canvas.dragging { cursor: grabbing; }
   function render() { controls(); legend(); side(); notes(); draw(); }
   function writeHash() { history.replaceState(null, '', `#${st.year}${st.mode === 'last' ? '/last' : ''}${st.county ? '/' + st.county : ''}`); }
   async function setYear(y, mode = st.mode) {
-    st.year = y; st.mode = mode; D = await loadYear(y, mode); hover = null; tip.style.display = 'none';
+    st.year = y; st.mode = mode; D = await loadYear(y, mode); loadOutlines(D.maps.election); hover = null; tip.style.display = 'none';
     render(); writeHash();
   }
   function setCounty(c) { st.county = c; if (c) fitCounty(c); else home(); hover = null; tip.style.display = 'none'; side(); controls(); draw(); writeHash(); }
@@ -456,7 +469,7 @@ canvas.dragging { cursor: grabbing; }
     if (h[1] === 'last') { st.mode = 'last'; h.splice(1, 1); }
     GEO = await getJSON('shift/geo.json');
     paths = { counties: Object.entries(GEO.counties).map(([c, d]) => [c, new Path2D(d)]), towns: Object.values(GEO.towns).map(t => new Path2D(t.d)), insets: new Path2D(GEO.insets) };
-    D = await loadYear(st.year, st.mode);
+    D = await loadYear(st.year, st.mode); loadOutlines(D.maps.election);
     home(); resize();
     if (h[1] && D.raceBy[h[1]]) { st.county = h[1]; fitCounty(h[1]); }
     render(); writeHash();
