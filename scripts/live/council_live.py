@@ -5,7 +5,7 @@ There is no model here: the page shows who would hold each seat if counting stop
 allocate), and marks a seat decided only when the votes still out can't change it. The CEC's district page
 (prefix T1 regional, T2 平地原住民, T3 山地原住民; code county + district + zeros) gives seats, reserved
 women's seats, stations sent/total and every candidate's votes and sex. The district list is the CEC's
-2026 candidate files (data/live/council-2026.json; 臺南市 from 2022 until the CEC publishes its file).
+2026 candidate files (data/live/council-2026.json).
 
 Electors still out (the page's bound on what could still change) aren't on the CEC's pages, so they are
 estimated generously: the district's electors (council-2026.json, electors_est) x the share not yet counted,

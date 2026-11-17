@@ -7,7 +7,7 @@ Written 2026-11-10, updated the same day once the mayoral pipeline was built. Al
 - **Where:** the CEC's count site (計票資訊查詢網站). In 2025 it was `vote.cec.gov.tw/zh-TW/` (the referendum page `F1/00000000000000000.html`). Today that address forwards to the CEC's 2026 election page, so the count site isn't up yet. Another 2026 project reports that it's announced about a week before the vote (unverified).
 - **Level:** the county and each town (鄉鎮市區), not polling stations. Each page gives every candidate's votes so far and the number of stations reported (已送/應送). Pages per cycle: 22 county + 368 town candidate pages (prefix `TC`) and 22 turnout pages (`SC`). The page code is county(5) + `00` + town(3) + `0000000`; the 2022 codes are in `data/live/towns-2022.json`, from the CEC's own 2022 site menu.
 - **Markup:** changed between 2022 (class-based) and 2025 (id-based). The parser reads tables by their header labels, and works on saved pages of both (`tests/fixtures/cec/`, copies from the Wayback Machine collected by github.com/outsider987/vote, MIT).
-- **Location:** the same project advises polling "from a Taiwan-located machine because the CEC may geo-limit" (unverified). From Hope's browser today, the CEC's 2026 election page loads; the count site itself isn't up to test.
+- **Location:** the same project advises polling "from a Taiwan-located machine because the CEC may geo-limit" (unverified). On 11/10 the CEC's 2026 election page loaded from Hope's browser; on 11/17 the count host returned 403 from HiNetCDN on every path (see "Readiness check" below).
 - **Candidates:** the CEC's candidate files (`info.cec.gov.tw/vote2026/static/json/cand/C1/<county code>.json`) are up. All 22 races match our names and ballot numbers (checked 11/10).
 - **Same night:** one national referendum (廢除非核家園, 第22案). 2022 also had one referendum; its count ended at 23:40.
 
@@ -37,6 +37,17 @@ CEC count site --(every 60 s)--> scripts/live/poll.py --> live-out/needle/2026-m
 - `python3 scripts/live/replay_live.py`: scores against the replays. Town totals match the replay's district feed: log loss at 1/5/10/30% counted 0.44 / 0.22 / 0.14 / 0.08, against 0.37 / 0.14 / 0.13 / 0.07 with per-station results.
 - `python3 scripts/live/check_certainty.py`: 43 races, never "decided" early or on the wrong side; on average 14 stations after the truth.
 - Rehearsal on 11/10: mock site at 60× with 3% failures → poller every 10 s → publisher → local site. The page followed the count, kept a reader's look-back position across refreshes, and returned with "Live". No errors.
+
+### Readiness check, 11/17 (from Hope's browser, outside Taiwan)
+
+| Source | What we saw | Next |
+|---|---|---|
+| CEC count site `vote.cec.gov.tw` | Every path, including `/robots.txt`, returns 403 "FORBIDDEN" from server `HiNetCDN`. On 11/10 the same address forwarded to the CEC's 2026 election page. Looks like a block on visitors outside Taiwan, or a pre-launch lock; can't tell which from here (unverified). | Friend runs `poll.py --probe` from Taiwan. If it's a geo-block, the night has to run from a Taiwan-located machine. |
+| CEC candidate files `info.cec.gov.tw/vote2026/` | Load normally. 臺南市's council file is now up (patched in). | none |
+| 中央社 | `cna.com.tw/project/20261128-election-live/` and its `api/*.json` are 404; the home page links only a news topic. In 2022 and 2024 the page went up about 3 days before the vote. | Check again 11/25. |
+| 公視 | `news.pts.org.tw/projects/2026-election/election/` is up, showing placeholder figures (e.g. "全國開票進度：80%"). No data file loads yet; its scripts reference only build metadata. | Check again 11/25; look for the feed and `tv/` files. |
+| 自由時報 | `election.ltn.com.tw/2026/` is up; its "開票實況" link has no address yet; `/2026/realtime` is 404. | Check again 11/25. |
+| 聯合報 | `udn.com/vote2026/realtime` ("即時選情") is a news list, not counts. | Check again 11/25. |
 
 ### Other outlets (built 11/11)
 
@@ -92,7 +103,7 @@ python3 scripts/live/publish.py            # copies into _site; serve _site with
 
 ## Not built yet
 
-- ~~Council seats live~~ **built 2026-11-11** (`scripts/live/council_live.py`): one CEC page per council district (221: the CEC's 2026 candidate files list 208; 臺南市's file isn't published yet, so its 13 districts come from 2022 — check when the CEC posts it). The page enables its Council view once the first district reports, and refetches the council file with the mayors'. No model: the page shows who would hold each seat if counting stopped, as on the replays; "decided" uses a generous estimate of the votes still out.
+- ~~Council seats live~~ **built 2026-11-11** (`scripts/live/council_live.py`): one CEC page per council district (221, from the CEC's 2026 candidate files; 臺南市's file appeared by 11/17: same 13 districts and towns as 2022, but one seat moved from district 1 (now 5) to district 11 (now 6); patched 11/17). The page enables its Council view once the first district reports, and refetches the council file with the mayors'. No model: the page shows who would hold each seat if counting stopped, as on the replays; "decided" uses a generous estimate of the votes still out.
 - ~~Count watch~~ **built 2026-11-11**; see "Other outlets" below. Each outlet's 2026 address is still to find once its page is up.
 - **Turnout view on 2026:** works from the same points; checked only in the rehearsal.
 
@@ -108,6 +119,7 @@ python3 scripts/live/publish.py            # copies into _site; serve _site with
 | by 11/21 (Sat) | Full rehearsal on the machine that will run the night, deploying to a test Worker, not the real site | both | open |
 | ~11/21 (unverified) | CEC announces the count site: `poll.py --probe` from the night's machine; refresh `towns-2022.json` from the 2026 site menu if towns changed | Claude + Hope | open |
 | by 11/24 | Taiwanese review back (`docs/taigi-review.md`, regenerated 11/10) | Hope | open |
+| 11/25 (Wed) | Recheck outlet pages (中央社, 公視, 自由時報, 聯合報) and set any working addresses in `data/live/outlets.json` | Claude | open |
 | 11/25 (Wed) | CEC announces elector totals (選罷法 §38). The poller takes town electors from the turnout pages on the night anyway; update `2026-mayors.json` for the before-count page | Claude | open |
 | 11/26 (Thu) | Dress rehearsal on the real domain at 16× (16:00–24:00 in 30 min), phones and desktop, all three languages; then rebuild the empty pre-count file | both | open |
 | 11/27 (Fri), evening | Code freeze; final build on the night's machine; fallback machine ready | both | open |
@@ -128,4 +140,4 @@ python3 scripts/live/publish.py            # copies into _site; serve _site with
   - Hope's Mac if he's in Taiwan that night.
   - Whichever is chosen, keep a second machine ready to take over, since the archive lets a new poller pick up where the old one stopped.
 - ~~Model: sampling noise in tiny first stations~~ **applied 2026-11-11** (docs/needle.md, "Model review"); replays and the accuracy figures rebuilt.
-- Count-watch sources (above). 臺南市's 2026 council districts once the CEC posts them.
+- Count-watch sources (above).

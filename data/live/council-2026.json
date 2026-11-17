@@ -1,5 +1,5 @@
 {
- "source": "CEC candidate files, info.cec.gov.tw/vote2026/static/json/cand/T/<county code>.json, read 2026-11-11. 臺南市's file was not published (404); its districts are taken from 2022 until it is.",
+ "source": "CEC candidate files, info.cec.gov.tw/vote2026/static/json/cand/T/<county code>.json, read 2026-11-11 (臺南市 2026-11-17).",
  "counties": {
   "臺北市": {
    "code": "63000",
@@ -2158,15 +2158,14 @@
   },
   "臺南市": {
    "code": "67000",
-   "from_2022": true,
    "districts": [
     {
      "no": 1,
      "prefix": "T1",
      "seat_type": "區域",
-     "seats": 6,
+     "seats": 5,
      "women": 1,
-     "candidates": 9,
+     "candidates": 8,
      "towns": [
       "後壁區",
       "白河區",
@@ -2184,7 +2183,7 @@
      "seat_type": "區域",
      "seats": 5,
      "women": 1,
-     "candidates": 7,
+     "candidates": 6,
      "towns": [
       "北門區",
       "學甲區",
@@ -2202,7 +2201,7 @@
      "seat_type": "區域",
      "seats": 3,
      "women": 0,
-     "candidates": 6,
+     "candidates": 4,
      "towns": [
       "下營區",
       "六甲區",
@@ -2235,7 +2234,7 @@
      "seat_type": "區域",
      "seats": 5,
      "women": 1,
-     "candidates": 9,
+     "candidates": 7,
      "towns": [
       "善化區",
       "安定區",
@@ -2252,7 +2251,7 @@
      "seat_type": "區域",
      "seats": 6,
      "women": 1,
-     "candidates": 14,
+     "candidates": 9,
      "towns": [
       "安南區"
      ],
@@ -2265,7 +2264,7 @@
      "seat_type": "區域",
      "seats": 7,
      "women": 1,
-     "candidates": 15,
+     "candidates": 11,
      "towns": [
       "永康區"
      ],
@@ -2278,7 +2277,7 @@
      "seat_type": "區域",
      "seats": 6,
      "women": 1,
-     "candidates": 10,
+     "candidates": 11,
      "towns": [
       "北區",
       "中西區"
@@ -2292,7 +2291,7 @@
      "seat_type": "區域",
      "seats": 6,
      "women": 1,
-     "candidates": 11,
+     "candidates": 9,
      "towns": [
       "安平區",
       "南區"
@@ -2306,7 +2305,7 @@
      "seat_type": "區域",
      "seats": 5,
      "women": 1,
-     "candidates": 10,
+     "candidates": 7,
      "towns": [
       "東區"
      ],
@@ -2317,9 +2316,9 @@
      "no": 11,
      "prefix": "T1",
      "seat_type": "區域",
-     "seats": 5,
+     "seats": 6,
      "women": 1,
-     "candidates": 8,
+     "candidates": 9,
      "towns": [
       "仁德區",
       "歸仁區",
@@ -2384,7 +2383,7 @@
      "seat_type": "山地原住民",
      "seats": 1,
      "women": 0,
-     "candidates": 3,
+     "candidates": 2,
      "towns": [
       "後壁區",
       "白河區",
