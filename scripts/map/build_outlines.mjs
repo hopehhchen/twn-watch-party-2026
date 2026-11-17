@@ -18,6 +18,11 @@ for (const v of vers) {
   // shared), and taiwan-atlas leaves out unnamed land (e.g. 清泉崗), which shows as holes; so those years are drawn on
   // the 2022-11-18 map, the nearest clean one (it differs mainly by Pingtung's 2022 village mergers).
   const SRC = { '20181130': '20221118', '20191121': '20221118' }[v] || v;
+  if (SRC !== v) { // a pointer to the shared file, not a copy
+    fs.writeFileSync(path.join(outdir, `outlines-${v}.json`), JSON.stringify({ version: v, drawn_on: SRC }));
+    process.stderr.write(`${v}: drawn on ${SRC}\n`);
+    continue;
+  }
   let t = JSON.parse(fs.readFileSync(path.join(dir, SRC + '.json')));
   const name = Object.keys(t.objects)[0];
   // drop 東沙/南沙 (off the map) before anything else

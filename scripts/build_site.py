@@ -130,7 +130,7 @@ def main():
         print(f"{out / 'index.html'} with the hero replay: {len(idx) / 1024:.0f} KB")
         # the review copy's old address now leads to the entry page
         (out / "mock-hero.html").write_text(REDIRECT.replace("live.html", "index.html").replace("{hash}", "").replace("Moved to", "Now at"))
-        # shift map (mock, not linked yet): arrows for how each town and village moved since the previous election
+        # shift map (shifts.html): arrows for how each town and village moved between elections
         shift_dir = ROOT / "data" / "shift"
         if shift_dir.exists():
             (out / "shift").mkdir(exist_ok=True)
@@ -145,10 +145,17 @@ def main():
             vmap = json.loads((ROOT / "data" / "map" / "villages.json").read_text())
             geo = {"viewBox": cmap["viewBox"], "counties": cmap["counties"], "insets": cmap["insets"],
                    "towns": {k: {"d": t["d"], "en": t["en"]} for k, t in vmap["towns"].items()}, "source": vmap["source"]}
+            outlines = {}  # map version -> the outline file it is drawn on (2018 and 2019 share the 2022 one)
             for f in sorted((ROOT / "data" / "map" / "outlines").glob("outlines-*.json")):
-                shutil.copy(f, out / "shift" / f.name)
+                d = json.loads(f.read_text())
+                src = d.get("drawn_on", d["version"])
+                outlines[d["version"]] = src
+                if src == d["version"]:
+                    shutil.copy(f, out / "shift" / f.name)
             (out / "shift" / "geo.json").write_text(json.dumps(geo, ensure_ascii=False, separators=(",", ":")))
-            render("shift-template.html", {"place_en": PLACE_EN, "years": years}, out / "mock-shift.html")
+            render("shift-template.html", {"place_en": PLACE_EN, "years": years, "outlines": outlines}, out / "shifts.html")
+            # the review copy's address now leads to the page
+            (out / "mock-shift.html").write_text(REDIRECT.replace("live.html", "shifts.html").replace("{hash}", "").replace("Moved to", "Now at"))
     for sub, src in (("needle", ROOT / "data" / "needle"), ("council", ROOT / "data" / "council"),
                      ("legislature", ROOT / "data" / "legislature")):
         (out / sub).mkdir(exist_ok=True)

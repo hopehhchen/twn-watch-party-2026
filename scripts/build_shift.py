@@ -139,10 +139,11 @@ def main():
                 n_vm += 1
                 if min(sum(ao), sum(bo)) < MIN_VOTES:
                     continue
-                vills.append([f"{county}|{t}|{v}", g[0], g[1], round(100 * margin(ao), 1), round(100 * margin(bo), 1), sum(bo)])
+                vills.append([f"{county}|{t}|{v}", g[0], g[1], round(100 * margin(ao), 1), round(100 * margin(bo), 1), sum(bo)]
+                             + ([g[2]] if len(g) > 2 else []))
         doc = {"year": year, "mode": mode, "election": cur, "previous": prev, "kind": kind(cur), "prev_kind": kind(prev),
                "columns": {"towns": ["county", "town", "x", "y", "prev_margin", "margin", "votes"],
-                           "villages": ["key", "x", "y", "prev_margin", "margin", "votes"]},
+                           "villages": ["key", "x", "y", "prev_margin", "margin", "votes", "en (official English name, when known)"]},
                "maps": {"previous": va, "election": vb, "carried": n_x},
                "matched": {"towns": [n_tm, n_t], "villages": [n_vm, n_v], "min_votes": MIN_VOTES, "min_town_votes": MIN_TOWN},
                "national": {"prev_margin": round(100 * margin(tot_a), 1), "margin": round(100 * margin(tot_b), 1),

@@ -30,7 +30,8 @@ for (const f of fs.readdirSync(dir).filter(f => /^\d{8}\.json$/.test(f)).sort())
     if (v[key]) { // a village in several pieces: keep the larger-looking one's centroid (first wins); rare
       continue;
     }
-    v[key] = [r1(p[0]), r1(p[1])];
+    const en = (ft.properties || {}).VILLENG; // the MOI's official English name (2018 releases on)
+    v[key] = en ? [r1(p[0]), r1(p[1]), en] : [r1(p[0]), r1(p[1])];
   }
   out.versions[f.slice(0, 8)] = v;
   process.stderr.write(`${f}: ${Object.keys(v).length} villages (${skipped} skipped)\n`);

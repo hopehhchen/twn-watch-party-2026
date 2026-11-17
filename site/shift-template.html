@@ -1,11 +1,23 @@
-<title>Shift map · 選票移動 · 開票觀察 Watch Party</title>
-<meta name="robots" content="noindex">
+<title>Shifts · 藍綠消長 · 開票觀察 Watch Party</title>
+<meta name="description" content="How every town and village in Taiwan shifted between elections, 2018–2024, as arrows. 2018 至 2024 年各鄉鎮市區與村里的藍綠消長地圖。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="開票觀察 Watch Party">
+<meta property="og:title" content="藍綠消長 · Which way places moved · 開票觀察 Watch Party">
+<meta property="og:description" content="2018 至 2024 年，每個鄉鎮市區與村里在兩次選舉之間往哪一方移動。How every town and village shifted between elections.">
+<meta property="og:url" content="https://election-2026.tw/shifts">
+<meta property="og:image" content="https://election-2026.tw/og-shifts.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="藍綠消長地圖：臺灣各地往藍或綠移動的箭頭">
+<meta property="og:locale" content="zh_TW">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://election-2026.tw/og-shifts.png">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&display=swap">
 <style>
-/* Shift map (mock): which way each town and village moved since the previous election of the same kind.
+/* Shift map: which way each town and village moved since the previous election of the same kind.
    Data: data/shift/<year>.json (scripts/build_shift.py); outlines: shift/geo.json (built by build_site.py). */
 :root {
   --bg: #F2F4F7; --surface: #FFFFFF; --ink: #131B2A; --muted: #5B6578; --rule: #D8DDE5; --land: #E6E9EE; --border: #B9C1CD;
@@ -52,7 +64,6 @@ button, select { font: inherit; color: inherit; }
 html[lang="en"] [data-l="zh"], html[lang="en"] [data-l="tw"], html[lang="zh-Hant"] [data-l="en"], html[lang="zh-Hant"] [data-l="tw"],
 html[lang="nan-Hant-TW"] [data-l="en"], html[lang="nan-Hant-TW"] [data-l="zh"] { display: none !important; }
 
-.mockbar { background: color-mix(in srgb, var(--accent) 14%, var(--surface)); border: 1px dashed var(--accent); border-radius: var(--radius); padding: 8px 14px; font-size: 13px; }
 .intro h2 { margin: 0 0 6px; font-family: var(--font-display); font-weight: 900; font-size: clamp(26px, 4.4vw, 36px); line-height: 1.2; }
 .intro p { margin: 0; max-width: 72ch; }
 .years { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -71,7 +82,7 @@ html[lang="nan-Hant-TW"] [data-l="en"], html[lang="nan-Hant-TW"] [data-l="zh"] {
 .controls .grp { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .controls select { border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); padding: 4px 10px; font-size: 13px; max-width: 220px; }
 .zoom button { width: 30px; font-size: 15px; padding: 2px 0; }
-.canvas-wrap { position: relative; touch-action: none; user-select: none; border-radius: 8px; overflow: hidden; background: var(--surface); }
+.canvas-wrap { position: relative; touch-action: pan-y; /* set to none once zoomed in (script) */ user-select: none; border-radius: 8px; overflow: hidden; background: var(--surface); }
 canvas { display: block; width: 100%; cursor: grab; }
 canvas.dragging { cursor: grabbing; }
 .tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--bg); border-radius: 8px; padding: 6px 10px; font-size: 12.5px; line-height: 1.45;
@@ -88,6 +99,7 @@ canvas.dragging { cursor: grabbing; }
 .rows button:hover, .rows button[aria-current="true"] { background: color-mix(in srgb, var(--ink) 7%, transparent); }
 .rows .zh2 { color: var(--muted); font-size: 12px; margin-left: 4px; white-space: nowrap; }
 .rows .v { text-align: right; }
+@media (max-width: 860px) { .rows { max-height: none; overflow: visible; } }
 .notes { font-size: 13px; color: var(--muted); max-width: 80ch; }
 .notes p { margin: 0 0 6px; }
 </style>
@@ -106,13 +118,11 @@ canvas.dragging { cursor: grabbing; }
       <h1>開票觀察 Watch Party<small>Election-night needles · 開票即時預測</small></h1>
     </a>
     <div class="mast-right">
-      <nav class="tabs" aria-label="Pages"><a href="index.html">About · 說明</a><a href="live.html">Results · 開票</a><a href="mock-shift.html" aria-current="page">Shifts · 移動</a></nav>
+      <nav class="tabs" aria-label="Pages"><a href="index.html">About · 說明</a><a href="live.html">Results · 開票</a><a href="shifts.html" aria-current="page">Shifts · 藍綠消長</a></nav>
       <div class="seg" role="group" aria-label="Language"><button data-lang-set="en">EN</button><button data-lang-set="zh">中文</button><button data-lang-set="tw" title="台文（試行版，猶未審稿）">台文</button></div>
       <div class="seg" role="group" aria-label="Color theme"><button data-theme-set="auto">Auto</button><button data-theme-set="light">Light</button><button data-theme-set="dark">Dark</button></div>
     </div>
   </header>
-
-  <div class="mockbar"><span data-l="en"><b>Mock-up</b> for review: not linked from the site yet.</span><span data-l="zh"><b>試作版</b>，供審閱：網站其他頁面尚未連到這裡。</span><span data-l="tw"><b>試做版</b>，予人審：網站其他頁面猶未連來遮。</span></div>
 
   <section class="intro">
     <h2 data-l="en">Which way places moved</h2><h2 data-l="zh">各地往哪邊移動</h2><h2 data-l="tw">各所在往佗一爿徙</h2>
@@ -133,7 +143,7 @@ canvas.dragging { cursor: grabbing; }
         </div>
         <div class="seg zoom" role="group" aria-label="Zoom"><button data-zoom="in" aria-label="Zoom in">+</button><button data-zoom="out" aria-label="Zoom out">−</button><button data-zoom="reset" aria-label="Whole map">⤢</button></div>
       </div>
-      <div class="canvas-wrap" id="cw"><canvas id="map"></canvas><div class="tip" id="tip"></div></div>
+      <div class="canvas-wrap" id="cw"><canvas id="map" role="img"></canvas><div class="tip" id="tip"></div></div>
       <div class="legend" id="legend"></div>
       <div class="hint" id="hint"></div>
     </div>
@@ -162,7 +172,10 @@ canvas.dragging { cursor: grabbing; }
 
   const st = { year: BOOT.years[BOOT.years.length - 1].year, mode: 'same', level: 'auto', county: '' }; // mode: same kind | last election of any kind
   let GEO = null, D = null; const CACHE = {}, OUT = {}, OUT_LOADING = {};
-  function loadOutlines(ver) { // shift/outlines-<version>.json, built by scripts/map/build_outlines.mjs
+  // shift/outlines-<file>.json, built by scripts/map/build_outlines.mjs; some map versions share a file
+  const outFile = ver => (BOOT.outlines || {})[ver] || ver;
+  function loadOutlines(ver) {
+    ver = outFile(ver);
     if (!ver || OUT[ver] || OUT_LOADING[ver]) return;
     OUT_LOADING[ver] = getJSON(`shift/outlines-${ver}.json`).then(o => {
       OUT[ver] = { counties: Object.entries(o.counties).map(([c, d]) => [c, new Path2D(d)]), towns: new Path2D(o.towns), villages: new Path2D(o.villages) };
@@ -181,7 +194,9 @@ canvas.dragging { cursor: grabbing; }
       const d = await getJSON(`shift/${key}.json`);
       d.raceBy = Object.fromEntries(d.races.map(r => [r.area, r]));
       d.T = d.towns.map(r => ({ c: r[0], name: r[1], x: r[2], y: r[3], a: r[4], b: r[5], n: r[6] }));
-      d.V = d.villages.map(r => { const [c, t, v] = r[0].split('|'); return { c, t, name: v, x: r[1], y: r[2], a: r[3], b: r[4], n: r[5] }; });
+      d.V = d.villages.map(r => { const [c, t, v] = r[0].split('|'); return { c, t, name: v, en: r[6], x: r[1], y: r[2], a: r[3], b: r[4], n: r[5] }; });
+      // "the DPP" when every other side in this comparison is the DPP; otherwise "the DPP or other side"
+      d.allDPP = d.races.every(r => r.other.party === '民主進步黨' && r.prev_other.party === '民主進步黨');
       CACHE[key] = d;
     }
     return CACHE[key];
@@ -198,8 +213,17 @@ canvas.dragging { cursor: grabbing; }
     return { b: B.name, o: O.name };
   }
   const fmtM = (m, r, prev) => { const s = sideNames(r, prev); return m >= 0 ? `${esc(s.b)} +${m.toFixed(1)}` : `${esc(s.o)} +${(-m).toFixed(1)}`; };
-  const towardTxt = (s, r) => { const P = bothPres(); return s >= 0 ? tx(`toward the ${P ? 'KMT' : 'blue side'}`, `往${P ? '國民黨' : '藍營'}`, `往${P ? '國民黨' : '藍營'}`)
-    : tx(`toward the ${P ? 'DPP' : 'other side'}`, `往${P ? '民進黨' : '另一方'}`, `往${P ? '民進黨' : '另外一爿'}`); };
+  // the two sides in words: the KMT and DPP when both elections are presidential; otherwise the blue side, and the
+  // DPP if every race's other side was the DPP, else "the DPP or other side"
+  const blueTxt = () => bothPres() ? tx('the KMT', '國民黨', '國民黨') : tx('the blue side', '藍營', '藍營');
+  const otherTxt = () => bothPres() || D.allDPP ? tx('the DPP', '民進黨', '民進黨') : tx('the DPP or other side', '民進黨或另一方', '民進黨抑另外一爿');
+  const towardTxt = (s, r) => {
+    if (r && s < 0 && !bothPres()) { // one race: name its own other side
+      const o = r.other.party === '民主進步黨' && r.prev_other.party === '民主進步黨';
+      return o ? tx('toward the DPP', '往民進黨', '往民進黨') : tx('toward the other side', '往另一方', '往另外一爿');
+    }
+    return s >= 0 ? tx(`toward ${blueTxt()}`, `往${blueTxt()}`, `往${blueTxt()}`) : tx(`toward ${otherTxt()}`, `往${otherTxt()}`, `往${otherTxt()}`);
+  };
 
   // ---- geometry
   function resize() {
@@ -241,12 +265,14 @@ canvas.dragging { cursor: grabbing; }
   }
   function draw() {
     if (!GEO || !D) return;
+    // on touch screens one finger scrolls the page until the map is zoomed in; pinching zooms it
+    cw.style.touchAction = view.k > 1.02 ? 'none' : 'pan-y';
     ctx.clearRect(0, 0, W, H);
     const k = base * view.k;
     ctx.save(); ctx.translate(W / 2, H / 2); ctx.scale(k, k); ctx.translate(-view.cx, -view.cy);
     // outlines: the election's own village map once loaded (counties, towns and villages cut from one topology, so
     // their lines meet exactly); until then the light county map and 2021 town lines
-    const O = OUT[D.maps.election], cs = O ? O.counties : paths.counties, ts = O ? [O.towns] : paths.towns;
+    const O = OUT[outFile(D.maps.election)], cs = O ? O.counties : paths.counties, ts = O ? [O.towns] : paths.towns;
     ctx.fillStyle = css('--land'); ctx.strokeStyle = css('--border'); ctx.lineJoin = 'round';
     for (const [c, p] of cs) { ctx.globalAlpha = st.county && st.county !== c ? 0.55 : 1; ctx.fill(p); }
     ctx.globalAlpha = 1;
@@ -287,7 +313,9 @@ canvas.dragging { cursor: grabbing; }
     document.getElementById('hint').textContent = (lv === 'villages'
       ? tx(`Showing villages (村里) · ${D.V.length.toLocaleString()} arrows.`, `顯示村里 · ${D.V.length.toLocaleString()} 支箭頭。`, `顯示村里 · ${D.V.length.toLocaleString()} 支箭頭。`)
       : tx(`Showing towns (鄉鎮市區). Zoom in for villages.`, '顯示鄉鎮市區。放大即可看到村里。', '顯示鄉鎮市區。放大就看會著村里。'))
-      + ' ' + tx('Drag to move, scroll or pinch to zoom, hover or tap an arrow for its numbers.', '拖曳移動，滾輪或雙指縮放，滑過或點一下箭頭看數字。', '拖咧徙，滾輪抑雙指縮放，滑過抑點一下箭頭看數字。');
+      + ' ' + (matchMedia('(pointer: coarse)').matches
+        ? tx('Pinch to zoom; once zoomed in, drag to move. Tap an arrow for its numbers.', '雙指縮放；放大後可拖曳移動。點一下箭頭看數字。', '雙指縮放；放大了後會當拖咧徙。點一下箭頭看數字。')
+        : tx('Drag to move, scroll or pinch to zoom, hover or tap an arrow for its numbers.', '拖曳移動，滾輪或雙指縮放，滑過或點一下箭頭看數字。', '拖咧徙，滾輪抑雙指縮放，滑過抑點一下箭頭看數字。'));
   }
 
   // ---- tooltip
@@ -297,7 +325,7 @@ canvas.dragging { cursor: grabbing; }
     const p = it.p, r = D.raceBy[p.c], isV = 'name' in p && 't' in p;
     const town = isV ? p.t : p.name, ten = (GEO.towns[`${p.c}|${town}`] || {}).en;
     const place = isV
-      ? (LANG === 'en' ? `${esc(p.name)}, ${esc(ten || town)}, ${esc(en(p.c))}` : `${esc(p.c)} ${esc(town)} ${esc(p.name)}`)
+      ? (LANG === 'en' ? `${p.en ? esc(p.en) + ' ' : ''}${esc(p.name)}, ${esc(ten || town)}, ${esc(en(p.c))}` : `${esc(p.c)} ${esc(town)} ${esc(p.name)}`)
       : (LANG === 'en' ? `${esc(ten || town)}, ${esc(en(p.c))} <span style="opacity:.75">${esc(town)}</span>` : `${esc(p.c)} ${esc(town)}`);
     const s = p.b - p.a;
     const lab = (e, k) => D.kind !== D.prev_kind ? `${e.slice(0, 4)} ${kindTxt(k)}` : e.slice(0, 4);
@@ -349,7 +377,8 @@ canvas.dragging { cursor: grabbing; }
     if (drag && moved <= 3) showTip(nearest(p[0], p[1])); // a tap or click
     if (!ptrs.size) { drag = null; cv.classList.remove('dragging'); }
   };
-  cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
+  cv.addEventListener('pointerup', end);
+  cv.addEventListener('pointercancel', e => { ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch = null; if (!ptrs.size) { drag = null; cv.classList.remove('dragging'); } }); // the page took over (scrolling)
   cv.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse' && !drag) showTip(null); });
   cv.addEventListener('wheel', e => { e.preventDefault(); const p = pos(e); zoomAt(Math.exp(-e.deltaY * 0.0015), p[0], p[1]); }, { passive: false });
   cv.addEventListener('dblclick', e => { const p = pos(e); zoomAt(2, p[0], p[1]); });
@@ -372,10 +401,10 @@ canvas.dragging { cursor: grabbing; }
     const pres = bothPres();
     const otherCol = pres ? 'var(--dpp)' : 'var(--dpp)';
     document.getElementById('legend').innerHTML =
-      ar(1, 'var(--kmt)', 10, tx(`10 pts toward the ${pres ? 'KMT' : 'blue side (KMT)'}`, `往${pres ? '國民黨' : '藍營（國民黨）'} 10 個百分點`, `往${pres ? '國民黨' : '藍營（國民黨）'} 10 个百分點`))
+      ar(1, 'var(--kmt)', 10, tx(`10 pts toward ${pres ? 'the KMT' : 'the blue side (KMT)'}`, `往${pres ? '國民黨' : '藍營（國民黨）'} 10 個百分點`, `往${pres ? '國民黨' : '藍營（國民黨）'} 10 个百分點`))
       + ar(1, 'var(--kmt)', 30, tx('30 pts', '30 個百分點', '30 个百分點'))
-      + ar(-1, otherCol, 10, tx(`10 pts toward the ${pres ? 'DPP' : 'other side'}`, `往${pres ? '民進黨' : '另一方'} 10 個百分點`, `往${pres ? '民進黨' : '另外一爿'} 10 个百分點`))
-      + (D.kind === 'president' ? '' : `<span>${tx('Other side in its own colour: green DPP, teal TPP, brown independent.', '另一方用該方的顏色：綠色民進黨、青色民眾黨、褐色無黨籍。', '另外一爿用彼爿的色：青色民進黨、藍綠色民眾黨、褐色無黨籍。')}</span>`);
+      + ar(-1, otherCol, 10, tx(`10 pts toward ${otherTxt()}`, `往${otherTxt()} 10 個百分點`, `往${otherTxt()} 10 个百分點`))
+      + (D.kind === 'president' || D.allDPP ? '' : `<span>${tx('Other side in its own colour: green DPP, teal TPP, brown independent.', '另一方用該方的顏色：綠色民進黨、青色民眾黨、褐色無黨籍。', '另外一爿用彼爿的色：青色民進黨、藍綠色民眾黨、褐色無黨籍。')}</span>`);
   }
   function side() {
     // ranked in the overall direction: a blue shift across Taiwan lists the most blue-shifted county first,
@@ -384,7 +413,7 @@ canvas.dragging { cursor: grabbing; }
     const nb = rows.filter(r => r.shift > 0).length, n = rows.length;
     const pres = bothPres(), a = `${D.election.slice(0, 4)} ${kindTxt(D.kind)}`, b = `${D.previous.slice(0, 4)} ${kindTxt(D.prev_kind)}`;
     document.getElementById('sideh').innerHTML = tx(`${a} vs ${b}, by county`, `${a} 對比 ${b}：各縣市`, `${a} 比 ${b}：各縣市`);
-    const B = [tx(pres ? 'the KMT' : 'the blue side', pres ? '國民黨' : '藍營', pres ? '國民黨' : '藍營'), nb], O = [tx(pres ? 'the DPP' : 'the other side', pres ? '民進黨' : '另一方', pres ? '民進黨' : '另外一爿'), n - nb];
+    const B = [blueTxt(), nb], O = [otherTxt(), n - nb];
     const [f1, f2] = up ? [B, O] : [O, B]; // the overall direction first
     document.getElementById('sum').innerHTML = tx(`${f1[1]} of ${n} counties moved toward ${f1[0]}, ${f2[1]} toward ${f2[0]}.`,
       `${n} 個縣市中，${f1[1]} 個往${f1[0]}移動，${f2[1]} 個往${f2[0]}。`, `${n} 个縣市內底，${f1[1]} 个往${f1[0]}徙，${f2[1]} 个往${f2[0]}。`);
@@ -433,7 +462,13 @@ canvas.dragging { cursor: grabbing; }
     ];
     document.getElementById('notes').innerHTML = ps.filter(Boolean).map(p => `<p>${p}</p>`).join('');
   }
-  function render() { controls(); legend(); side(); notes(); draw(); }
+  function render() {
+    controls(); legend(); side(); notes();
+    const a = `${D.election.slice(0, 4)} ${kindTxt(D.kind)}`, b = `${D.previous.slice(0, 4)} ${kindTxt(D.prev_kind)}`;
+    cv.setAttribute('aria-label', tx(`Map: how each town and village shifted, ${a} vs ${b}. The county list has the same figures by county.`,
+      `地圖：${a}對比${b}，各鄉鎮市區與村里的移動。縣市列表有各縣市的相同數字。`, `地圖：${a}比${b}，各鄉鎮市區佮村里的徙動。縣市列表有各縣市仝款的數字。`));
+    draw();
+  }
   function writeHash() { history.replaceState(null, '', `#${st.year}${st.mode === 'last' ? '/last' : ''}${st.county ? '/' + st.county : ''}`); }
   async function setYear(y, mode = st.mode) {
     st.year = y; st.mode = mode; D = await loadYear(y, mode); loadOutlines(D.maps.election); hover = null; tip.style.display = 'none';
