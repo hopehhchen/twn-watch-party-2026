@@ -78,6 +78,10 @@ CEC count site --(every 60 s)--> scripts/live/poll.py --> live-out/needle/2026-m
 
 The rehearsal and the check use `data/live/outlets-mock.json`.
 
+### Rehearsal on 11/18 (container, mock at 60×, 2025 markup, 3% failures, CEC down from 18:30, poller killed and restarted)
+
+No errors. The poller resumed from its archive and carried on from the outlet feed once the CEC was down (all 368 towns); publishing never refused a file. Cycles took about 47 s with the CEC up (≈640 pages, every page changing at 60×) and 18–48 s with it down, the spread being the mock's 20 s stalls against the 15 s timeout. The page in live mode, then `finalize.py` and the page as a replay: no errors.
+
 ### Running it
 
 ```sh
@@ -121,6 +125,7 @@ python3 scripts/live/publish.py            # copies into _site; serve _site with
 | by 11/24 | Taiwanese review back (`docs/taigi-review.md`, regenerated 11/10) | Hope | open |
 | 11/25 (Wed) | Recheck outlet pages (中央社, 公視, 自由時報, 聯合報) and set any working addresses in `data/live/outlets.json` | Claude | open |
 | 11/25 (Wed) | CEC announces elector totals (選罷法 §38). The poller takes town electors from the turnout pages on the night anyway; update `2026-mayors.json` for the before-count page | Claude | open |
+| by 11/24 | `TWN_MODE=deploycheck` on the night's machine: republishes the site as it is to election-2026.tw (no visible change) and confirms the real site took it, via a random marker file `night-check.txt` | friend | open |
 | 11/26 (Thu) | Dress rehearsal on the real domain at 16× (16:00–24:00 in 30 min), phones and desktop, all three languages; then rebuild the empty pre-count file | both | open |
 | 11/27 (Fri), evening | Code freeze; final build on the night's machine; fallback machine ready | both | open |
 | 11/28, 14:00 | Poller and publisher running (the count site has no data yet: the poller just waits) | Hope | |
@@ -129,10 +134,13 @@ python3 scripts/live/publish.py            # copies into _site; serve _site with
 | 11/28, ~17:40 | Half the races have their first 1% in (2022: 17:38; 2018: 17:52) | | |
 | 11/28, ~18:00–20:00 | Most needles settle (replays: above 95% for the eventual winner typically 1–2 hours before the race is mathematically decided) | | |
 | 11/28, ~21:00–24:00 | Last mayoral races decided (2022: count over at 23:40 with one referendum) | | |
-| 11/29 (Sun) | Final snapshot; switch 2026 from live to a replay; keep the archive | both | |
+| 11/29 (Sun) | Copy `~/twn-night/live-out` from the night's machine (zip it; keep the archive). `python3 scripts/live/finalize.py --src <that folder>` turns the live files into the 2026 replay (refuses until every race is decided); rebuild, check, push. Then update the landing page's before-the-night wording | both | |
 | after certification (unverified: about a week) | Score 2026 against the certified results; add it to the accuracy section | Claude | |
 
 ## Open decisions
+
+- **A backup machine, and what it can carry over.** A second machine started mid-night (`TWN_MODE=night`) reads the CEC from that moment: the needles and counts are right, but the charts' history on the site starts at the handover, because the archive stays on the first machine. Carrying the published history over is buildable (seed from the live file); worth it only if there is a backup machine.
+- **The orange "District totals only" notice** shows all night on 2026, because the CEC's count site never gives station results. Its wording reads like a fault; a calmer, permanent note would fit better.
 
 - **Where the poller runs.** If the CEC limits access by location, a machine outside Taiwan gets nothing. Options:
   - A small cloud server in Taiwan (Google Cloud's asia-east1 region is in Taiwan; a few dollars for the week).

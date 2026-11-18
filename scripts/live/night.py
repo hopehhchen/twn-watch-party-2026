@@ -3,6 +3,8 @@
 
   python3 scripts/live/night.py check        # is this computer ready? (about 3 minutes; changes nothing online)
   python3 scripts/live/night.py rehearsal    # the 2022 count replayed on the 2026 ballot, published to a TEST site
+  python3 scripts/live/night.py deploycheck  # once before the night: republish the site as it is now to election-2026.tw
+                                             # (nothing changes for visitors) to prove this computer can update it
   python3 scripts/live/night.py night        # the real thing: CEC count -> needle -> election-2026.tw
 
 Normally started by the setup scripts in site/night/ (mac.sh, win.ps1), which download the code into a folder
@@ -154,7 +156,8 @@ def summary(out):
     except Exception:
         return "no results yet"
     counting = sum(1 for r in d["races"] if r["pts"])
-    decided = sum(1 for r in d["races"] if r["pts"] and r["pts"][-1][7])
+    col = lambda r: 36 if r.get("mode") == "three" else 14  # "decided" as the page reads it from town totals
+    decided = sum(1 for r in d["races"] if r["pts"] and len(r["pts"][-1]) > col(r) and r["pts"][-1][col(r)])
     try:
         c = json.loads((out / "council" / "2026.json").read_text(encoding="utf-8"))
         cn = sum(1 for x in c["counties"] for dd in x["districts"] if dd["pts"])
@@ -345,12 +348,40 @@ def night():
         "Until 15:50 it just waits and checks the CEC every 10 minutes. Press Ctrl+C only when Hope says it's over.\n", OUT)
 
 
+def deploycheck():
+    """Publish the site exactly as it is now (the before-the-count files) to the real Worker, once, and check that
+    election-2026.tw then serves this computer's copy. Visitors see no change; it proves the token, the account and
+    this computer can update the real site before the night depends on it."""
+    c = creds()
+    build_site()
+    token = os.urandom(8).hex()  # a tiny marker file only this publish carries (random: nothing about the computer)
+    (ROOT / "_site" / "night-check.txt").write_text(token, encoding="utf-8")
+    say(f"{stamp()}  Publishing the current site to election-2026.tw (visitors won't see any change)…")
+    r = npx(["deploy", "--name", CONFIG["worker"]], cf_env(c), timeout=600)
+    if r.returncode != 0:
+        say((r.stdout + r.stderr)[-1500:])
+        sys.exit("Publishing FAILED. Please send Hope a photo of this window.")
+    sys.path.insert(0, str(HERE))
+    from poll import SSL, UA
+    for _ in range(12):
+        try:
+            req = urllib.request.Request(f"https://election-2026.tw/night-check.txt?v={time.time()}", headers={"Cache-Control": "no-cache", "User-Agent": UA})
+            with urllib.request.urlopen(req, timeout=20, context=SSL) as resp:
+                if resp.read().decode("utf-8", "replace").strip() == token:
+                    say("ALL GOOD: this computer can update election-2026.tw. Please send Hope a photo of this window.")
+                    return
+        except Exception as e:
+            say(f"  (still checking: {str(e)[:80]})")
+        time.sleep(10)
+    say("Published, but the website doesn't show this computer's copy yet. Please send Hope a photo of this window.")
+
+
 def main():
     mode = (sys.argv[1:] or ["check"])[0]
     LOGS.mkdir(parents=True, exist_ok=True)
     OUT.mkdir(parents=True, exist_ok=True)
     keep_awake()
-    {"check": check, "rehearsal": rehearsal, "night": night}[mode]()
+    {"check": check, "rehearsal": rehearsal, "deploycheck": deploycheck, "night": night}[mode]()
 
 
 if __name__ == "__main__":

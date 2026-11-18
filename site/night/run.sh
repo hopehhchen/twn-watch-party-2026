@@ -3,6 +3,7 @@
 #
 #   bash -c "$(curl -fsSL https://election-2026.tw/night/run.sh)"                      # set up, then check this computer
 #   TWN_MODE=rehearsal bash -c "$(curl -fsSL https://election-2026.tw/night/run.sh)"   # practice run to a test site
+#   TWN_MODE=deploycheck bash -c "$(curl -fsSL https://election-2026.tw/night/run.sh)" # once: prove this computer can update the real site
 #   TWN_MODE=night bash -c "$(curl -fsSL https://election-2026.tw/night/run.sh)"       # election night
 #
 # Each time it downloads the latest code into ~/twn-night/code (results and settings in ~/twn-night are kept),

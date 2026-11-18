@@ -107,6 +107,8 @@ def main():
            "note": "Before the count. Electors, stations and last-time turnout are 2022's; incumbent = 2022 winner, with their current party.",
            "races": races, "skipped": []}
     path = ROOT / "data" / "needle" / "2026-mayors.json"
+    if path.exists() and json.loads(path.read_text(encoding="utf-8")).get("live") is False:
+        sys.exit(f"{path.relative_to(ROOT)} holds the finalized night (scripts/live/finalize.py); not overwriting it with the pre-count file.")
     path.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")) + "\n")
     print(f"{path.relative_to(ROOT)}: {len(races)} races; incumbent party changes: {'; '.join(changed) or 'none'}")
 
