@@ -51,7 +51,7 @@ CEC count site --(every 60 s)--> scripts/live/poll.py --> live-out/needle/2026-m
 
 ### Other outlets (built 11/11)
 
-`scripts/live/outlets.py`, switched on by settings (`data/live/outlets.json`), not code. An outlet is read once its `url` is set. The poller re-reads the settings every 5 minutes: first the copy on the repository's `night` branch, then the local one. So an address found on the night can be added from anywhere, and the friend's computer picks it up without a restart. Pushing to the `night` branch doesn't redeploy the site, because Cloudflare deploys only from `main`. **Check that in the Workers Builds settings before relying on it.**
+`scripts/live/outlets.py`, switched on by settings (`data/live/outlets.json`), not code. An outlet is read once its `url` is set. The poller re-reads the settings every 5 minutes: first the copy on the repository's `night` branch, then the local one. So an address found on the night can be added from anywhere, and the friend's computer picks it up without a restart. Pushing to the `night` branch doesn't redeploy the site: **checked 11/18** in Workers Builds (production branch `main`; "Builds for Preview branches" off), and the branch was created from `main` the same day. On the night, change only `data/live/outlets.json` there (GitHub's web editor is enough); raw.githubusercontent.com can take up to about 5 minutes to serve the change, then the poller's next settings read picks it up.
 
 | Kind | What it reads | 2022 / 2024 example | Used for |
 |---|---|---|---|
