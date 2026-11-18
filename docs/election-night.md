@@ -139,8 +139,8 @@ python3 scripts/live/publish.py            # copies into _site; serve _site with
 
 ## Open decisions
 
-- **A backup machine, and what it can carry over.** A second machine started mid-night (`TWN_MODE=night`) reads the CEC from that moment: the needles and counts are right, but the charts' history on the site starts at the handover, because the archive stays on the first machine. Carrying the published history over is buildable (seed from the live file); worth it only if there is a backup machine.
-- **The orange "District totals only" notice** shows all night on 2026, because the CEC's count site never gives station results. Its wording reads like a fault; a calmer, permanent note would fit better.
+- **A backup machine, and what it can carry over.** A second machine started mid-night (`TWN_MODE=night`) reads the CEC from that moment: the needles and counts are right, but the charts' history on the site starts at the handover, because the archive stays on the first machine. Carrying the published history over is buildable (seed from the live file); worth it only if there is a backup machine. **Hope, 11/18:** decide after seeing whether the CEC's count site answers machines outside Taiwan.
+- ~~The orange "District totals only" notice~~ **done 11/18:** now a grey note ("Town totals only: …").
 
 - **Where the poller runs.** If the CEC limits access by location, a machine outside Taiwan gets nothing. Options:
   - A small cloud server in Taiwan (Google Cloud's asia-east1 region is in Taiwan; a few dollars for the week).

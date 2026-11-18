@@ -98,7 +98,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
 .seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
 .turnout { display: flex; align-items: center; gap: 8px; min-width: 260px; flex: 1 1 300px; max-width: 420px; }
 .turnout output { font-family: var(--font-num); font-size: 13px; color: var(--ink); min-width: 12ch; white-space: nowrap; text-align: right; }
-.flag { font-size: 12px; padding: 6px 10px; border-radius: 8px; background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--ink); border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); }
+.dnote { font-size: 12px; color: var(--muted); line-height: 1.5; }
 
 /* grid of races */
 .panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; display: grid; gap: 12px; min-width: 0; align-content: start; }
@@ -337,7 +337,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
   .desk.compact { position: sticky; gap: 6px; padding: 8px 12px; border-radius: 0 0 var(--radius) var(--radius); }
   .desk.compact > .desk-row:first-child { flex-wrap: nowrap; gap: 10px; }
   .desk.compact > .desk-row:first-child > .summary, .desk.compact > .desk-row:first-child > span[style], .desk.compact .ctl:has([data-night]),
-  .desk.compact .ctl > span, .desk.compact > .flag, .desk.compact > .summary, .desk.compact > .desk-row:not(:first-child) > .summary { display: none; }
+  .desk.compact .ctl > span, .desk.compact > .dnote, .desk.compact > .summary, .desk.compact > .desk-row:not(:first-child) > .summary { display: none; }
   .desk.compact .clock { font-size: 24px; min-width: 0; }
   .desk.compact .play { width: 32px; height: 32px; }
   .desk.compact .seg button { padding: 3px 8px; font-size: 12.5px; }
@@ -698,7 +698,7 @@ const DATA = /*__DATA__*/null;
 
       </div>
       `}
-      ${!council && isDist() && night.races.some(r => r.pts.length) ? `<div class="flag">${tx("District totals only: the CEC's live feed isn't giving per-station results, so the projection can't see which stations within a district have reported and stays less certain for longer.", '僅有鄉鎮市區合計：中選會即時資料沒有逐所結果，模型看不到區內哪些投開票所已回報，因此較久才能確定。', '干焦有鄉鎮市區的合計：中選會的即時資料無逐所的結果，模型看袂著區內佗幾所已經回報，所以愛較久才會確定。')}</div>` : ''}
+      ${!council && isDist() && night.races.some(r => r.pts.length) ? `<div class="dnote">${tx("Town totals only: the CEC's count site reports each town (鄉鎮市區) as a whole, not station by station, so the needle takes longer to become certain than in the replays of past nights.", '僅有鄉鎮市區合計：中選會開票網站只公布各鄉鎮市區的合計，不是逐所結果，所以指針會比過去開票夜的重播較晚確定。', '干焦有鄉鎮市區的合計：中選會的開票網站干焦公佈逐个鄉鎮市區的合計，毋是逐所的結果，所以指針會比過去開票暗的重播較慢確定。')}</div>` : ''}
 
 `;
   }

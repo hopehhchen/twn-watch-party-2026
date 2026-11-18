@@ -16,7 +16,7 @@ The 台語 text on the site is a first draft by Claude (MOE 臺灣台語常用�
 | 顯示內容 | 欲看啥物 |
 | 開票後顯示議員席次 | 開票了後才顯示議員席次 |
 | 這一晚沒有議員選舉 | 這暗無議員選舉 |
-| 僅有鄉鎮市區合計：中選會即時資料沒有逐所結果，模型看不到區內哪些投開票所已回報，因此較久才能確定。 | 干焦有鄉鎮市區的合計：中選會的即時資料無逐所的結果，模型看袂著區內佗幾所已經回報，所以愛較久才會確定。 |
+| 僅有鄉鎮市區合計：中選會開票網站只公布各鄉鎮市區的合計，不是逐所結果，所以指針會比過去開票夜的重播較晚確定。 | 干焦有鄉鎮市區的合計：中選會的開票網站干焦公佈逐个鄉鎮市區的合計，毋是逐所的結果，所以指針會比過去開票暗的重播較慢確定。 |
 | 尚未開票 | 猶未開票 |
 | 現任 | 現任 |
 | 投開票所已開 …% | 投開票所開 …% 矣 |
@@ -316,3 +316,11 @@ The 台語 text on the site is a first draft by Claude (MOE 臺灣台語常用�
 
 - **个 (ê)**: the measure word is written 个 in the MOE dictionary (詞目 个, ê, 量詞, 例：兩个人 nn̄g ê lâng; https://sutian.moe.edu.tw/zh-hant/su/171/). The page uses 个 for ê and 個 only in literary compounds such as 個別, as the dictionary does.
 - **百分點** (percentage point, used since 2026-11-10 in place of 點): not a headword in the MOE dictionary. 百分比 pah-hun-pí and 百分之百 pah-hun-tsi-pah are (both marked 臺華共同詞), so 百分點 would read pah-hun-tiám by the same pattern. Ask reviewers whether it reads naturally, or whether a gloss with 台羅 is needed.
+
+## Added or changed 11/17–11/18 (not in the list sent earlier)
+
+| 華語 | 台語 draft |
+|---|---|
+| 開票當晚，開票頁以中選會的官方票數為準，並附上模型的預測。若有媒體公開的即時票數能穩定讀取，頁面可能會並列供對照；會用到哪些來源、是否用得上，要到當晚才知道。 | 開票彼暗，開票頁以中選會的官方票數為準，閣附模型的預測。若有媒體公開的即時票數會當穩定讀著，頁面可能會排做伙予人對照；會用著佗幾个來源、用會著抑袂，愛到當暗才知。 |
+| 聯絡。電子郵件 …，或 X …。 | 聯絡。電子郵件 …，抑是 X …。 |
+| 僅有鄉鎮市區合計：…（above, reworded 11/18） | 干焦有鄉鎮市區的合計：… |
