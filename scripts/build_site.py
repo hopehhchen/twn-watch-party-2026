@@ -169,6 +169,22 @@ def main():
     (out / "needle.html").write_text(REDIRECT.replace("{hash}", ""))
     (out / "council.html").write_text(REDIRECT.replace("{hash}", "#2022/council"))
     print(f"{out}: needle/, council/ data and redirects")
+    check_css(out)
+
+
+def check_css(out):
+    """Stop the build if any page's <style> has unbalanced braces: one missing } silently breaks every rule after it
+    (on 11/17 that hid the language and theme switches on the results page). A failed build keeps the last good site live."""
+    import re
+    for f in sorted(out.glob("*.html")):
+        css = re.sub(r"/\*.*?\*/", "", "".join(re.findall(r"<style[^>]*>(.*?)</style>", f.read_text(encoding="utf-8"), re.S)), flags=re.S)
+        depth = 0
+        for ch in css:
+            depth += (ch == "{") - (ch == "}")
+            if depth < 0:
+                break
+        if depth:
+            raise SystemExit(f"{f.name}: unbalanced braces in <style> (depth {depth}); fix the CSS before publishing")
 
 
 if __name__ == "__main__":
