@@ -172,7 +172,7 @@ def run(children, banner, out, test_url_from=None):
     for c in children:
         c.start()
     say(banner)
-    url_shown = False
+    url_shown, published_seen = False, 0
     try:
         while True:
             time.sleep(30)
@@ -205,6 +205,12 @@ def run(children, banner, out, test_url_from=None):
                 if m:
                     say(f"\n  The test site is at: {m.group(0)}/live  (open it on your phone and watch it move)\n")
                     url_shown = True
+                elif pl and "published" in pl and "NOT" not in pl:
+                    published_seen += 1
+                    if published_seen == 3:  # updated a few times, but Cloudflare printed no address
+                        say("\n  The test site was updated, but Cloudflare didn't print its address. Tell Hope: he can find it in\n"
+                            f"  Cloudflare under Workers & Pages, {CONFIG['test_worker']}. Keep this window running meanwhile.\n")
+                        url_shown = True
     except KeyboardInterrupt:
         say("\nStopping…")
     finally:

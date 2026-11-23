@@ -104,6 +104,10 @@ def main():
                     ok, out = deploy(a.worker)
                     errs = [ln.strip() for ln in out.splitlines() if "ERROR" in ln or "rror:" in ln]
                     log("deploy", "ok" if ok else "FAILED: " + (errs[0] if errs else " / ".join(x for x in out.splitlines()[-4:] if x.strip()))[:300])
+                    if ok:  # keep the site's address in the log (night.py shows the test site's address from it)
+                        urls = sorted(set(re.findall(r"https://[\w.-]+\.workers\.dev", out)))
+                        if urls:
+                            log("deployed to", " ".join(urls))
                 if ok:
                     last_mtime, prev = m, doc
                     log("published", doc.get("updated"), sum(len(r["pts"]) for r in doc["races"]), "points")
