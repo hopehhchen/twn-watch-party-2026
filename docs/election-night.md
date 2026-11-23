@@ -138,7 +138,7 @@ python3 scripts/live/publish.py            # copies into _site; serve _site with
 | 11/28, ~17:40 | Half the races have their first 1% in (2022: 17:38; 2018: 17:52) | | |
 | 11/28, ~18:00–20:00 | Most needles settle (replays: above 95% for the eventual winner typically 1–2 hours before the race is mathematically decided) | | |
 | 11/28, ~21:00–24:00 | Last mayoral races decided (2022: count over at 23:40 with one referendum) | | |
-| 11/29 (Sun) | Copy `~/twn-night/live-out` from the night's machine (zip it; keep the archive). `python3 scripts/live/finalize.py --src <that folder>` turns the live files into the 2026 replay (refuses until every race is decided); rebuild, check, push. Then update the landing page's before-the-night wording | both | |
+| 11/29 (Sun) | Copy `~/twn-night/live-out` from the night's machine (zip it; keep the archive). `python3 scripts/live/finalize.py --src <that folder>` turns the live files into the 2026 replay (refuses until every race is decided); rebuild, check, push. The landing page and the results page switch their wording by themselves (before / live / after, from `needle/2026-status.json` and the 2026 file); still to rewrite by hand: the landing page's "Live results" paragraph (name the outlets actually used, past tense) and the 台文 footer note once the review is in | both | |
 | after certification (unverified: about a week) | Score 2026 against the certified results; add it to the accuracy section | Claude | |
 
 ## Open decisions

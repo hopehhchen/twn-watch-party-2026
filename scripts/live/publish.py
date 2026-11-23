@@ -39,6 +39,10 @@ def deploy(worker):
     return r.returncode == 0, re.sub(r"\x1b\[[0-9;]*m", "", (r.stdout + r.stderr)).strip()
 
 
+def races_of(doc):
+    return doc.get("races") or []
+
+
 def log(*a):
     print(datetime.now().strftime("%H:%M:%S"), *a, flush=True)
 
@@ -93,6 +97,8 @@ def main():
                 log("NOT published:", why)
             else:
                 shutil.copy(src, dst)
+                phase = "live" if any(r["pts"] for r in races_of(doc)) else "before"  # the entry page reads this
+                (dst.parent / "2026-status.json").write_text(json.dumps({"phase": phase, "updated": doc.get("updated")}) + "\n")
                 if csrc.exists():
                     try:
                         json.loads(csrc.read_text(encoding="utf-8"))

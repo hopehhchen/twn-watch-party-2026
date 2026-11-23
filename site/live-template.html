@@ -99,6 +99,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
 .turnout { display: flex; align-items: center; gap: 8px; min-width: 260px; flex: 1 1 300px; max-width: 420px; }
 .turnout output { font-family: var(--font-num); font-size: 13px; color: var(--ink); min-width: 12ch; white-space: nowrap; text-align: right; }
 .dnote { font-size: 12px; color: var(--muted); line-height: 1.5; }
+#intro[data-phase="before"] .ph:not(.ph-before), #intro[data-phase="live"] .ph:not(.ph-live), #intro[data-phase="after"] .ph:not(.ph-after) { display: none !important; }
 
 /* grid of races */
 .panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; display: grid; gap: 12px; min-width: 0; align-content: start; }
@@ -384,10 +385,16 @@ html[lang="nan-Hant-TW"] [data-l="en"], html[lang="nan-Hant-TW"] [data-l="zh"] {
       <div class="themes" role="group" aria-label="Color theme"><button data-theme-set="auto">Auto</button><button data-theme-set="light">Light</button><button data-theme-set="dark">Dark</button></div>
     </div>
   </header>
-  <div class="intro" id="intro">
-  <p class="proto" data-l="en">Live results on election night, 28 November 2026. Until then: the 2026 races before the count, and real past nights replayed as the model would have run them.</p>
-  <p class="proto" data-l="zh">2026 年 11 月 28 日開票當晚即時更新。在那之前：2026 年各場選舉開票前的狀態，以及用模型重播的真實過去開票夜。</p>
-  <p class="proto" data-l="tw">2026 年 11 月 28 日開票彼暗即時更新。佇彼進前：2026 年逐場選舉開票前的狀態，佮用模型重播的真正過去開票暗。</p>
+  <div class="intro" id="intro" data-phase="before">
+  <p class="proto ph ph-before" data-l="en">Live results on election night, 28 November 2026. Until then: the 2026 races before the count, and real past nights replayed as the model would have run them.</p>
+  <p class="proto ph ph-before" data-l="zh">2026 年 11 月 28 日開票當晚即時更新。在那之前：2026 年各場選舉開票前的狀態，以及用模型重播的真實過去開票夜。</p>
+  <p class="proto ph ph-before" data-l="tw">2026 年 11 月 28 日開票彼暗即時更新。佇彼進前：2026 年逐場選舉開票前的狀態，佮用模型重播的真正過去開票暗。</p>
+  <p class="proto ph ph-live" data-l="en">Live results from the CEC's count, 28 November 2026, updated every minute. Past nights are replayed as the model would have run them.</p>
+  <p class="proto ph ph-live" data-l="zh">2026 年 11 月 28 日開票即時結果，依中選會開票數字每分鐘更新。過去的開票夜則以模型重播。</p>
+  <p class="proto ph ph-live" data-l="tw">2026 年 11 月 28 日開票的即時結果，照中選會的開票數字逐分鐘更新。過去的開票暗用模型重播。</p>
+  <p class="proto ph ph-after" data-l="en">Election night, 28 November 2026, replayed minute by minute from the CEC's count as it came in, alongside real past nights.</p>
+  <p class="proto ph ph-after" data-l="zh">2026 年 11 月 28 日開票夜，依中選會當晚的開票數字逐分鐘重播；也可重播過去的開票夜。</p>
+  <p class="proto ph ph-after" data-l="tw">2026 年 11 月 28 日開票暗，照中選會彼暗的開票數字逐分鐘重播；嘛會當重播過去的開票暗。</p>
   </div>
   <div id="deskSentinel" aria-hidden="true"></div>
   <section class="desk" id="desk" aria-label="Replay controls"></section>
@@ -1658,7 +1665,14 @@ const DATA = /*__DATA__*/null;
     mapEl.innerHTML = `<svg viewBox="${M.viewBox.join(' ')}" role="img" aria-label="${tx('Map of legislative districts by county', '各縣市立委選區地圖')}"><defs>${hatch}</defs><path class="inset" d="${M.insets}"/>${paths}</svg>`;
     const sp = mapEl.querySelector('path.sel'); if (sp) sp.parentNode.appendChild(sp);
   }
-  function render() { renderDesk(); renderNation(); renderMap(); renderMapLegend(); renderCards(); renderDetail(); writeHash(); refreshTip(); }
+  // the line under the title: before the count / while it runs / after the night, from the 2026 file once it's loaded
+  function setPhase() {
+    const n = NIGHTS[LATEST], el = document.getElementById('intro'); if (!el) return;
+    if (!n) { if (!setPhase.asked) { setPhase.asked = true; loadNight(LATEST).then(setPhase).catch(() => {}); } return; } // opened on a past night: fetch 2026 too
+    const started = n.races.some(r => r.pts.length);
+    el.dataset.phase = !started ? 'before' : n.live ? 'live' : 'after';
+  }
+  function render() { renderDesk(); renderNation(); renderMap(); renderMapLegend(); renderCards(); renderDetail(); writeHash(); refreshTip(); setPhase(); }
   function light() { // during playback: avoid re-rendering the desk controls
     document.getElementById('clk').innerHTML = clock(st.t);
     const ds = document.getElementById('dsum'); if (ds) ds.innerHTML = summaryHtml();
@@ -1750,6 +1764,7 @@ const DATA = /*__DATA__*/null;
       if (fresh.council_live && (COUNCIL[liveInfo.id] || st.mode === 'council')) { // councils: refetch their file too
         try { const rc = await fetch(`${liveInfo.council}?v=${Date.now()}`, { cache: 'no-store' }); if (rc.ok) { COUNCIL[liveInfo.id] = await rc.json(); CSkey = ''; } } catch (e) { /* next round */ }
       }
+      setPhase();
       if (st.night !== liveInfo.id || st.playing) return;
       if (st.follow) st.t = liveEnd(fresh);
       render();

@@ -107,6 +107,15 @@ def render(template, data, out_path):
     print(f"{out_path}: {out_path.stat().st_size / 1024:.0f} KB")
 
 
+def night_phase(doc=None):
+    """'before' until the 2026 file has points, 'live' while it is the live night's, 'after' once finalized."""
+    if doc is None:
+        doc = json.loads((ROOT / "data" / "needle" / "2026-mayors.json").read_text(encoding="utf-8"))
+    if not any(r["pts"] for r in doc["races"]):
+        return "before"
+    return "live" if doc.get("live") else "after"
+
+
 def main():
     out = Path(sys.argv[1] if len(sys.argv) > 1 else ROOT / "_site")
     out.mkdir(parents=True, exist_ok=True)
@@ -126,6 +135,7 @@ def main():
         i = idx.index('<section class="hero">')
         j = idx.index("</section>", i)
         idx = idx[:i] + '<section class="hero rp">' + idx[i + len('<section class="hero">'):j] + frag + idx[j:]
+        idx = idx.replace("<html ", f'<html data-phase="{night_phase()}" ', 1)  # the page also re-reads needle/2026-status.json
         (out / "index.html").write_text(idx)
         print(f"{out / 'index.html'} with the hero replay: {len(idx) / 1024:.0f} KB")
         # the review copy's old address now leads to the entry page
@@ -161,6 +171,8 @@ def main():
         (out / sub).mkdir(exist_ok=True)
         for f in src.glob("*.json"):
             shutil.copy(f, out / sub / f.name)
+    # the 2026 night's stage for the entry page (before / live / after); on election night publish.py rewrites it
+    (out / "needle" / "2026-status.json").write_text(json.dumps({"phase": night_phase()}) + "\n")
     (out / "night").mkdir(exist_ok=True)
     for f in (ROOT / "site" / "night").glob("*"):  # election-night setup scripts for the machine that reads the CEC
         shutil.copy(f, out / "night" / f.name)
