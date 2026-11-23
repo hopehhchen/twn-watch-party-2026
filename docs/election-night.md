@@ -49,6 +49,8 @@ CEC count site --(every 60 s)--> scripts/live/poll.py --> live-out/needle/2026-m
 | 自由時報 | `election.ltn.com.tw/2026/` is up; its "開票實況" link has no address yet; `/2026/realtime` is 404. | Check again 11/25. |
 | 聯合報 | `udn.com/vote2026/realtime` ("即時選情") is a news list, not counts. | Check again 11/25. |
 
+**11/23 evening:** the friend's Mac passed `deploycheck` (ALL GOOD: it published to election-2026.tw and read its marker back), and her rerun rehearsal published to https://twn-watch-party-2026-test.hope770310.workers.dev/live, which advanced with the replay (checked from Hope's browser). The address line had been missing because publish.py dropped a successful deploy's output; fixed the same evening.
+
 **11/23:** the count host still answers 403 FORBIDDEN from Hope's browser. A CEC briefing reported on 11/12 (udn) says the count-information site runs on several domestic mirrors (HiNet CDN) plus an overseas backup mirror (AWS CDN); whether visitors abroad get the AWS mirror or a block is still unknown. `night-check.txt` is not on election-2026.tw, so the deploy check from the friend's Mac has not succeeded yet (or not been run).
 
 ### Other outlets (built 11/11)
