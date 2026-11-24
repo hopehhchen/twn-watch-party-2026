@@ -387,13 +387,13 @@ html[lang="nan-Hant-TW"] [data-l="en"], html[lang="nan-Hant-TW"] [data-l="zh"] {
   </header>
   <div class="intro" id="intro" data-phase="before">
   <p class="proto ph ph-before" data-l="en">Live results on election night, 28 November 2026. Until then: the 2026 races before the count, and real past nights replayed as the model would have run them.</p>
-  <p class="proto ph ph-before" data-l="zh">2026 年 11 月 28 日開票當晚即時更新。在那之前：2026 年各場選舉開票前的狀態，以及用模型重播的真實過去開票夜。</p>
+  <p class="proto ph ph-before" data-l="zh">2026 年 11 月 28 日開票當晚提供即時結果。在此之前，可先瀏覽 2026 年各場選舉的開票前概況，並以模型的視角重播歷屆真實開票。</p>
   <p class="proto ph ph-before" data-l="tw">2026 年 11 月 28 日開票彼暗即時更新。佇彼進前：2026 年逐場選舉開票前的狀態，佮用模型重播的真正過去開票暗。</p>
   <p class="proto ph ph-live" data-l="en">Live results from the CEC's count, 28 November 2026, updated every minute. Past nights are replayed as the model would have run them.</p>
-  <p class="proto ph ph-live" data-l="zh">2026 年 11 月 28 日開票即時結果，依中選會開票數字每分鐘更新。過去的開票夜則以模型重播。</p>
+  <p class="proto ph ph-live" data-l="zh">2026 年 11 月 28 日開票即時結果，依中選會開票數字每分鐘更新。歷屆真實開票也可以模型的視角重播。</p>
   <p class="proto ph ph-live" data-l="tw">2026 年 11 月 28 日開票的即時結果，照中選會的開票數字逐分鐘更新。過去的開票暗用模型重播。</p>
   <p class="proto ph ph-after" data-l="en">Election night, 28 November 2026, replayed minute by minute from the CEC's count as it came in, alongside real past nights.</p>
-  <p class="proto ph ph-after" data-l="zh">2026 年 11 月 28 日開票夜，依中選會當晚的開票數字逐分鐘重播；也可重播過去的開票夜。</p>
+  <p class="proto ph ph-after" data-l="zh">2026 年 11 月 28 日開票夜，依中選會當晚的開票數字逐分鐘重播；歷屆真實開票也可重播。</p>
   <p class="proto ph ph-after" data-l="tw">2026 年 11 月 28 日開票暗，照中選會彼暗的開票數字逐分鐘重播；嘛會當重播過去的開票暗。</p>
   </div>
   <div id="deskSentinel" aria-hidden="true"></div>
@@ -418,15 +418,15 @@ html[lang="nan-Hant-TW"] [data-l="en"], html[lang="nan-Hant-TW"] [data-l="zh"] {
     <p>How the model works, how accurate it has been, its limits and how names are written in English: see the <a href="index.html">About page</a>.</p>
     </div>
     <div data-l="zh">
-    <details open><summary>指針</summary><p>每場兩位主要候選人各自勝選的機率，依目前已開出的票計算；其他候選人的票先不計。<b>確定</b>表示領先票數已超過所有尚未開票的選舉人。</p></details>
-    <details><summary>地圖</summary><p>斜線：尚未開票，顏色為現任者的政黨。開票後為預估領先者的政黨，由淺（難分高下）到深（確定）。</p></details>
-    <details><summary>三強鼎立</summary><p>指針顯示最可能勝選的兩人，第三人的勝率標示在旁，第 5 所開出後才顯示。</p></details>
-    <details><summary>投票率檢視</summary><p>預估的最終投票率，算法與得票相同。</p></details>
-    <details><summary>議員檢視</summary><p>若此刻停止開票，各席由誰拿下，含婦女保障名額。剩餘選票無論如何分配都無法改變當選人時，該席即為<b>確定</b>。這裡不做預測。</p></details>
-    <details><summary>立委檢視</summary><p>73 個區域選區各有一支指針；34 席不分區以最可能的席次分配及其機率呈現；6 席原住民立委以開票結果呈現。</p></details>
-    <details><summary>指針擺動</summary><p>每次更新後，大指針會擺動幾秒以呈現不確定性，再停在估計值。</p></details>
-    <details><summary>資料</summary><p>若中選會即時資料只有鄉鎮市區合計，頁面會改用合計並加以標示。</p></details>
-    <p>模型怎麼算、過去的準確度、限制，以及英文姓名的寫法：請見<a href="index.html">說明頁</a>。</p>
+    <details open><summary>指針</summary><p>依目前已開出的票，推算兩位主要候選人各自的勝選機率（其他候選人的票暫不計入）。<b>確定</b>表示領先票數已大於所有尚未開票的選舉人數。</p></details>
+    <details><summary>地圖</summary><p>斜線代表尚未開票，顏色為現任者的政黨色。開票後改為預估領先者的政黨色，色階由淺（難分高下）至深（確定）。</p></details>
+    <details><summary>三強鼎立</summary><p>指針顯示最可能勝選的兩人；自第 5 個投開票所開出後，旁邊會標示第三人的勝率。</p></details>
+    <details><summary>投票率檢視</summary><p>預估最終投票率，推算方式與得票率相同。</p></details>
+    <details><summary>議員檢視</summary><p>不做預測，只呈現若此刻停止開票、各席由誰拿下（已計入婦女保障名額）。唯有剩餘選票無論如何分配都無法改變當選人時，該席才標示為<b>確定</b>。</p></details>
+    <details><summary>立委檢視</summary><p>73 個區域選區各有一支預測指針；34 席不分區列出最可能的席次分配及其機率；6 席原住民立委依即時開票結果呈現。</p></details>
+    <details><summary>指針擺動</summary><p>每次更新後，大指針會先擺動數秒以呈現不確定性，隨後停在估計值上。</p></details>
+    <details><summary>資料</summary><p>若中選會即時資料只提供鄉鎮市區合計，頁面會改用合計並加以註記。</p></details>
+    <p>模型原理、歷史準確度、限制及英文譯名原則，請見<a href="index.html">說明頁</a>。</p>
     </div>
     <div data-l="tw">
     <details open><summary>指針</summary><p>逐場兩位主要候選人個別當選的機率，照這馬已經開出來的票算；其他候選人的票先無算。<b>確定</b>的意思是贏的票數已經超過所有猶未開票的選舉人。</p></details>
