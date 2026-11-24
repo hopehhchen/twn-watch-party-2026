@@ -331,4 +331,4 @@ The 台語 text on the site is a first draft by Claude (MOE 臺灣台語常用�
 | 按鈕：即時開票 ／ 看 2026 開票結果 | 即時開票 ／ 看 2026 開票結果 |
 | …，2026 年的網站也一樣。 | …，2026 年的網站嘛仝款。 |
 | 以下為選前所寫，保留原樣。結果請見開票頁。 | 下面是選前寫的，保留原本的款。結果請看開票頁。 |
-| 華語校稿：Molly Chen（Gemini 協助）。 | 華語校稿：Molly Chen（Gemini 鬥相共）。 |
+| Molly Chen 另協助測試開票夜的系統，並在 Gemini 協助下校閱華語文字。 | Molly Chen 閣鬥相共測試開票暗的系統，嘛用 Gemini 鬥相共校對華語的文字。 |
