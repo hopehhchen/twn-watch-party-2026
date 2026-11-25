@@ -128,7 +128,7 @@ python3 scripts/live/publish.py            # copies into _site; serve _site with
 | ~11/21 (unverified) | CEC announces the count site: `poll.py --probe` from the night's machine; refresh `towns-2022.json` from the 2026 site menu if towns changed | Claude + Hope | open |
 | by 11/24 | Taiwanese review back (`docs/taigi-review.md`, regenerated 11/10) | Hope | open |
 | 11/25 (Wed) | Recheck outlet pages (中央社, 公視, 自由時報, 聯合報) and set any working addresses in `data/live/outlets.json` | Claude | open |
-| 11/25 (Wed) | CEC announces elector totals (選罷法 §38). The poller takes town electors from the turnout pages on the night anyway; update `2026-mayors.json` for the before-count page | Claude | open |
+| 11/25 (Wed) | CEC announced elector totals on 11/24 (19,576,028 for mayors). Now in `data/2026-electors.json` → `2026-mayors.json` (`electors`; the 2022 figure kept as `electors_2022`). The poller scales each county's 2022 town electors to the new total until the turnout pages give each town's own figure | Claude | done 11/25 |
 | by 11/24 | `TWN_MODE=deploycheck` on the night's machine: republishes the site as it is to election-2026.tw (no visible change) and confirms the real site took it, via a random marker file `night-check.txt` | friend | open |
 | 11/26 (Thu) | Dress rehearsal on the real domain at 16× (16:00–24:00 in 30 min), phones and desktop, all three languages; then rebuild the empty pre-count file | both | open |
 | 11/27 (Fri), evening | Code freeze; final build on the night's machine; fallback machine ready | both | open |

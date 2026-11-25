@@ -150,8 +150,13 @@ class Night:
                 x["E"] += s["E"]
                 x["N"] += 1
                 x["sizes"].append(s["E"])
+            # the CEC's 2026 county total, when the night file has it: scale the 2022 town electors to it until the
+            # turnout pages give each town's own figure
+            k = r["electors"] / r["electors_2022"] if r.get("electors_2022") else 1
             for x in tw.values():
                 x["sizes"].sort(reverse=True)
+                if k != 1:
+                    x["E"], x["sizes"] = round(x["E"] * k), [round(v * k) for v in x["sizes"]]
             valid = sum(s["A"] for s in st22[area]["stations"]) / max(sum(s["C"] for s in st22[area]["stations"]), 1)
             nos = sorted({r["blue"]["no"], r["other"]["no"]} | ({r["third"]["no"]} if r.get("third") else set()))
             r["_nos"] = nos  # filled with every candidate's number from the first page

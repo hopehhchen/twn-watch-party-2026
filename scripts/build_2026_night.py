@@ -82,6 +82,7 @@ def main():
         winners[r["area"]] = {k: w[k] for k in ("no", "name", "party", "tone")}
     for k in prev_night.get("skipped", []):  # 嘉義市: voted 2022-12-18
         winners[k["area"]] = k["incumbent"]
+    official = json.load(open(ROOT / "data" / "2026-electors.json"))["electors"]  # CEC, 2026-11-24
     races, changed = [], []
     for c in sorted(contenders["races"], key=lambda x: ORDER.index(x["area"])):
         area, b = c["area"], ballot(c["area"])
@@ -93,7 +94,7 @@ def main():
         stn = st22[area]["stations"]
         E, C = sum(s["E"] for s in stn), sum(s["C"] for s in stn)
         e = {"area": area, "label": area + "長", "blue": cand(b, c["blue"]), "other": cand(b, c["other"]),
-             "stations": len(stn), "electors": E, "prev_turnout": round(C / E, 4), "incumbent": inc,
+             "stations": len(stn), "electors": official.get(area, E), "electors_2022": E, "prev_turnout": round(C / E, 4), "incumbent": inc,
              "sure": c.get("sure", True), "pts": []}
         tw = c.get("three_way") or {}
         if tw.get("status") == "expected" and tw.get("third"):
