@@ -3,35 +3,117 @@
  "remote": "https://raw.githubusercontent.com/hopehhchen/twn-watch-party-2026/night/data/live/outlets.json",
  "outlets": [
   {
-   "id": "cna", "kind": "cna", "label": "中央社", "en": "CNA", "cohort": "reliable", "url": null,
+   "id": "cna",
+   "kind": "cna",
+   "label": "中央社",
+   "en": "CNA",
+   "cohort": "reliable",
+   "url": null,
    "where": "2022: https://www.cna.com.tw/project/20221126-election-live/api/city.json (the 2026 page would be project/20261128-election-live/; in 2022 and 2024 it went up 3 days before the vote)"
   },
   {
-   "id": "pts-feed", "kind": "cec_feed", "label": "公視（中選會資料）", "en": "PTS (CEC feed)", "url": null,
+   "id": "pts",
+   "kind": "pts_api",
+   "label": "公視",
+   "en": "PTS",
+   "cohort": "reliable",
+   "url": "https://news.pts.org.tw/projects/2026-election/api/public/election/2026/mayors",
+   "not_before": "2026-11-28T16:00",
+   "where": "Found 11/27: 公視's 2026 results page reads this file (the CEC's media feed per county: cand_no, tks, tbox_rcv/tbox_tot, record_time). Until the night it serves test figures stamped 11/18, hence not_before. Mayors only; cached about 60 s."
+  },
+  {
+   "id": "pts-feed",
+   "kind": "cec_feed",
+   "label": "公視（中選會資料）",
+   "en": "PTS (CEC feed)",
+   "url": null,
    "where": "The CEC's media feed as 公視 republished it. 2022: https://d3prffu8f9hpuw.cloudfront.net/campaign-2022/assets/data/final.json is the end-of-night copy; the file read during the count had another name (look at the page's network requests on the night). 2024 used one file per county: news.pts.org.tw/projects/2024-election-vote/vote/p1-63-000.json. Used only as a fallback for the CEC's own numbers."
   },
   {
-   "id": "tv", "kind": "tv_json", "label": "電視台", "en": "TV", "cohort": "field", "url": null,
+   "id": "tv",
+   "kind": "tv_json",
+   "label": "電視台",
+   "en": "TV",
+   "cohort": "field",
+   "url": null,
    "channels": {
-    "公視": {"id": "pts", "en": "PTS", "cohort": "reliable"},
-    "華視": {"id": "cts", "en": "CTS", "cohort": "reliable"},
-    "台視": {"id": "ttv", "en": "TTV"},
-    "三立": {"id": "set", "en": "SET"},
-    "民視": {"id": "ftv", "en": "FTV"},
-    "東森": {"id": "ebc", "en": "EBC"},
-    "中天": {"id": "cti", "en": "CTi"},
-    "TVBS": {"id": "tvbs", "en": "TVBS"}
+    "公視": {
+     "id": "pts",
+     "en": "PTS",
+     "cohort": "reliable"
+    },
+    "華視": {
+     "id": "cts",
+     "en": "CTS",
+     "cohort": "reliable"
+    },
+    "台視": {
+     "id": "ttv",
+     "en": "TTV"
+    },
+    "三立": {
+     "id": "set",
+     "en": "SET"
+    },
+    "民視": {
+     "id": "ftv",
+     "en": "FTV"
+    },
+    "東森": {
+     "id": "ebc",
+     "en": "EBC"
+    },
+    "中天": {
+     "id": "cti",
+     "en": "CTi"
+    },
+    "TVBS": {
+     "id": "tvbs",
+     "en": "TVBS"
+    }
    },
    "where": "公視 2024: https://news.pts.org.tw/projects/2024-election-vote/tv/latest.json (TV channels' on-screen counts). The 2022 local-election page had no TV counts."
   },
   {
-   "id": "ltn", "kind": "page_text", "label": "自由時報", "en": "Liberty Times", "cohort": "field", "url": null,
-   "split": ["中選會", "東森", "民視", "台視"],
-   "channels": {"中選會": {"id": "cec", "en": "CEC"}, "東森": {"id": "ebc", "en": "EBC"}, "民視": {"id": "ftv", "en": "FTV"}, "台視": {"id": "ttv", "en": "TTV"}},
+   "id": "ltn",
+   "kind": "page_text",
+   "label": "自由時報",
+   "en": "Liberty Times",
+   "cohort": "field",
+   "url": null,
+   "split": [
+    "中選會",
+    "東森",
+    "民視",
+    "台視"
+   ],
+   "channels": {
+    "中選會": {
+     "id": "cec",
+     "en": "CEC"
+    },
+    "東森": {
+     "id": "ebc",
+     "en": "EBC"
+    },
+    "民視": {
+     "id": "ftv",
+     "en": "FTV"
+    },
+    "台視": {
+     "id": "ttv",
+     "en": "TTV"
+    }
+   },
    "where": "2022: election.ltn.com.tw/2022/realtime/<city> showed 東森, 民視, 台視 and the CEC side by side. 2026 pages would be election.ltn.com.tw/2026/realtime/...; a url with {en} or {code} is filled in per race. The site blocks some automated reading; if it does, leave this off."
   },
   {
-   "id": "udn", "kind": "page_text", "label": "聯合報", "en": "United Daily News", "cohort": "field", "url": null,
+   "id": "udn",
+   "kind": "page_text",
+   "label": "聯合報",
+   "en": "United Daily News",
+   "cohort": "field",
+   "url": null,
    "where": "udn.com/vote2026/ (即時選情 tab). Format unknown until the night."
   }
  ]

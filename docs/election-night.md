@@ -51,6 +51,8 @@ CEC count site --(every 60 s)--> scripts/live/poll.py --> live-out/needle/2026-m
 
 **11/23 evening:** the friend's Mac passed `deploycheck` (ALL GOOD: it published to election-2026.tw and read its marker back), and her rerun rehearsal published to https://twn-watch-party-2026-test.hope770310.workers.dev/live, which advanced with the replay (checked from Hope's browser). The address line had been missing because publish.py dropped a successful deploy's output; fixed the same evening.
 
+**11/27, 00:20:** the count host still answers 403 FORBIDDEN (from Taiwan too); search engines index vote.cec.gov.tw/zh-TW/index.html as the CEC's 計票資訊查詢網站 (with 2025's referendum), so the pre-set address is very likely right. 中央社: no web count page announced, only a YouTube live stream 16:00–18:30. 公視: its results page now reads `news.pts.org.tw/projects/2026-election/api/public/election/2026/mayors`, the CEC's media feed per county (test figures stamped 11/18 until the night); switched on as count-watch source "公視" (`pts_api`, ignores data stamped before 11/28 16:00), on main and the night branch. 自由時報: 開票實況 link still empty. 聯合報: 即時選情 is news.
+
 **11/23:** the count host still answers 403 FORBIDDEN from Hope's browser. A CEC briefing reported on 11/12 (udn) says the count-information site runs on several domestic mirrors (HiNet CDN) plus an overseas backup mirror (AWS CDN); whether visitors abroad get the AWS mirror or a block is still unknown. `night-check.txt` is not on election-2026.tw, so the deploy check from the friend's Mac has not succeeded yet (or not been run).
 
 ### Other outlets (built 11/11)

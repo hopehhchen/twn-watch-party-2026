@@ -81,6 +81,11 @@ def test_outlets():
         res = o.cna(cfg, json.dumps({"63000": {"code": "63000", "process": 10, "candidates": [
             {"candNo": 5, "tickets": 1000}, {"candNo": 3, "tickets": 900}, {"candNo": 1, "tickets": 5}]}}))
         assert res[0][1] == {"臺北市": {5: 1000, 3: 900, 1: 5}}
+        pts = {"id": "pts", "kind": "pts_api", "label": "公視", "cohort": "reliable", "not_before": "2026-11-28T16:00"}
+        body = {"record_time": "2026-11-28T17:05:00+08:00", "counties": [{"county": "63000", "tbox_rcv": 10, "tbox_tot": 1755,
+                "candidates": [{"cand_no": 5, "tks": 1200}, {"cand_no": 3, "tks": 1100}]}]}
+        assert o.pts_api(pts, json.dumps(body))[0][1] == {"臺北市": {5: 1200, 3: 1100}}
+        assert o.pts_api(pts, json.dumps(dict(body, record_time="2026-11-18T17:24:01+08:00"))) == []  # the page's test data
         tv = o.tv_json({"id": "tv", "channels": {"公視": {"id": "pts", "en": "PTS", "cohort": "reliable"}}}, json.dumps({"data": {
             "公視": [{"vote_name": "蔣萬安", "vote_count": 1100}, {"vote_name": "沈 伯洋", "vote_count": 950}],
             "三立": [{"vote_name": "蔣萬安", "vote_count": 1300}, {"vote_name": "沈伯洋", "vote_count": 1200}]}}))

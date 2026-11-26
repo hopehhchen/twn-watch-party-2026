@@ -15,6 +15,8 @@ Readers (kinds):
              file per county in the same fields). Not shown as a separate row: it is the CEC's count, used as a
              fallback whenever it is further along than what the CEC's count site gave us (a town, county or
              council district is taken from whichever has more stations in).
+  pts_api    公視 2026's API: the CEC's media feed per county (cand_no, tks, tbox_rcv/tbox_tot, record_time). Shown in
+             the count watch as 公視; readings stamped before "not_before" (the page's test data) are ignored.
   tv_json    on-screen TV counts by channel, keyed by candidate name (公視 2024: tv/latest.json,
              {"data": {"三立": [{"vote_name", "vote_count"}, ...], ...}}). One count-watch row per channel.
   page_text  any page that prints candidates' names followed by their votes (自由時報, 聯合報 ...). The page's
@@ -215,6 +217,22 @@ class Outlets:
             if not a:
                 continue
             out[a] = {int(x["candNo"]): int(x.get("tickets") or 0) for x in c["candidates"] if x.get("candNo") is not None}
+        return [(self._meta(o), out)]
+
+    def pts_api(self, o, body, area=None):
+        """公視 2026 (projects/2026-election/api/public/election/2026/mayors): the CEC's media feed as 公視 serves it,
+        per county {county, tbox_rcv, tbox_tot, candidates: [{cand_no, tks}]}, stamped record_time. Before the night
+        the page serves test figures, so readings stamped before "not_before" are ignored."""
+        d = json.loads(body)
+        rt = str(d.get("record_time") or "")
+        if o.get("not_before") and (not rt or rt < o["not_before"]):
+            self.msgs[o["id"]] = f"{o['id']}: data stamped {rt or 'without a time'}, before {o['not_before']}: ignored"
+            return []
+        out = {}
+        for c in d.get("counties") or []:
+            a = self.code_area.get(str(c.get("county", "")))
+            if a and c.get("candidates"):
+                out[a] = {int(x["cand_no"]): int(x.get("tks") or 0) for x in c["candidates"] if x.get("cand_no") is not None}
         return [(self._meta(o), out)]
 
     def tv_json(self, o, body, area=None):
