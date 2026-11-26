@@ -1,8 +1,8 @@
 {
- "count_base": null,
- "note": "The CEC count site root (e.g. https://vote.cec.gov.tw/zh-TW/), set once the CEC announces it. The night runner (scripts/live/night.py) reads this.",
- "worker": "twn-watch-party-2026",
- "test_worker": "twn-watch-party-2026-test",
- "start_reading": "2026-11-28T15:50",
- "note_start": "The night runner can be started any time on the day (or the evening before); until start_reading (Taiwan time) it only checks one CEC page every 10 minutes."
+  "count_base": "https://vote.cec.gov.tw/zh-TW/",
+  "note": "The CEC count site root. Pre-set on 11/26 to the CEC's host in 2022, 2024 and 2025 (it answers 403 until the CEC opens it). If the CEC announces a different address, set \"count_base\" in data/live/outlets.json on the night branch: the poller picks it up within about 10 minutes, no restart.",
+  "worker": "twn-watch-party-2026",
+  "test_worker": "twn-watch-party-2026-test",
+  "start_reading": "2026-11-28T15:50",
+  "note_start": "The night runner can be started any time on the day (or the evening before); until start_reading (Taiwan time) it only checks one CEC page every 10 minutes."
 }

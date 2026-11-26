@@ -5,6 +5,7 @@
   python3 scripts/live/night.py rehearsal    # the 2022 count replayed on the 2026 ballot, published to a TEST site
   python3 scripts/live/night.py deploycheck  # once before the night: republish the site as it is now to election-2026.tw
                                              # (nothing changes for visitors) to prove this computer can update it
+  python3 scripts/live/night.py standby      # the backup machine: reads the CEC all night, publishes nothing
   python3 scripts/live/night.py night        # the real thing: CEC count -> needle -> election-2026.tw
 
 Normally started by the setup scripts in site/night/ (mac.sh, win.ps1), which download the code into a folder
@@ -178,11 +179,11 @@ def run(children, banner, out, test_url_from=None):
             time.sleep(30)
             for c in children:
                 c.keep()
-            pub = next(c for c in children if c.name == "publish")
+            pub = next((c for c in children if c.name == "publish"), None)  # none in standby
             poll = next(c for c in children if c.name == "poll")
             wait = poll.last(r"cycle |waiting until")
             cyc = poll.last(r"cycle ") if "waiting until" not in wait else ""
-            pl = pub.last(r"published|NOT published|FAILED")
+            pl = pub.last(r"published|NOT published|FAILED") if pub else ""
             m = re.search(r"\{([^}]*)\}", cyc)
             got = bad = 0
             if m:
@@ -193,7 +194,9 @@ def run(children, banner, out, test_url_from=None):
                         bad += int(v)
             reading = ("waiting: starts reading at 15:50 (the CEC site is checked every 10 minutes until then)" if "waiting until" in wait
                        else "starting" if not cyc else f"{got} pages read" + (f", {bad} failed (retrying)" if bad else ""))
-            if not pl:
+            if not pub:
+                site, ok = "not publishing (standby)", True
+            elif not pl:
                 site, ok = "waiting for the first results", True
             elif "FAILED" in pl or "NOT" in pl:
                 site, ok = f"update FAILED at {pl[:8]} (tell Hope if this repeats for 5 minutes)", False
@@ -259,6 +262,8 @@ def check():
                 with urllib.request.urlopen(urllib.request.Request(base, headers={"User-Agent": UA}), timeout=20, context=SSL) as r:
                     return ok, f"CEC election page and count site reachable ({r.status})"
             except urllib.error.HTTPError as e:
+                if e.code == 403 and datetime.now() < datetime(2026, 11, 28, 16, 0):  # locked until the CEC opens it
+                    return ok, "CEC election page reachable; the count site isn't open yet (403, normal before the night)"
                 return False, f"CEC election page reachable, count site answered {e.code}"
         return ok, "CEC election page reachable (count site address not announced yet)"
 
@@ -354,6 +359,18 @@ def night():
         "Until 15:50 it just waits and checks the CEC every 10 minutes. Press Ctrl+C only when Hope says it's over.\n", OUT)
 
 
+def standby():
+    """The backup machine: read the CEC all night exactly as the night machine does, but don't publish. If the night
+    machine fails, stop this (Ctrl+C) and start TWN_MODE=night here: the poller resumes from this computer's own
+    archive, so the site keeps the whole night's history. Never run night on two computers at once."""
+    base = os.environ.get("TWN_BASE") or CONFIG.get("count_base")
+    if not base:
+        sys.exit("The CEC count site's address isn't set yet.")
+    run([Child("poll", ["scripts/live/poll.py", "--base", base, "--out", str(OUT), "--wait-until", CONFIG.get("start_reading", "2026-11-28T15:50")])],
+        f"\nSTANDBY running: reading {base} every minute like the night machine, but NOT publishing.\n"
+        "To take over: make sure the other computer has stopped, press Ctrl+C here, then start TWN_MODE=night.\n", OUT)
+
+
 def deploycheck():
     """Publish the site exactly as it is now (the before-the-count files) to the real Worker, once, and check that
     election-2026.tw then serves this computer's copy. Visitors see no change; it proves the token, the account and
@@ -387,7 +404,7 @@ def main():
     LOGS.mkdir(parents=True, exist_ok=True)
     OUT.mkdir(parents=True, exist_ok=True)
     keep_awake()
-    {"check": check, "rehearsal": rehearsal, "deploycheck": deploycheck, "night": night}[mode]()
+    {"check": check, "rehearsal": rehearsal, "deploycheck": deploycheck, "standby": standby, "night": night}[mode]()
 
 
 if __name__ == "__main__":

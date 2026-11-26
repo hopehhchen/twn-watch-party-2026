@@ -463,6 +463,10 @@ def main():
         t_start = time.time()
         now = datetime.now(TW)
         now_night = day.replace(hour=now.hour, minute=now.minute, second=now.second) if a.date else now
+        nb = (night.outlets.cfg or {}).get("count_base")  # a corrected address from the night branch's settings
+        if nb and nb != a.base:
+            log(f"count site address changed: {a.base} -> {nb}")
+            a.base = nb
         pages = fetcher.get_many(night.urls(a.base))
         pages.update(fetcher.get_many(night.outlets.urls(), reset=False))
         night.outlets.read(pages)

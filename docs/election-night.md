@@ -126,12 +126,12 @@ python3 scripts/live/publish.py            # copies into _site; serve _site with
 | done 11/11 | Council seats live (built, rehearsed with the 2022 count) | Claude | done |
 | by 11/21 (Sat) | Full rehearsal on the machine that will run the night, deploying to a test Worker, not the real site | both | open |
 | ~11/21 (unverified) | CEC announces the count site: `poll.py --probe` from the night's machine; refresh `towns-2022.json` from the 2026 site menu if towns changed | Claude + Hope | open |
-| by 11/24 | Taiwanese review back (`docs/taigi-review.md`, regenerated 11/10) | Hope | open |
+| by 11/24 | Taiwanese review back (`docs/taigi-review.md`) | Hope | done 11/26 ("good"); the draft notes are removed from the site |
 | 11/25 (Wed) | Recheck outlet pages. **11/25 midday:** 中央社's `project/20261128-election-live/` and its data files still 404 (no other link from its topic page); 公視's page still marked 測試版 with no data file. Check again 11/27 and on the night (the `night` branch lets us switch one on without a deploy) | Claude | partly |
 | 11/25 (Wed) | CEC announced elector totals on 11/24 (19,576,028 for mayors). Now in `data/2026-electors.json` → `2026-mayors.json` (`electors`; the 2022 figure kept as `electors_2022`). The poller scales each county's 2022 town electors to the new total until the turnout pages give each town's own figure | Claude | done 11/25 |
 | by 11/24 | `TWN_MODE=deploycheck` on the night's machine: republishes the site as it is to election-2026.tw (no visible change) and confirms the real site took it, via a random marker file `night-check.txt` | friend | open |
 | 11/26 (Thu) | Dress rehearsal on the real domain at 16× (16:00–24:00 in 30 min), phones and desktop, all three languages; then rebuild the empty pre-count file | both | open |
-| 11/27 (Fri), evening | Code freeze; final build on the night's machine; fallback machine ready | both | open |
+| 11/28 (Sat), morning | Code freeze moved here (Hope, 11/26): Hope and the friend start the night machine together that morning; Hope's Mac runs `TWN_MODE=standby` as the backup. The count site address is pre-set to `https://vote.cec.gov.tw/zh-TW/` (the CEC's host in 2022–2025); a different address can be set as `count_base` in `data/live/outlets.json` on the `night` branch and the poller switches within ~10 minutes, no restart | both | open |
 | 11/28, 14:00 | Poller and publisher running (the count site has no data yet: the poller just waits) | Hope | |
 | 11/28, 16:00 | Voting closes, counting starts | | |
 | 11/28, ~17:00–17:30 | First CEC figures; first needle points | | |
