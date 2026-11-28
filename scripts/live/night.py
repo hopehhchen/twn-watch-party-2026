@@ -105,8 +105,11 @@ class Child:
     def __init__(self, name, args, env=ENV):
         self.name, self.args, self.env, self.p, self.restarts = name, args, env, None, 0
         self.log = LOGS / f"{name}.log"
+        self.since = None  # where this session's lines start in the log (earlier runs, e.g. a rehearsal, come before)
 
     def start(self):
+        if self.since is None:
+            self.since = self.log.stat().st_size if self.log.exists() else 0
         fh = open(self.log, "a", encoding="utf-8")
         fh.write(f"\n==== {stamp()} start: {' '.join(self.args)}\n")
         fh.flush()
@@ -132,7 +135,9 @@ class Child:
 
     def last(self, pattern=None):
         try:
-            lines = self.log.read_text(encoding="utf-8", errors="replace").splitlines()
+            with open(self.log, "rb") as fh:
+                fh.seek(self.since or 0)
+                lines = fh.read().decode("utf-8", "replace").splitlines()
         except FileNotFoundError:
             return ""
         for ln in reversed(lines):
