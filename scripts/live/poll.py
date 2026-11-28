@@ -336,7 +336,10 @@ class Night:
         tot = sum(t["total"] for t in e["towns"].values())
         if tot:
             r["stations"] = tot
-        if e.get("turnout") and e["turnout"].get("E"):
+        # the turnout page's total electors, once every station is in (until then, in 2026, it counts only the
+        # electors at stations already counted)
+        sent = sum(t["sent"] or 0 for t in e["towns"].values())
+        if tot and sent >= tot and e.get("turnout") and e["turnout"].get("E"):
             r["electors"] = e["turnout"]["E"]
 
     @staticmethod

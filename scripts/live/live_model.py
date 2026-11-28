@@ -76,16 +76,24 @@ class LiveRace(N.Night):
             s = snap.get(d) or {}
             total = s.get("total") or info["N"]
             sent = min(s.get("sent") or 0, total)
-            E_d = s.get("E") or info["E"]
+            cs = counted_share(sent / total)
+            # The turnout page's electors: the whole town's (2018, 2022), or only those at stations already counted
+            # (2026: "均為已完成投票所之累計資料"). Whichever the figure is closer to.
+            E_d, E_in, E_pg = info["E"], None, s.get("E")
+            if E_pg:
+                if abs(E_pg - info["E"]) <= abs(E_pg - info["E"] * cs):
+                    E_d = E_pg
+                else:
+                    E_in = E_pg
             b = self._tb(d)
             if sent:
                 v = [int((s.get("votes") or {}).get(no, 0)) for no in self.nos]
                 A = sum(v)
                 C = s.get("C")
                 if not C or abs(C * self.valid_ratio - A) > 0.02 * max(A, 1):  # turnout page out of step: estimate
-                    C = round(A / self.valid_ratio)
-                R.append({"district": d, "E": E_d * counted_share(sent / total), "C": C, "A": A, "v": v, "_b": b})
-            left = E_d * (1 - counted_share(sent / total))
+                    C, E_in = round(A / self.valid_ratio), None
+                R.append({"district": d, "E": E_in or E_d * cs, "C": C, "A": A, "v": v, "_b": b})
+            left = E_d * (1 - cs)
             sizes = info.get("sizes") or []
             big = sum(sizes[:total - sent]) if len(sizes) >= total - sent else (total - sent) * (max(sizes) if sizes else left)
             self.rem_bound += max(left, big * E_d / max(info["E"], 1)) * BOUND_PAD
