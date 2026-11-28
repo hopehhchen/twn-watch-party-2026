@@ -116,5 +116,6 @@
    "url": null,
    "where": "udn.com/vote2026/ (即時選情 tab). Format unknown until the night."
   }
- ]
+ ],
+ "count_base": "https://vote.cec.gov.tw/2026-local/zh-TW/"
 }

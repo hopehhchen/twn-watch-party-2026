@@ -1,6 +1,6 @@
 {
-  "count_base": "https://vote.cec.gov.tw/zh-TW/",
-  "note": "The CEC count site root. Pre-set on 11/26 to the CEC's host in 2022, 2024 and 2025 (it answers 403 until the CEC opens it). If the CEC announces a different address, set \"count_base\" in data/live/outlets.json on the night branch: the poller picks it up within about 10 minutes, no restart.",
+  "count_base": "https://vote.cec.gov.tw/2026-local/zh-TW/",
+  "note": "The CEC count site root. Opened 11/28 at 11:00 at vote.cec.gov.tw/2026-local/zh-TW/ (portal: vote.cec.gov.tw/home/zh-TW/; the old /zh-TW/ path answers 403). Page names keep the 2022 scheme (TC/SC/T1/T2/T3 + 17-digit codes); count pages appear when the site switches from its 'prior' to its 'count' stage. A different address can be set as \"count_base\" in data/live/outlets.json on the night branch: the poller picks it up within about 10 minutes, no restart.",
   "worker": "twn-watch-party-2026",
   "test_worker": "twn-watch-party-2026-test",
   "start_reading": "2026-11-28T15:50",
